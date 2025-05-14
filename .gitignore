@@ -1,12 +1,47 @@
 # Xcode
-DerivedData/
+##
+# User-specific files
+.idea/
+.vscode/
+
+# Xcode 11 and later
+xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Build products
 build/
-*.xcuserstate
-*.xcuserdata/
+DerivedData/
 
 # SwiftPM
+/.build/
 .swiftpm/
-.build/
+Package.pins
+Package.resolved
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Xcode coverage
+*.xccoverage
+
+# Xcode workspace file
+*.xcworkspace
+
+# Xcode 9 and earlier
+*.hmap
+*.ipa
+*.app
+
+# Static analyzer
+*.xcschememanaged
+
+# Temporary files
+*.swp
+*.lock
 
 # macOS
 .DS_Store
