@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum AppRoute {
-    case shoppingList
-    // TODO: other cases
+enum AppRoute: Hashable {
+    case shoppingLists
+    case shoppingListDetails(UUID)
 }

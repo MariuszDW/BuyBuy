@@ -8,10 +8,14 @@
 import Foundation
 
 final class ShoppingListViewModel: ObservableObject {
+    @Published var list: ShoppingList?
     private weak var coordinator: AppCoordinatorProtocol?
+    private var repository: ShoppingListRepositoryProtocol
 
-    init(coordinator: AppCoordinatorProtocol) {
+    init(listID: UUID, coordinator: AppCoordinatorProtocol, repository: ShoppingListRepositoryProtocol) {
         self.coordinator = coordinator
+        self.repository = repository
+        self.list = repository.fetchList(by: listID)
     }
 
     func back() {

@@ -12,7 +12,7 @@ struct AppRootView: View {
 
     var body: some View {
         NavigationStack(path: $coordinator.navigationPath) {
-            HomeView(viewModel: HomeViewModel(coordinator: coordinator))
+            coordinator.view(for: .shoppingLists)
                 .navigationDestination(for: AppRoute.self) { route in
                     coordinator.view(for: route)
                 }

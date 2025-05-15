@@ -8,6 +8,6 @@
 import Foundation
 
 protocol AppCoordinatorProtocol: AnyObject {
-    func goToShoppingList()
+    func goToShoppingListDetails(_ id: UUID)
     func back()
 }

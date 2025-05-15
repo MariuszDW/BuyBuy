@@ -18,12 +18,15 @@ final class HomeViewModelTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
-    func testCreateListTapped_CallsCoordinator() {
-        let mockCoordinator = MockAppCoordinator()
-        let viewModel = HomeViewModel(coordinator: mockCoordinator)
+    func test_fetchList_returnsCorrectList() {
+        let mockRepository = MockShoppingListRepository()
+        let expectedList = ShoppingList(id: UUID(), name: "Test", items: [])
         
-        viewModel.createListTapped()
+        mockRepository.fetchListHandler = { id in
+            return expectedList
+        }
         
-        XCTAssertTrue(mockCoordinator.goToShoppingListCalled)
+        let result = mockRepository.fetchList(by: UUID())
+        XCTAssertEqual(result?.name, "Test")
     }
 }

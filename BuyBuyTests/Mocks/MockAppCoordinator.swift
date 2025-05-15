@@ -9,14 +9,14 @@ import Foundation
 @testable import BuyBuy
 
 final class MockAppCoordinator: AppCoordinatorProtocol {
-    private(set) var goToShoppingListCalled = false
-    private(set) var backCalled = false
+    var onGoToShoppingListDetails: ((UUID) -> Void)?
+    var onBack: (() -> Void)?
 
-    func goToShoppingList() {
-        goToShoppingListCalled = true
+    func goToShoppingListDetails(_ id: UUID) {
+        onGoToShoppingListDetails?(id)
     }
 
     func back() {
-        backCalled = true
+        onBack?()
     }
 }
