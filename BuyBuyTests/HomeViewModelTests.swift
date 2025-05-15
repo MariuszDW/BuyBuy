@@ -19,14 +19,11 @@ final class HomeViewModelTests: XCTestCase {
     }
     
     func testCreateListTapped_CallsCoordinator() {
-        // Arrange
         let mockCoordinator = MockAppCoordinator()
         let viewModel = HomeViewModel(coordinator: mockCoordinator)
         
-        // Act
         viewModel.createListTapped()
         
-        // Assert
         XCTAssertTrue(mockCoordinator.goToShoppingListCalled)
     }
 }

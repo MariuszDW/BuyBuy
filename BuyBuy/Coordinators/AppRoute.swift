@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-// Enum określający dostępne trasy w aplikacji
 enum AppRoute {
     case shoppingList
-    // Możesz dodać inne trasy, np. case .productDetail, itp.
+    // TODO: other cases
 }
