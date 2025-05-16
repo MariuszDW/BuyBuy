@@ -40,16 +40,10 @@ struct ListsView: View {
             ForEach(viewModel.shoppingLists) { list in
                 Group {
                     if localEditMode.isEditing {
-                        Text(list.name)
-                            .foregroundColor(.primary)
-                            .padding(.vertical, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        listRow(for: list)
                     } else {
                         NavigationLink(value: AppRoute.shoppingListDetails(list.id)) {
-                            Text(list.name)
-                                .foregroundColor(.primary)
-                                .padding(.vertical, 8)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            listRow(for: list)
                         }
                         .swipeActions {
                             Button(role: .destructive) {
@@ -60,6 +54,7 @@ struct ListsView: View {
                         }
                     }
                 }
+                .listRowInsets(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 16))
             }
             .onDelete { offsets in
                 viewModel.deleteLists(atOffsets: offsets)
@@ -67,6 +62,18 @@ struct ListsView: View {
             .onMove { indices, newOffset in
                 viewModel.moveLists(fromOffsets: indices, toOffset: newOffset)
             }
+        }
+    }
+    
+    private func listRow(for list: ShoppingList) -> some View {
+        HStack {
+            Image(systemName: list.icon.rawValue)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(.white, list.color.color)
+                .font(.title)
+            Text(list.name)
+                .foregroundColor(.primary)
+                .padding(.vertical, 8)
         }
     }
     
