@@ -94,7 +94,8 @@ struct ShoppingListView_Previews: PreviewProvider {
                 items: [
                     ShoppingItem(id: UUID(), name: "Milk", status: .active),
                     ShoppingItem(id: UUID(), name: "Bread", status: .done)
-                ]
+                ],
+                order: 0
             )
         }
 

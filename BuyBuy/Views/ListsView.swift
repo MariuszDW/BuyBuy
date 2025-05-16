@@ -16,14 +16,45 @@ struct ListsView: View {
     }
 
     var body: some View {
-        List(viewModel.shoppingLists) { list in
-            NavigationLink(value: AppRoute.shoppingListDetails(list.id)) {
-                Text(list.name)
-                    .foregroundColor(.primary)
-                    .padding(.vertical, 8)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        VStack {
+            List {
+                ForEach(viewModel.shoppingLists) { list in
+                    NavigationLink(value: AppRoute.shoppingListDetails(list.id)) {
+                        Text(list.name)
+                            .foregroundColor(.primary)
+                            .padding(.vertical, 8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            viewModel.deleteList(id: list.id)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                }
+                .onDelete { offsets in
+                    viewModel.deleteLists(atOffsets: offsets)
+                }
+                .onMove { indices, newOffset in
+                    viewModel.moveLists(fromOffsets: indices, toOffset: newOffset)
+                }
             }
+
+            HStack {
+                Button(action: {
+                    viewModel.addList()
+                }) {
+                    Label("Add", systemImage: "plus")
+                }
+
+                Spacer()
+
+                EditButton()
+            }
+            .padding()
         }
+        .navigationTitle("Shopping Lists")
     }
 }
 

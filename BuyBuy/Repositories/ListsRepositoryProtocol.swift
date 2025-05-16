@@ -11,4 +11,5 @@ protocol ListsRepositoryProtocol {
     func fetchAllLists() -> [ShoppingList]
     func addList(_ list: ShoppingList)
     func deleteList(with id: UUID)
+    func updateList(_ updatedList: ShoppingList)
 }

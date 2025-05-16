@@ -11,4 +11,5 @@ struct ShoppingList: Identifiable, Hashable {
     let id: UUID
     let name: String
     var items: [ShoppingItem]
+    var order: Int
 }

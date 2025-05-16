@@ -19,7 +19,8 @@ final class AppDependencies: ObservableObject {
                 ShoppingItem(id: UUID(), name: "Milk", status: .active),
                 ShoppingItem(id: UUID(), name: "Bread", status: .done),
                 ShoppingItem(id: UUID(), name: "Eggs", status: .inactive)
-            ]
+            ],
+            order: 0
         ),
         ShoppingList(
             id: UUID(uuidString: "22222222-2222-2222-2222-222222222222")!,
@@ -27,7 +28,8 @@ final class AppDependencies: ObservableObject {
             items: [
                 ShoppingItem(id: UUID(), name: "Nails", status: .active),
                 ShoppingItem(id: UUID(), name: "Hammer", status: .done)
-            ]
+            ],
+            order: 1
         )
     ])
 

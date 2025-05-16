@@ -13,11 +13,11 @@ final class InMemoryShoppingListStore {
     private(set) var lists: [ShoppingList]
 
     init(initialLists: [ShoppingList] = []) {
-        self.lists = initialLists
+        self.lists = initialLists.sorted(by: { $0.order < $1.order })
     }
 
     func allLists() -> [ShoppingList] {
-        return lists
+        return lists.sorted(by: { $0.order < $1.order })
     }
 
     func fetchList(with id: UUID) -> ShoppingList? {
@@ -27,15 +27,27 @@ final class InMemoryShoppingListStore {
     func updateList(_ updatedList: ShoppingList) {
         if let index = lists.firstIndex(where: { $0.id == updatedList.id }) {
             lists[index] = updatedList
+            lists.sort(by: { $0.order < $1.order })
         }
     }
 
     func addList(_ newList: ShoppingList) {
-        lists.append(newList)
+        var listWithOrder = newList
+        let maxOrder = lists.map { $0.order }.max() ?? -1
+        listWithOrder.order = maxOrder + 1
+        lists.append(listWithOrder)
     }
 
     func removeList(id: UUID) {
         lists.removeAll { $0.id == id }
+    }
+
+    func moveList(fromOffsets offsets: IndexSet, toOffset offset: Int) {
+        lists.move(fromOffsets: offsets, toOffset: offset)
+        for (index, var list) in lists.enumerated() {
+            list.order = index
+            updateList(list)
+        }
     }
 
     // MARK: - Item management

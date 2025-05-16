@@ -25,4 +25,8 @@ final class ListsRepository: ListsRepositoryProtocol {
     func deleteList(with id: UUID) {
         store.removeList(id: id)
     }
+    
+    func updateList(_ updatedList: ShoppingList) {
+        store.updateList(updatedList)
+    }
 }
