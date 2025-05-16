@@ -10,6 +10,10 @@ import SwiftUI
 struct ShoppingListView: View {
     @ObservedObject var viewModel: ShoppingListViewModel
     @EnvironmentObject var dependencies: AppDependencies
+    
+    var designSystem: DesignSystem {
+        return dependencies.designSystem
+    }
 
     var body: some View {
         Group {
@@ -52,7 +56,7 @@ struct ShoppingListView: View {
     @ViewBuilder
     private func emptyView() -> some View {
         VStack(spacing: 20) {
-            Text("Can't found a shopping list.")
+            Text("Can't find a shopping list.")
                 .font(.title2)
                 .foregroundColor(.red)
             
@@ -66,24 +70,37 @@ struct ShoppingListView: View {
 }
 
 struct ShoppingListView_Previews: PreviewProvider {
-    static let mockList = ShoppingList(
-        id: UUID(),
-        name: "Mock list",
-        items: []
-    )
-    
     static var previews: some View {
-        let mockViewModel = ShoppingListViewModel(
-            listID: mockList.id, coordinator: AppCoordinator(), repository: ShoppingListRepository())
+        let mockRepository = MockShoppingListRepository()
+        let coordinator = AppCoordinator(dependencies: AppDependencies())
+        let viewModel = ShoppingListViewModel(coordinator: coordinator, repository: mockRepository)
 
         Group {
-            ShoppingListView(viewModel: mockViewModel)
+            ShoppingListView(viewModel: viewModel)
+                .environmentObject(AppDependencies())
                 .preferredColorScheme(.light)
-                .environmentObject(AppDependencies())
 
-            ShoppingListView(viewModel: mockViewModel)
-                .preferredColorScheme(.dark)
+            ShoppingListView(viewModel: viewModel)
                 .environmentObject(AppDependencies())
+                .preferredColorScheme(.dark)
         }
     }
+
+    private struct MockShoppingListRepository: ShoppingListRepositoryProtocol {
+        func fetchList() -> ShoppingList? {
+            ShoppingList(
+                id: UUID(),
+                name: "Mock List",
+                items: [
+                    ShoppingItem(id: UUID(), name: "Milk", status: .active),
+                    ShoppingItem(id: UUID(), name: "Bread", status: .done)
+                ]
+            )
+        }
+
+        func addItem(_ item: ShoppingItem) {}
+        func updateItem(_ item: ShoppingItem) {}
+        func removeItem(with id: UUID) {}
+    }
 }
+

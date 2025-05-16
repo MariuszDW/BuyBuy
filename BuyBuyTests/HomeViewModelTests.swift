@@ -18,15 +18,18 @@ final class HomeViewModelTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
-    func test_fetchList_returnsCorrectList() {
+    func testAddItemCallsHandler() {
         let mockRepository = MockShoppingListRepository()
-        let expectedList = ShoppingList(id: UUID(), name: "Test", items: [])
-        
-        mockRepository.fetchListHandler = { id in
-            return expectedList
+
+        var wasCalled = false
+        mockRepository.addItemHandler = { item in
+            wasCalled = true
+            XCTAssertEqual(item.name, "Milk")
         }
-        
-        let result = mockRepository.fetchList(by: UUID())
-        XCTAssertEqual(result?.name, "Test")
+
+        let item = ShoppingItem(id: UUID(), name: "Milk", status: .active)
+        mockRepository.addItem(item)
+
+        XCTAssertTrue(wasCalled)
     }
 }

@@ -12,10 +12,10 @@ final class ListsViewModel: ObservableObject {
     @Published var shoppingLists: [ShoppingList] = []
 
     private weak var coordinator: AppCoordinatorProtocol?
-    private var repository: ShoppingListRepositoryProtocol
+    private var repository: ListsRepositoryProtocol
     private var cancellables = Set<AnyCancellable>()
 
-    init(coordinator: AppCoordinatorProtocol, repository: ShoppingListRepositoryProtocol) {
+    init(coordinator: AppCoordinatorProtocol, repository: ListsRepositoryProtocol) {
         self.coordinator = coordinator
         self.repository = repository
         loadLists()

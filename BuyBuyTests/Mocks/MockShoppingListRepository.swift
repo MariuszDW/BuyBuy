@@ -9,15 +9,24 @@ import Foundation
 @testable import BuyBuy
 
 final class MockShoppingListRepository: ShoppingListRepositoryProtocol {
+    var fetchListHandler: (() -> ShoppingList)?
+    var addItemHandler: ((ShoppingItem) -> Void)?
+    var updateItemHandler: ((ShoppingItem) -> Void)?
+    var removeItemHandler: ((UUID) -> Void)?
 
-    var fetchListHandler: ((UUID) -> ShoppingList?)?
-    var fetchAllListsHandler: (() -> [ShoppingList])?
-
-    func fetchList(by id: UUID) -> ShoppingList? {
-        fetchListHandler?(id)
+    func fetchList() -> ShoppingList? {
+        fetchListHandler?()
     }
 
-    func fetchAllLists() -> [ShoppingList] {
-        fetchAllListsHandler?() ?? []
+    func addItem(_ item: ShoppingItem) {
+        addItemHandler?(item)
+    }
+
+    func updateItem(_ item: ShoppingItem) {
+        updateItemHandler?(item)
+    }
+
+    func removeItem(with id: UUID) {
+        removeItemHandler?(id)
     }
 }

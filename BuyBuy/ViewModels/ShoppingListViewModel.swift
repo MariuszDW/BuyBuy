@@ -8,17 +8,38 @@
 import Foundation
 
 final class ShoppingListViewModel: ObservableObject {
-    @Published var list: ShoppingList?
+    private let repository: ShoppingListRepositoryProtocol
     private weak var coordinator: AppCoordinatorProtocol?
-    private var repository: ShoppingListRepositoryProtocol
 
-    init(listID: UUID, coordinator: AppCoordinatorProtocol, repository: ShoppingListRepositoryProtocol) {
+    @Published var list: ShoppingList?
+
+    init(coordinator: AppCoordinatorProtocol, repository: ShoppingListRepositoryProtocol) {
         self.coordinator = coordinator
         self.repository = repository
-        self.list = repository.fetchList(by: listID)
+        loadList()
     }
 
+    func loadList() {
+        list = repository.fetchList()
+    }
+
+    func addItem(_ item: ShoppingItem) {
+        repository.addItem(item)
+        loadList()
+    }
+
+    func updateItem(_ item: ShoppingItem) {
+        repository.updateItem(item)
+        loadList()
+    }
+
+    func removeItem(with id: UUID) {
+        repository.removeItem(with: id)
+        loadList()
+    }
+    
     func back() {
         coordinator?.back()
     }
 }
+

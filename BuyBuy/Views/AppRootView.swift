@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct AppRootView: View {
-    @StateObject var coordinator = AppCoordinator()
+    @EnvironmentObject var dependencies: AppDependencies
+    @ObservedObject var coordinator: AppCoordinator
 
     var body: some View {
         NavigationStack(path: $coordinator.navigationPath) {
@@ -22,10 +23,15 @@ struct AppRootView: View {
 
 struct AppRootView_Previews: PreviewProvider {
     static var previews: some View {
-        AppRootView()
+        let dependencies = AppDependencies()
+        let coordinator = AppCoordinator(dependencies: dependencies)
+
+        AppRootView(coordinator: coordinator)
+            .environmentObject(dependencies)
             .preferredColorScheme(.light)
 
-        AppRootView()
+        AppRootView(coordinator: coordinator)
+            .environmentObject(dependencies)
             .preferredColorScheme(.dark)
     }
 }

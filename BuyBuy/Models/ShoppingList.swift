@@ -10,5 +10,5 @@ import Foundation
 struct ShoppingList: Identifiable, Hashable {
     let id: UUID
     let name: String
-    let items: [ShoppingItem]
+    var items: [ShoppingItem]
 }

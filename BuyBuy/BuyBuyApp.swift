@@ -9,11 +9,18 @@ import SwiftUI
 
 @main
 struct BuyBuyApp: App {
-    @StateObject var dependencies = AppDependencies()
+    @StateObject var dependencies: AppDependencies
+    @StateObject var coordinator: AppCoordinator
+
+    init() {
+        let appDependencies = AppDependencies()
+        _dependencies = StateObject(wrappedValue: appDependencies)
+        _coordinator = StateObject(wrappedValue: AppCoordinator(dependencies: appDependencies))
+    }
 
     var body: some Scene {
         WindowGroup {
-            AppRootView()
+            AppRootView(coordinator: coordinator)
                 .environmentObject(dependencies)
         }
     }
