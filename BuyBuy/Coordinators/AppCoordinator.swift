@@ -15,15 +15,19 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
     }
-
+    
     func goToShoppingListDetails(_ id: UUID) {
         navigationPath.append(AppRoute.shoppingListDetails(id))
     }
-
+    
+    func goToSettings() {
+        navigationPath.append(AppRoute.settings)
+    }
+    
     func back() {
         navigationPath.removeLast()
     }
-
+    
     @ViewBuilder
     func view(for route: AppRoute) -> some View {
         switch route {
@@ -40,6 +44,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     coordinator: self,
                     repository: ShoppingListRepository(listID: id, store: dependencies.shoppingListStore)
                 )
+            )
+        case .settings:
+            SettingsView(
+                viewModel: SettingsViewModel(coordinator: self)
             )
         }
     }

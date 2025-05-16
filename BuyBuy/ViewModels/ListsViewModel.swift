@@ -45,4 +45,8 @@ final class ListsViewModel: ObservableObject {
         repository.addList(newList)
         shoppingLists = repository.fetchAllLists()
     }
+    
+    func openSettings() {
+        coordinator?.goToSettings()
+    }
 }
