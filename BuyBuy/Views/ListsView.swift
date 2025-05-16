@@ -28,8 +28,8 @@ struct ListsView: View {
         .toolbar {
             toolbarContent
         }
-        .sheet(item: $viewModel.listBeingCreated) { list in
-            newListSheet(list)
+        .sheet(item: $viewModel.listBeingCreated) { _ in
+            newListSheet
         }
     }
     
@@ -111,11 +111,11 @@ struct ListsView: View {
         }
     }
     
-    private func newListSheet(_ list: ShoppingList) -> some View {
+    private var newListSheet: some View {
         NavigationView {
             Form {
                 TextField("List Name", text: Binding(
-                    get: { list.name },
+                    get: { viewModel.listBeingCreated?.name ?? "" },
                     set: { viewModel.listBeingCreated?.name = $0 }
                 ))
             }
@@ -127,7 +127,7 @@ struct ListsView: View {
                 },
                 trailing: Button("OK") {
                     viewModel.confirmCreatingList()
-                }.disabled(list.name.trimmingCharacters(in: .whitespaces).isEmpty)
+                }.disabled((viewModel.listBeingCreated?.name.trimmingCharacters(in: .whitespaces).isEmpty) ?? true)
             )
         }
     }
