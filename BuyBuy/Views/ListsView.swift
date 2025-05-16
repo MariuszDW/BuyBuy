@@ -28,6 +28,9 @@ struct ListsView: View {
         .toolbar {
             toolbarContent
         }
+        .sheet(isPresented: $viewModel.isPresentingNewListSheet) {
+            newListSheet
+        }
     }
     
     // MARK: - Subviews
@@ -71,7 +74,7 @@ struct ListsView: View {
         HStack {
             Button(action: {
                 localEditMode = .inactive
-                viewModel.addList()
+                viewModel.startCreatingNewList()
             }) {
                 Label("Add", systemImage: "plus.circle")
             }
@@ -107,6 +110,25 @@ struct ListsView: View {
             .disabled(localEditMode.isEditing)
         }
     }
+    
+    private var newListSheet: some View {
+        NavigationView {
+            Form {
+                TextField("List Name", text: $viewModel.newListName)
+            }
+            .navigationTitle("New List")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(
+                leading: Button("Cancel") {
+                    viewModel.cancelNewList()
+                },
+                trailing: Button("OK") {
+                    viewModel.confirmNewList()
+                }.disabled(viewModel.newListName.trimmingCharacters(in: .whitespaces).isEmpty)
+            )
+        }
+    }
+
 }
 
 // MARK: - Preview

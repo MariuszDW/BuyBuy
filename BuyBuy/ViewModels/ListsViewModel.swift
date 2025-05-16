@@ -13,6 +13,9 @@ final class ListsViewModel: ObservableObject {
 
     private weak var coordinator: AppCoordinatorProtocol?
     private let repository: ListsRepositoryProtocol
+    
+    @Published var isPresentingNewListSheet = false
+    @Published var newListName: String = ""
 
     init(coordinator: AppCoordinatorProtocol?, repository: ListsRepositoryProtocol) {
         self.repository = repository
@@ -48,5 +51,22 @@ final class ListsViewModel: ObservableObject {
     
     func openSettings() {
         coordinator?.goToSettings()
+    }
+    
+    func startCreatingNewList() {
+        newListName = ""
+        isPresentingNewListSheet = true
+    }
+
+    func confirmNewList() {
+        let newList = ShoppingList(id: UUID(), name: newListName, items: [], order: 0)
+        repository.addList(newList)
+        shoppingLists = repository.fetchAllLists()
+        isPresentingNewListSheet = false
+    }
+
+    func cancelNewList() {
+        newListName = ""
+        isPresentingNewListSheet = false
     }
 }
