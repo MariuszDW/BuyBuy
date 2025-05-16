@@ -9,7 +9,7 @@ import Foundation
 
 struct ShoppingList: Identifiable, Hashable {
     let id: UUID
-    let name: String
+    var name: String
     var items: [ShoppingItem]
     var order: Int
 }

@@ -28,8 +28,8 @@ struct ListsView: View {
         .toolbar {
             toolbarContent
         }
-        .sheet(isPresented: $viewModel.isPresentingNewListSheet) {
-            newListSheet
+        .sheet(item: $viewModel.listBeingCreated) { list in
+            newListSheet(list)
         }
     }
     
@@ -74,7 +74,7 @@ struct ListsView: View {
         HStack {
             Button(action: {
                 localEditMode = .inactive
-                viewModel.startCreatingNewList()
+                viewModel.startCreatingList()
             }) {
                 Label("Add", systemImage: "plus.circle")
             }
@@ -111,24 +111,26 @@ struct ListsView: View {
         }
     }
     
-    private var newListSheet: some View {
+    private func newListSheet(_ list: ShoppingList) -> some View {
         NavigationView {
             Form {
-                TextField("List Name", text: $viewModel.newListName)
+                TextField("List Name", text: Binding(
+                    get: { list.name },
+                    set: { viewModel.listBeingCreated?.name = $0 }
+                ))
             }
             .navigationTitle("New List")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
                 leading: Button("Cancel") {
-                    viewModel.cancelNewList()
+                    viewModel.cancelCreatingList()
                 },
                 trailing: Button("OK") {
-                    viewModel.confirmNewList()
-                }.disabled(viewModel.newListName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    viewModel.confirmCreatingList()
+                }.disabled(list.name.trimmingCharacters(in: .whitespaces).isEmpty)
             )
         }
     }
-
 }
 
 // MARK: - Preview
