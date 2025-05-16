@@ -42,18 +42,12 @@ final class ListsViewModel: ObservableObject {
         }
     }
 
-    func addList() {
-        let newList = ShoppingList(id: UUID(), name: "New List", items: [], order: 0) // TODO: temporary empty list
-        repository.addList(newList)
-        shoppingLists = repository.fetchAllLists()
-    }
-    
     func openSettings() {
         coordinator?.goToSettings()
     }
     
     func startCreatingList() {
-        listBeingCreated = ShoppingList(id: UUID(), name: "", items: [], order: nextOrder())
+        listBeingCreated = ShoppingList(id: uniqueListUUID(), name: "", items: [], order: nextOrder())
     }
     
     func cancelCreatingList() {
@@ -73,5 +67,10 @@ final class ListsViewModel: ObservableObject {
     
     private func nextOrder() -> Int {
         (shoppingLists.map { $0.order }.max() ?? -1) + 1
+    }
+    
+    private func uniqueListUUID() -> UUID {
+        let existingUUIDs = shoppingLists.map { $0.id }
+        return UUID.unique(in: existingUUIDs)
     }
 }
