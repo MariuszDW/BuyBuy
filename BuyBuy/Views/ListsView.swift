@@ -118,6 +118,7 @@ struct ListsView: View {
                     get: { viewModel.listBeingCreated?.name ?? "" },
                     set: { viewModel.listBeingCreated?.name = $0 }
                 ))
+                .font(designSystem.fonts.bold(size: 24))
             }
             .navigationTitle("New List")
             .navigationBarTitleDisplayMode(.inline)
