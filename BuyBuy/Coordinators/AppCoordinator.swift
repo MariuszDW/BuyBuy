@@ -28,7 +28,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         navigationPath.removeLast()
     }
     
-    @ViewBuilder
+    @MainActor @ViewBuilder
     func view(for route: AppRoute) -> some View {
         switch route {
         case .shoppingLists:
