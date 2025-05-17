@@ -31,6 +31,9 @@ struct ListsView: View {
         .sheet(item: $viewModel.listBeingCreated) { _ in
             newListSheet
         }
+        .sheet(isPresented: $viewModel.isAboutPresented) {
+            aboutSheet
+        }
     }
     
     // MARK: - Subviews
@@ -93,28 +96,39 @@ struct ListsView: View {
     }
     
     private var toolbarContent: some ToolbarContent {
-        ToolbarItemGroup(placement: .navigationBarTrailing) {
-            Button {
-                withAnimation {
-                    if localEditMode == .active {
-                        localEditMode = .inactive
-                    } else {
-                        localEditMode = .active
-                    }
+        Group {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    viewModel.openAbout()
+                } label: {
+                    Image(systemName: "questionmark.circle")
                 }
-            } label: {
-                Image(systemName: localEditMode == .active ? "checkmark" : "pencil.circle")
+                .accessibilityLabel("About")
             }
-            .accessibilityLabel(localEditMode == .active ? "Done Editing" : "Edit")
             
-            Button {
-                localEditMode = .inactive
-                viewModel.openSettings()
-            } label: {
-                Image(systemName: "gearshape")
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button {
+                    withAnimation {
+                        if localEditMode == .active {
+                            localEditMode = .inactive
+                        } else {
+                            localEditMode = .active
+                        }
+                    }
+                } label: {
+                    Image(systemName: localEditMode == .active ? "checkmark" : "pencil.circle")
+                }
+                .accessibilityLabel(localEditMode == .active ? "Done Editing" : "Edit")
+                
+                Button {
+                    localEditMode = .inactive
+                    viewModel.openSettings()
+                } label: {
+                    Image(systemName: "gearshape")
+                }
+                .accessibilityLabel("Settings")
+                .disabled(localEditMode.isEditing)
             }
-            .accessibilityLabel("Settings")
-            .disabled(localEditMode.isEditing)
         }
     }
     
@@ -137,6 +151,33 @@ struct ListsView: View {
                     viewModel.confirmCreatingList()
                 }.disabled((viewModel.listBeingCreated?.name.trimmingCharacters(in: .whitespaces).isEmpty) ?? true)
             )
+        }
+    }
+    
+    private var aboutSheet: some View {
+        NavigationView {
+            VStack(spacing: 8) {
+                Spacer()
+                
+                Text("BuyBuy")
+                    .font(designSystem.fonts.boldDynamic(style: .title))
+                
+                Text(Bundle.main.appVersion)
+                    .font(designSystem.fonts.regularDynamic(style: .footnote))
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
+            .navigationTitle("About")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("OK") {
+                        viewModel.closeAbout()
+                    }
+                }
+            }
         }
     }
 }

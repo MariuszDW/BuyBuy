@@ -9,12 +9,12 @@ import Foundation
 import Combine
 
 final class ListsViewModel: ObservableObject {
-    @Published var shoppingLists: [ShoppingList]
-
     private weak var coordinator: AppCoordinatorProtocol?
     private let repository: ListsRepositoryProtocol
     
+    @Published var shoppingLists: [ShoppingList]
     @Published var listBeingCreated: ShoppingList? = nil
+    @Published var isAboutPresented: Bool = false
 
     init(coordinator: AppCoordinatorProtocol?, repository: ListsRepositoryProtocol) {
         self.repository = repository
@@ -64,6 +64,16 @@ final class ListsViewModel: ObservableObject {
         shoppingLists = repository.fetchAllLists()
         listBeingCreated = nil
     }
+    
+    func openAbout() {
+        isAboutPresented = true
+    }
+
+    func closeAbout() {
+        isAboutPresented = false
+    }
+    
+    // MARK: - Private
     
     private func nextOrder() -> Int {
         (shoppingLists.map { $0.order }.max() ?? -1) + 1
