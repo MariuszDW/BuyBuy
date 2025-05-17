@@ -8,13 +8,13 @@
 import Foundation
 
 final class SettingsViewModel: ObservableObject {
-    private weak var coordinator: AppCoordinatorProtocol?
+    private var coordinator: any AppCoordinatorProtocol
 
-    init(coordinator: AppCoordinatorProtocol?) {
+    init(coordinator: any AppCoordinatorProtocol) {
         self.coordinator = coordinator
     }
 
     func close() {
-        coordinator?.back()
+        coordinator.back()
     }
 }

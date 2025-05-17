@@ -9,7 +9,7 @@ import SwiftUI
 
 enum AppColor {
     static let background = Color("BackgroundColor")
-    static let primary = Color("PrimaryColor")
+    static let selection = Color("SelectionColor")
     static let accent = Color("AccentColor")
     static let text = Color("TextColor")
 }

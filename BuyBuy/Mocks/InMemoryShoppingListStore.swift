@@ -7,9 +7,7 @@
 
 import Foundation
 
-// TODO: temporary class
-
-final class InMemoryShoppingListStore {
+final class InMemoryShoppingListStore { // TOOD: temporary class; it will be replaced by z CoreData solution
     private(set) var lists: [ShoppingList]
 
     init(initialLists: [ShoppingList] = []) {
@@ -25,6 +23,7 @@ final class InMemoryShoppingListStore {
     }
 
     func updateList(_ updatedList: ShoppingList) {
+        print("updateList '\(updatedList.name)'")
         if let index = lists.firstIndex(where: { $0.id == updatedList.id }) {
             lists[index] = updatedList
             lists.sort(by: { $0.order < $1.order })
@@ -32,6 +31,7 @@ final class InMemoryShoppingListStore {
     }
 
     func addList(_ newList: ShoppingList) {
+        print("addList '\(newList.name)'")
         var listWithOrder = newList
         let maxOrder = lists.map { $0.order }.max() ?? -1
         listWithOrder.order = maxOrder + 1
@@ -39,6 +39,7 @@ final class InMemoryShoppingListStore {
     }
 
     func removeList(id: UUID) {
+        print("removeList id='\(id)'")
         lists.removeAll { $0.id == id }
     }
 

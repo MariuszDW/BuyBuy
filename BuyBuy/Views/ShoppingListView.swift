@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct ShoppingListView: View {
-    @ObservedObject var viewModel: ShoppingListViewModel
+    @StateObject var viewModel: ShoppingListViewModel
     @EnvironmentObject var dependencies: AppDependencies
     
     var designSystem: DesignSystem {
         return dependencies.designSystem
+    }
+    
+    init(viewModel: ShoppingListViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {

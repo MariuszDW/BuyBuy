@@ -6,9 +6,15 @@
 //
 
 import Foundation
+import Combine
 
-protocol AppCoordinatorProtocol: AnyObject {
-    func goToShoppingListDetails(_ id: UUID)
-    func goToSettings()
+protocol AppCoordinatorProtocol: ObservableObject {
+    var needRefreshListsPublisher: AnyPublisher<Bool, Never> { get }
+    
+    func resetNeedRefreshListsFlag()
+    func openList(_ id: UUID)
+    func openListSettings(_ list: ShoppingList, isNew: Bool)
+    func openAbout()
+    func openSettings()
     func back()
 }

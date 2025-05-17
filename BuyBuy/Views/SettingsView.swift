@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @ObservedObject var viewModel: SettingsViewModel
+    @StateObject var viewModel: SettingsViewModel
+    
+    init(viewModel: SettingsViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
             Text("Settings Placeholder")
                 .font(.title)
             Button("Close") {

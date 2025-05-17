@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct AppRootView: View {
-    @EnvironmentObject var dependencies: AppDependencies
-    @ObservedObject var coordinator: AppCoordinator
-
+    @StateObject var coordinator: AppCoordinator
+    
     var body: some View {
         NavigationStack(path: $coordinator.navigationPath) {
             coordinator.view(for: .shoppingLists)
                 .navigationDestination(for: AppRoute.self) { route in
                     coordinator.view(for: route)
+                }
+                .sheet(item: $coordinator.sheet) { sheet in
+                    NavigationStack {
+                        coordinator.sheetView(for: sheet)
+                    }
                 }
         }
     }

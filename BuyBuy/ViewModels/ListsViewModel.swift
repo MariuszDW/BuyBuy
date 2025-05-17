@@ -9,87 +9,78 @@ import Foundation
 import Combine
 
 final class ListsViewModel: ObservableObject {
-    private weak var coordinator: AppCoordinatorProtocol?
-    private let repository: ListsRepositoryProtocol
-    
-    @Published var shoppingLists: [ShoppingList]
-    @Published var listBeingEditedOrCreated: ShoppingList? = nil
-    @Published var isAboutPresented: Bool = false
+    @Published var shoppingLists: [ShoppingList] = []
 
-    init(coordinator: AppCoordinatorProtocol?, repository: ListsRepositoryProtocol) {
-        self.repository = repository
+    private let repository: ListsRepositoryProtocol
+    private let coordinator: any AppCoordinatorProtocol
+    private var cancellables = Set<AnyCancellable>()
+
+    init(coordinator: any AppCoordinatorProtocol, repository: ListsRepositoryProtocol) {
         self.coordinator = coordinator
-        self.shoppingLists = repository.fetchAllLists()
+        self.repository = repository
+        
+        coordinator.needRefreshListsPublisher
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.loadLists()
+                self?.coordinator.resetNeedRefreshListsFlag()
+            }
+            .store(in: &cancellables)
+    }
+
+    func loadLists() {
+        shoppingLists = repository.fetchAllLists().sorted { $0.order < $1.order }
+    }
+
+    func deleteLists(atOffsets offsets: IndexSet) {
+        let idsToDelete = offsets.map { shoppingLists[$0].id }
+        idsToDelete.forEach { repository.deleteList(with: $0) }
+        shoppingLists.remove(atOffsets: offsets)
+        updateOrders()
     }
 
     func deleteList(id: UUID) {
         repository.deleteList(with: id)
-        shoppingLists = repository.fetchAllLists()
+        shoppingLists.removeAll { $0.id == id }
+        updateOrders()
     }
 
-    func deleteLists(atOffsets offsets: IndexSet) {
-        offsets.map { shoppingLists[$0].id }.forEach { repository.deleteList(with: $0) }
-        shoppingLists = repository.fetchAllLists()
+    func moveLists(fromOffsets source: IndexSet, toOffset destination: Int) {
+        shoppingLists.move(fromOffsets: source, toOffset: destination)
+        updateOrders()
     }
 
-    func moveLists(fromOffsets offsets: IndexSet, toOffset offset: Int) {
-        shoppingLists.move(fromOffsets: offsets, toOffset: offset)
+    func startCreatingList() {
+        let newList = ShoppingList(
+            id: UUID(),
+            name: "",
+            items: [],
+            order: shoppingLists.count,
+            icon: .default,
+            color: .default
+        )
+        coordinator.openListSettings(newList, isNew: true)
+    }
 
-        for (index, list) in shoppingLists.enumerated() {
-            var updatedList = list
-            updatedList.order = index
-            repository.updateList(updatedList)
-        }
+    func startEditingList(_ list: ShoppingList) {
+        coordinator.openListSettings(list, isNew: false)
+    }
+
+    func openAbout() {
+        coordinator.openAbout()
     }
 
     func openSettings() {
-        coordinator?.goToSettings()
+        coordinator.openSettings()
     }
-    
-    func startCreatingList() {
-        listBeingEditedOrCreated = ShoppingList(id: uniqueListUUID(), name: "", items: [], order: nextOrder())
-    }
-    
-    func startEditingList(_ list: ShoppingList) {
-        listBeingEditedOrCreated = list
-    }
-    
-    func cancelEditing() {
-        listBeingEditedOrCreated = nil
-    }
-    
-    func confirmEditing() {
-        guard var list = listBeingEditedOrCreated else { return }
 
-        list.name = list.name.trimmingCharacters(in: .whitespaces)
-        guard !list.name.isEmpty else { return }
+    // MARK: - Helpers
 
-        if shoppingLists.contains(where: { $0.id == list.id }) {
-            repository.updateList(list)
-        } else {
-            repository.addList(list)
+    private func updateOrders() {
+        for index in shoppingLists.indices {
+            shoppingLists[index].order = index
+            repository.updateList(shoppingLists[index])
         }
-
-        shoppingLists = repository.fetchAllLists()
-        listBeingEditedOrCreated = nil
-    }
-    
-    func openAbout() {
-        isAboutPresented = true
-    }
-
-    func closeAbout() {
-        isAboutPresented = false
-    }
-    
-    // MARK: - Private
-    
-    private func nextOrder() -> Int {
-        (shoppingLists.map { $0.order }.max() ?? -1) + 1
-    }
-    
-    private func uniqueListUUID() -> UUID {
-        let existingUUIDs = shoppingLists.map { $0.id }
-        return UUID.unique(in: existingUUIDs)
     }
 }

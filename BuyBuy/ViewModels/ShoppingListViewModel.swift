@@ -9,11 +9,11 @@ import Foundation
 
 final class ShoppingListViewModel: ObservableObject {
     private let repository: ShoppingListRepositoryProtocol
-    private weak var coordinator: AppCoordinatorProtocol?
+    private var coordinator: any AppCoordinatorProtocol
 
     @Published var list: ShoppingList?
 
-    init(coordinator: AppCoordinatorProtocol, repository: ShoppingListRepositoryProtocol) {
+    init(coordinator: any AppCoordinatorProtocol, repository: ShoppingListRepositoryProtocol) {
         self.coordinator = coordinator
         self.repository = repository
         loadList()
@@ -39,7 +39,7 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func back() {
-        coordinator?.back()
+        coordinator.back()
     }
 }
 

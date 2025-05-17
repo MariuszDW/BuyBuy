@@ -12,7 +12,7 @@ final class MockAppCoordinator: AppCoordinatorProtocol {
     var onGoToShoppingListDetails: ((UUID) -> Void)?
     var onBack: (() -> Void)?
 
-    func goToShoppingListDetails(_ id: UUID) {
+    func goToList(_ id: UUID) {
         onGoToShoppingListDetails?(id)
     }
 

@@ -8,13 +8,17 @@
 import SwiftUI
 
 struct ListsView: View {
-    @ObservedObject var viewModel: ListsViewModel
+    @StateObject var viewModel: ListsViewModel
     @EnvironmentObject var dependencies: AppDependencies
     
     @State private var localEditMode: EditMode = .inactive
     
     var designSystem: DesignSystem {
         dependencies.designSystem
+    }
+    
+    init(viewModel: ListsViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -28,11 +32,8 @@ struct ListsView: View {
         .toolbar {
             toolbarContent
         }
-        .sheet(item: $viewModel.listBeingEditedOrCreated) { _ in
-            editListSheet
-        }
-        .sheet(isPresented: $viewModel.isAboutPresented) {
-            aboutSheet
+        .onAppear {
+            viewModel.loadLists()
         }
     }
     
@@ -45,7 +46,7 @@ struct ListsView: View {
                     if localEditMode.isEditing {
                         listRow(for: list)
                     } else {
-                        NavigationLink(value: AppRoute.shoppingListDetails(list.id)) {
+                        NavigationLink(value: AppRoute.shoppingList(list.id)) {
                             listRow(for: list)
                         }
                         .swipeActions {
@@ -82,7 +83,7 @@ struct ListsView: View {
                 .foregroundStyle(.white, list.color.color)
                 .font(.title)
             Text(list.name)
-                .foregroundColor(.primary)
+                .foregroundColor(.text)
                 .padding(.vertical, 8)
         }
     }
@@ -111,16 +112,13 @@ struct ListsView: View {
                     Image(systemName: "questionmark.circle")
                 }
                 .accessibilityLabel("About")
+                .disabled(localEditMode.isEditing)
             }
             
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button {
                     withAnimation {
-                        if localEditMode == .active {
-                            localEditMode = .inactive
-                        } else {
-                            localEditMode = .active
-                        }
+                        localEditMode = (localEditMode == .active) ? .inactive : .active
                     }
                 } label: {
                     Image(systemName: localEditMode == .active ? "checkmark" : "pencil.circle")
@@ -136,82 +134,6 @@ struct ListsView: View {
                 .accessibilityLabel("Settings")
                 .disabled(localEditMode.isEditing)
             }
-        }
-    }
-    
-    private var editListSheet: some View {
-        NavigationView {
-            Form {
-                TextField("List Name", text: Binding(
-                    get: { viewModel.listBeingEditedOrCreated?.name ?? "" },
-                    set: { viewModel.listBeingEditedOrCreated?.name = $0 }
-                ))
-                .font(designSystem.fonts.boldDynamic(style: .title2))
-            }
-            .navigationTitle(viewModel.listBeingEditedOrCreated?.name.isEmpty == true ? "New List" : "Edit List")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(
-                leading: Button("Cancel") {
-                    viewModel.cancelEditing()
-                },
-                trailing: Button("OK") {
-                    viewModel.confirmEditing()
-                }
-                .disabled((viewModel.listBeingEditedOrCreated?.name.trimmingCharacters(in: .whitespaces).isEmpty) ?? true)
-            )
-        }
-    }
-    
-    private var aboutSheet: some View {
-        NavigationView {
-            VStack(spacing: 8) {
-                Spacer()
-                
-                Text("BuyBuy")
-                    .font(designSystem.fonts.boldDynamic(style: .title))
-                
-                Text(Bundle.main.appVersion)
-                    .font(designSystem.fonts.regularDynamic(style: .footnote))
-                    .foregroundColor(.secondary)
-                
-                Spacer()
-            }
-            .frame(maxWidth: .infinity)
-            .navigationTitle("About")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("OK") {
-                        viewModel.closeAbout()
-                    }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Preview
-
-struct ListsView_Previews: PreviewProvider {
-    static var previews: some View {
-        let dependencies = AppDependencies()
-        let mockViewModel = ListsViewModel(
-            coordinator: AppCoordinator(dependencies: dependencies),
-            repository: ListsRepository(store: dependencies.shoppingListStore)
-        )
-        
-        Group {
-            NavigationStack {
-                ListsView(viewModel: mockViewModel)
-                    .environmentObject(dependencies)
-            }
-            .preferredColorScheme(.light)
-            
-            NavigationStack {
-                ListsView(viewModel: mockViewModel)
-                    .environmentObject(dependencies)
-            }
-            .preferredColorScheme(.dark)
         }
     }
 }

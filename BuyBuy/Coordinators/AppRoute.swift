@@ -9,6 +9,6 @@ import SwiftUI
 
 enum AppRoute: Hashable {
     case shoppingLists
-    case shoppingListDetails(UUID)
+    case shoppingList(UUID)
     case settings
 }
