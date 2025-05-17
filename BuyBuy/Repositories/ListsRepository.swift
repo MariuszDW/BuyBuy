@@ -8,8 +8,8 @@
 import Foundation
 
 final class ListsRepository: ListsRepositoryProtocol {
-    private let store: InMemoryShoppingListStore
-
+    private let store: InMemoryShoppingListStore // TODO: The store will be replaced by a CoreData storage.
+    
     init(store: InMemoryShoppingListStore) {
         self.store = store
     }
@@ -21,12 +21,12 @@ final class ListsRepository: ListsRepositoryProtocol {
     func addList(_ list: ShoppingList) {
         store.addList(list)
     }
-
-    func deleteList(with id: UUID) {
-        store.removeList(id: id)
-    }
     
     func updateList(_ updatedList: ShoppingList) {
         store.updateList(updatedList)
+    }
+    
+    func deleteList(with id: UUID) {
+        store.removeList(id: id)
     }
 }

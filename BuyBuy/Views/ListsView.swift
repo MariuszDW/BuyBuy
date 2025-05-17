@@ -28,8 +28,8 @@ struct ListsView: View {
         .toolbar {
             toolbarContent
         }
-        .sheet(item: $viewModel.listBeingCreated) { _ in
-            newListSheet
+        .sheet(item: $viewModel.listBeingEditedOrCreated) { _ in
+            editListSheet
         }
         .sheet(isPresented: $viewModel.isAboutPresented) {
             aboutSheet
@@ -49,10 +49,17 @@ struct ListsView: View {
                             listRow(for: list)
                         }
                         .swipeActions {
+                            Button {
+                                viewModel.startEditingList(list)
+                            } label: {
+                                Label("Edit", systemImage: "square.and.pencil")
+                            }
+                            .tint(.blue)
+                            
                             Button(role: .destructive) {
                                 viewModel.deleteList(id: list.id)
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label("Delete", systemImage: "trash.fill")
                             }
                         }
                     }
@@ -132,24 +139,25 @@ struct ListsView: View {
         }
     }
     
-    private var newListSheet: some View {
+    private var editListSheet: some View {
         NavigationView {
             Form {
                 TextField("List Name", text: Binding(
-                    get: { viewModel.listBeingCreated?.name ?? "" },
-                    set: { viewModel.listBeingCreated?.name = $0 }
+                    get: { viewModel.listBeingEditedOrCreated?.name ?? "" },
+                    set: { viewModel.listBeingEditedOrCreated?.name = $0 }
                 ))
                 .font(designSystem.fonts.boldDynamic(style: .title2))
             }
-            .navigationTitle("New List")
+            .navigationTitle(viewModel.listBeingEditedOrCreated?.name.isEmpty == true ? "New List" : "Edit List")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
                 leading: Button("Cancel") {
-                    viewModel.cancelCreatingList()
+                    viewModel.cancelEditing()
                 },
                 trailing: Button("OK") {
-                    viewModel.confirmCreatingList()
-                }.disabled((viewModel.listBeingCreated?.name.trimmingCharacters(in: .whitespaces).isEmpty) ?? true)
+                    viewModel.confirmEditing()
+                }
+                .disabled((viewModel.listBeingEditedOrCreated?.name.trimmingCharacters(in: .whitespaces).isEmpty) ?? true)
             )
         }
     }

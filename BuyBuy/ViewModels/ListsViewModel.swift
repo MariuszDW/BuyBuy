@@ -13,7 +13,7 @@ final class ListsViewModel: ObservableObject {
     private let repository: ListsRepositoryProtocol
     
     @Published var shoppingLists: [ShoppingList]
-    @Published var listBeingCreated: ShoppingList? = nil
+    @Published var listBeingEditedOrCreated: ShoppingList? = nil
     @Published var isAboutPresented: Bool = false
 
     init(coordinator: AppCoordinatorProtocol?, repository: ListsRepositoryProtocol) {
@@ -47,22 +47,31 @@ final class ListsViewModel: ObservableObject {
     }
     
     func startCreatingList() {
-        listBeingCreated = ShoppingList(id: uniqueListUUID(), name: "", items: [], order: nextOrder())
+        listBeingEditedOrCreated = ShoppingList(id: uniqueListUUID(), name: "", items: [], order: nextOrder())
     }
     
-    func cancelCreatingList() {
-        listBeingCreated = nil
+    func startEditingList(_ list: ShoppingList) {
+        listBeingEditedOrCreated = list
     }
     
-    func confirmCreatingList() {
-        guard var newList = listBeingCreated else { return }
+    func cancelEditing() {
+        listBeingEditedOrCreated = nil
+    }
+    
+    func confirmEditing() {
+        guard var list = listBeingEditedOrCreated else { return }
 
-        newList.name = newList.name.trimmingCharacters(in: .whitespaces)
-        guard !newList.name.isEmpty else { return }
+        list.name = list.name.trimmingCharacters(in: .whitespaces)
+        guard !list.name.isEmpty else { return }
 
-        repository.addList(newList)
+        if shoppingLists.contains(where: { $0.id == list.id }) {
+            repository.updateList(list)
+        } else {
+            repository.addList(list)
+        }
+
         shoppingLists = repository.fetchAllLists()
-        listBeingCreated = nil
+        listBeingEditedOrCreated = nil
     }
     
     func openAbout() {
