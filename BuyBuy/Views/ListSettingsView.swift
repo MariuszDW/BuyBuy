@@ -167,7 +167,12 @@ class PreviewMockListsRepository: ListsRepositoryProtocol {
 
 #Preview("Light Mode") {
     let sample = ShoppingList(name: "Sample List", order: 0, icon: .cart, color: .blue)
-    let viewModel = ListSettingsViewModel(list: sample, repository: PreviewMockListsRepository(), isNew: false)
+    let viewModel = ListSettingsViewModel(
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        list: sample,
+        repository: PreviewMockListsRepository(),
+        isNew: false
+    )
     
     ListSettingsView(viewModel: viewModel)
         .environmentObject(AppDependencies())
@@ -176,7 +181,12 @@ class PreviewMockListsRepository: ListsRepositoryProtocol {
 
 #Preview("Dark Mode") {
     let sample = ShoppingList(name: "Sample List", order: 0, icon: .cart, color: .blue)
-    let viewModel = ListSettingsViewModel(list: sample, repository: PreviewMockListsRepository(), isNew: false)
+    let viewModel = ListSettingsViewModel(
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        list: sample,
+        repository: PreviewMockListsRepository(),
+        isNew: false
+    )
     
     ListSettingsView(viewModel: viewModel)
         .environmentObject(AppDependencies())

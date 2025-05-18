@@ -12,19 +12,17 @@ final class ListSettingsViewModel: ObservableObject {
     /// The list being edited.
     @Published var list: ShoppingList
     
-    /// The result of editing. Nil means the editing was cancelled.
-    @Published var result: ShoppingList? = nil
-    
     /// Indicates whether the edited list is a newly created one.
     private(set) var isNew: Bool
 
+    private let coordinator: any AppCoordinatorProtocol
     private let repository: ListsRepositoryProtocol
-    
 
-    init(list: ShoppingList, repository: ListsRepositoryProtocol, isNew: Bool = false) {
+    init(coordinator: any AppCoordinatorProtocol, list: ShoppingList, repository: ListsRepositoryProtocol, isNew: Bool = false) {
         self.list = list
         self.isNew = isNew
         self.repository = repository
+        self.coordinator = coordinator
     }
 
     func applyChanges() {
@@ -33,6 +31,6 @@ final class ListSettingsViewModel: ObservableObject {
         } else {
             repository.updateList(list)
         }
-        result = list
+        coordinator.setNeedRefreshLists(true)
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum SheetRoute: Identifiable, Equatable {
-    case listSettings(ListSettingsViewModel)
+    case listSettings(ShoppingList, Bool)
     case about
 
     var id: String {

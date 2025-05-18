@@ -26,19 +26,23 @@ final class ShoppingListViewModel: ObservableObject {
     func addItem(_ item: ShoppingItem) {
         repository.addItem(item)
         loadList()
+        coordinator.setNeedRefreshLists(true)
     }
 
     func updateItem(_ item: ShoppingItem) {
         repository.updateItem(item)
         loadList()
+        coordinator.setNeedRefreshLists(true)
     }
 
     func removeItem(with id: UUID) {
         repository.removeItem(with: id)
         loadList()
+        coordinator.setNeedRefreshLists(true)
     }
     
     func back() {
+        coordinator.setNeedRefreshLists(true)
         coordinator.back()
     }
 }

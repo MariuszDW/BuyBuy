@@ -20,11 +20,13 @@ class ListsViewModel: ObservableObject {
         self.repository = repository
         
         coordinator.needRefreshListsPublisher
-            .filter { $0 }
+            .filter { $0 == true }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.loadLists()
-                self?.coordinator.resetNeedRefreshListsFlag()
+                if self?.coordinator.needRefreshLists == true {
+                    self?.loadLists()
+                    self?.coordinator.setNeedRefreshLists(false)
+                }
             }
             .store(in: &cancellables)
     }

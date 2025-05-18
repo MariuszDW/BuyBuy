@@ -26,15 +26,11 @@ struct ListsView: View {
         VStack {
             lists
                 .environment(\.editMode, $localEditMode)
-            
             bottomPanel
         }
         .navigationTitle("Lists")
         .toolbar {
             toolbarContent
-        }
-        .onAppear {
-            viewModel.loadLists()
         }
         .alert(item: $listPendingDeletion) { list in
             Alert(
@@ -80,7 +76,7 @@ struct ListsView: View {
                                 Label("Delete", systemImage: "trash.fill")
                             }
                         }
-                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                        .swipeActions(edge: .leading, allowsFullSwipe: true) {
                             Button {
                                 viewModel.startEditingList(list)
                             } label: {
