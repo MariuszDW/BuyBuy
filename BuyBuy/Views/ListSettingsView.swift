@@ -15,7 +15,7 @@ struct ListSettingsView: View {
     private var designSystem: DesignSystem {
         dependencies.designSystem
     }
-    
+
     init(viewModel: ListSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -25,8 +25,8 @@ struct ListSettingsView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     nameSection
-                    iconSection
-                    colorSection
+                    iconAndColorSection
+                    iconsGridSection
                 }
                 .padding()
             }
@@ -56,55 +56,32 @@ struct ListSettingsView: View {
                 text: $viewModel.list.name
             )
             .textInputAutocapitalization(.sentences)
+            .font(designSystem.fonts.boldDynamic(style: .title3))
         }
         .padding()
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
     }
 
-    private var iconSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(ListIcon.allCases, id: \.self) { icon in
-                        Button {
-                            viewModel.list.icon = icon
-                        } label: {
-                            ZStack {
-                                if viewModel.list.icon == icon {
-                                    Circle()
-                                        .stroke(designSystem.colors.selection, lineWidth: 3)
-                                        .frame(width: 48, height: 48)
-                                }
+    private var iconAndColorSection: some View {
+        let screenSize = UIScreen.main.bounds.size
+        let shortSide = min(screenSize.width, screenSize.height)
+        let iconSize = shortSide * 0.32
 
-                                Image(systemName: icon.rawValue)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 36, height: 36)
-                                    .symbolRenderingMode(.palette)
-                                    .foregroundStyle(.white, viewModel.list.color.color)
-                            }
-                            .frame(width: 48, height: 48)
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                }
-                .padding(4)
-            }
-        }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
-    }
+        return VStack {
+            HStack(alignment: .top, spacing: 24) {
+                Image(systemName: viewModel.list.icon.rawValue)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: iconSize, height: iconSize)
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.white, viewModel.list.color.color)
 
-    private var colorSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6)) {
-                ForEach(ListColor.allCases, id: \.self) { color in
-                    Button {
-                        viewModel.list.color = color
-                    } label: {
+                LazyVGrid(
+                    columns: Array(repeating: GridItem(.flexible()), count: 4),
+                    spacing: 4
+                ) {
+                    ForEach(ListColor.allCases, id: \.self) { color in
                         ZStack {
                             Circle()
                                 .stroke(designSystem.colors.selection, lineWidth: 3)
@@ -115,15 +92,96 @@ struct ListSettingsView: View {
                                 .fill(color.color)
                                 .frame(width: 32, height: 32)
                         }
+                        .frame(width: 42, height: 42)
+                        .contentShape(Circle())
+                        .onTapGesture {
+                            viewModel.list.color = color
+                        }
                     }
-                    .frame(width: 44, height: 44)
-                    .buttonStyle(PlainButtonStyle())
                 }
+                .frame(height: iconSize)
+                .frame(maxWidth: .infinity)
             }
-            .padding(.vertical, 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
+    }
+
+
+    private var iconsGridSection: some View {
+        LazyVGrid(
+            columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: 5),
+            spacing: 16
+        ) {
+            ForEach(ListIcon.allCases, id: \.self) { icon in
+                ZStack {
+                    if viewModel.list.icon == icon {
+                        Circle()
+                            .stroke(designSystem.colors.selection, lineWidth: 3)
+                            .frame(width: 48, height: 48)
+                    }
+
+                    Image(systemName: icon.rawValue)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, viewModel.list.color.color)
+                }
+                .frame(width: 48, height: 48)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    viewModel.list.icon = icon
+                }
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
+    }
+}
+
+// MARK: - Preview
+
+class PreviewMockListsRepository: ListsRepositoryProtocol {
+    func fetchAllLists() -> [ShoppingList] { return [] }
+    func deleteList(with id: UUID) {}
+    func addList(_ list: ShoppingList) {}
+    func updateList(_ list: ShoppingList) {}
+}
+
+struct ListSettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        var sample: ShoppingList {
+            ShoppingList(
+                id: UUID(), name: "Sample List", items: [], order: 0, icon: .cart, color: .blue
+            )
+        }
+        
+        Group {
+            ListSettingsView(
+                viewModel: ListSettingsViewModel(
+                    list: sample,
+                    repository: PreviewMockListsRepository(),
+                    isNew: false
+                )
+            )
+            .environmentObject(AppDependencies())
+            .preferredColorScheme(.light)
+            .previewDisplayName("Light Mode")
+            
+            ListSettingsView(
+                viewModel: ListSettingsViewModel(
+                    list: sample,
+                    repository: PreviewMockListsRepository(),
+                    isNew: false
+                )
+            )
+            .environmentObject(AppDependencies())
+            .preferredColorScheme(.dark)
+            .previewDisplayName("Dark Mode")
+        }
     }
 }
