@@ -83,6 +83,7 @@ struct ListSettingsView: View {
                         .frame(width: iconSize, height: iconSize)
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.white, viewModel.list.color.color)
+                        .shadow(color: .black.opacity(0.3), radius: 8)
                         .transition(.scale.combined(with: .opacity))
                         .id(viewModel.list.icon.rawValue)
                         .animation(.easeInOut(duration: 0.25), value: viewModel.list.color)
