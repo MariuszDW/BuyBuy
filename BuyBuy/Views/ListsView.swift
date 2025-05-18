@@ -182,50 +182,55 @@ struct ListsView: View {
 
 // MARK: - Preview
 
-struct ListsView_Previews: PreviewProvider {
-    static var previews: some View {
-        let mockViewModel = ListsViewModel(coordinator: AppCoordinator(dependencies: AppDependencies()),
-                                           repository: MockListsRepository())
-        
-        Group {
-            NavigationStack {
-                ListsView(viewModel: mockViewModel)
-            }
-            .environmentObject(AppDependencies())
-            .preferredColorScheme(.light)
+#Preview("Light Mode") {
+    let dependencies = AppDependencies()
+    let mockViewModel = ListsViewModel(coordinator: AppCoordinator(dependencies: dependencies),
+                                       repository: MockListsRepository())
+    
+    NavigationStack {
+        ListsView(viewModel: mockViewModel)
+    }
+    .environmentObject(dependencies)
+    .preferredColorScheme(.light)
+}
+
+#Preview("Dark Mode") {
+    let dependencies = AppDependencies()
+    let mockViewModel = ListsViewModel(coordinator: AppCoordinator(dependencies: dependencies),
+                                       repository: MockListsRepository())
+    
+    NavigationStack {
+        ListsView(viewModel: mockViewModel)
+    }
+    .environmentObject(dependencies)
+    .preferredColorScheme(.dark)
+}
+
+// MARK: - Preview mock
+
+class MockListsRepository: ListsRepositoryProtocol {
+    func fetchAllLists() -> [ShoppingList] {
+        return [
+            ShoppingList(id: UUID(), name: "First list", items: [
+                ShoppingItem(id: UUID(), name: "one", status: .pending),
+                ShoppingItem(id: UUID(), name: "two", status: .purchased),
+                ShoppingItem(id: UUID(), name: "three", status: .inactive),
+                ShoppingItem(id: UUID(), name: "found", status: .pending)
+            ], order: 0, icon: .clothes, color: .red),
             
-            NavigationStack {
-                ListsView(viewModel: mockViewModel)
-            }
-            .environmentObject(AppDependencies())
-            .preferredColorScheme(.dark)
-        }
+            ShoppingList(id: UUID(), name: "Second list", items: [
+                ShoppingItem(id: UUID(), name: "one", status: .purchased),
+                ShoppingItem(id: UUID(), name: "two", status: .purchased),
+                ShoppingItem(id: UUID(), name: "three", status: .pending),
+                ShoppingItem(id: UUID(), name: "found", status: .purchased),
+                ShoppingItem(id: UUID(), name: "found", status: .purchased)
+            ], order: 1, icon: .fish, color: .green),
+            
+            ShoppingList(id: UUID(), name: "Third list", items: [], order: 2, icon: .car, color: .yellow)
+        ]
     }
     
-    class MockListsRepository: ListsRepositoryProtocol {
-        func fetchAllLists() -> [ShoppingList] {
-            return [
-                ShoppingList(id: UUID(), name: "First list", items: [
-                    ShoppingItem(id: UUID(), name: "one", status: .pending),
-                    ShoppingItem(id: UUID(), name: "two", status: .purchased),
-                    ShoppingItem(id: UUID(), name: "three", status: .inactive),
-                    ShoppingItem(id: UUID(), name: "found", status: .pending)
-                ], order: 0, icon: .clothes, color: .red),
-                
-                ShoppingList(id: UUID(), name: "Second list", items: [
-                    ShoppingItem(id: UUID(), name: "one", status: .purchased),
-                    ShoppingItem(id: UUID(), name: "two", status: .purchased),
-                    ShoppingItem(id: UUID(), name: "three", status: .pending),
-                    ShoppingItem(id: UUID(), name: "found", status: .purchased),
-                    ShoppingItem(id: UUID(), name: "found", status: .purchased)
-                ], order: 1, icon: .fish, color: .green),
-                
-                ShoppingList(id: UUID(), name: "Third list", items: [
-                ], order: 2, icon: .car, color: .yellow)
-            ]
-        }
-        func addList(_ list: ShoppingList) {}
-        func deleteList(with id: UUID) {}
-        func updateList(_ updatedList: ShoppingList) {}
-    }
+    func addList(_ list: ShoppingList) {}
+    func deleteList(with id: UUID) {}
+    func updateList(_ updatedList: ShoppingList) {}
 }
