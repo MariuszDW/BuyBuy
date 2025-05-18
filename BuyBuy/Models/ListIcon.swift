@@ -25,7 +25,7 @@ enum ListIcon: String, CaseIterable {
     case leaf = "leaf.circle.fill"
     case time = "hourglass.circle.fill"
     case medic = "cross.circle.fill"
-    case questionmark = "questionmark.circle.fill"
+    case school = "graduationcap.circle.fill"
     case sun = "sun.max.circle.fill"
     case lock = "lock.circle.fill"
     case person = "person.crop.circle.fill"
@@ -34,6 +34,8 @@ enum ListIcon: String, CaseIterable {
     case restaurant = "fork.knife.circle.fill"
     case paperclip = "paperclip.circle.fill"
     case clothes = "tshirt.circle.fill"
+    case questionmark = "questionmark.circle.fill"
+    case exclamationmark = "exclamationmark.circle.fill"
 
     static var `default`: ListIcon { .list }
 
