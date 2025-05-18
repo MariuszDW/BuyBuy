@@ -12,6 +12,7 @@ struct ListsView: View {
     @EnvironmentObject var dependencies: AppDependencies
     
     @State private var localEditMode: EditMode = .inactive
+    @State private var listPendingDeletion: ShoppingList?
     
     var designSystem: DesignSystem {
         dependencies.designSystem
@@ -35,6 +36,16 @@ struct ListsView: View {
         .onAppear {
             viewModel.loadLists()
         }
+        .alert(item: $listPendingDeletion) { list in
+            Alert(
+                title: Text("Delete list \"\(list.name)\"?"),
+                message: Text("This list contains items. Are you sure you want to delete it?"),
+                primaryButton: .destructive(Text("Delete")) {
+                    viewModel.deleteList(id: list.id)
+                },
+                secondaryButton: .cancel()
+            )
+        }
     }
     
     // MARK: - Subviews
@@ -48,20 +59,34 @@ struct ListsView: View {
                     } else {
                         NavigationLink(value: AppRoute.shoppingList(list.id)) {
                             listRow(for: list)
+                                .contextMenu {
+                                    Button {
+                                        viewModel.startEditingList(list)
+                                    } label: {
+                                        Label("Edit", systemImage: "square.and.pencil")
+                                    }
+                                    
+                                    Button(role: .destructive) {
+                                        handleDeleteTapped(for: list)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash.fill")
+                                    }
+                                }
                         }
-                        .swipeActions {
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                handleDeleteTapped(for: list)
+                            } label: {
+                                Label("Delete", systemImage: "trash.fill")
+                            }
+                        }
+                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
                             Button {
                                 viewModel.startEditingList(list)
                             } label: {
                                 Label("Edit", systemImage: "square.and.pencil")
                             }
                             .tint(.blue)
-                            
-                            Button(role: .destructive) {
-                                viewModel.deleteList(id: list.id)
-                            } label: {
-                                Label("Delete", systemImage: "trash.fill")
-                            }
                         }
                     }
                 }
@@ -134,6 +159,16 @@ struct ListsView: View {
                 .accessibilityLabel("Settings")
                 .disabled(localEditMode.isEditing)
             }
+        }
+    }
+    
+    // MARK: - Private
+    
+    private func handleDeleteTapped(for list: ShoppingList) {
+        if list.items.isEmpty {
+            viewModel.deleteList(id: list.id)
+        } else {
+            listPendingDeletion = list
         }
     }
 }
