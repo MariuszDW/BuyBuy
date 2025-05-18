@@ -28,10 +28,29 @@ struct AboutView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("OK") {
+                Button {
                     dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle")
+                        .accessibilityLabel("Close")
                 }
             }
         }
     }
+}
+
+// MARK: - Preview
+
+#Preview("Light Mode") {
+    NavigationStack {
+        AboutView()
+    }
+    .preferredColorScheme(.light)
+}
+
+#Preview("Dark Mode") {
+    NavigationStack {
+        AboutView()
+    }
+    .preferredColorScheme(.dark)
 }
