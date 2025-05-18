@@ -73,39 +73,44 @@ struct ShoppingListView: View {
     }
 }
 
-struct ShoppingListView_Previews: PreviewProvider {
-    static var previews: some View {
-        let mockRepository = MockShoppingListRepository()
-        let coordinator = AppCoordinator(dependencies: AppDependencies())
-        let viewModel = ShoppingListViewModel(coordinator: coordinator, repository: mockRepository)
+// MARK: - Preview
 
-        Group {
-            ShoppingListView(viewModel: viewModel)
-                .environmentObject(AppDependencies())
-                .preferredColorScheme(.light)
+#Preview("Light Mode") {
+    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let viewModel = ShoppingListViewModel(coordinator: coordinator,
+                                          repository: MockShoppingListRepository())
 
-            ShoppingListView(viewModel: viewModel)
-                .environmentObject(AppDependencies())
-                .preferredColorScheme(.dark)
-        }
-    }
-
-    private struct MockShoppingListRepository: ShoppingListRepositoryProtocol {
-        func fetchList() -> ShoppingList? {
-            ShoppingList(
-                id: UUID(),
-                name: "Mock List",
-                items: [
-                    ShoppingItem(id: UUID(), name: "Milk", status: .pending),
-                    ShoppingItem(id: UUID(), name: "Bread", status: .purchased)
-                ],
-                order: 0
-            )
-        }
-
-        func addItem(_ item: ShoppingItem) {}
-        func updateItem(_ item: ShoppingItem) {}
-        func removeItem(with id: UUID) {}
-    }
+    ShoppingListView(viewModel: viewModel)
+        .environmentObject(AppDependencies())
+        .preferredColorScheme(.light)
 }
 
+#Preview("Dark Mode") {
+    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let viewModel = ShoppingListViewModel(coordinator: coordinator,
+                                          repository: MockShoppingListRepository())
+
+    ShoppingListView(viewModel: viewModel)
+        .environmentObject(AppDependencies())
+        .preferredColorScheme(.dark)
+}
+
+// MARK: - Preview Mock
+
+private struct MockShoppingListRepository: ShoppingListRepositoryProtocol {
+    func fetchList() -> ShoppingList? {
+        ShoppingList(
+            id: UUID(),
+            name: "Mock List",
+            items: [
+                ShoppingItem(id: UUID(), name: "Milk", status: .pending),
+                ShoppingItem(id: UUID(), name: "Bread", status: .purchased)
+            ],
+            order: 0
+        )
+    }
+
+    func addItem(_ item: ShoppingItem) {}
+    func updateItem(_ item: ShoppingItem) {}
+    func removeItem(with id: UUID) {}
+}
