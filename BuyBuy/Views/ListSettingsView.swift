@@ -11,6 +11,8 @@ struct ListSettingsView: View {
     @StateObject var viewModel: ListSettingsViewModel
     @EnvironmentObject private var dependencies: AppDependencies
     @Environment(\.dismiss) private var dismiss
+    
+    @FocusState private var focusedNameField: Bool?
 
     private var designSystem: DesignSystem {
         dependencies.designSystem
@@ -57,6 +59,10 @@ struct ListSettingsView: View {
             )
             .textInputAutocapitalization(.sentences)
             .font(designSystem.fonts.boldDynamic(style: .title3))
+            .focused($focusedNameField, equals: true)
+            .task {
+                focusedNameField = viewModel.isNew
+            }
         }
         .padding()
         .background(Color(.secondarySystemBackground))

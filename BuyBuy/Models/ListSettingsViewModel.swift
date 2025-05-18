@@ -9,18 +9,22 @@ import Foundation
 import Combine
 
 final class ListSettingsViewModel: ObservableObject {
-    // The list being edited.
+    /// The list being edited.
     @Published var list: ShoppingList
-    // The result of editing. Nil means the editing was cancelled.
+    
+    /// The result of editing. Nil means the editing was cancelled.
     @Published var result: ShoppingList? = nil
+    
+    /// Indicates whether the edited list is a newly created one.
+    private(set) var isNew: Bool
 
     private let repository: ListsRepositoryProtocol
-    private let isNew: Bool
+    
 
     init(list: ShoppingList, repository: ListsRepositoryProtocol, isNew: Bool = false) {
         self.list = list
-        self.repository = repository
         self.isNew = isNew
+        self.repository = repository
     }
 
     func applyChanges() {
