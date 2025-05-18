@@ -76,12 +76,18 @@ struct ListSettingsView: View {
 
         return VStack {
             HStack(alignment: .top, spacing: 24) {
-                Image(systemName: viewModel.list.icon.rawValue)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: iconSize, height: iconSize)
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.white, viewModel.list.color.color)
+                ZStack {
+                    Image(systemName: viewModel.list.icon.rawValue)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: iconSize, height: iconSize)
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, viewModel.list.color.color)
+                        .transition(.scale.combined(with: .opacity))
+                        .id(viewModel.list.icon.rawValue)
+                        .animation(.easeInOut(duration: 0.25), value: viewModel.list.color)
+                }
+                .animation(.spring(response: 0.4, dampingFraction: 0.6), value: viewModel.list.icon)
 
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.flexible()), count: 4),
