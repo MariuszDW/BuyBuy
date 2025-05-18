@@ -25,17 +25,22 @@ struct AppRootView: View {
     }
 }
 
-struct AppRootView_Previews: PreviewProvider {
-    static var previews: some View {
-        let dependencies = AppDependencies()
-        let coordinator = AppCoordinator(dependencies: dependencies)
+// MARK: - Preview
 
-        AppRootView(coordinator: coordinator)
-            .environmentObject(dependencies)
-            .preferredColorScheme(.light)
+#Preview("Light Mode") {
+    let dependencies = AppDependencies()
+    let coordinator = AppCoordinator(dependencies: dependencies)
+    
+    AppRootView(coordinator: coordinator)
+        .environmentObject(dependencies)
+        .preferredColorScheme(.light)
+}
 
-        AppRootView(coordinator: coordinator)
-            .environmentObject(dependencies)
-            .preferredColorScheme(.dark)
-    }
+#Preview("Dark Mode") {
+    let dependencies = AppDependencies()
+    let coordinator = AppCoordinator(dependencies: dependencies)
+    
+    AppRootView(coordinator: coordinator)
+        .environmentObject(dependencies)
+        .preferredColorScheme(.dark)
 }
