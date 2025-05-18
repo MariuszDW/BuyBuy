@@ -10,11 +10,13 @@ import Foundation
 struct ShoppingItem: Identifiable, Hashable {
     let id: UUID
     var name: String
+    var note: String?
     var status: ShoppingItemStatus
 
-    init(id: UUID = UUID(), name: String, status: ShoppingItemStatus) {
+    init(id: UUID = UUID(), name: String, note: String? = nil, status: ShoppingItemStatus) {
         self.id = id
         self.name = name
+        self.note = note
         self.status = status
     }
 }
