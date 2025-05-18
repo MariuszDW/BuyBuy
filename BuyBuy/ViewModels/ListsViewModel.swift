@@ -52,8 +52,9 @@ class ListsViewModel: ObservableObject {
     }
 
     func startCreatingList() {
+        let uniqueUUID = UUID.unique(in: shoppingLists.map { $0.id })
         let newList = ShoppingList(
-            id: UUID(),
+            id: uniqueUUID,
             name: "",
             items: [],
             order: shoppingLists.count,
