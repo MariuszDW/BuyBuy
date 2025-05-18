@@ -96,8 +96,8 @@ struct ShoppingListView_Previews: PreviewProvider {
                 id: UUID(),
                 name: "Mock List",
                 items: [
-                    ShoppingItem(id: UUID(), name: "Milk", status: .active),
-                    ShoppingItem(id: UUID(), name: "Bread", status: .done)
+                    ShoppingItem(id: UUID(), name: "Milk", status: .pending),
+                    ShoppingItem(id: UUID(), name: "Bread", status: .purchased)
                 ],
                 order: 0
             )

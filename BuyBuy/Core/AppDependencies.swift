@@ -13,23 +13,29 @@ final class AppDependencies: ObservableObject {
     // TODO: temporary data
     let shoppingListStore = InMemoryShoppingListStore(initialLists: [
         ShoppingList(
-            id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
+            id: UUID(),
             name: "Supermarket",
             items: [
-                ShoppingItem(id: UUID(), name: "Milk", status: .active),
-                ShoppingItem(id: UUID(), name: "Bread", status: .done),
+                ShoppingItem(id: UUID(), name: "Milk", status: .pending),
+                ShoppingItem(id: UUID(), name: "Bread", status: .purchased),
                 ShoppingItem(id: UUID(), name: "Eggs", status: .inactive)
             ],
             order: 0
         ),
         ShoppingList(
-            id: UUID(uuidString: "22222222-2222-2222-2222-222222222222")!,
+            id: UUID(),
             name: "Hardware Store",
             items: [
-                ShoppingItem(id: UUID(), name: "Nails", status: .active),
-                ShoppingItem(id: UUID(), name: "Hammer", status: .done)
+                ShoppingItem(id: UUID(), name: "Nails", status: .pending),
+                ShoppingItem(id: UUID(), name: "Hammer", status: .purchased)
             ],
             order: 1
+        ),
+        ShoppingList(
+            id: UUID(),
+            name: "Empty",
+            items: [],
+            order: 2
         )
     ])
 

@@ -6,7 +6,7 @@
 //
 
 enum ShoppingItemStatus: String, CaseIterable, Hashable {
-    case active
-    case inactive
-    case done
+    case pending    // Item is yet to be purchased (active).
+    case purchased  // Item has been bought (done).
+    case inactive   // Item is currently not relevant or temporarily inactive.
 }

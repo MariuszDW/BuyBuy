@@ -24,4 +24,8 @@ struct ShoppingList: Identifiable, Hashable {
         get { color.rawValue }
         set { color = ListColor(rawValue: newValue) ?? .default }
     }
+    
+    func countItems(withStatus status: ShoppingItemStatus) -> Int {
+        return items.filter { $0.status == status }.count
+    }
 }
