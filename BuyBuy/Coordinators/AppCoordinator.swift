@@ -14,11 +14,18 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var sheet: SheetRoute?
     @Published var needRefreshLists = true
     
+    private let dependencies: AppDependencies
+    
+    private lazy var listsViewModel: ListsViewModel = {
+        ListsViewModel(
+            coordinator: self,
+            repository: ListsRepository(store: dependencies.shoppingListStore)
+        )
+    }()
+    
     var needRefreshListsPublisher: AnyPublisher<Bool, Never> {
         $needRefreshLists.eraseToAnyPublisher()
     }
-
-    private let dependencies: AppDependencies
 
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
@@ -54,12 +61,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     func view(for route: AppRoute) -> some View {
         switch route {
         case .shoppingLists:
-            ListsView(
-                viewModel: ListsViewModel(
-                    coordinator: self,
-                    repository: ListsRepository(store: dependencies.shoppingListStore)
-                )
-            )
+            ListsView(viewModel: listsViewModel)
         case .shoppingList(let id):
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
