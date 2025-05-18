@@ -28,4 +28,8 @@ struct ShoppingList: Identifiable, Hashable {
     func countItems(withStatus status: ShoppingItemStatus) -> Int {
         return items.filter { $0.status == status }.count
     }
+    
+    func countItems(withoutStatus status: ShoppingItemStatus) -> Int {
+        return items.filter { $0.status != status }.count
+    }
 }

@@ -107,9 +107,16 @@ struct ListsView: View {
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(.white, list.color.color)
                 .font(.title)
+
             Text(list.name)
                 .foregroundColor(.text)
                 .padding(.vertical, 8)
+            
+            Spacer()
+            
+            Text("\(list.countItems(withStatus: .pending)) / \(list.countItems(withoutStatus: .inactive))")
+                .foregroundColor(.secondary)
+                .font(.subheadline)
         }
     }
     
@@ -197,9 +204,25 @@ struct ListsView_Previews: PreviewProvider {
     
     class MockListsRepository: ListsRepositoryProtocol {
         func fetchAllLists() -> [ShoppingList] {
-            return [ShoppingList(id: UUID(), name: "First list", items: [], order: 0, icon: .clothes, color: .red),
-                    ShoppingList(id: UUID(), name: "Second list", items: [], order: 1, icon: .fish, color: .green),
-                    ShoppingList(id: UUID(), name: "Third list", items: [], order: 2, icon: .car, color: .yellow)]
+            return [
+                ShoppingList(id: UUID(), name: "First list", items: [
+                    ShoppingItem(id: UUID(), name: "one", status: .pending),
+                    ShoppingItem(id: UUID(), name: "two", status: .purchased),
+                    ShoppingItem(id: UUID(), name: "three", status: .inactive),
+                    ShoppingItem(id: UUID(), name: "found", status: .pending)
+                ], order: 0, icon: .clothes, color: .red),
+                
+                ShoppingList(id: UUID(), name: "Second list", items: [
+                    ShoppingItem(id: UUID(), name: "one", status: .purchased),
+                    ShoppingItem(id: UUID(), name: "two", status: .purchased),
+                    ShoppingItem(id: UUID(), name: "three", status: .pending),
+                    ShoppingItem(id: UUID(), name: "found", status: .purchased),
+                    ShoppingItem(id: UUID(), name: "found", status: .purchased)
+                ], order: 1, icon: .fish, color: .green),
+                
+                ShoppingList(id: UUID(), name: "Third list", items: [
+                ], order: 2, icon: .car, color: .yellow)
+            ]
         }
         func addList(_ list: ShoppingList) {}
         func deleteList(with id: UUID) {}
