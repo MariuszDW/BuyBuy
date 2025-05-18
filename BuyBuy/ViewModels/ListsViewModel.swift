@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class ListsViewModel: ObservableObject {
+class ListsViewModel: ObservableObject {
     @Published var shoppingLists: [ShoppingList] = []
 
     private let repository: ListsRepositoryProtocol

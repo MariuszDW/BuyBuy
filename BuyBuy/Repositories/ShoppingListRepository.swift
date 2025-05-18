@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ShoppingListRepository: ShoppingListRepositoryProtocol {
+class ShoppingListRepository: ShoppingListRepositoryProtocol {
     private let store: InMemoryShoppingListStore // TODO: temporary solution; in a future it will be replaced by a CoreData solution
     private let listID: UUID
 

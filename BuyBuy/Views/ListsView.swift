@@ -172,3 +172,37 @@ struct ListsView: View {
         }
     }
 }
+
+// MARK: - Preview
+
+struct ListsView_Previews: PreviewProvider {
+    static var previews: some View {
+        let mockViewModel = ListsViewModel(coordinator: AppCoordinator(dependencies: AppDependencies()),
+                                           repository: MockListsRepository())
+        
+        Group {
+            NavigationStack {
+                ListsView(viewModel: mockViewModel)
+            }
+            .environmentObject(AppDependencies())
+            .preferredColorScheme(.light)
+            
+            NavigationStack {
+                ListsView(viewModel: mockViewModel)
+            }
+            .environmentObject(AppDependencies())
+            .preferredColorScheme(.dark)
+        }
+    }
+    
+    class MockListsRepository: ListsRepositoryProtocol {
+        func fetchAllLists() -> [ShoppingList] {
+            return [ShoppingList(id: UUID(), name: "First list", items: [], order: 0, icon: .clothes, color: .red),
+                    ShoppingList(id: UUID(), name: "Second list", items: [], order: 1, icon: .fish, color: .green),
+                    ShoppingList(id: UUID(), name: "Third list", items: [], order: 2, icon: .car, color: .yellow)]
+        }
+        func addList(_ list: ShoppingList) {}
+        func deleteList(with id: UUID) {}
+        func updateList(_ updatedList: ShoppingList) {}
+    }
+}
