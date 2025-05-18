@@ -165,36 +165,36 @@ class PreviewMockListsRepository: ListsRepositoryProtocol {
     func updateList(_ list: ShoppingList) {}
 }
 
-struct ListSettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        var sample: ShoppingList {
-            ShoppingList(
-                id: UUID(), name: "Sample List", items: [], order: 0, icon: .cart, color: .blue
-            )
-        }
-        
-        Group {
-            ListSettingsView(
-                viewModel: ListSettingsViewModel(
-                    list: sample,
-                    repository: PreviewMockListsRepository(),
-                    isNew: false
-                )
-            )
-            .environmentObject(AppDependencies())
-            .preferredColorScheme(.light)
-            .previewDisplayName("Light Mode")
-            
-            ListSettingsView(
-                viewModel: ListSettingsViewModel(
-                    list: sample,
-                    repository: PreviewMockListsRepository(),
-                    isNew: false
-                )
-            )
-            .environmentObject(AppDependencies())
-            .preferredColorScheme(.dark)
-            .previewDisplayName("Dark Mode")
-        }
-    }
+#Preview("Light Mode") {
+    let sample = ShoppingList(
+        id: UUID(),
+        name: "Sample List",
+        items: [],
+        order: 0,
+        icon: .cart,
+        color: .blue
+    )
+    
+    let viewModel = ListSettingsViewModel(list: sample, repository: PreviewMockListsRepository(), isNew: false)
+    
+    ListSettingsView(viewModel: viewModel)
+        .environmentObject(AppDependencies())
+        .preferredColorScheme(.light)
+}
+
+#Preview("Dark Mode") {
+    let sample = ShoppingList(
+        id: UUID(),
+        name: "Sample List",
+        items: [],
+        order: 0,
+        icon: .cart,
+        color: .blue
+    )
+    
+    let viewModel = ListSettingsViewModel(list: sample, repository: PreviewMockListsRepository(), isNew: false)
+    
+    ListSettingsView(viewModel: viewModel)
+        .environmentObject(AppDependencies())
+        .preferredColorScheme(.dark)
 }
