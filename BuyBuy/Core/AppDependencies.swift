@@ -28,7 +28,13 @@ final class AppDependencies: ObservableObject {
         ], order: 1, icon: .fish, color: .green),
         
         ShoppingList(name: "Third list", items: [
-        ], order: 2, icon: .car, color: .yellow)
+        ], order: 2, icon: .car, color: .yellow),
+        
+        ShoppingList(name: "Fourth list", items: [
+        ], order: 2, icon: .cat, color: .cyan),
+        
+        ShoppingList(name: "Fifth list", items: [
+        ], order: 2, icon: .run, color: .blue)
     ])
 
     init(designSystem: DesignSystem = DesignSystem()) {
