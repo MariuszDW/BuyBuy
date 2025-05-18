@@ -9,6 +9,12 @@ import Foundation
 
 struct ShoppingItem: Identifiable, Hashable {
     let id: UUID
-    let name: String
-    let status: ShoppingItemStatus
+    var name: String
+    var status: ShoppingItemStatus
+
+    init(id: UUID = UUID(), name: String, status: ShoppingItemStatus) {
+        self.id = id
+        self.name = name
+        self.status = status
+    }
 }

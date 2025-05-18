@@ -10,10 +10,21 @@ import Foundation
 struct ShoppingList: Identifiable, Hashable {
     let id: UUID
     var name: String
+    var note: String?
     var items: [ShoppingItem]
     var order: Int
-    var icon: ListIcon = .default
-    var color: ListColor = .default
+    var icon: ListIcon
+    var color: ListColor
+    
+    init(id: UUID = UUID(), name: String = "", note: String? = nil, items: [ShoppingItem] = [], order: Int, icon: ListIcon = .default, color: ListColor = .default) {
+        self.id = id
+        self.name = name
+        self.note = note
+        self.items = items
+        self.order = order
+        self.icon = icon
+        self.color = color
+    }
     
     var iconRawValue: String {
         get { icon.rawValue }

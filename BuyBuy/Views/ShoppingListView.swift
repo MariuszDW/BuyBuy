@@ -100,11 +100,10 @@ struct ShoppingListView: View {
 private struct MockShoppingListRepository: ShoppingListRepositoryProtocol {
     func fetchList() -> ShoppingList? {
         ShoppingList(
-            id: UUID(),
             name: "Mock List",
             items: [
-                ShoppingItem(id: UUID(), name: "Milk", status: .pending),
-                ShoppingItem(id: UUID(), name: "Bread", status: .purchased)
+                ShoppingItem(name: "Milk", status: .pending),
+                ShoppingItem(name: "Bread", status: .purchased)
             ],
             order: 0
         )

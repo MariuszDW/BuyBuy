@@ -12,22 +12,22 @@ final class AppDependencies: ObservableObject {
     
     // TODO: temporary data
     let shoppingListStore = InMemoryShoppingListStore(initialLists: [
-        ShoppingList(id: UUID(), name: "First list", items: [
-            ShoppingItem(id: UUID(), name: "one", status: .pending),
-            ShoppingItem(id: UUID(), name: "two", status: .purchased),
-            ShoppingItem(id: UUID(), name: "three", status: .inactive),
-            ShoppingItem(id: UUID(), name: "found", status: .pending)
+        ShoppingList(name: "First list", items: [
+            ShoppingItem(name: "one", status: .pending),
+            ShoppingItem(name: "two", status: .purchased),
+            ShoppingItem(name: "three", status: .inactive),
+            ShoppingItem(name: "found", status: .pending)
         ], order: 0, icon: .clothes, color: .red),
         
-        ShoppingList(id: UUID(), name: "Second list", items: [
-            ShoppingItem(id: UUID(), name: "one", status: .purchased),
-            ShoppingItem(id: UUID(), name: "two", status: .purchased),
-            ShoppingItem(id: UUID(), name: "three", status: .pending),
-            ShoppingItem(id: UUID(), name: "found", status: .purchased),
-            ShoppingItem(id: UUID(), name: "found", status: .purchased)
+        ShoppingList(name: "Second list", items: [
+            ShoppingItem(name: "one", status: .purchased),
+            ShoppingItem(name: "two", status: .purchased),
+            ShoppingItem(name: "three", status: .pending),
+            ShoppingItem(name: "found", status: .purchased),
+            ShoppingItem(name: "found", status: .purchased)
         ], order: 1, icon: .fish, color: .green),
         
-        ShoppingList(id: UUID(), name: "Third list", items: [
+        ShoppingList(name: "Third list", items: [
         ], order: 2, icon: .car, color: .yellow)
     ])
 

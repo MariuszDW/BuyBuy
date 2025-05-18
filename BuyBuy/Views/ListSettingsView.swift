@@ -166,15 +166,7 @@ class PreviewMockListsRepository: ListsRepositoryProtocol {
 }
 
 #Preview("Light Mode") {
-    let sample = ShoppingList(
-        id: UUID(),
-        name: "Sample List",
-        items: [],
-        order: 0,
-        icon: .cart,
-        color: .blue
-    )
-    
+    let sample = ShoppingList(name: "Sample List", order: 0, icon: .cart, color: .blue)
     let viewModel = ListSettingsViewModel(list: sample, repository: PreviewMockListsRepository(), isNew: false)
     
     ListSettingsView(viewModel: viewModel)
@@ -183,15 +175,7 @@ class PreviewMockListsRepository: ListsRepositoryProtocol {
 }
 
 #Preview("Dark Mode") {
-    let sample = ShoppingList(
-        id: UUID(),
-        name: "Sample List",
-        items: [],
-        order: 0,
-        icon: .cart,
-        color: .blue
-    )
-    
+    let sample = ShoppingList(name: "Sample List", order: 0, icon: .cart, color: .blue)
     let viewModel = ListSettingsViewModel(list: sample, repository: PreviewMockListsRepository(), isNew: false)
     
     ListSettingsView(viewModel: viewModel)
