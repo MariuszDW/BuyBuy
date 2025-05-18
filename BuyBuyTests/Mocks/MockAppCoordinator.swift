@@ -6,14 +6,32 @@
 //
 
 import Foundation
+import Combine
 @testable import BuyBuy
 
 final class MockAppCoordinator: AppCoordinatorProtocol {
-    var onGoToShoppingListDetails: ((UUID) -> Void)?
+    var needRefreshListsPublisher: AnyPublisher<Bool, Never> = Just(false).eraseToAnyPublisher()
+    var openListBlock: ((UUID) -> Void)?
     var onBack: (() -> Void)?
 
-    func goToList(_ id: UUID) {
-        onGoToShoppingListDetails?(id)
+    func openList(_ id: UUID) {
+        openListBlock?(id)
+    }
+    
+    func resetNeedRefreshListsFlag() {
+        // TODO: implement...
+    }
+    
+    func openListSettings(_ list: BuyBuy.ShoppingList, isNew: Bool) {
+        // TODO: implement...
+    }
+    
+    func openAbout() {
+        // TODO: implement...
+    }
+    
+    func openSettings() {
+        // TODO: implement...
     }
 
     func back() {

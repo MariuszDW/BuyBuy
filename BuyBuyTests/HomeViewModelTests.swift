@@ -27,7 +27,7 @@ final class HomeViewModelTests: XCTestCase {
             XCTAssertEqual(item.name, "Milk")
         }
 
-        let item = ShoppingItem(id: UUID(), name: "Milk", status: .active)
+        let item = ShoppingItem(name: "Milk", status: .pending)
         mockRepository.addItem(item)
 
         XCTAssertTrue(wasCalled)
