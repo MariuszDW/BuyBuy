@@ -26,6 +26,7 @@ final class ListSettingsViewModel: ObservableObject {
     }
 
     func applyChanges() {
+        list.prepareToSave()
         if isNew {
             repository.addList(list)
         } else {

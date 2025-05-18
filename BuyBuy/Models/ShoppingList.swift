@@ -34,6 +34,10 @@ struct ShoppingList: Identifiable, Hashable {
         set { color = ListColor(rawValue: newValue) ?? .default }
     }
     
+    mutating func prepareToSave() {
+        name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
     func countItems(withStatus status: ShoppingItemStatus) -> Int {
         return items.filter { $0.status == status }.count
     }
