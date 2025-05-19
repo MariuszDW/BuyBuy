@@ -112,7 +112,7 @@ struct ShoppingListsView: View {
             
             Spacer()
             
-            Text("\(list.items(withStatuses: [.pending]).count) / \(list.items(withStatuses: [.pending, .purchased]).count)")
+            Text("\(list.items(withStatus: .pending).count) / \(list.items(withStatuses: [.pending, .purchased]).count)")
                 .foregroundColor(.secondary)
                 .font(.subheadline)
         }

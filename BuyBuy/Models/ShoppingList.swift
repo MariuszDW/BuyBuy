@@ -40,6 +40,10 @@ struct ShoppingList: Identifiable, Hashable {
         name = name.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
+    func items(withStatus status: ShoppingItemStatus) -> [ShoppingItem] {
+        return items.filter { $0.status == status }
+    }
+    
     func items(withStatuses statuses: [ShoppingItemStatus]) -> [ShoppingItem] {
         return items.filter { statuses.contains($0.status) }
     }
