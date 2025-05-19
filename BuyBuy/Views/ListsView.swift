@@ -37,7 +37,9 @@ struct ListsView: View {
                 title: Text("Delete list \"\(list.name)\"?"),
                 message: Text("This list contains items. Are you sure you want to delete it?"),
                 primaryButton: .destructive(Text("Delete")) {
-                    viewModel.deleteList(id: list.id)
+                    withAnimation {
+                        viewModel.deleteList(id: list.id)
+                    }
                 },
                 secondaryButton: .cancel()
             )
@@ -171,7 +173,9 @@ struct ListsView: View {
         if list.items.isEmpty {
             viewModel.deleteList(id: list.id)
         } else {
-            listPendingDeletion = list
+            withAnimation {
+                listPendingDeletion = list
+            }
         }
     }
 }
