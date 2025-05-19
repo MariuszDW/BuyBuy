@@ -10,11 +10,11 @@ import SwiftUI
 struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
     @EnvironmentObject var dependencies: AppDependencies
-    
+
     var designSystem: DesignSystem {
         return dependencies.designSystem
     }
-    
+
     init(viewModel: ShoppingListViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -28,42 +28,35 @@ struct ShoppingListView: View {
             }
         }
         .navigationTitle(viewModel.list?.name ?? "Shopping list")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
-    
+
     @ViewBuilder
     private func listView(_ list: ShoppingList) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(list.name)
-                .font(.largeTitle)
-                .bold()
-            
+        List {
             if list.items.isEmpty {
-                Text("Empty list")
-                    .foregroundColor(.secondary)
+                Section {
+                    Text("Empty list")
+                        .foregroundColor(.secondary)
+                }
             } else {
-                List(list.items) { item in
-                    Text(item.name)
+                Section(header: Text("Pending")) {
+                    ForEach(list.items) { item in
+                        Text(item.name)
+                    }
                 }
             }
-            
-            Spacer()
-            
-            Button("Back") {
-                viewModel.back()
-            }
-            .padding()
         }
-        .padding()
+        .listStyle(.plain)
     }
-    
+
     @ViewBuilder
     private func emptyView() -> some View {
         VStack(spacing: 20) {
             Text("Can't find a shopping list.")
                 .font(.title2)
                 .foregroundColor(.red)
-            
+
             Button("Back") {
                 viewModel.back()
             }
@@ -76,23 +69,29 @@ struct ShoppingListView: View {
 // MARK: - Preview
 
 #Preview("Light Mode") {
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let dependencies = AppDependencies()
+    let coordinator = AppCoordinator(dependencies: dependencies)
     let viewModel = ShoppingListViewModel(coordinator: coordinator,
                                           repository: MockShoppingListRepository())
 
-    ShoppingListView(viewModel: viewModel)
-        .environmentObject(AppDependencies())
-        .preferredColorScheme(.light)
+    NavigationStack {
+        ShoppingListView(viewModel: viewModel)
+            .environmentObject(dependencies)
+    }
+    .preferredColorScheme(.light)
 }
 
 #Preview("Dark Mode") {
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let dependencies = AppDependencies()
+    let coordinator = AppCoordinator(dependencies: dependencies)
     let viewModel = ShoppingListViewModel(coordinator: coordinator,
                                           repository: MockShoppingListRepository())
 
-    ShoppingListView(viewModel: viewModel)
-        .environmentObject(AppDependencies())
-        .preferredColorScheme(.dark)
+    NavigationStack {
+        ShoppingListView(viewModel: viewModel)
+            .environmentObject(dependencies)
+    }
+    .preferredColorScheme(.dark)
 }
 
 // MARK: - Preview Mock

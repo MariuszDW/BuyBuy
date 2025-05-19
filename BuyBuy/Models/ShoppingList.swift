@@ -43,5 +43,4 @@ struct ShoppingList: Identifiable, Hashable {
     func items(withStatuses statuses: [ShoppingItemStatus]) -> [ShoppingItem] {
         return items.filter { statuses.contains($0.status) }
     }
-    
 }
