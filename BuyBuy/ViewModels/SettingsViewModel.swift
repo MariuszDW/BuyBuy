@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class SettingsViewModel: ObservableObject {
+class SettingsViewModel: ObservableObject {
     private var coordinator: any AppCoordinatorProtocol
 
     init(coordinator: any AppCoordinatorProtocol) {
