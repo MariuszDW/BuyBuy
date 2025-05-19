@@ -34,29 +34,13 @@ struct ShoppingListView: View {
     @ViewBuilder
     private func listView(_ list: ShoppingList) -> some View {
         List {
-            let pendingItems = list.items(withStatus: .pending)
-            if !pendingItems.isEmpty {
-                Section(header: sectionHeader("Pending", systemImage: "hourglass", color: .orange)) {
-                    ForEach(pendingItems) { item in
-                        Text(item.name)
-                    }
-                }
-            }
-
-            let purchasedItems = list.items(withStatus: .purchased)
-            if !purchasedItems.isEmpty {
-                Section(header: sectionHeader("Purchased", systemImage: "checkmark", color: .green)) {
-                    ForEach(purchasedItems) { item in
-                        Text(item.name)
-                    }
-                }
-            }
-
-            let inactiveItems = list.items(withStatus: .inactive)
-            if !inactiveItems.isEmpty {
-                Section(header: sectionHeader("Inactive", systemImage: "zzz", color: .red)) {
-                    ForEach(inactiveItems) { item in
-                        Text(item.name)
+            ForEach(viewModel.sections, id: \.self) { section in
+                let items = list.items(withStatus: section.itemStatus)
+                if !items.isEmpty {
+                    Section(header: sectionHeader(section: section)) {
+                        ForEach(items) { item in
+                            Text(item.name)
+                        }
                     }
                 }
             }
@@ -75,14 +59,14 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func sectionHeader(_ title: String, systemImage: String, color: Color) -> some View {
+    private func sectionHeader(section: ShoppingListSection) -> some View {
         HStack(spacing: 8) {
-            Image(systemName: systemImage)
+            Image(systemName: section.systemImage)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
-                .foregroundColor(color)
-            Text(title)
+                .foregroundColor(section.color)
+            Text(section.title)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
-                .foregroundColor(color)
+                .foregroundColor(section.color)
                 .opacity(0.6)
         }
         .padding(.top, 16)

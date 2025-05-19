@@ -12,6 +12,12 @@ final class ShoppingListViewModel: ObservableObject {
     private var coordinator: any AppCoordinatorProtocol
 
     @Published var list: ShoppingList?
+    
+    @Published var sections: [ShoppingListSection] = [
+        .pending,
+        .purchased,
+        .inactive
+    ]
 
     init(coordinator: any AppCoordinatorProtocol, repository: ShoppingListRepositoryProtocol) {
         self.coordinator = coordinator
@@ -46,4 +52,3 @@ final class ShoppingListViewModel: ObservableObject {
         coordinator.back()
     }
 }
-
