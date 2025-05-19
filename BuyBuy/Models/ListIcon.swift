@@ -38,8 +38,4 @@ enum ListIcon: String, CaseIterable {
     case exclamationmark = "exclamationmark.circle.fill"
 
     static var `default`: ListIcon { .list }
-
-//    static func from(rawValue: String) -> ListIcon {
-//        return ListIcon(rawValue: rawValue) ?? .default
-//    }
 }
