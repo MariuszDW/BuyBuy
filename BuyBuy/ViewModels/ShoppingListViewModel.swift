@@ -14,9 +14,9 @@ final class ShoppingListViewModel: ObservableObject {
     @Published var list: ShoppingList?
     
     @Published var sections: [ShoppingListSection] = [
-        .pending,
-        .purchased,
-        .inactive
+        ShoppingListSection(status: .pending),
+        ShoppingListSection(status: .purchased),
+        ShoppingListSection(status: .inactive)
     ]
 
     init(coordinator: any AppCoordinatorProtocol, repository: ShoppingListRepositoryProtocol) {

@@ -8,13 +8,16 @@
 import Foundation
 import SwiftUI
 
-enum ShoppingListSection {
-    case pending
-    case purchased
-    case inactive
+struct ShoppingListSection: Hashable  {
+    let status: ShoppingItemStatus
+    var isCollapsed: Bool = false
+    
+    init(status: ShoppingItemStatus) {
+        self.status = status
+    }
     
     var title: String {
-        switch self {
+        switch status {
         case .pending: "Pending"
         case .purchased: "Purchased"
         case .inactive: "Inactive"
@@ -22,7 +25,7 @@ enum ShoppingListSection {
     }
     
     var systemImage: String {
-        switch self {
+        switch status {
         case .pending: "hourglass"
         case .purchased: "checkmark"
         case .inactive: "zzz"
@@ -30,18 +33,10 @@ enum ShoppingListSection {
     }
     
     var color: Color {
-        switch self {
+        switch status {
         case .pending: .orange
         case .purchased: .green
         case .inactive: .red
-        }
-    }
-    
-    var itemStatus: ShoppingItemStatus {
-        switch self {
-        case .pending: .pending
-        case .purchased: .purchased
-        case .inactive: .inactive
         }
     }
 }

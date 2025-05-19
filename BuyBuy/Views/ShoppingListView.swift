@@ -34,10 +34,12 @@ struct ShoppingListView: View {
     @ViewBuilder
     private func listView(_ list: ShoppingList) -> some View {
         List {
-            ForEach(viewModel.sections, id: \.self) { section in
-                let items = list.items(withStatus: section.itemStatus)
-                if !items.isEmpty {
-                    Section(header: sectionHeader(section: section)) {
+            ForEach(viewModel.sections.indices, id: \.self) { index in
+                let section = viewModel.sections[index]
+                let items = list.items(withStatus: section.status)
+                
+                Section(header: sectionHeader(section: $viewModel.sections[index])) {
+                    if !viewModel.sections[index].isCollapsed {
                         ForEach(items) { item in
                             Text(item.name)
                         }
@@ -59,17 +61,31 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func sectionHeader(section: ShoppingListSection) -> some View {
+    private func sectionHeader(section: Binding<ShoppingListSection>) -> some View {
         HStack(spacing: 8) {
-            Image(systemName: section.systemImage)
+            Image(systemName: section.wrappedValue.systemImage)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
-                .foregroundColor(section.color)
-            Text(section.title)
+                .foregroundColor(section.wrappedValue.color)
+            
+            Text(section.wrappedValue.title)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
-                .foregroundColor(section.color)
-                .opacity(0.6)
+                .foregroundColor(section.wrappedValue.color)
+                .opacity(0.7)
+            
+            Spacer()
+            
+            Button {
+                withAnimation {
+                    section.isCollapsed.wrappedValue.toggle()
+                }
+            } label: {
+                Image(systemName: section.isCollapsed.wrappedValue ? "chevron.down" : "chevron.up")
+                    .font(designSystem.fonts.boldDynamic(style: .body))
+                    .foregroundColor(.gray)
+            }
+            .buttonStyle(PlainButtonStyle())
         }
-        .padding(.top, 16)
+        .padding(.top, 8)
         .padding(.bottom, 4)
     }
 }
