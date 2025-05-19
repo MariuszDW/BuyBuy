@@ -20,7 +20,7 @@ final class ShoppingListViewModel: ObservableObject {
     }
 
     func loadList() {
-        list = repository.fetchList()
+        list = repository.getItems()
     }
 
     func addItem(_ item: ShoppingItem) {

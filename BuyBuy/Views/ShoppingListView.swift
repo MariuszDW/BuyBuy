@@ -98,7 +98,7 @@ struct ShoppingListView: View {
 // MARK: - Preview Mock
 
 private struct MockShoppingListRepository: ShoppingListRepositoryProtocol {
-    func fetchList() -> ShoppingList? {
+    func getItems() -> ShoppingList? {
         ShoppingList(
             name: "Mock List",
             items: [

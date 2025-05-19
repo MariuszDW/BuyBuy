@@ -16,7 +16,7 @@ class ShoppingListRepository: ShoppingListRepositoryProtocol {
         self.store = store
     }
 
-    func fetchList() -> ShoppingList? {
+    func getItems() -> ShoppingList? {
         return store.fetchList(with: listID)
     }
 

@@ -40,11 +40,8 @@ struct ShoppingList: Identifiable, Hashable {
         name = name.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
-    func countItems(withStatus status: ShoppingItemStatus) -> Int {
-        return items.filter { $0.status == status }.count
+    func items(withStatuses statuses: [ShoppingItemStatus]) -> [ShoppingItem] {
+        return items.filter { statuses.contains($0.status) }
     }
     
-    func countItems(withoutStatus status: ShoppingItemStatus) -> Int {
-        return items.filter { $0.status != status }.count
-    }
 }

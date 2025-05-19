@@ -14,7 +14,7 @@ final class MockShoppingListRepository: ShoppingListRepositoryProtocol {
     var updateItemHandler: ((ShoppingItem) -> Void)?
     var removeItemHandler: ((UUID) -> Void)?
 
-    func fetchList() -> ShoppingList? {
+    func getItems() -> ShoppingList? {
         fetchListHandler?()
     }
 
