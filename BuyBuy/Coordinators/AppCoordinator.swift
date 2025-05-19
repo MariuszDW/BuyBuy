@@ -66,7 +66,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
                     coordinator: self,
-                    repository: ShoppingListRepository(listID: id, store: dependencies.shoppingListStore)
+                    repository: ShoppingListRepository(listID: id, store: self.dependencies.shoppingListStore)
                 )
             )
         case .settings:

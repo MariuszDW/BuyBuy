@@ -15,10 +15,6 @@ struct ShoppingListView: View {
         return dependencies.designSystem
     }
 
-    init(viewModel: ShoppingListViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-    }
-
     var body: some View {
         Group {
             if let list = viewModel.list {
@@ -39,13 +35,16 @@ struct ShoppingListView: View {
                 Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
                     if !section.isCollapsed {
                         ForEach(items) { item in
-                            Text(item.name)
+                            ShoppingItemRow(item: item) { toggledItem in
+                                viewModel.toggleStatus(for: toggledItem)
+                            }
                         }
                     }
                 }
             }
         }
         .listStyle(.plain)
+        // .animation(.easeInOut, value: list.items)
     }
 
     @ViewBuilder

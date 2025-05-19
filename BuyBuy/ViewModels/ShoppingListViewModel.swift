@@ -59,4 +59,12 @@ final class ShoppingListViewModel: ObservableObject {
             sections[index].isCollapsed.toggle()
         }
     }
+    
+    func toggleStatus(for item: ShoppingItem) {
+        var updatedItem = item
+        updatedItem.status = item.status.toggled()
+        withAnimation {
+            updateItem(updatedItem)
+        }
+    }
 }
