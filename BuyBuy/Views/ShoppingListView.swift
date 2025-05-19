@@ -34,26 +34,28 @@ struct ShoppingListView: View {
     @ViewBuilder
     private func listView(_ list: ShoppingList) -> some View {
         List {
-            if list.items.isEmpty {
-                Section {
-                    Text("Empty list")
-                        .foregroundColor(.secondary)
-                }
-            } else {
-                Section(header: Text("Pending")) {
-                    ForEach(list.items(withStatus: .pending)) { item in
+            let pendingItems = list.items(withStatus: .pending)
+            if !pendingItems.isEmpty {
+                Section(header: sectionHeader("Pending", systemImage: "clock", color: .orange)) {
+                    ForEach(pendingItems) { item in
                         Text(item.name)
                     }
                 }
-                
-                Section(header: Text("Purchased")) {
-                    ForEach(list.items(withStatus: .purchased)) { item in
+            }
+
+            let purchasedItems = list.items(withStatus: .purchased)
+            if !purchasedItems.isEmpty {
+                Section(header: sectionHeader("Purchased", systemImage: "checkmark.square", color: .green)) {
+                    ForEach(purchasedItems) { item in
                         Text(item.name)
                     }
                 }
-                
-                Section(header: Text("Inactive")) {
-                    ForEach(list.items(withStatus: .inactive)) { item in
+            }
+
+            let inactiveItems = list.items(withStatus: .inactive)
+            if !inactiveItems.isEmpty {
+                Section(header: sectionHeader("Inactive", systemImage: "zzz", color: .red)) {
+                    ForEach(inactiveItems) { item in
                         Text(item.name)
                     }
                 }
@@ -66,15 +68,24 @@ struct ShoppingListView: View {
     private func emptyView() -> some View {
         VStack(spacing: 20) {
             Text("Can't find a shopping list.")
-                .font(.title2)
-                .foregroundColor(.red)
-
-            Button("Back") {
-                viewModel.back()
-            }
+                .font(designSystem.fonts.boldDynamic(style: .body))
             .buttonStyle(.borderedProminent)
         }
         .padding()
+    }
+    
+    @ViewBuilder
+    private func sectionHeader(_ title: String, systemImage: String, color: Color) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: systemImage)
+                .font(designSystem.fonts.boldDynamic(style: .title2))
+                .foregroundColor(color)
+            Text(title)
+                .font(designSystem.fonts.boldDynamic(style: .title2))
+                .foregroundColor(color)
+        }
+        .padding(.top, 16)
+        .padding(.bottom, 4)
     }
 }
 
