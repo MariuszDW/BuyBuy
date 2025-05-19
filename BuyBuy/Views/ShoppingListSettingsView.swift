@@ -58,7 +58,7 @@ struct ShoppingListSettingsView: View {
                 text: $viewModel.list.name
             )
             .textInputAutocapitalization(.sentences)
-            .font(designSystem.fonts.boldDynamic(style: .title3))
+            .font(AppFont.boldDynamic(style: .title3))
             .focused($focusedNameField, equals: true)
             .task {
                 focusedNameField = viewModel.isNew
@@ -97,7 +97,7 @@ struct ShoppingListSettingsView: View {
                     ForEach(ListColor.allCases, id: \.self) { color in
                         ZStack {
                             Circle()
-                                .stroke(designSystem.colors.selection, lineWidth: 3)
+                                .stroke(AppColor.selection, lineWidth: 3)
                                 .opacity(viewModel.list.color == color ? 1 : 0)
                                 .frame(width: 44, height: 44)
 
@@ -132,7 +132,7 @@ struct ShoppingListSettingsView: View {
                 ZStack {
                     if viewModel.list.icon == icon {
                         Circle()
-                            .stroke(designSystem.colors.selection, lineWidth: 3)
+                            .stroke(AppColor.selection, lineWidth: 3)
                             .frame(width: 48, height: 48)
                     }
 

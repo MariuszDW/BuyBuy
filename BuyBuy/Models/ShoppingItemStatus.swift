@@ -15,16 +15,8 @@ enum ShoppingItemStatus: String, CaseIterable, Hashable {
     var iconName: String {
         switch self {
         case .pending: return "circle"
-        case .purchased: return "checkmark.circle.fill"
-        case .inactive: return "zzz"
-        }
-    }
-    
-    var iconColor: Color {
-        switch self {
-        case .pending: return .gray
-        case .purchased: return .green
-        case .inactive: return .gray.opacity(0.5)
+        case .purchased: return "inset.filled.circle"
+        case .inactive: return "pause.circle"
         }
     }
     

@@ -51,7 +51,7 @@ struct ShoppingListView: View {
     private func emptyView() -> some View {
         VStack(spacing: 20) {
             Text("Can't find a shopping list.")
-                .font(designSystem.fonts.boldDynamic(style: .body))
+                .font(AppFont.boldDynamic(style: .body))
             .buttonStyle(.borderedProminent)
         }
         .padding()
@@ -63,11 +63,11 @@ struct ShoppingListView: View {
         
         HStack(spacing: 8) {
             Image(systemName: section.systemImage)
-                .font(designSystem.fonts.boldDynamic(style: .title3))
+                .font(AppFont.boldDynamic(style: .title3))
                 .foregroundColor(section.color)
             
             Text(title)
-                .font(designSystem.fonts.boldDynamic(style: .title3))
+                .font(AppFont.boldDynamic(style: .title3))
                 .foregroundColor(section.color)
                 .opacity(0.7)
             
@@ -79,7 +79,7 @@ struct ShoppingListView: View {
                 }
             } label: {
                 Image(systemName: section.isCollapsed ? "chevron.down" : "chevron.up")
-                    .font(designSystem.fonts.boldDynamic(style: .body))
+                    .font(AppFont.boldDynamic(style: .body))
                     .foregroundColor(.gray)
             }
             .buttonStyle(PlainButtonStyle())
