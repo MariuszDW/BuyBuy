@@ -41,7 +41,19 @@ struct ShoppingListView: View {
                 }
             } else {
                 Section(header: Text("Pending")) {
-                    ForEach(list.items) { item in
+                    ForEach(list.items(withStatus: .pending)) { item in
+                        Text(item.name)
+                    }
+                }
+                
+                Section(header: Text("Purchased")) {
+                    ForEach(list.items(withStatus: .purchased)) { item in
+                        Text(item.name)
+                    }
+                }
+                
+                Section(header: Text("Inactive")) {
+                    ForEach(list.items(withStatus: .inactive)) { item in
                         Text(item.name)
                     }
                 }
@@ -101,8 +113,12 @@ private struct MockShoppingListRepository: ShoppingListRepositoryProtocol {
         ShoppingList(
             name: "Mock List",
             items: [
+                ShoppingItem(name: "Onion", status: .purchased),
+                ShoppingItem(name: "Cheese", status: .inactive),
                 ShoppingItem(name: "Milk", status: .pending),
-                ShoppingItem(name: "Bread", status: .purchased)
+                ShoppingItem(name: "Carrot", status: .pending),
+                ShoppingItem(name: "Bread", status: .purchased),
+                ShoppingItem(name: "Eggs", status: .inactive)
             ],
             order: 0
         )
