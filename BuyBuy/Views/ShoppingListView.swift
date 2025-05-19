@@ -78,10 +78,10 @@ struct ShoppingListView: View {
     private func sectionHeader(_ title: String, systemImage: String, color: Color) -> some View {
         HStack(spacing: 10) {
             Image(systemName: systemImage)
-                .font(designSystem.fonts.boldDynamic(style: .title2))
+                .font(designSystem.fonts.boldDynamic(style: .title3))
                 .foregroundColor(color)
             Text(title)
-                .font(designSystem.fonts.boldDynamic(style: .title2))
+                .font(designSystem.fonts.boldDynamic(style: .title3))
                 .foregroundColor(color)
         }
         .padding(.top, 16)
