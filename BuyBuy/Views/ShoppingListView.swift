@@ -36,7 +36,7 @@ struct ShoppingListView: View {
         List {
             ForEach(viewModel.sections, id: \.status) { section in
                 let items = list.items(withStatus: section.status)
-                Section(header: sectionHeader(section: section)) {
+                Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
                     if !section.isCollapsed {
                         ForEach(items) { item in
                             Text(item.name)
@@ -59,13 +59,15 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func sectionHeader(section: ShoppingListSection) -> some View {
+    private func sectionHeader(section: ShoppingListSection, sectionItemCount: Int) -> some View {
+        let title: String = section.isCollapsed ? section.title + " (\(sectionItemCount))" : section.title
+        
         HStack(spacing: 8) {
             Image(systemName: section.systemImage)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
                 .foregroundColor(section.color)
             
-            Text(section.title)
+            Text(title)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
                 .foregroundColor(section.color)
                 .opacity(0.7)
