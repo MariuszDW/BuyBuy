@@ -36,7 +36,7 @@ struct ShoppingListView: View {
         List {
             let pendingItems = list.items(withStatus: .pending)
             if !pendingItems.isEmpty {
-                Section(header: sectionHeader("Pending", systemImage: "clock", color: .orange)) {
+                Section(header: sectionHeader("Pending", systemImage: "hourglass", color: .orange)) {
                     ForEach(pendingItems) { item in
                         Text(item.name)
                     }
@@ -45,7 +45,7 @@ struct ShoppingListView: View {
 
             let purchasedItems = list.items(withStatus: .purchased)
             if !purchasedItems.isEmpty {
-                Section(header: sectionHeader("Purchased", systemImage: "checkmark.square", color: .green)) {
+                Section(header: sectionHeader("Purchased", systemImage: "checkmark", color: .green)) {
                     ForEach(purchasedItems) { item in
                         Text(item.name)
                     }
@@ -76,13 +76,14 @@ struct ShoppingListView: View {
     
     @ViewBuilder
     private func sectionHeader(_ title: String, systemImage: String, color: Color) -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 8) {
             Image(systemName: systemImage)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
                 .foregroundColor(color)
             Text(title)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
                 .foregroundColor(color)
+                .opacity(0.6)
         }
         .padding(.top, 16)
         .padding(.bottom, 4)
