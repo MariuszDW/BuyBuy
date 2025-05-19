@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 final class ShoppingListViewModel: ObservableObject {
     private let repository: ShoppingListRepositoryProtocol
@@ -50,5 +51,12 @@ final class ShoppingListViewModel: ObservableObject {
     func back() {
         coordinator.setNeedRefreshLists(true)
         coordinator.back()
+    }
+    
+    func toggleCollapse(ofSection section: ShoppingListSection) {
+        guard let index = sections.firstIndex(where: { $0.status == section.status }) else { return }
+        withAnimation {
+            sections[index].isCollapsed.toggle()
+        }
     }
 }

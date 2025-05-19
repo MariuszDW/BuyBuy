@@ -30,16 +30,14 @@ struct ShoppingListView: View {
         .navigationTitle(viewModel.list?.name ?? "Shopping list")
         .navigationBarTitleDisplayMode(.large)
     }
-
+    
     @ViewBuilder
     private func listView(_ list: ShoppingList) -> some View {
         List {
-            ForEach(viewModel.sections.indices, id: \.self) { index in
-                let section = viewModel.sections[index]
+            ForEach(viewModel.sections, id: \.status) { section in
                 let items = list.items(withStatus: section.status)
-                
-                Section(header: sectionHeader(section: $viewModel.sections[index])) {
-                    if !viewModel.sections[index].isCollapsed {
+                Section(header: sectionHeader(section: section)) {
+                    if !section.isCollapsed {
                         ForEach(items) { item in
                             Text(item.name)
                         }
@@ -61,25 +59,25 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func sectionHeader(section: Binding<ShoppingListSection>) -> some View {
+    private func sectionHeader(section: ShoppingListSection) -> some View {
         HStack(spacing: 8) {
-            Image(systemName: section.wrappedValue.systemImage)
+            Image(systemName: section.systemImage)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
-                .foregroundColor(section.wrappedValue.color)
+                .foregroundColor(section.color)
             
-            Text(section.wrappedValue.title)
+            Text(section.title)
                 .font(designSystem.fonts.boldDynamic(style: .title3))
-                .foregroundColor(section.wrappedValue.color)
+                .foregroundColor(section.color)
                 .opacity(0.7)
             
             Spacer()
             
             Button {
                 withAnimation {
-                    section.isCollapsed.wrappedValue.toggle()
+                    viewModel.toggleCollapse(ofSection: section)
                 }
             } label: {
-                Image(systemName: section.isCollapsed.wrappedValue ? "chevron.down" : "chevron.up")
+                Image(systemName: section.isCollapsed ? "chevron.down" : "chevron.up")
                     .font(designSystem.fonts.boldDynamic(style: .body))
                     .foregroundColor(.gray)
             }
