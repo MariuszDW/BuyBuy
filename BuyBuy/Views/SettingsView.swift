@@ -15,14 +15,23 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
+        List {
             Text("Settings Placeholder")
-                .font(.title)
             Button("Close") {
                 viewModel.close()
             }
         }
         .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
+    }
+}
+
+// MARK: - Preview
+
+#Preview {
+    let dependencies = AppDependencies()
+    NavigationStack {
+        SettingsView(viewModel: SettingsViewModel(coordinator: AppCoordinator(dependencies: dependencies)))
+            .environmentObject(dependencies)
     }
 }
