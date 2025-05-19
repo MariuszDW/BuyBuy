@@ -28,7 +28,6 @@ struct ShoppingListsView: View {
                 .environment(\.editMode, $localEditMode)
             bottomPanel
         }
-        .navigationTitle("Lists")
         .toolbar {
             toolbarContent
         }
