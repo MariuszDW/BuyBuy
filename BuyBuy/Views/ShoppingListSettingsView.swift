@@ -1,5 +1,5 @@
 //
-//  ListSettingsView.swift
+//  ShoppingListSettingsView.swift
 //  BuyBuy
 //
 //  Created by MDW on 17/05/2025.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct ListSettingsView: View {
-    @StateObject var viewModel: ListSettingsViewModel
+struct ShoppingListSettingsView: View {
+    @StateObject var viewModel: ShoppingListSettingsViewModel
     @EnvironmentObject private var dependencies: AppDependencies
     @Environment(\.dismiss) private var dismiss
     
@@ -18,7 +18,7 @@ struct ListSettingsView: View {
         dependencies.designSystem
     }
 
-    init(viewModel: ListSettingsViewModel) {
+    init(viewModel: ShoppingListSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -158,7 +158,7 @@ struct ListSettingsView: View {
 
 // MARK: - Preview
 
-class PreviewMockListsRepository: ListsRepositoryProtocol {
+class PreviewMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     func fetchAllLists() -> [ShoppingList] { return [] }
     func deleteList(with id: UUID) {}
     func addList(_ list: ShoppingList) {}
@@ -167,28 +167,28 @@ class PreviewMockListsRepository: ListsRepositoryProtocol {
 
 #Preview("Light Mode") {
     let sample = ShoppingList(name: "Sample List", order: 0, icon: .cart, color: .blue)
-    let viewModel = ListSettingsViewModel(
+    let viewModel = ShoppingListSettingsViewModel(
         coordinator: AppCoordinator(dependencies: AppDependencies()),
         list: sample,
-        repository: PreviewMockListsRepository(),
+        repository: PreviewMockShoppingListsRepository(),
         isNew: false
     )
     
-    ListSettingsView(viewModel: viewModel)
+    ShoppingListSettingsView(viewModel: viewModel)
         .environmentObject(AppDependencies())
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark Mode") {
     let sample = ShoppingList(name: "Sample List", order: 0, icon: .cart, color: .blue)
-    let viewModel = ListSettingsViewModel(
+    let viewModel = ShoppingListSettingsViewModel(
         coordinator: AppCoordinator(dependencies: AppDependencies()),
         list: sample,
-        repository: PreviewMockListsRepository(),
+        repository: PreviewMockShoppingListsRepository(),
         isNew: false
     )
     
-    ListSettingsView(viewModel: viewModel)
+    ShoppingListSettingsView(viewModel: viewModel)
         .environmentObject(AppDependencies())
         .preferredColorScheme(.dark)
 }

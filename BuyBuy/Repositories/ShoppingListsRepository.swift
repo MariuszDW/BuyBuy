@@ -1,5 +1,5 @@
 //
-//  ListsRepository.swift
+//  ShoppingListsRepository.swift
 //  BuyBuy
 //
 //  Created by MDW on 15/05/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ListsRepository: ListsRepositoryProtocol {
+final class ShoppingListsRepository: ShoppingListsRepositoryProtocol {
     private let store: InMemoryShoppingListStore // TODO: The store will be replaced by a CoreData storage.
     
     init(store: InMemoryShoppingListStore) {

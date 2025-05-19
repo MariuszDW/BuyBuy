@@ -1,5 +1,5 @@
 //
-//  ListSettingsViewModel.swift
+//  ShoppingListSettingsViewModel.swift
 //  BuyBuy
 //
 //  Created by MDW on 17/05/2025.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class ListSettingsViewModel: ObservableObject {
+final class ShoppingListSettingsViewModel: ObservableObject {
     /// The list being edited.
     @Published var list: ShoppingList
     
@@ -16,9 +16,9 @@ final class ListSettingsViewModel: ObservableObject {
     private(set) var isNew: Bool
 
     private let coordinator: any AppCoordinatorProtocol
-    private let repository: ListsRepositoryProtocol
+    private let repository: ShoppingListsRepositoryProtocol
 
-    init(coordinator: any AppCoordinatorProtocol, list: ShoppingList, repository: ListsRepositoryProtocol, isNew: Bool = false) {
+    init(coordinator: any AppCoordinatorProtocol, list: ShoppingList, repository: ShoppingListsRepositoryProtocol, isNew: Bool = false) {
         self.list = list
         self.isNew = isNew
         self.repository = repository

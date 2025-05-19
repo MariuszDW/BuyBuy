@@ -1,5 +1,5 @@
 //
-//  ListsView.swift
+//  ShoppingListsView.swift
 //  BuyBuy
 //
 //  Created by MDW on 14/05/2025.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct ListsView: View {
-    @StateObject var viewModel: ListsViewModel
+struct ShoppingListsView: View {
+    @StateObject var viewModel: ShoppingListsViewModel
     @EnvironmentObject var dependencies: AppDependencies
     
     @State private var localEditMode: EditMode = .inactive
@@ -18,7 +18,7 @@ struct ListsView: View {
         dependencies.designSystem
     }
     
-    init(viewModel: ListsViewModel) {
+    init(viewModel: ShoppingListsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
@@ -184,11 +184,11 @@ struct ListsView: View {
 
 #Preview("Light Mode") {
     let dependencies = AppDependencies()
-    let mockViewModel = ListsViewModel(coordinator: AppCoordinator(dependencies: dependencies),
-                                       repository: MockListsRepository())
+    let mockViewModel = ShoppingListsViewModel(coordinator: AppCoordinator(dependencies: dependencies),
+                                       repository: MockShoppingListsRepository())
     
     NavigationStack {
-        ListsView(viewModel: mockViewModel)
+        ShoppingListsView(viewModel: mockViewModel)
     }
     .environmentObject(dependencies)
     .preferredColorScheme(.light)
@@ -196,11 +196,11 @@ struct ListsView: View {
 
 #Preview("Dark Mode") {
     let dependencies = AppDependencies()
-    let mockViewModel = ListsViewModel(coordinator: AppCoordinator(dependencies: dependencies),
-                                       repository: MockListsRepository())
+    let mockViewModel = ShoppingListsViewModel(coordinator: AppCoordinator(dependencies: dependencies),
+                                       repository: MockShoppingListsRepository())
     
     NavigationStack {
-        ListsView(viewModel: mockViewModel)
+        ShoppingListsView(viewModel: mockViewModel)
     }
     .environmentObject(dependencies)
     .preferredColorScheme(.dark)
@@ -208,7 +208,7 @@ struct ListsView: View {
 
 // MARK: - Preview mock
 
-class MockListsRepository: ListsRepositoryProtocol {
+class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     func fetchAllLists() -> [ShoppingList] {
         return [
             ShoppingList(name: "First list", items: [

@@ -1,5 +1,5 @@
 //
-//  ListsViewModel.swift
+//  ShoppingListsViewModel.swift
 //  BuyBuy
 //
 //  Created by MDW on 14/05/2025.
@@ -8,14 +8,14 @@
 import Foundation
 import Combine
 
-class ListsViewModel: ObservableObject {
+class ShoppingListsViewModel: ObservableObject {
     @Published var shoppingLists: [ShoppingList] = []
 
-    private let repository: ListsRepositoryProtocol
+    private let repository: ShoppingListsRepositoryProtocol
     private let coordinator: any AppCoordinatorProtocol
     private var cancellables = Set<AnyCancellable>()
 
-    init(coordinator: any AppCoordinatorProtocol, repository: ListsRepositoryProtocol) {
+    init(coordinator: any AppCoordinatorProtocol, repository: ShoppingListsRepositoryProtocol) {
         self.coordinator = coordinator
         self.repository = repository
         

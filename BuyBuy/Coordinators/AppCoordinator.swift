@@ -16,10 +16,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     
     private let dependencies: AppDependencies
     
-    private lazy var listsViewModel: ListsViewModel = {
-        ListsViewModel(
+    private lazy var shoppingListsViewModel: ShoppingListsViewModel = {
+        ShoppingListsViewModel(
             coordinator: self,
-            repository: ListsRepository(store: dependencies.shoppingListStore)
+            repository: ShoppingListsRepository(store: dependencies.shoppingListStore)
         )
     }()
     
@@ -45,7 +45,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
 
     func openListSettings(_ list: ShoppingList, isNew: Bool) {
-        sheet = .listSettings(list, isNew)
+        sheet = .shoppingListSettings(list, isNew)
     }
     
     func openAbout() {
@@ -61,7 +61,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     func view(for route: AppRoute) -> some View {
         switch route {
         case .shoppingLists:
-            ListsView(viewModel: listsViewModel)
+            ShoppingListsView(viewModel: shoppingListsViewModel)
         case .shoppingList(let id):
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
@@ -80,12 +80,12 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @ViewBuilder
     func sheetView(for sheet: SheetRoute) -> some View {
         switch sheet {
-        case .listSettings(let list, let isNew):
-            ListSettingsView(
-                viewModel: ListSettingsViewModel(
+        case .shoppingListSettings(let list, let isNew):
+            ShoppingListSettingsView(
+                viewModel: ShoppingListSettingsViewModel(
                     coordinator: self,
                     list: list,
-                    repository: ListsRepository(store: dependencies.shoppingListStore),
+                    repository: ShoppingListsRepository(store: dependencies.shoppingListStore),
                     isNew: isNew
                 )
             )

@@ -8,13 +8,13 @@
 import SwiftUI
 
 enum SheetRoute: Identifiable, Equatable {
-    case listSettings(ShoppingList, Bool)
+    case shoppingListSettings(ShoppingList, Bool)
     case about
 
     var id: String {
         switch self {
-        case .listSettings:
-            return "listSettings"
+        case .shoppingListSettings:
+            return "shoppingListSettings"
         case .about:
             return "about"
         }
