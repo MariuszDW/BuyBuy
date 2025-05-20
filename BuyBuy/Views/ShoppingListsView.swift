@@ -106,7 +106,7 @@ struct ShoppingListsView: View {
             
             Spacer()
             
-            Text("\(list.items(withStatus: .pending).count) / \(list.items(withStatuses: [.pending, .purchased]).count)")
+            Text("\(list.items(withStatus: .purchased).count) / \(list.items(withStatuses: [.pending, .purchased]).count)")
                 .foregroundColor(.secondary)
                 .font(.subheadline)
         }
@@ -177,8 +177,10 @@ struct ShoppingListsView: View {
 // MARK: - Preview
 
 #Preview("Light Mode") {
-    let mockViewModel = ShoppingListsViewModel(coordinator: AppCoordinator(dependencies: AppDependencies()),
-                                       repository: MockShoppingListsRepository())
+    let mockViewModel = ShoppingListsViewModel(
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        repository: MockShoppingListsRepository()
+    )
     
     NavigationStack {
         ShoppingListsView(viewModel: mockViewModel)
@@ -187,40 +189,13 @@ struct ShoppingListsView: View {
 }
 
 #Preview("Dark Mode") {
-    let mockViewModel = ShoppingListsViewModel(coordinator: AppCoordinator(dependencies: AppDependencies()),
-                                       repository: MockShoppingListsRepository())
+    let mockViewModel = ShoppingListsViewModel(
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        repository: MockShoppingListsRepository()
+    )
     
     NavigationStack {
         ShoppingListsView(viewModel: mockViewModel)
     }
     .preferredColorScheme(.dark)
-}
-
-// MARK: - Preview mock
-
-class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
-    func fetchAllLists() -> [ShoppingList] {
-        return [
-            ShoppingList(name: "First list", items: [
-                ShoppingItem(name: "one", status: .pending),
-                ShoppingItem(name: "two", status: .purchased),
-                ShoppingItem(name: "three", status: .inactive),
-                ShoppingItem(name: "found", status: .pending)
-            ], order: 0, icon: .clothes, color: .red),
-            
-            ShoppingList(name: "Second list", items: [
-                ShoppingItem(name: "one", status: .purchased),
-                ShoppingItem(name: "two", status: .purchased),
-                ShoppingItem(name: "three", status: .pending),
-                ShoppingItem(name: "found", status: .purchased),
-                ShoppingItem(name: "found", status: .purchased)
-            ], order: 1, icon: .fish, color: .green),
-            
-            ShoppingList(id: UUID(), name: "Third list", items: [], order: 2, icon: .car, color: .yellow)
-        ]
-    }
-    
-    func addList(_ list: ShoppingList) {}
-    func deleteList(with id: UUID) {}
-    func updateList(_ updatedList: ShoppingList) {}
 }

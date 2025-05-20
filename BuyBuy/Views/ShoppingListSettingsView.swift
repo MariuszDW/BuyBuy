@@ -153,20 +153,12 @@ struct ShoppingListSettingsView: View {
 
 // MARK: - Preview
 
-class PreviewMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
-    func fetchAllLists() -> [ShoppingList] { return [] }
-    func deleteList(with id: UUID) {}
-    func addList(_ list: ShoppingList) {}
-    func updateList(_ list: ShoppingList) {}
-}
-
 #Preview("Light Mode") {
-    let sample = ShoppingList(name: "Sample List", order: 0, icon: .cart, color: .blue)
+    let repository = MockShoppingListsRepository()
     let viewModel = ShoppingListSettingsViewModel(
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        list: sample,
-        repository: PreviewMockShoppingListsRepository(),
-        isNew: false
+        list: repository.getList(with: UUID())!,
+        repository: repository,
+        coordinator: AppCoordinator(dependencies: AppDependencies())
     )
     
     ShoppingListSettingsView(viewModel: viewModel)
@@ -174,12 +166,11 @@ class PreviewMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
 }
 
 #Preview("Dark Mode") {
-    let sample = ShoppingList(name: "Sample List", order: 0, icon: .cart, color: .blue)
+    let repository = MockShoppingListsRepository()
     let viewModel = ShoppingListSettingsViewModel(
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        list: sample,
-        repository: PreviewMockShoppingListsRepository(),
-        isNew: false
+        list: repository.getList(with: UUID())!,
+        repository: repository,
+        coordinator: AppCoordinator(dependencies: AppDependencies())
     )
     
     ShoppingListSettingsView(viewModel: viewModel)

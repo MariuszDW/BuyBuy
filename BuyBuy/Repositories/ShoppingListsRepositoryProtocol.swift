@@ -8,8 +8,16 @@
 import Foundation
 
 protocol ShoppingListsRepositoryProtocol {
-    func fetchAllLists() -> [ShoppingList]
+    // MARK: - Shopping Lists
+    func getAllLists() -> [ShoppingList]
     func addList(_ list: ShoppingList)
+    func updateList(_ list: ShoppingList)
     func deleteList(with id: UUID)
-    func updateList(_ updatedList: ShoppingList)
+    func getList(with id: UUID) -> ShoppingList?
+    
+    // MARK: - Shopping Items
+    func getItems(for listID: UUID) -> [ShoppingItem]
+    func addItem(_ item: ShoppingItem)
+    func updateItem(_ item: ShoppingItem)
+    func removeItem(_ item: ShoppingItem)
 }

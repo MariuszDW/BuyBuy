@@ -13,13 +13,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
     @Published var sheet: SheetRoute?
     @Published var needRefreshLists = true
+    @Published var needRefreshList = true
     
     private let dependencies: AppDependencies
     
     private lazy var shoppingListsViewModel: ShoppingListsViewModel = {
         ShoppingListsViewModel(
             coordinator: self,
-            repository: ShoppingListsRepository(store: dependencies.shoppingListStore)
+            repository: ShoppingListsRepository(store: dependencies.shoppingListsStore)
         )
     }()
     
@@ -65,8 +66,9 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         case .shoppingList(let id):
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
+                    listID: id,
+                    repository: ShoppingListsRepository(store: self.dependencies.shoppingListsStore),
                     coordinator: self,
-                    repository: ShoppingListRepository(listID: id, store: self.dependencies.shoppingListStore)
                 )
             )
         case .settings:
@@ -83,11 +85,19 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         case .shoppingListSettings(let list, let isNew):
             ShoppingListSettingsView(
                 viewModel: ShoppingListSettingsViewModel(
-                    coordinator: self,
                     list: list,
-                    repository: ShoppingListsRepository(store: dependencies.shoppingListStore),
-                    isNew: isNew
+                    isNew: isNew,
+                    repository: ShoppingListsRepository(store: dependencies.shoppingListsStore),
+                    coordinator: self
                 )
+            )
+        case .shoppintItemDetails(let item, let isNew):
+            ShoppingItemDetailsView(
+                viewModel: ShoppingItemDetailsViewModel(
+                    item: item,
+                    isNew: isNew,
+                    repository: ShoppingListsRepository(store: self.dependencies.shoppingListsStore),
+                    coordinator: self)
             )
         case .about:
             AboutView()

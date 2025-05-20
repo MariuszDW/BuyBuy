@@ -32,7 +32,7 @@ class ShoppingListsViewModel: ObservableObject {
     }
 
     func loadLists() {
-        shoppingLists = repository.fetchAllLists().sorted { $0.order < $1.order }
+        shoppingLists = repository.getAllLists()
     }
 
     func deleteLists(atOffsets offsets: IndexSet) {

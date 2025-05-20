@@ -9,10 +9,16 @@ import Foundation
 import Combine
 @testable import BuyBuy
 
-final class MockAppCoordinator: AppCoordinatorProtocol {
+final class TestMockAppCoordinator: AppCoordinatorProtocol {
     var needRefreshListsPublisher: AnyPublisher<Bool, Never> = Just(false).eraseToAnyPublisher()
     var openListBlock: ((UUID) -> Void)?
     var onBack: (() -> Void)?
+    
+    var needRefreshLists: Bool = false
+    
+    func setNeedRefreshLists(_ state: Bool) {
+        // TODO: implement...
+    }
 
     func openList(_ id: UUID) {
         openListBlock?(id)

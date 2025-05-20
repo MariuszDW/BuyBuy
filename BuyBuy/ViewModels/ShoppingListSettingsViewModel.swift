@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 final class ShoppingListSettingsViewModel: ObservableObject {
-    /// The list being edited.
+    /// The sopping list being edited.
     @Published var list: ShoppingList
     
     /// Indicates whether the edited list is a newly created one.
@@ -18,7 +18,7 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     private let coordinator: any AppCoordinatorProtocol
     private let repository: ShoppingListsRepositoryProtocol
 
-    init(coordinator: any AppCoordinatorProtocol, list: ShoppingList, repository: ShoppingListsRepositoryProtocol, isNew: Bool = false) {
+    init(list: ShoppingList, isNew: Bool = false, repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol) {
         self.list = list
         self.isNew = isNew
         self.repository = repository

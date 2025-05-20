@@ -13,8 +13,10 @@ final class ShoppingListsRepository: ShoppingListsRepositoryProtocol {
     init(store: InMemoryShoppingListStore) {
         self.store = store
     }
+    
+    // MARK: - Shopping Lists
 
-    func fetchAllLists() -> [ShoppingList] {
+    func getAllLists() -> [ShoppingList] {
         return store.allLists()
     }
 
@@ -22,11 +24,33 @@ final class ShoppingListsRepository: ShoppingListsRepositoryProtocol {
         store.addList(list)
     }
     
-    func updateList(_ updatedList: ShoppingList) {
-        store.updateList(updatedList)
+    func updateList(_ list: ShoppingList) {
+        store.updateList(list)
     }
     
     func deleteList(with id: UUID) {
         store.removeList(id: id)
+    }
+    
+    func getList(with id: UUID) -> ShoppingList? {
+        return store.getList(with: id)
+    }
+    
+    // MARK: - Shopping Items
+    
+    func getItems(for listID: UUID) -> [ShoppingItem] {
+        return store.getList(with: listID)?.items ?? []
+    }
+
+    func addItem(_ item: ShoppingItem) {
+        store.addItem(item)
+    }
+
+    func updateItem(_ item: ShoppingItem) {
+        store.updateItem(item)
+    }
+    
+    func removeItem(_ item: ShoppingItem) {
+        store.removeItem(item)
     }
 }

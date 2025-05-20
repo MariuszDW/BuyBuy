@@ -9,9 +9,10 @@ import Foundation
 import SwiftUI
 
 final class ShoppingListViewModel: ObservableObject {
-    private let repository: ShoppingListRepositoryProtocol
+    private let repository: ShoppingListsRepositoryProtocol
     private var coordinator: any AppCoordinatorProtocol
 
+    private let listID: UUID
     @Published var list: ShoppingList?
     
     @Published var sections: [ShoppingListSection] = [
@@ -20,14 +21,15 @@ final class ShoppingListViewModel: ObservableObject {
         ShoppingListSection(status: .inactive)
     ]
 
-    init(coordinator: any AppCoordinatorProtocol, repository: ShoppingListRepositoryProtocol) {
-        self.coordinator = coordinator
+    init(listID: UUID, repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol) {
+        self.listID = listID
         self.repository = repository
+        self.coordinator = coordinator
         loadList()
     }
 
     func loadList() {
-        list = repository.getItems()
+        list = repository.getList(with: listID)
     }
 
     func addItem(_ item: ShoppingItem) {
@@ -41,9 +43,9 @@ final class ShoppingListViewModel: ObservableObject {
         loadList()
         coordinator.setNeedRefreshLists(true)
     }
-
-    func removeItem(with id: UUID) {
-        repository.removeItem(with: id)
+    
+    func removeItem(_ item: ShoppingItem) {
+        repository.removeItem(item)
         loadList()
         coordinator.setNeedRefreshLists(true)
     }
@@ -67,4 +69,15 @@ final class ShoppingListViewModel: ObservableObject {
             updateItem(updatedItem)
         }
     }
+    
+    // MARK: - Helpers
+
+//    private func updateOrders() {
+//        guard var items = list?.items else { return }
+//        
+//        for index in items.indices {
+//            items[index].order = index
+//            repository.updateItem(items[index])
+//        }
+//    }
 }

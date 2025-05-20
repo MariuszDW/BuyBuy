@@ -87,9 +87,11 @@ struct ShoppingListView: View {
 // MARK: - Preview
 
 #Preview("Light Mode") {
+    let repository = MockShoppingListsRepository()
     let coordinator = AppCoordinator(dependencies: AppDependencies())
-    let viewModel = ShoppingListViewModel(coordinator: coordinator,
-                                          repository: MockShoppingListRepository())
+    let viewModel = ShoppingListViewModel(listID: UUID(),
+                                          repository: repository,
+                                          coordinator: coordinator)
 
     NavigationStack {
         ShoppingListView(viewModel: viewModel)
@@ -98,35 +100,14 @@ struct ShoppingListView: View {
 }
 
 #Preview("Dark Mode") {
+    let repository = MockShoppingListsRepository()
     let coordinator = AppCoordinator(dependencies: AppDependencies())
-    let viewModel = ShoppingListViewModel(coordinator: coordinator,
-                                          repository: MockShoppingListRepository())
+    let viewModel = ShoppingListViewModel(listID: UUID(),
+                                          repository: repository,
+                                          coordinator: coordinator)
 
     NavigationStack {
         ShoppingListView(viewModel: viewModel)
     }
     .preferredColorScheme(.dark)
-}
-
-// MARK: - Preview Mock
-
-private struct MockShoppingListRepository: ShoppingListRepositoryProtocol {
-    func getItems() -> ShoppingList? {
-        ShoppingList(
-            name: "Mock List",
-            items: [
-                ShoppingItem(name: "Onion", status: .purchased),
-                ShoppingItem(name: "Cheese", status: .inactive),
-                ShoppingItem(name: "Milk", status: .pending),
-                ShoppingItem(name: "Carrot", status: .pending),
-                ShoppingItem(name: "Bread", status: .purchased),
-                ShoppingItem(name: "Eggs", status: .inactive)
-            ],
-            order: 0
-        )
-    }
-
-    func addItem(_ item: ShoppingItem) {}
-    func updateItem(_ item: ShoppingItem) {}
-    func removeItem(with id: UUID) {}
 }
