@@ -21,7 +21,7 @@ struct ShoppingItemDetailsView: View {
 #Preview("Light Mode") {
     let repository = MockShoppingListsRepository()
     let viewModel = ShoppingItemDetailsViewModel(
-        item: repository.getItems(for: UUID()).first!,
+        item: MockShoppingListsRepository.list1.items.first!,
         repository: repository,
         coordinator: AppCoordinator(dependencies: AppDependencies()))
     
@@ -32,7 +32,7 @@ struct ShoppingItemDetailsView: View {
 #Preview("Dark Mode") {
     let repository = MockShoppingListsRepository()
     let viewModel = ShoppingItemDetailsViewModel(
-        item: repository.getItems(for: UUID()).first!,
+        item: MockShoppingListsRepository.list1.items.first!,
         repository: repository,
         coordinator: AppCoordinator(dependencies: AppDependencies()))
     
