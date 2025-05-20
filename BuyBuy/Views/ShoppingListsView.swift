@@ -9,14 +9,9 @@ import SwiftUI
 
 struct ShoppingListsView: View {
     @StateObject var viewModel: ShoppingListsViewModel
-    @EnvironmentObject var dependencies: AppDependencies
     
     @State private var localEditMode: EditMode = .inactive
     @State private var listPendingDeletion: ShoppingList?
-    
-    var designSystem: DesignSystem {
-        dependencies.designSystem
-    }
     
     init(viewModel: ShoppingListsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -182,26 +177,22 @@ struct ShoppingListsView: View {
 // MARK: - Preview
 
 #Preview("Light Mode") {
-    let dependencies = AppDependencies()
-    let mockViewModel = ShoppingListsViewModel(coordinator: AppCoordinator(dependencies: dependencies),
+    let mockViewModel = ShoppingListsViewModel(coordinator: AppCoordinator(dependencies: AppDependencies()),
                                        repository: MockShoppingListsRepository())
     
     NavigationStack {
         ShoppingListsView(viewModel: mockViewModel)
     }
-    .environmentObject(dependencies)
     .preferredColorScheme(.light)
 }
 
 #Preview("Dark Mode") {
-    let dependencies = AppDependencies()
-    let mockViewModel = ShoppingListsViewModel(coordinator: AppCoordinator(dependencies: dependencies),
+    let mockViewModel = ShoppingListsViewModel(coordinator: AppCoordinator(dependencies: AppDependencies()),
                                        repository: MockShoppingListsRepository())
     
     NavigationStack {
         ShoppingListsView(viewModel: mockViewModel)
     }
-    .environmentObject(dependencies)
     .preferredColorScheme(.dark)
 }
 

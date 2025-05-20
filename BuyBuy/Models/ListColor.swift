@@ -8,22 +8,35 @@
 import SwiftUI
 
 enum ListColor: String, CaseIterable {
-    case blue = "ListColorBlue"
-    case brown = "ListColorBrown"
-    case cyan = "ListColorCyan"
-    case gray = "ListColorGray"
-    case green = "ListColorGreen"
-    case indigo = "ListColorIndigo"
-    case magenta = "ListColorMagenta"
-    case orange = "ListColorOrange"
-    case pink = "ListColorPink"
-    case purple = "ListColorPurple"
-    case red = "ListColorRed"
-    case yellow = "ListColorYellow"
+    case blue
+    case brown
+    case cyan
+    case gray
+    case green
+    case indigo
+    case magenta
+    case orange
+    case pink
+    case purple
+    case red
+    case yellow
     
     static var `default`: ListColor { .blue }
 
     var color: Color {
-        Color(self.rawValue)
+        switch self {
+        case .blue: .bbListBlue
+        case .brown: .bbListBrown
+        case .cyan: .bbListCyan
+        case .gray: .bbListGray
+        case .green: .bbListGreen
+        case .indigo: .bbListIndigo
+        case .magenta: .bbListMagenta
+        case .orange: .bbListOrange
+        case .pink: .bbListPink
+        case .purple: .bbListPurple
+        case .red: .bbListRed
+        case .yellow: .bbListYellow
+        }
     }
 }

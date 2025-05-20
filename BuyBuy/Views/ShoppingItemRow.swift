@@ -17,7 +17,7 @@ struct ShoppingItemRow: View {
                 onToggleStatus(item)
             } label: {
                 Image(systemName: item.status.iconName)
-                    .foregroundColor(AppColor.selection)
+                    .foregroundColor(.bbSelection)
                     .font(.title2)
             }
             .buttonStyle(.plain)

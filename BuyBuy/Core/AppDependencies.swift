@@ -8,8 +8,6 @@
 import SwiftUI
 
 final class AppDependencies: ObservableObject {
-    @Published var designSystem: DesignSystem
-    
     // TODO: temporary data
     let shoppingListStore = InMemoryShoppingListStore(initialLists: [
         ShoppingList(name: "Grocery Store", items: [
@@ -21,7 +19,7 @@ final class AppDependencies: ObservableObject {
             ShoppingItem(name: "Butter", status: .purchased),
             ShoppingItem(name: "Yogurt", status: .inactive)
         ], order: 0, icon: .cart, color: .orange),
-
+        
         ShoppingList(name: "Hardware Store", items: [
             ShoppingItem(name: "Screws", status: .purchased),
             ShoppingItem(name: "Hammer", status: .pending),
@@ -32,7 +30,7 @@ final class AppDependencies: ObservableObject {
             ShoppingItem(name: "Ladder", status: .inactive),
             ShoppingItem(name: "Sandpaper", status: .pending)
         ], order: 1, icon: .house, color: .brown),
-
+        
         ShoppingList(name: "Sports Equipment", items: [
             ShoppingItem(name: "Football", status: .pending),
             ShoppingItem(name: "Tennis Racket", status: .purchased),
@@ -44,7 +42,7 @@ final class AppDependencies: ObservableObject {
             ShoppingItem(name: "Basketball", status: .purchased),
             ShoppingItem(name: "Swim Goggles", status: .purchased)
         ], order: 2, icon: .run, color: .blue),
-
+        
         ShoppingList(name: "Pet Supplies", items: [
             ShoppingItem(name: "Cat Food", status: .purchased),
             ShoppingItem(name: "Dog Leash", status: .inactive),
@@ -54,10 +52,5 @@ final class AppDependencies: ObservableObject {
             ShoppingItem(name: "Cat Litter", status: .inactive),
             ShoppingItem(name: "Fish Tank Filter", status: .purchased)
         ], order: 3, icon: .cat, color: .pink)
-    ]
-)
-
-    init(designSystem: DesignSystem = DesignSystem()) {
-        self.designSystem = designSystem
-    }
+    ])
 }

@@ -9,11 +9,6 @@ import SwiftUI
 
 struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
-    @EnvironmentObject var dependencies: AppDependencies
-
-    var designSystem: DesignSystem {
-        return dependencies.designSystem
-    }
 
     var body: some View {
         Group {
@@ -51,7 +46,7 @@ struct ShoppingListView: View {
     private func emptyView() -> some View {
         VStack(spacing: 20) {
             Text("Can't find a shopping list.")
-                .font(AppFont.boldDynamic(style: .body))
+                .font(.boldDynamic(style: .body))
             .buttonStyle(.borderedProminent)
         }
         .padding()
@@ -63,11 +58,11 @@ struct ShoppingListView: View {
         
         HStack(spacing: 8) {
             Image(systemName: section.systemImage)
-                .font(AppFont.boldDynamic(style: .title3))
+                .font(.boldDynamic(style: .title3))
                 .foregroundColor(section.color)
             
             Text(title)
-                .font(AppFont.boldDynamic(style: .title3))
+                .font(.boldDynamic(style: .title3))
                 .foregroundColor(section.color)
                 .opacity(0.7)
             
@@ -79,7 +74,7 @@ struct ShoppingListView: View {
                 }
             } label: {
                 Image(systemName: section.isCollapsed ? "chevron.down" : "chevron.up")
-                    .font(AppFont.boldDynamic(style: .body))
+                    .font(.boldDynamic(style: .body))
                     .foregroundColor(.gray)
             }
             .buttonStyle(PlainButtonStyle())
@@ -92,27 +87,23 @@ struct ShoppingListView: View {
 // MARK: - Preview
 
 #Preview("Light Mode") {
-    let dependencies = AppDependencies()
-    let coordinator = AppCoordinator(dependencies: dependencies)
+    let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = ShoppingListViewModel(coordinator: coordinator,
                                           repository: MockShoppingListRepository())
 
     NavigationStack {
         ShoppingListView(viewModel: viewModel)
-            .environmentObject(dependencies)
     }
     .preferredColorScheme(.light)
 }
 
 #Preview("Dark Mode") {
-    let dependencies = AppDependencies()
-    let coordinator = AppCoordinator(dependencies: dependencies)
+    let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = ShoppingListViewModel(coordinator: coordinator,
                                           repository: MockShoppingListRepository())
 
     NavigationStack {
         ShoppingListView(viewModel: viewModel)
-            .environmentObject(dependencies)
     }
     .preferredColorScheme(.dark)
 }

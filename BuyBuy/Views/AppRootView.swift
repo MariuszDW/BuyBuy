@@ -28,15 +28,11 @@ struct AppRootView: View {
 // MARK: - Preview
 
 #Preview("Light Mode") {
-    let dependencies = AppDependencies()
-    AppRootView(coordinator: AppCoordinator(dependencies: dependencies))
-        .environmentObject(dependencies)
+    AppRootView(coordinator: AppCoordinator(dependencies: AppDependencies()))
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark Mode") {
-    let dependencies = AppDependencies()
-    AppRootView(coordinator: AppCoordinator(dependencies: dependencies))
-        .environmentObject(dependencies)
+    AppRootView(coordinator: AppCoordinator(dependencies: AppDependencies()))
         .preferredColorScheme(.dark)
 }

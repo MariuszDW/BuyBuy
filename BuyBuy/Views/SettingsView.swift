@@ -29,9 +29,7 @@ struct SettingsView: View {
 // MARK: - Preview
 
 #Preview {
-    let dependencies = AppDependencies()
     NavigationStack {
-        SettingsView(viewModel: SettingsViewModel(coordinator: AppCoordinator(dependencies: dependencies)))
-            .environmentObject(dependencies)
+        SettingsView(viewModel: SettingsViewModel(coordinator: AppCoordinator(dependencies: AppDependencies())))
     }
 }

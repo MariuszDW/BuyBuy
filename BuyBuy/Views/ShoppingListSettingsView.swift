@@ -9,14 +9,9 @@ import SwiftUI
 
 struct ShoppingListSettingsView: View {
     @StateObject var viewModel: ShoppingListSettingsViewModel
-    @EnvironmentObject private var dependencies: AppDependencies
     @Environment(\.dismiss) private var dismiss
     
     @FocusState private var focusedNameField: Bool?
-
-    private var designSystem: DesignSystem {
-        dependencies.designSystem
-    }
 
     init(viewModel: ShoppingListSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -58,7 +53,7 @@ struct ShoppingListSettingsView: View {
                 text: $viewModel.list.name
             )
             .textInputAutocapitalization(.sentences)
-            .font(AppFont.boldDynamic(style: .title3))
+            .font(.boldDynamic(style: .title3))
             .focused($focusedNameField, equals: true)
             .task {
                 focusedNameField = viewModel.isNew
@@ -97,7 +92,7 @@ struct ShoppingListSettingsView: View {
                     ForEach(ListColor.allCases, id: \.self) { color in
                         ZStack {
                             Circle()
-                                .stroke(AppColor.selection, lineWidth: 3)
+                                .stroke(Color.bbSelection, lineWidth: 3)
                                 .opacity(viewModel.list.color == color ? 1 : 0)
                                 .frame(width: 44, height: 44)
 
@@ -132,7 +127,7 @@ struct ShoppingListSettingsView: View {
                 ZStack {
                     if viewModel.list.icon == icon {
                         Circle()
-                            .stroke(AppColor.selection, lineWidth: 3)
+                            .stroke(Color.bbSelection, lineWidth: 3)
                             .frame(width: 48, height: 48)
                     }
 
@@ -175,7 +170,6 @@ class PreviewMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     )
     
     ShoppingListSettingsView(viewModel: viewModel)
-        .environmentObject(AppDependencies())
         .preferredColorScheme(.light)
 }
 
@@ -189,6 +183,5 @@ class PreviewMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     )
     
     ShoppingListSettingsView(viewModel: viewModel)
-        .environmentObject(AppDependencies())
         .preferredColorScheme(.dark)
 }

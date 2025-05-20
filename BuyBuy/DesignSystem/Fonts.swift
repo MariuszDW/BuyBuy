@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum AppFont {
+extension Font {
 //    static func regular(size: CGFloat) -> Font {
 //        .system(size: size, weight: .regular)
 //    }
