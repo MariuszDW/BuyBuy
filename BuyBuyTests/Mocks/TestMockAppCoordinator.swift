@@ -32,6 +32,10 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
         // TODO: implement...
     }
     
+    func openItemDetails(_ item: BuyBuy.ShoppingItem, isNew: Bool) {
+        // TODO: implement...
+    }
+    
     func openAbout() {
         // TODO: implement...
     }

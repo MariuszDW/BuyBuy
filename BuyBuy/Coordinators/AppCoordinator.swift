@@ -13,7 +13,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
     @Published var sheet: SheetRoute?
     @Published var needRefreshLists = true
-    @Published var needRefreshList = true
+//    @Published var needRefreshList = true
     
     private let dependencies: AppDependencies
     
@@ -47,6 +47,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
 
     func openListSettings(_ list: ShoppingList, isNew: Bool) {
         sheet = .shoppingListSettings(list, isNew)
+    }
+    
+    func openItemDetails(_ item: ShoppingItem, isNew: Bool) {
+        sheet = .shoppintItemDetails(item, isNew)
     }
     
     func openAbout() {

@@ -13,9 +13,12 @@ protocol AppCoordinatorProtocol: ObservableObject {
     var needRefreshLists: Bool { get }
     
     func setNeedRefreshLists(_ state: Bool)
+    
     func openList(_ id: UUID)
     func openListSettings(_ list: ShoppingList, isNew: Bool)
+    func openItemDetails(_ item: ShoppingItem, isNew: Bool)
     func openAbout()
     func openSettings()
+    
     func back()
 }

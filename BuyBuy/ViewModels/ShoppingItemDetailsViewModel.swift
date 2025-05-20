@@ -33,5 +33,6 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
             repository.updateItem(shoppingItem)
         }
         coordinator.setNeedRefreshLists(true)
+        // TODO: tutaj trzeba tez jakos wymusic refresh listy do ktorej nalezy ten item, czyli widoku na ktorym ten sheet zostal pokazany
     }
 }
