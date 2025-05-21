@@ -14,15 +14,33 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+        
+        for i in 0..<5 {
+            let list = ShoppingListEntity(context: viewContext)
+            list.id = UUID()
+            list.name = "Lista \(i)"
+            list.note = "Notatka do listy \(i)"
+            list.order = Int64(i)
+            list.icon = ListIcon.default.rawValue
+            list.color = ListColor.default.rawValue
+
+            // Możesz tu dodać przykładowe ShoppingItemEntity, np:
+            for j in 0..<3 {
+                let item = ShoppingItemEntity(context: viewContext)
+                item.id = UUID()
+                item.listID = list.id
+                item.name = "Przedmiot \(j)"
+                item.note = nil
+                item.status = ShoppingItemStatus.pending.rawValue
+                item.order = Int64(j)
+                // Powiąż relację jeśli masz (np. item.list = list)
+                item.list = list
+            }
         }
+        
         do {
             try viewContext.save()
         } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
@@ -32,7 +50,7 @@ struct PersistenceController {
     let container: NSPersistentContainer
 
     init(inMemory: Bool = false) {
-        container = NSPersistentContainer(name: "BuyBuy")
+        container = NSPersistentContainer(name: "Model")
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }

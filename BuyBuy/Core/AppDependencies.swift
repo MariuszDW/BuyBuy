@@ -15,4 +15,10 @@ final class AppDependencies: ObservableObject {
         MockShoppingListsRepository.list3,
         MockShoppingListsRepository.list4
     ])
+    
+    private let coreDataStack = CoreDataStack()
+    
+    lazy var shoppingRepository: ShoppingRepositoryProtocol = {
+        ShoppingRepository(coreDataStack: coreDataStack)
+    }()
 }
