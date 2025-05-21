@@ -8,10 +8,11 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 final class ShoppingListViewModel: ObservableObject {
     private let repository: ShoppingListsRepositoryProtocol
     private var coordinator: any AppCoordinatorProtocol
-
+    
     private let listID: UUID
     @Published var list: ShoppingList?
     
@@ -20,38 +21,34 @@ final class ShoppingListViewModel: ObservableObject {
         ShoppingListSection(status: .purchased),
         ShoppingListSection(status: .inactive)
     ]
-
+    
     init(listID: UUID, repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol) {
         self.listID = listID
         self.repository = repository
         self.coordinator = coordinator
-        loadList()
-    }
-
-    func loadList() {
-        list = repository.getList(with: listID)
-    }
-
-    func addItem(_ item: ShoppingItem) {
-        repository.addItem(item)
-        loadList()
-        coordinator.setNeedRefreshLists(true)
-    }
-
-    func updateItem(_ item: ShoppingItem) {
-        repository.updateItem(item)
-        loadList()
-        coordinator.setNeedRefreshLists(true)
     }
     
-    func removeItem(_ item: ShoppingItem) {
-        repository.removeItem(item)
-        loadList()
-        coordinator.setNeedRefreshLists(true)
+    func loadList() async {
+        let fetchedList = try? await repository.fetchList(id: listID)
+        self.list = fetchedList
+    }
+    
+    func addItem(_ item: ShoppingItem) async {
+        try? await repository.addItem(item)
+        await loadList()
+    }
+    
+    func updateItem(_ item: ShoppingItem) async {
+        try? await repository.updateItem(item)
+        await loadList()
+    }
+    
+    func removeItem(_ item: ShoppingItem) async {
+        try? await repository.deleteItem(item)
+        await loadList()
     }
     
     func back() {
-        coordinator.setNeedRefreshLists(true)
         coordinator.back()
     }
     
@@ -62,22 +59,9 @@ final class ShoppingListViewModel: ObservableObject {
         }
     }
     
-    func toggleStatus(for item: ShoppingItem) {
+    func toggleStatus(for item: ShoppingItem) async {
         var updatedItem = item
         updatedItem.status = item.status.toggled()
-        withAnimation {
-            updateItem(updatedItem)
-        }
+        await updateItem(updatedItem)
     }
-    
-    // MARK: - Helpers
-
-//    private func updateOrders() {
-//        guard var items = list?.items else { return }
-//        
-//        for index in items.indices {
-//            items[index].order = index
-//            repository.updateItem(items[index])
-//        }
-//    }
 }

@@ -31,12 +31,17 @@ struct ShoppingListsView: View {
                 title: Text("Delete list \"\(list.name)\"?"),
                 message: Text("This list contains items. Are you sure you want to delete it?"),
                 primaryButton: .destructive(Text("Delete")) {
-                    withAnimation {
-                        viewModel.deleteList(id: list.id)
+                    Task {
+                        await viewModel.deleteList(id: list.id)
                     }
                 },
                 secondaryButton: .cancel()
             )
+        }
+        .onAppear {
+            Task {
+                await viewModel.loadLists()
+            }
         }
     }
     
@@ -59,7 +64,9 @@ struct ShoppingListsView: View {
                                     }
                                     
                                     Button(role: .destructive) {
-                                        handleDeleteTapped(for: list)
+                                        Task {
+                                            await handleDeleteTapped(for: list)
+                                        }
                                     } label: {
                                         Label("Delete", systemImage: "trash.fill")
                                     }
@@ -67,7 +74,9 @@ struct ShoppingListsView: View {
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
-                                handleDeleteTapped(for: list)
+                                Task {
+                                    await handleDeleteTapped(for: list)
+                                }
                             } label: {
                                 Label("Delete", systemImage: "trash.fill")
                             }
@@ -85,10 +94,14 @@ struct ShoppingListsView: View {
                 .listRowInsets(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 16))
             }
             .onDelete { offsets in
-                viewModel.deleteLists(atOffsets: offsets)
+                Task {
+                    await viewModel.deleteLists(atOffsets: offsets)
+                }
             }
             .onMove { indices, newOffset in
-                viewModel.moveLists(fromOffsets: indices, toOffset: newOffset)
+                Task {
+                    await viewModel.moveLists(fromOffsets: indices, toOffset: newOffset)
+                }
             }
         }
     }
@@ -163,11 +176,11 @@ struct ShoppingListsView: View {
     
     // MARK: - Private
     
-    private func handleDeleteTapped(for list: ShoppingList) {
-        if list.items.isEmpty {
-            viewModel.deleteList(id: list.id)
-        } else {
-            withAnimation {
+    private func handleDeleteTapped(for list: ShoppingList) async {
+        Task {
+            if list.items.isEmpty {
+                await viewModel.deleteList(id: list.id)
+            } else {
                 listPendingDeletion = list
             }
         }

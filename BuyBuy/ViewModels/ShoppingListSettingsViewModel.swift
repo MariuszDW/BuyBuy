@@ -7,30 +7,30 @@
 
 import Foundation
 
+@MainActor
 final class ShoppingListSettingsViewModel: ObservableObject {
-    /// The sopping list being edited.
     @Published var list: ShoppingList
     
-    /// Indicates whether the edited list is a newly created one.
     private(set) var isNew: Bool
-
     private let coordinator: any AppCoordinatorProtocol
     private let repository: ShoppingListsRepositoryProtocol
+    private let onSave: () -> Void
 
-    init(list: ShoppingList, isNew: Bool = false, repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol) {
+    init(list: ShoppingList, isNew: Bool = false, repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol, onSave: @escaping () -> Void) {
         self.list = list
         self.isNew = isNew
         self.repository = repository
         self.coordinator = coordinator
+        self.onSave = onSave
     }
 
-    func applyChanges() {
+    func applyChanges() async {
         list.prepareToSave()
         if isNew {
-            repository.addList(list)
+            try? await repository.addList(self.list)
         } else {
-            repository.updateList(list)
+            try? await repository.updateList(self.list)
         }
-        coordinator.setNeedRefreshLists(true)
+        onSave()
     }
 }

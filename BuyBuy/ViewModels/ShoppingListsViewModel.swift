@@ -8,49 +8,42 @@
 import Foundation
 import Combine
 
+@MainActor
 class ShoppingListsViewModel: ObservableObject {
     @Published var shoppingLists: [ShoppingList] = []
 
     private let repository: ShoppingListsRepositoryProtocol
     private let coordinator: any AppCoordinatorProtocol
-    private var cancellables = Set<AnyCancellable>()
 
     init(coordinator: any AppCoordinatorProtocol, repository: ShoppingListsRepositoryProtocol) {
         self.coordinator = coordinator
         self.repository = repository
-        
-        coordinator.needRefreshListsPublisher
-            .filter { $0 == true }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                if self?.coordinator.needRefreshLists == true {
-                    self?.loadLists()
-                    self?.coordinator.setNeedRefreshLists(false)
-                }
-            }
-            .store(in: &cancellables)
+    }
+    
+    func loadLists() async {
+        let fetchedLists = try? await repository.fetchAllLists()
+        self.shoppingLists = fetchedLists ?? []
     }
 
-    func loadLists() {
-        shoppingLists = repository.getAllLists()
-    }
-
-    func deleteLists(atOffsets offsets: IndexSet) {
+    func deleteLists(atOffsets offsets: IndexSet) async {
         let idsToDelete = offsets.map { shoppingLists[$0].id }
-        idsToDelete.forEach { repository.deleteList(with: $0) }
-        shoppingLists.remove(atOffsets: offsets)
-        updateOrders()
+        shoppingLists.removeAll { idsToDelete.contains($0.id) }
+        try? await repository.deleteLists(ids: idsToDelete)
+        await loadLists()
     }
 
-    func deleteList(id: UUID) {
-        repository.deleteList(with: id)
+    func deleteList(id: UUID) async {
         shoppingLists.removeAll { $0.id == id }
-        updateOrders()
+        try? await repository.deleteList(id: id)
+        await loadLists()
     }
 
-    func moveLists(fromOffsets source: IndexSet, toOffset destination: Int) {
+    func moveLists(fromOffsets source: IndexSet, toOffset destination: Int) async {
         shoppingLists.move(fromOffsets: source, toOffset: destination)
-        updateOrders()
+        for index in shoppingLists.indices {
+            shoppingLists[index].order = index
+            try? await repository.updateList(shoppingLists[index])
+        }
     }
 
     func startCreatingList() {
@@ -63,11 +56,20 @@ class ShoppingListsViewModel: ObservableObject {
             icon: .default,
             color: .default
         )
-        coordinator.openListSettings(newList, isNew: true)
+        
+        coordinator.openListSettings(newList, isNew: true, onSave: { [weak self] in
+            Task {
+                await self?.loadLists()
+            }
+        })
     }
-
+    
     func startEditingList(_ list: ShoppingList) {
-        coordinator.openListSettings(list, isNew: false)
+        coordinator.openListSettings(list, isNew: false, onSave: { [weak self] in
+            Task {
+                await self?.loadLists()
+            }
+        })
     }
 
     func openAbout() {
@@ -76,14 +78,5 @@ class ShoppingListsViewModel: ObservableObject {
 
     func openSettings() {
         coordinator.openSettings()
-    }
-
-    // MARK: - Helpers
-
-    private func updateOrders() {
-        for index in shoppingLists.indices {
-            shoppingLists[index].order = index
-            repository.updateList(shoppingLists[index])
-        }
     }
 }

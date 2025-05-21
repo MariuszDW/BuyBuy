@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
-
+    
     var body: some View {
         Group {
             if let list = viewModel.list {
@@ -18,8 +18,11 @@ struct ShoppingListView: View {
                 emptyView()
             }
         }
-        .navigationTitle(viewModel.list?.name ?? "Shopping list")
+        .navigationTitle(viewModel.list?.name ?? "")
         .navigationBarTitleDisplayMode(.large)
+        .task {
+            await viewModel.loadList()
+        }
     }
     
     @ViewBuilder
@@ -30,8 +33,10 @@ struct ShoppingListView: View {
                 Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
                     if !section.isCollapsed {
                         ForEach(items) { item in
-                            ShoppingItemRow(item: item) { toggledItem in
-                                viewModel.toggleStatus(for: toggledItem)
+                            ShoppingItemRow(item: item) { [weak viewModel] toggledItem in
+                                Task {
+                                    await viewModel?.toggleStatus(for: toggledItem)
+                                }
                             }
                         }
                     }
@@ -39,15 +44,14 @@ struct ShoppingListView: View {
             }
         }
         .listStyle(.plain)
-        // .animation(.easeInOut, value: list.items)
     }
-
+    
     @ViewBuilder
     private func emptyView() -> some View {
         VStack(spacing: 20) {
             Text("Can't find a shopping list.")
                 .font(.boldDynamic(style: .body))
-            .buttonStyle(.borderedProminent)
+                .buttonStyle(.borderedProminent)
         }
         .padding()
     }
@@ -92,7 +96,7 @@ struct ShoppingListView: View {
     let viewModel = ShoppingListViewModel(listID: UUID(),
                                           repository: repository,
                                           coordinator: coordinator)
-
+    
     NavigationStack {
         ShoppingListView(viewModel: viewModel)
     }
@@ -105,7 +109,7 @@ struct ShoppingListView: View {
     let viewModel = ShoppingListViewModel(listID: UUID(),
                                           repository: repository,
                                           coordinator: coordinator)
-
+    
     NavigationStack {
         ShoppingListView(viewModel: viewModel)
     }

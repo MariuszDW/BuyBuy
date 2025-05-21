@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-enum SheetRoute: Identifiable, Equatable {
-    case shoppingListSettings(ShoppingList, Bool)
+enum SheetRoute: Identifiable {
+    case shoppingListSettings(ShoppingList, Bool, onSave: () -> Void)
     case shoppintItemDetails(ShoppingItem, Bool)
     case about
 
@@ -21,9 +21,5 @@ enum SheetRoute: Identifiable, Equatable {
         case .about:
             return "about"
         }
-    }
-
-    static func == (lhs: SheetRoute, rhs: SheetRoute) -> Bool {
-        lhs.id == rhs.id
     }
 }

@@ -25,14 +25,13 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         self.repository = repository
     }
     
-    func applyChanges() {
+    func applyChanges() async {
         shoppingItem.prepareToSave()
         if isNew {
-            repository.addItem(shoppingItem)
+            try? await repository.addItem(shoppingItem)
         } else {
-            repository.updateItem(shoppingItem)
+            try? await repository.updateItem(shoppingItem)
         }
-        coordinator.setNeedRefreshLists(true)
         // TODO: tutaj trzeba tez jakos wymusic refresh listy do ktorej nalezy ten item, czyli widoku na ktorym ten sheet zostal pokazany
     }
 }

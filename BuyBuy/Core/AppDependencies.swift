@@ -8,17 +8,8 @@
 import SwiftUI
 
 final class AppDependencies: ObservableObject {
-    // TODO: temporary data
-    let shoppingListsStore: InMemoryShoppingListStore = InMemoryShoppingListStore(initialLists: [
-        MockShoppingListsRepository.list1,
-        MockShoppingListsRepository.list2,
-        MockShoppingListsRepository.list3,
-        MockShoppingListsRepository.list4
-    ])
-    
     private let coreDataStack = CoreDataStack()
-    
-    lazy var shoppingRepository: ShoppingRepositoryProtocol = {
-        ShoppingRepository(coreDataStack: coreDataStack)
+    lazy var repository: ShoppingListsRepositoryProtocol = {
+        ShoppingListsRepository(coreDataStack: coreDataStack)
     }()
 }

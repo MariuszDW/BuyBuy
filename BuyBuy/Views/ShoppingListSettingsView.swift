@@ -12,11 +12,11 @@ struct ShoppingListSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     
     @FocusState private var focusedNameField: Bool?
-
+    
     init(viewModel: ShoppingListSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -37,15 +37,17 @@ struct ShoppingListSettingsView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("OK") {
-                        viewModel.applyChanges()
-                        dismiss()
+                        Task {
+                            await viewModel.applyChanges()
+                            dismiss()
+                        }
                     }
                     .disabled(viewModel.list.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
         }
     }
-
+    
     private var nameSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             TextField(
@@ -63,12 +65,12 @@ struct ShoppingListSettingsView: View {
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
     }
-
+    
     private var iconAndColorSection: some View {
         let screenSize = UIScreen.main.bounds.size
         let shortSide = min(screenSize.width, screenSize.height)
         let iconSize = shortSide * 0.32
-
+        
         return VStack {
             HStack(alignment: .top, spacing: 24) {
                 ZStack {
@@ -84,7 +86,7 @@ struct ShoppingListSettingsView: View {
                         .animation(.easeInOut(duration: 0.25), value: viewModel.list.color)
                 }
                 .animation(.spring(response: 0.4, dampingFraction: 0.6), value: viewModel.list.icon)
-
+                
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.flexible()), count: 4),
                     spacing: 4
@@ -95,7 +97,7 @@ struct ShoppingListSettingsView: View {
                                 .stroke(Color.bbSelection, lineWidth: 3)
                                 .opacity(viewModel.list.color == color ? 1 : 0)
                                 .frame(width: 44, height: 44)
-
+                            
                             Circle()
                                 .fill(color.color)
                                 .frame(width: 32, height: 32)
@@ -116,8 +118,7 @@ struct ShoppingListSettingsView: View {
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
     }
-
-
+    
     private var iconsGridSection: some View {
         LazyVGrid(
             columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: 5),
@@ -130,7 +131,7 @@ struct ShoppingListSettingsView: View {
                             .stroke(Color.bbSelection, lineWidth: 3)
                             .frame(width: 48, height: 48)
                     }
-
+                    
                     Image(systemName: icon.rawValue)
                         .resizable()
                         .scaledToFit()
@@ -156,9 +157,10 @@ struct ShoppingListSettingsView: View {
 #Preview("Light Mode") {
     let repository = MockShoppingListsRepository()
     let viewModel = ShoppingListSettingsViewModel(
-        list: repository.getList(with: UUID())!,
+        list: MockShoppingListsRepository.list1,
         repository: repository,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        onSave: {}
     )
     
     ShoppingListSettingsView(viewModel: viewModel)
@@ -168,9 +170,10 @@ struct ShoppingListSettingsView: View {
 #Preview("Dark Mode") {
     let repository = MockShoppingListsRepository()
     let viewModel = ShoppingListSettingsViewModel(
-        list: repository.getList(with: UUID())!,
+        list: MockShoppingListsRepository.list1,
         repository: repository,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        onSave: {}
     )
     
     ShoppingListSettingsView(viewModel: viewModel)

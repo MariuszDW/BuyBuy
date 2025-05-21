@@ -12,31 +12,19 @@ import SwiftUI
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
     @Published var sheet: SheetRoute?
-    @Published var needRefreshLists = true
-//    @Published var needRefreshList = true
     
     private let dependencies: AppDependencies
+    private(set) var shoppingListsViewModel: ShoppingListsViewModel!
     
-    private lazy var shoppingListsViewModel: ShoppingListsViewModel = {
-        ShoppingListsViewModel(
-            coordinator: self,
-            repository: ShoppingListsRepository(store: dependencies.shoppingListsStore)
-        )
-    }()
-    
-    var needRefreshListsPublisher: AnyPublisher<Bool, Never> {
-        $needRefreshLists.eraseToAnyPublisher()
-    }
-
+    @MainActor
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
+        self.shoppingListsViewModel = ShoppingListsViewModel(
+            coordinator: self,
+            repository: dependencies.repository
+        )
     }
     
-    func setNeedRefreshLists(_ state: Bool) {
-        guard state != needRefreshLists else { return }
-        needRefreshLists = state
-    }
-
     func openList(_ id: UUID) {
         navigationPath.append(AppRoute.shoppingList(id))
     }
@@ -45,8 +33,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         navigationPath.append(AppRoute.settings)
     }
 
-    func openListSettings(_ list: ShoppingList, isNew: Bool) {
-        sheet = .shoppingListSettings(list, isNew)
+    func openListSettings(_ list: ShoppingList, isNew: Bool, onSave: @escaping () -> Void) {
+        self.sheet = .shoppingListSettings(list, isNew, onSave: onSave)
     }
     
     func openItemDetails(_ item: ShoppingItem, isNew: Bool) {
@@ -71,7 +59,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
                     listID: id,
-                    repository: ShoppingListsRepository(store: self.dependencies.shoppingListsStore),
+                    repository: self.dependencies.repository,
                     coordinator: self,
                 )
             )
@@ -86,22 +74,24 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @ViewBuilder
     func sheetView(for sheet: SheetRoute) -> some View {
         switch sheet {
-        case .shoppingListSettings(let list, let isNew):
+        case let .shoppingListSettings(list, isNew, onSave):
             ShoppingListSettingsView(
                 viewModel: ShoppingListSettingsViewModel(
                     list: list,
                     isNew: isNew,
-                    repository: ShoppingListsRepository(store: dependencies.shoppingListsStore),
-                    coordinator: self
+                    repository: self.dependencies.repository,
+                    coordinator: self,
+                    onSave: onSave
                 )
             )
-        case .shoppintItemDetails(let item, let isNew):
+        case let .shoppintItemDetails(item, isNew):
             ShoppingItemDetailsView(
                 viewModel: ShoppingItemDetailsViewModel(
                     item: item,
                     isNew: isNew,
-                    repository: ShoppingListsRepository(store: self.dependencies.shoppingListsStore),
-                    coordinator: self)
+                    repository: self.dependencies.repository,
+                    coordinator: self
+                )
             )
         case .about:
             AboutView()
