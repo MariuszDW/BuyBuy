@@ -11,8 +11,53 @@ struct ShoppingItemDetailsView: View {
     @StateObject var viewModel: ShoppingItemDetailsViewModel
     @Environment(\.dismiss) private var dismiss
     
+    @FocusState private var focusedNameField: Bool?
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 16) {
+                    nameSection
+                }
+                .padding()
+            }
+            .navigationTitle("Item settings")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("OK") {
+                        Task {
+                            await viewModel.applyChanges()
+                            dismiss()
+                        }
+                    }
+                    .disabled(viewModel.shoppingItem.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+        }
+    }
+    
+    private var nameSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            TextField(
+                "Item name",
+                text: $viewModel.shoppingItem.name
+            )
+            // .textInputAutocapitalization(.sentences) // TODO: To dodac jak opcje w ustawieniach aplikacji.
+            .font(.boldDynamic(style: .title3))
+            .focused($focusedNameField, equals: true)
+            .task {
+                focusedNameField = viewModel.isNew
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
     }
 }
 

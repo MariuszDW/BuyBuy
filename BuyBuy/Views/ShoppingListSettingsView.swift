@@ -54,7 +54,7 @@ struct ShoppingListSettingsView: View {
                 "List name",
                 text: $viewModel.list.name
             )
-            .textInputAutocapitalization(.sentences)
+            // .textInputAutocapitalization(.sentences) // TODO: To dodac jak opcje w ustawieniach aplikacji.
             .font(.boldDynamic(style: .title3))
             .focused($focusedNameField, equals: true)
             .task {

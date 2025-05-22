@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 
+@MainActor
 final class ShoppingItemDetailsViewModel: ObservableObject {
     /// The shopping item being edited.
     @Published var shoppingItem: ShoppingItem
