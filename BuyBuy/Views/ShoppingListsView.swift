@@ -19,9 +19,25 @@ struct ShoppingListsView: View {
     
     var body: some View {
         VStack {
-            lists
-                .environment(\.editMode, $localEditMode)
+            if viewModel.shoppingLists.isEmpty {
+                Spacer()
+                emptyView()
+                    .onAppear {
+                        localEditMode = .inactive
+                    }
+            } else {
+                shoppingListsSection
+                    .environment(\.editMode, $localEditMode)
+            }
+            
+            Spacer()
+            
             bottomPanel
+        }
+        .onChange(of: viewModel.shoppingLists) { newValue in
+            if newValue.isEmpty {
+                localEditMode = .inactive
+            }
         }
         .toolbar {
             toolbarContent
@@ -47,7 +63,7 @@ struct ShoppingListsView: View {
     
     // MARK: - Subviews
     
-    private var lists: some View {
+    private var shoppingListsSection: some View {
         List {
             ForEach(viewModel.shoppingLists) { list in
                 Group {
@@ -161,6 +177,7 @@ struct ShoppingListsView: View {
                 } label: {
                     Image(systemName: localEditMode == .active ? "checkmark" : "pencil.circle")
                 }
+                .disabled(viewModel.shoppingLists.isEmpty)
                 .accessibilityLabel(localEditMode == .active ? "Done Editing" : "Edit")
                 
                 Button {
@@ -173,6 +190,15 @@ struct ShoppingListsView: View {
                 .disabled(localEditMode.isEditing)
             }
         }
+    }
+    
+    @ViewBuilder
+    private func emptyView() -> some View {
+        VStack {
+            Text("No shopping list.")
+                .font(.boldDynamic(style: .body))
+        }
+        .padding()
     }
     
     // MARK: - Private

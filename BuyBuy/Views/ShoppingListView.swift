@@ -14,13 +14,19 @@ struct ShoppingListView: View {
     
     var body: some View {
         VStack {
-            if let list = viewModel.list {
+            if let list = viewModel.list, !list.items.isEmpty {
                 listView(list)
                     .environment(\.editMode, $localEditMode)
-                bottomPanel
             } else {
+                Spacer()
                 emptyView()
+                    .onAppear {
+                        localEditMode = .inactive
+                    }
             }
+            
+            Spacer()
+            bottomPanel
         }
         .toolbar {
             toolbarContent
@@ -68,6 +74,7 @@ struct ShoppingListView: View {
                 } label: {
                     Image(systemName: localEditMode == .active ? "checkmark" : "pencil.circle")
                 }
+                .disabled(viewModel.list?.items.isEmpty ?? true)
                 .accessibilityLabel(localEditMode == .active ? "Done Editing" : "Edit")
             }
         }
@@ -92,10 +99,9 @@ struct ShoppingListView: View {
     
     @ViewBuilder
     private func emptyView() -> some View {
-        VStack(spacing: 20) {
-            Text("Can't find a shopping list.")
+        VStack {
+            Text("Empty list.")
                 .font(.boldDynamic(style: .body))
-                .buttonStyle(.borderedProminent)
         }
         .padding()
     }
