@@ -8,10 +8,12 @@
 import Foundation
 
 extension UUID {
-    static func unique(in existingUUIDs: [UUID]) -> UUID {
+    static func unique(in UUIDs: [UUID]?) -> UUID {
         var newUUID = UUID()
-        while existingUUIDs.contains(newUUID) {
-            newUUID = UUID()
+        if let UUIDs = UUIDs {
+            while UUIDs.contains(newUUID) {
+                newUUID = UUID()
+            }
         }
         return newUUID
     }
