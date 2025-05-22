@@ -54,7 +54,7 @@ struct ShoppingListView: View {
         HStack {
             Button(action: {
                 localEditMode = .inactive
-                // viewModel.openItemSettings()
+                viewModel.openItemSettings(nil)
             }) {
                 Label("Add item", systemImage: "plus.circle")
             }

@@ -23,7 +23,8 @@ struct ShoppingItemDetailsView: View {
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockShoppingListsRepository.list1.items.first!,
         repository: repository,
-        coordinator: AppCoordinator(dependencies: AppDependencies()))
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        onSave: {})
     
     ShoppingItemDetailsView(viewModel: viewModel)
         .preferredColorScheme(.light)
@@ -34,7 +35,8 @@ struct ShoppingItemDetailsView: View {
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockShoppingListsRepository.list1.items.first!,
         repository: repository,
-        coordinator: AppCoordinator(dependencies: AppDependencies()))
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        onSave: {})
     
     ShoppingItemDetailsView(viewModel: viewModel)
         .preferredColorScheme(.dark)

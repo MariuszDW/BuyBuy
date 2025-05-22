@@ -9,7 +9,7 @@ import SwiftUI
 
 enum SheetRoute: Identifiable {
     case shoppingListSettings(ShoppingList, Bool, onSave: () -> Void)
-    case shoppintItemDetails(ShoppingItem, Bool)
+    case shoppintItemDetails(ShoppingItem, Bool, onSave: () -> Void)
     case about
 
     var id: String {

@@ -12,9 +12,10 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     @Published var list: ShoppingList
     
     private(set) var isNew: Bool
+    private let onSave: () -> Void
+    
     private let coordinator: any AppCoordinatorProtocol
     private let repository: ShoppingListsRepositoryProtocol
-    private let onSave: () -> Void
 
     init(list: ShoppingList, isNew: Bool = false, repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol, onSave: @escaping () -> Void) {
         self.list = list

@@ -11,7 +11,7 @@ import Combine
 protocol AppCoordinatorProtocol: ObservableObject {
     func openShoppingList(_ id: UUID)
     func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onSave: @escaping () -> Void)
-    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool)
+    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onSave: @escaping () -> Void)
     func openAbout()
     func openAppSettings()
     func back()

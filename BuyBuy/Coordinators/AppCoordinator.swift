@@ -37,8 +37,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         self.sheet = .shoppingListSettings(list, isNew, onSave: onSave)
     }
     
-    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool) {
-        sheet = .shoppintItemDetails(item, isNew)
+    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onSave: @escaping () -> Void) {
+        sheet = .shoppintItemDetails(item, isNew, onSave: onSave)
     }
     
     func openAbout() {
@@ -84,13 +84,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     onSave: onSave
                 )
             )
-        case let .shoppintItemDetails(item, isNew):
+        case let .shoppintItemDetails(item, isNew, onSave):
             ShoppingItemDetailsView(
                 viewModel: ShoppingItemDetailsViewModel(
                     item: item,
                     isNew: isNew,
                     repository: self.dependencies.repository,
-                    coordinator: self
+                    coordinator: self,
+                    onSave: onSave
                 )
             )
         case .about:

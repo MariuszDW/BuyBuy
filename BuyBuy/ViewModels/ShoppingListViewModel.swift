@@ -64,4 +64,18 @@ final class ShoppingListViewModel: ObservableObject {
         updatedItem.status = item.status.toggled()
         await updateItem(updatedItem)
     }
+    
+    func openItemSettings(_ item: ShoppingItem? = nil) {
+        let itemToEdit = item ?? {
+            let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
+            let maxOrder = list?.items.map(\.order).max() ?? 0
+            return ShoppingItem(order: maxOrder + 1, listID: uniqueUUID, name: "", status: .pending)
+        }()
+        
+        coordinator.openShoppingItemDetails(itemToEdit, isNew: item == nil, onSave: { [weak self] in
+            Task {
+                await self?.loadList()
+            }
+        })
+    }
 }
