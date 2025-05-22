@@ -25,6 +25,11 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         )
     }
     
+    @MainActor
+    func performStartupTasks() async {
+        try? await dependencies.repository.cleanOrphanedItems()
+    }
+    
     func openShoppingList(_ id: UUID) {
         navigationPath.append(AppRoute.shoppingList(id))
     }

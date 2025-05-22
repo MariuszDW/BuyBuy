@@ -81,4 +81,6 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     func updateItem(_ item: ShoppingItem) async throws {}
     
     func deleteItem(_ item: ShoppingItem) async throws {}
+    
+    func cleanOrphanedItems() async throws {}
 }

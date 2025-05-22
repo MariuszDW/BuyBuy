@@ -13,7 +13,7 @@ struct ShoppingListView: View {
     @State private var localEditMode: EditMode = .inactive
     
     var body: some View {
-        Group {
+        VStack {
             if let list = viewModel.list {
                 listView(list)
                     .environment(\.editMode, $localEditMode)
@@ -21,6 +21,9 @@ struct ShoppingListView: View {
             } else {
                 emptyView()
             }
+        }
+        .toolbar {
+            toolbarContent
         }
         .navigationTitle(viewModel.list?.name ?? "")
         .navigationBarTitleDisplayMode(.large)
@@ -33,7 +36,7 @@ struct ShoppingListView: View {
     private func listView(_ list: ShoppingList) -> some View {
         List {
             ForEach(viewModel.sections, id: \.status) { section in
-                let items = list.items(withStatus: section.status)
+                let items = list.items(for: section.status)
                 Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
                     if !section.isCollapsed {
                         ForEach(items) { item in
@@ -43,11 +46,31 @@ struct ShoppingListView: View {
                                 }
                             }
                         }
+                        .onMove { indices, newOffset in
+                            Task {
+                                await viewModel.moveItem(from: indices, to: newOffset, in: section.status)
+                            }
+                        }
                     }
                 }
             }
         }
         .listStyle(.plain)
+    }
+    
+    private var toolbarContent: some ToolbarContent {
+        Group {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button {
+                    withAnimation {
+                        localEditMode = (localEditMode == .active) ? .inactive : .active
+                    }
+                } label: {
+                    Image(systemName: localEditMode == .active ? "checkmark" : "pencil.circle")
+                }
+                .accessibilityLabel(localEditMode == .active ? "Done Editing" : "Edit")
+            }
+        }
     }
     
     private var bottomPanel: some View {

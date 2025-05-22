@@ -104,6 +104,7 @@ struct ShoppingListsView: View {
                 }
             }
         }
+        .listStyle(.plain)
     }
     
     private func listRow(for list: ShoppingList) -> some View {
@@ -119,7 +120,7 @@ struct ShoppingListsView: View {
             
             Spacer()
             
-            Text("\(list.items(withStatus: .purchased).count) / \(list.items(withStatuses: [.pending, .purchased]).count)")
+            Text("\(list.items(for: .purchased).count) / \(list.items(for: .pending).count + list.items(for: .purchased).count)")
                 .foregroundColor(.secondary)
                 .font(.subheadline)
         }

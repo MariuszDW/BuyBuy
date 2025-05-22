@@ -31,6 +31,19 @@ final class ShoppingListViewModel: ObservableObject {
     func loadList() async {
         let fetchedList = try? await repository.fetchList(with: listID)
         self.list = fetchedList
+        
+        // TODO: temporary test or order
+//        let pending = self.list?.items(for: .pending)
+//        let purchased = self.list?.items(for: .purchased)
+//        print("pending:")
+//        pending?.forEach { item in
+//            print("    \(item.name), order=\(item.order)")
+//        }
+//        print("purchased:")
+//        purchased?.forEach { item in
+//            print("    \(item.name), order=\(item.order)")
+//        }
+//        print("-------------")
     }
     
     func addItem(_ item: ShoppingItem) async {
@@ -48,6 +61,25 @@ final class ShoppingListViewModel: ObservableObject {
         await loadList()
     }
     
+    func moveItem(from source: IndexSet, to destination: Int, in section: ShoppingItemStatus) async {
+        guard let list = list else { return }
+        
+        var items = list.items(for: section)
+        items.move(fromOffsets: source, toOffset: destination)
+
+        let reorderedItems = items.enumerated().map { index, item -> ShoppingItem in
+            var updatedItem = item
+            updatedItem.order = index
+            return updatedItem
+        }
+
+        for item in reorderedItems {
+            try? await repository.updateItem(item)
+        }
+
+        await loadList()
+    }
+    
     func back() {
         coordinator.back()
     }
@@ -60,15 +92,61 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func toggleStatus(for item: ShoppingItem) async {
-        var updatedItem = item
-        updatedItem.status = item.status.toggled()
-        await updateItem(updatedItem)
+        guard var currentList = self.list else { return }
+        guard let oldItemIndex = currentList.items.firstIndex(where: { $0.id == item.id }) else { return }
+        
+        var updatedItem = currentList.items[oldItemIndex]
+        let oldStatus = updatedItem.status
+        let newStatus = oldStatus.toggled()
+        
+        guard oldStatus != newStatus else { return }
+        
+        updatedItem.status = newStatus
+        
+        currentList.items[oldItemIndex] = updatedItem
+        
+        var oldSectionItems = currentList.items(for: oldStatus)
+            .filter { $0.id != updatedItem.id }
+        
+        var newSectionItems = currentList.items(for: newStatus)
+            .filter { $0.id != updatedItem.id }
+        
+        let maxOrder = newSectionItems.map(\.order).max() ?? -1
+        updatedItem.order = maxOrder + 1
+        
+        newSectionItems.append(updatedItem)
+        
+        newSectionItems = newSectionItems.enumerated().map { index, item in
+            var mutable = item
+            mutable.order = index
+            return mutable
+        }
+        
+        oldSectionItems = oldSectionItems.enumerated().map { index, item in
+            var mutable = item
+            mutable.order = index
+            return mutable
+        }
+        
+        self.list = currentList
+        
+        for item in newSectionItems {
+            try? await repository.updateItem(item)
+        }
+        
+        for item in oldSectionItems {
+            try? await repository.updateItem(item)
+        }
+        
+        await loadList()
     }
     
     func openNewItemSettings(listID: UUID) {
+        let newItemStatus: ShoppingItemStatus = .pending
         let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
-        let maxOrder = list?.items.map(\.order).max() ?? 0
-        let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: .pending)
+        let maxOrder = list?.items(for: newItemStatus).map(\.order).max() ?? 0
+        
+        let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: newItemStatus)
         
         coordinator.openShoppingItemDetails(newItem, isNew: true, onSave: { [weak self] in
             Task {

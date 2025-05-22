@@ -162,4 +162,16 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
             }
         }
     }
+    
+    func cleanOrphanedItems() async throws {
+        try await saveQueue.performSave { context in
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "list == nil")
+            
+            let orphanedItems = try context.fetch(request)
+            for item in orphanedItems {
+                context.delete(item)
+            }
+        }
+    }
 }

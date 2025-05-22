@@ -15,7 +15,8 @@ extension ShoppingList {
         self.order = Int(entity.order)
         self.icon = ListIcon(rawValue: entity.icon ?? "") ?? .default
         self.color = ListColor(rawValue: entity.color ?? "") ?? .default
-        self.items = (entity.items as? Set<ShoppingItemEntity>)?.map(ShoppingItem.init) ?? []
+        self.items = (entity.items as? Set<ShoppingItemEntity>)?
+            .map(ShoppingItem.init) ?? []
     }
 }
 
@@ -27,12 +28,23 @@ extension ShoppingListEntity {
         self.order = Int64(model.order)
         self.icon = model.icon.rawValue
         self.color = model.color.rawValue
-        
-        self.items = nil
-        for itemModel in model.items {
-            let itemEntity = ShoppingItemEntity(context: context)
-            itemEntity.update(from: itemModel, context: context)
-            itemEntity.list = self
+
+        let existingItems = (self.items as? Set<ShoppingItemEntity>) ?? []
+        var existingItemsMap = [UUID: ShoppingItemEntity]()
+        for item in existingItems {
+            if let id = item.id {
+                existingItemsMap[id] = item
+            }
         }
+
+        var updatedEntities = Set<ShoppingItemEntity>()
+        for itemModel in model.items {
+            let entity = existingItemsMap[itemModel.id] ?? ShoppingItemEntity(context: context)
+            entity.update(from: itemModel, context: context)
+            entity.list = self
+            updatedEntities.insert(entity)
+        }
+
+        self.items = updatedEntities as NSSet
     }
 }
