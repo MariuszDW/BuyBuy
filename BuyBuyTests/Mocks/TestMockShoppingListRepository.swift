@@ -9,6 +9,18 @@ import Foundation
 @testable import BuyBuy
 
 final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
+    func deleteItem(with id: UUID) async throws {
+        // TODO: implement...
+    }
+    
+    func deleteItems(with ids: [UUID]) async throws {
+        // TODO: implement...
+    }
+    
+    func cleanOrphanedItems() async throws {
+        // TODO: implement...
+    }
+    
     func fetchAllLists() async throws -> [BuyBuy.ShoppingList] {
         // TODO: implement...
         return []
@@ -60,9 +72,5 @@ final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     func getItems(forListID listID: UUID) -> [BuyBuy.ShoppingItem] {
         // TODO: implement...
         return []
-    }
-    
-    func deleteItem(_ item: BuyBuy.ShoppingItem) {
-        // TODO: implement...
     }
 }

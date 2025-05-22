@@ -45,23 +45,41 @@ struct ShoppingListView: View {
                 let items = list.items(for: section.status)
                 Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
                     if !section.isCollapsed {
-                        ForEach(items) { item in
-                            ShoppingItemRow(item: item, disabled: localEditMode == .active) { [weak viewModel] toggledItem in
-                                Task {
-                                    await viewModel?.toggleStatus(for: toggledItem)
-                                }
-                            }
-                        }
-                        .onMove { indices, newOffset in
-                            Task {
-                                await viewModel.moveItem(from: indices, to: newOffset, in: section.status)
-                            }
-                        }
+                        sectionContent(items: items, section: section)
                     }
                 }
             }
         }
-        .listStyle(.plain)
+    }
+    
+    @ViewBuilder
+    private func sectionContent(items: [ShoppingItem], section: ShoppingListSection) -> some View {
+        ForEach(items) { item in
+            ShoppingItemRow(item: item, disabled: localEditMode == .active) { [weak viewModel] toggledItem in
+                Task {
+                    await viewModel?.toggleStatus(for: toggledItem)
+                }
+            }
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                Button(role: .destructive) {
+                    Task {
+                        await handleDeleteTapped(for: item)
+                    }
+                } label: {
+                    Label("Delete", systemImage: "trash.fill")
+                }
+            }
+        }
+        .onDelete { offsets in
+            Task {
+                await viewModel.deleteItems(atOffsets: offsets, section: section)
+            }
+        }
+        .onMove { indices, newOffset in
+            Task {
+                await viewModel.moveItem(from: indices, to: newOffset, in: section.status)
+            }
+        }
     }
     
     private var toolbarContent: some ToolbarContent {
@@ -135,6 +153,14 @@ struct ShoppingListView: View {
         }
         .padding(.top, 8)
         .padding(.bottom, 4)
+    }
+    
+    // MARK: - Private
+    
+    private func handleDeleteTapped(for item: ShoppingItem) async {
+        Task {
+            await viewModel.deleteItem(with: item.id)
+        }
     }
 }
 

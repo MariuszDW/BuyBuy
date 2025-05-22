@@ -56,8 +56,8 @@ final class ShoppingListViewModel: ObservableObject {
         await loadList()
     }
     
-    func deleteItem(_ item: ShoppingItem) async {
-        try? await repository.deleteItem(item)
+    func deleteItem(with id: UUID) async {
+        try? await repository.deleteItem(with: id)
         await loadList()
     }
     
@@ -82,6 +82,14 @@ final class ShoppingListViewModel: ObservableObject {
     
     func back() {
         coordinator.back()
+    }
+    
+    func deleteItems(atOffsets offsets: IndexSet, section: ShoppingListSection) async {
+        guard let items = list?.items(for: section.status) else { return }
+        let idsToDelete = offsets.map { items[$0].id }
+        list?.items.removeAll { idsToDelete.contains($0.id) }
+        try? await repository.deleteItems(with: idsToDelete)
+        await loadList()
     }
     
     func toggleCollapse(ofSection section: ShoppingListSection) {

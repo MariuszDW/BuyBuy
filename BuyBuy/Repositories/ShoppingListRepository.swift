@@ -153,11 +153,22 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
         }
     }
 
-    func deleteItem(_ item: ShoppingItem) async throws {
+    func deleteItem(with id: UUID) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", item.id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
             if let entity = try context.fetch(request).first {
+                context.delete(entity)
+            }
+        }
+    }
+    
+    func deleteItems(with ids: [UUID]) async throws {
+        try await saveQueue.performSave { context in
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id IN %@", ids)
+            let entities = try context.fetch(request)
+            for entity in entities {
                 context.delete(entity)
             }
         }
