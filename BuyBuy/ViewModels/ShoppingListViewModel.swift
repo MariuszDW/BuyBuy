@@ -29,7 +29,7 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func loadList() async {
-        let fetchedList = try? await repository.fetchList(id: listID)
+        let fetchedList = try? await repository.fetchList(with: listID)
         self.list = fetchedList
     }
     
@@ -43,7 +43,7 @@ final class ShoppingListViewModel: ObservableObject {
         await loadList()
     }
     
-    func removeItem(_ item: ShoppingItem) async {
+    func deleteItem(_ item: ShoppingItem) async {
         try? await repository.deleteItem(item)
         await loadList()
     }

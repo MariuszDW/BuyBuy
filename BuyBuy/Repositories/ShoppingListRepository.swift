@@ -55,7 +55,7 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
         }
     }
     
-    func fetchList(id: UUID) async throws -> ShoppingList? {
+    func fetchList(with id: UUID) async throws -> ShoppingList? {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
@@ -82,7 +82,7 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
         }
     }
     
-    func deleteList(id: UUID) async throws {
+    func deleteList(with id: UUID) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id.uuidString)
@@ -93,7 +93,7 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
         }
     }
     
-    func deleteLists(ids: [UUID]) async throws {
+    func deleteLists(with ids: [UUID]) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id IN %@", ids)

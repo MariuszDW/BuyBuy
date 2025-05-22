@@ -60,7 +60,7 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
         return [Self.list1, Self.list2, Self.list3, Self.list4]
     }
     
-    func fetchList(id: UUID) async throws -> ShoppingList? {
+    func fetchList(with id: UUID) async throws -> ShoppingList? {
         Self.list1
     }
     
@@ -68,9 +68,9 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     
     func updateList(_ list: ShoppingList) async throws {}
     
-    func deleteList(id: UUID) async throws {}
+    func deleteList(with id: UUID) async throws {}
     
-    func deleteLists(ids: [UUID]) async throws {}
+    func deleteLists(with ids: [UUID]) async throws {}
     
     func fetchItems(for listID: UUID) async throws -> [ShoppingItem] {
         return Self.list1.items

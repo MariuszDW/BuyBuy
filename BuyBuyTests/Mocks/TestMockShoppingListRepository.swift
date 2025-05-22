@@ -9,6 +9,25 @@ import Foundation
 @testable import BuyBuy
 
 final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
+    func fetchAllLists() async throws -> [BuyBuy.ShoppingList] {
+        // TODO: implement...
+        return []
+    }
+    
+    func fetchList(with id: UUID) async throws -> BuyBuy.ShoppingList? {
+        // TODO: implement...
+        return nil
+    }
+    
+    func deleteLists(with ids: [UUID]) async throws {
+        // TODO: implement...
+    }
+    
+    func fetchItems(for listID: UUID) async throws -> [BuyBuy.ShoppingItem] {
+        // TODO: implement...
+        return []
+    }
+    
     func addItem(_ item: BuyBuy.ShoppingItem) {
         // TODO: implement...
     }
@@ -38,33 +57,12 @@ final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
         return nil
     }
     
-    func getItems(for listID: UUID) -> [BuyBuy.ShoppingItem] {
+    func getItems(forListID listID: UUID) -> [BuyBuy.ShoppingItem] {
         // TODO: implement...
         return []
     }
     
-    func removeItem(_ item: BuyBuy.ShoppingItem) {
+    func deleteItem(_ item: BuyBuy.ShoppingItem) {
         // TODO: implement...
     }
-    
-//    var fetchListHandler: (() -> ShoppingList)?
-//    var addItemHandler: ((ShoppingItem) -> Void)?
-//    var updateItemHandler: ((ShoppingItem) -> Void)?
-//    var removeItemHandler: ((UUID) -> Void)?
-//
-//    func getItems() -> ShoppingList? {
-//        fetchListHandler?()
-//    }
-//
-//    func addItem(_ item: ShoppingItem) {
-//        addItemHandler?(item)
-//    }
-//
-//    func updateItem(_ item: ShoppingItem) {
-//        updateItemHandler?(item)
-//    }
-//
-//    func removeItem(with id: UUID) {
-//        removeItemHandler?(id)
-//    }
 }
