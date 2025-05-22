@@ -14,15 +14,16 @@ struct ShoppingItemRow: View {
 
     var body: some View {
         HStack {
-            Button {
-                onToggleStatus(item)
-            } label: {
-                Image(systemName: item.status.iconName)
-                    .foregroundColor(.bbSelection)
-                    .font(.title2)
+            if !disabled {
+                Button {
+                    onToggleStatus(item)
+                } label: {
+                    Image(systemName: item.status.iconName)
+                        .foregroundColor(.bbSelection)
+                        .font(.title2)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
-            .disabled(disabled)
             
             Text(item.name)
             
