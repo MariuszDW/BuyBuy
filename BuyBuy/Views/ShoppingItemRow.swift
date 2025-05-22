@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShoppingItemRow: View {
     let item: ShoppingItem
+    let disabled: Bool
     let onToggleStatus: (ShoppingItem) -> Void
 
     var body: some View {
@@ -21,6 +22,7 @@ struct ShoppingItemRow: View {
                     .font(.title2)
             }
             .buttonStyle(.plain)
+            .disabled(disabled)
             
             Text(item.name)
             

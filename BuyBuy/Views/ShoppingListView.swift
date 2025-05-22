@@ -46,7 +46,7 @@ struct ShoppingListView: View {
                 Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
                     if !section.isCollapsed {
                         ForEach(items) { item in
-                            ShoppingItemRow(item: item) { [weak viewModel] toggledItem in
+                            ShoppingItemRow(item: item, disabled: localEditMode == .active) { [weak viewModel] toggledItem in
                                 Task {
                                     await viewModel?.toggleStatus(for: toggledItem)
                                 }
