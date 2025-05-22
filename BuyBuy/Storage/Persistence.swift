@@ -28,7 +28,7 @@ struct PersistenceController {
             for j in 0..<3 {
                 let item = ShoppingItemEntity(context: viewContext)
                 item.id = UUID()
-                item.listID = list.id
+                item.list = list
                 item.name = "Przedmiot \(j)"
                 item.note = nil
                 item.status = ShoppingItemStatus.pending.rawValue

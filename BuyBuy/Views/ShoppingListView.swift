@@ -53,8 +53,10 @@ struct ShoppingListView: View {
     private var bottomPanel: some View {
         HStack {
             Button(action: {
-                localEditMode = .inactive
-                viewModel.openItemSettings(nil)
+                if let listID = viewModel.list?.id {
+                    localEditMode = .inactive
+                    viewModel.openNewItemSettings(listID: listID)
+                }
             }) {
                 Label("Add item", systemImage: "plus.circle")
             }

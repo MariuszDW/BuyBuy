@@ -10,7 +10,7 @@ import CoreData
 extension ShoppingItem {
     init(entity: ShoppingItemEntity) {
         self.id = entity.id ?? UUID()
-        self.listID = entity.listID ?? UUID()
+        self.listID = entity.list?.id ?? UUID()
         self.name = entity.name ?? ""
         self.note = entity.note
         self.status = ShoppingItemStatus(rawValue: entity.status ?? "") ?? .pending
@@ -21,7 +21,6 @@ extension ShoppingItem {
 extension ShoppingItemEntity {
     func update(from model: ShoppingItem, context: NSManagedObjectContext) {
         self.id = model.id
-        self.listID = model.listID
         self.name = model.name
         self.note = model.note
         self.status = model.status.rawValue
