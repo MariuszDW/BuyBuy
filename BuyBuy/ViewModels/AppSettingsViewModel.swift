@@ -1,5 +1,5 @@
 //
-//  SettingsViewModel.swift
+//  AppSettingsViewModel.swift
 //  BuyBuy
 //
 //  Created by MDW on 16/05/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SettingsViewModel: ObservableObject {
+class AppSettingsViewModel: ObservableObject {
     private var coordinator: any AppCoordinatorProtocol
 
     init(coordinator: any AppCoordinatorProtocol) {

@@ -10,10 +10,14 @@ import SwiftUI
 struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
     
+    @State private var localEditMode: EditMode = .inactive
+    
     var body: some View {
         Group {
             if let list = viewModel.list {
                 listView(list)
+                    .environment(\.editMode, $localEditMode)
+                bottomPanel
             } else {
                 emptyView()
             }
@@ -44,6 +48,21 @@ struct ShoppingListView: View {
             }
         }
         .listStyle(.plain)
+    }
+    
+    private var bottomPanel: some View {
+        HStack {
+            Button(action: {
+                localEditMode = .inactive
+                // viewModel.openItemSettings()
+            }) {
+                Label("Add item", systemImage: "plus.circle")
+            }
+            .disabled(localEditMode.isEditing)
+            
+            Spacer()
+        }
+        .padding()
     }
     
     @ViewBuilder

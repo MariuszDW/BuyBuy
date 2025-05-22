@@ -58,7 +58,7 @@ struct ShoppingListsView: View {
                             listRow(for: list)
                                 .contextMenu {
                                     Button {
-                                        viewModel.startEditingList(list)
+                                        viewModel.openListSettings(list)
                                     } label: {
                                         Label("Edit", systemImage: "square.and.pencil")
                                     }
@@ -83,7 +83,7 @@ struct ShoppingListsView: View {
                         }
                         .swipeActions(edge: .leading, allowsFullSwipe: true) {
                             Button {
-                                viewModel.startEditingList(list)
+                                viewModel.openListSettings(list)
                             } label: {
                                 Label("Edit", systemImage: "square.and.pencil")
                             }
@@ -129,9 +129,9 @@ struct ShoppingListsView: View {
         HStack {
             Button(action: {
                 localEditMode = .inactive
-                viewModel.startCreatingList()
+                viewModel.openListSettings()
             }) {
-                Label("Add", systemImage: "plus.circle")
+                Label("Add list", systemImage: "plus.circle")
             }
             .disabled(localEditMode.isEditing)
             

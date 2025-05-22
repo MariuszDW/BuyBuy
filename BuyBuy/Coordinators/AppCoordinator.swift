@@ -25,19 +25,19 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         )
     }
     
-    func openList(_ id: UUID) {
+    func openShoppingList(_ id: UUID) {
         navigationPath.append(AppRoute.shoppingList(id))
     }
     
-    func openSettings() {
-        navigationPath.append(AppRoute.settings)
+    func openAppSettings() {
+        navigationPath.append(AppRoute.appSettings)
     }
 
-    func openListSettings(_ list: ShoppingList, isNew: Bool, onSave: @escaping () -> Void) {
+    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onSave: @escaping () -> Void) {
         self.sheet = .shoppingListSettings(list, isNew, onSave: onSave)
     }
     
-    func openItemDetails(_ item: ShoppingItem, isNew: Bool) {
+    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool) {
         sheet = .shoppintItemDetails(item, isNew)
     }
     
@@ -63,9 +63,9 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     coordinator: self,
                 )
             )
-        case .settings:
-            SettingsView(
-                viewModel: SettingsViewModel(coordinator: self)
+        case .appSettings:
+            AppSettingsView(
+                viewModel: AppSettingsViewModel(coordinator: self)
             )
         }
     }

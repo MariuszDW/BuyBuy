@@ -45,27 +45,15 @@ class ShoppingListsViewModel: ObservableObject {
             try? await repository.updateList(shoppingLists[index])
         }
     }
-
-    func startCreatingList() {
-        let uniqueUUID = UUID.unique(in: shoppingLists.map { $0.id })
-        let newList = ShoppingList(
-            id: uniqueUUID,
-            name: "",
-            items: [],
-            order: shoppingLists.count,
-            icon: .default,
-            color: .default
-        )
-        
-        coordinator.openListSettings(newList, isNew: true, onSave: { [weak self] in
-            Task {
-                await self?.loadLists()
-            }
-        })
-    }
     
-    func startEditingList(_ list: ShoppingList) {
-        coordinator.openListSettings(list, isNew: false, onSave: { [weak self] in
+    func openListSettings(_ list: ShoppingList? = nil) {
+        let listToEdit = list ?? {
+            let uniqueUUID = UUID.unique(in: shoppingLists.map { $0.id })
+            let maxOrder = shoppingLists.map(\.order).max() ?? 0
+            return ShoppingList(id: uniqueUUID, name: "", items: [], order: maxOrder + 1, icon: .default, color: .default)
+        }()
+        
+        coordinator.openShoppingListSettings(listToEdit, isNew: list == nil, onSave: { [weak self] in
             Task {
                 await self?.loadLists()
             }
@@ -77,6 +65,6 @@ class ShoppingListsViewModel: ObservableObject {
     }
 
     func openSettings() {
-        coordinator.openSettings()
+        coordinator.openAppSettings()
     }
 }

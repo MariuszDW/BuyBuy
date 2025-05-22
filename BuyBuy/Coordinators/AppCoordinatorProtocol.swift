@@ -9,10 +9,10 @@ import Foundation
 import Combine
 
 protocol AppCoordinatorProtocol: ObservableObject {
-    func openList(_ id: UUID)
-    func openListSettings(_ list: ShoppingList, isNew: Bool, onSave: @escaping () -> Void)
-    func openItemDetails(_ item: ShoppingItem, isNew: Bool)
+    func openShoppingList(_ id: UUID)
+    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onSave: @escaping () -> Void)
+    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool)
     func openAbout()
-    func openSettings()
+    func openAppSettings()
     func back()
 }

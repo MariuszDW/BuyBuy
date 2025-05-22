@@ -1,5 +1,5 @@
 //
-//  SettingsView.swift
+//  AppSettingsView.swift
 //  BuyBuy
 //
 //  Created by MDW on 16/05/2025.
@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-struct SettingsView: View {
-    @StateObject var viewModel: SettingsViewModel
+struct AppSettingsView: View {
+    @StateObject var viewModel: AppSettingsViewModel
     
-    init(viewModel: SettingsViewModel) {
+    init(viewModel: AppSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
         List {
-            Text("Settings Placeholder")
+            Text("Application Settings Placeholder")
             Button("Close") {
                 viewModel.close()
             }
@@ -30,6 +30,6 @@ struct SettingsView: View {
 
 #Preview {
     NavigationStack {
-        SettingsView(viewModel: SettingsViewModel(coordinator: AppCoordinator(dependencies: AppDependencies())))
+        AppSettingsView(viewModel: AppSettingsViewModel(coordinator: AppCoordinator(dependencies: AppDependencies())))
     }
 }
