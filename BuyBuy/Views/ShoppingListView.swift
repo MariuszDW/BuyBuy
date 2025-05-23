@@ -17,6 +17,7 @@ struct ShoppingListView: View {
             if let list = viewModel.list, !list.items.isEmpty {
                 listView(list)
                     .environment(\.editMode, $localEditMode)
+                    .listStyle(.grouped)
             } else {
                 Spacer()
                 emptyView()
@@ -45,7 +46,7 @@ struct ShoppingListView: View {
                 let items = list.items(for: section.status)
                 Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
                     if !section.isCollapsed {
-                        sectionContent(items: items, section: section)
+                        sectionItems(items: items, section: section)
                     }
                 }
             }
@@ -53,7 +54,7 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func sectionContent(items: [ShoppingItem], section: ShoppingListSection) -> some View {
+    private func sectionItems(items: [ShoppingItem], section: ShoppingListSection) -> some View {
         ForEach(items) { item in
             ShoppingItemRow(item: item, disabled: localEditMode == .active) { [weak viewModel] toggledItem in
                 Task {
@@ -136,7 +137,6 @@ struct ShoppingListView: View {
             Text(title)
                 .font(.boldDynamic(style: .headline))
                 .foregroundColor(section.color)
-                .opacity(0.7)
             
             Spacer()
             
