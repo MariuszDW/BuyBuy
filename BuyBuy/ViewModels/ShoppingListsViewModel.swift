@@ -46,7 +46,7 @@ class ShoppingListsViewModel: ObservableObject {
         }
     }
     
-    func openListSettings(_ list: ShoppingList? = nil) {
+    func openListSettings(for list: ShoppingList? = nil) {
         let listToEdit = list ?? {
             let uniqueUUID = UUID.unique(in: shoppingLists.map { $0.id })
             let maxOrder = shoppingLists.map(\.order).max() ?? 0

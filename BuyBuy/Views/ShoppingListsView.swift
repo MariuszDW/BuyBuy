@@ -76,7 +76,7 @@ struct ShoppingListsView: View {
                             listRow(for: list)
                                 .contextMenu {
                                     Button {
-                                        viewModel.openListSettings(list)
+                                        viewModel.openListSettings(for: list)
                                     } label: {
                                         Label("Edit", systemImage: "square.and.pencil")
                                     }
@@ -90,7 +90,7 @@ struct ShoppingListsView: View {
                                     }
                                 }
                         }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
                                 Task {
                                     await handleDeleteTapped(for: list)
@@ -101,7 +101,7 @@ struct ShoppingListsView: View {
                         }
                         .swipeActions(edge: .leading, allowsFullSwipe: true) {
                             Button {
-                                viewModel.openListSettings(list)
+                                viewModel.openListSettings(for: list)
                             } label: {
                                 Label("Edit", systemImage: "square.and.pencil")
                             }
