@@ -22,8 +22,10 @@ struct ShoppingItemRow: View {
                     item.status.checkBoxImage
                         .foregroundColor(.bb.selection)
                         .font(.headline)
+                        .scaleEffect(1.5)
                 }
                 .buttonStyle(.plain)
+                .padding(.trailing, 8)
             }
             
             Button {
