@@ -12,8 +12,10 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     /// The shopping item being edited.
     @Published var shoppingItem: ShoppingItem
     
-    /// Indicates whether the edited list is a newly created one.
-    private(set) var isNew: Bool // TODO: Not necessary now. Remove?
+    /// Indicates whether the edited shopping list is a newly created one.
+    private(set) var isNew: Bool
+    
+    /// Called when the user confirms changes to the edited ShoppingItem by tapping the OK button.
     private let onSave: () -> Void
     
     private let repository: ShoppingListsRepositoryProtocol

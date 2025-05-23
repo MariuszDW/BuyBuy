@@ -42,7 +42,7 @@ struct ShoppingListSettingsView: View {
                             dismiss()
                         }
                     }
-                    .disabled(viewModel.list.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(viewModel.shoppingList.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
         }
@@ -52,7 +52,7 @@ struct ShoppingListSettingsView: View {
         VStack(alignment: .leading, spacing: 8) {
             TextField(
                 "List name",
-                text: $viewModel.list.name
+                text: $viewModel.shoppingList.name
             )
             // .textInputAutocapitalization(.sentences) // TODO: To dodac jak opcje w ustawieniach aplikacji.
             .font(.boldDynamic(style: .title3))
@@ -74,18 +74,18 @@ struct ShoppingListSettingsView: View {
         return VStack {
             HStack(alignment: .top, spacing: 24) {
                 ZStack {
-                    Image(systemName: viewModel.list.icon.rawValue)
+                    Image(systemName: viewModel.shoppingList.icon.rawValue)
                         .resizable()
                         .scaledToFit()
                         .frame(width: iconSize, height: iconSize)
                         .symbolRenderingMode(.palette)
-                        .foregroundStyle(.white, viewModel.list.color.color)
+                        .foregroundStyle(.white, viewModel.shoppingList.color.color)
                         .shadow(color: .black.opacity(0.3), radius: 8)
                         .transition(.scale.combined(with: .opacity))
-                        .id(viewModel.list.icon.rawValue)
-                        .animation(.easeInOut(duration: 0.25), value: viewModel.list.color)
+                        .id(viewModel.shoppingList.icon.rawValue)
+                        .animation(.easeInOut(duration: 0.25), value: viewModel.shoppingList.color)
                 }
-                .animation(.spring(response: 0.4, dampingFraction: 0.6), value: viewModel.list.icon)
+                .animation(.spring(response: 0.4, dampingFraction: 0.6), value: viewModel.shoppingList.icon)
                 
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.flexible()), count: 4),
@@ -95,7 +95,7 @@ struct ShoppingListSettingsView: View {
                         ZStack {
                             Circle()
                                 .stroke(Color.bb.selection, lineWidth: 3)
-                                .opacity(viewModel.list.color == color ? 1 : 0)
+                                .opacity(viewModel.shoppingList.color == color ? 1 : 0)
                                 .frame(width: 44, height: 44)
                             
                             Circle()
@@ -105,7 +105,7 @@ struct ShoppingListSettingsView: View {
                         .frame(width: 42, height: 42)
                         .contentShape(Circle())
                         .onTapGesture {
-                            viewModel.list.color = color
+                            viewModel.shoppingList.color = color
                         }
                     }
                 }
@@ -126,7 +126,7 @@ struct ShoppingListSettingsView: View {
         ) {
             ForEach(ListIcon.allCases, id: \.self) { icon in
                 ZStack {
-                    if viewModel.list.icon == icon {
+                    if viewModel.shoppingList.icon == icon {
                         Circle()
                             .stroke(Color.bb.selection, lineWidth: 3)
                             .frame(width: 48, height: 48)
@@ -137,12 +137,12 @@ struct ShoppingListSettingsView: View {
                         .scaledToFit()
                         .frame(width: 36, height: 36)
                         .symbolRenderingMode(.palette)
-                        .foregroundStyle(.white, viewModel.list.color.color)
+                        .foregroundStyle(.white, viewModel.shoppingList.color.color)
                 }
                 .frame(width: 48, height: 48)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    viewModel.list.icon = icon
+                    viewModel.shoppingList.icon = icon
                 }
             }
         }

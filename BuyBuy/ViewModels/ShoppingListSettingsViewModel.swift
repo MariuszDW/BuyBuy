@@ -9,16 +9,20 @@ import Foundation
 
 @MainActor
 final class ShoppingListSettingsViewModel: ObservableObject {
-    @Published var list: ShoppingList
+    /// The shopping list being edited.
+    @Published var shoppingList: ShoppingList
     
-    private(set) var isNew: Bool // TODO: It's not necessary now. Remove?
+    /// Indicates whether the edited shopping item is a newly created one.
+    private(set) var isNew: Bool
+    
+    /// Called when the user confirms changes to the edited ShoppingList by tapping the OK button.
     private let onSave: () -> Void
     
-    private let coordinator: any AppCoordinatorProtocol
     private let repository: ShoppingListsRepositoryProtocol
+    private let coordinator: any AppCoordinatorProtocol
 
     init(list: ShoppingList, isNew: Bool = false, repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol, onSave: @escaping () -> Void) {
-        self.list = list
+        self.shoppingList = list
         self.isNew = isNew
         self.repository = repository
         self.coordinator = coordinator
@@ -26,8 +30,8 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     }
 
     func applyChanges() async {
-        list.prepareToSave()
-        try? await repository.addOrUpdateList(self.list)
+        shoppingList.prepareToSave()
+        try? await repository.addOrUpdateList(self.shoppingList)
         onSave()
     }
 }
