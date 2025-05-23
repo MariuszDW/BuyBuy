@@ -70,6 +70,14 @@ struct ShoppingListView: View {
                     Label("Delete", systemImage: "trash.fill")
                 }
             }
+            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                Button {
+                    viewModel.openItemSettings(item: item)
+                } label: {
+                    Label("Edit", systemImage: "square.and.pencil")
+                }
+                .tint(.blue)
+            }
         }
         .onDelete { offsets in
             Task {
