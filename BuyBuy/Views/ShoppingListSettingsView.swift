@@ -94,7 +94,7 @@ struct ShoppingListSettingsView: View {
                     ForEach(ListColor.allCases, id: \.self) { color in
                         ZStack {
                             Circle()
-                                .stroke(Color.bbSelection, lineWidth: 3)
+                                .stroke(Color.bb.selection, lineWidth: 3)
                                 .opacity(viewModel.list.color == color ? 1 : 0)
                                 .frame(width: 44, height: 44)
                             
@@ -128,7 +128,7 @@ struct ShoppingListSettingsView: View {
                 ZStack {
                     if viewModel.list.icon == icon {
                         Circle()
-                            .stroke(Color.bbSelection, lineWidth: 3)
+                            .stroke(Color.bb.selection, lineWidth: 3)
                             .frame(width: 48, height: 48)
                     }
                     

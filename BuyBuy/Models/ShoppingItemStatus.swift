@@ -30,9 +30,9 @@ enum ShoppingItemStatus: String, CaseIterable, Hashable {
     
     var color: Color {
         switch self {
-        case .pending: .bbListSectionPendingColor
-        case .purchased: .bbListSectionPurchasedColor
-        case .inactive: .bbListSectionInactiveColor
+        case .pending: .bb.itemStatus.pending
+        case .purchased: .bb.itemStatus.purchased
+        case .inactive: .bb.itemStatus.inactive
         }
     }
     

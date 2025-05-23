@@ -11,24 +11,45 @@ struct ShoppingItemRow: View {
     let item: ShoppingItem
     let disabled: Bool
     let onToggleStatus: (ShoppingItem) -> Void
-
+    let onRowTap: (ShoppingItem) -> Void
+    
     var body: some View {
-        HStack {
+        HStack(alignment: .top) {
             if !disabled {
                 Button {
                     onToggleStatus(item)
                 } label: {
                     item.status.checkBoxImage
-                        .foregroundColor(.bbSelection)
-                        .font(.title2)
+                        .foregroundColor(.bb.selection)
+                        .font(.headline)
                 }
                 .buttonStyle(.plain)
             }
             
-            Text(item.name)
-            
-            Spacer()
+            Button {
+                onRowTap(item)
+            } label: {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(item.name)
+                            .foregroundColor(.bb.text.primary)
+                            .font(.headline)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(5)
+                        if let note = item.note {
+                            Text(note)
+                                .foregroundColor(.bb.text.secondary)
+                                .font(.subheadline)
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(8)
+                        }
+                    }
+                    
+                    Spacer()
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.borderless)
         }
-        .padding(.vertical, 4)
     }
 }

@@ -137,8 +137,10 @@ struct ShoppingListsView: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(list.name)
-                    .foregroundColor(.text)
+                    .foregroundColor(.bb.text.primary)
                     .font(.title3)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(4)
                 
                 HStack {
                     ShoppingItemStatus.pending.image

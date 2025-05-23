@@ -7,29 +7,38 @@
 
 import SwiftUI
 
-internal extension Color {
-    // Colors
-    static let bbAccent = Color("Accent")
-    static let bbBackground = Color("Background")
-    static let bbSelection = Color("Selection")
-    static let bbText = Color("Text")
+struct BBColor {
+    static let accent = Color("Accent")
+    static let background = Color("Background")
+    static let selection = Color("Selection")
     
-    // List colors
-    static let bbListBlue = Color("ListBlue")
-    static let bbListBrown = Color("ListBrown")
-    static let bbListCyan = Color("ListCyan")
-    static let bbListGray = Color("ListGray")
-    static let bbListGreen = Color("ListGreen")
-    static let bbListIndigo = Color("ListIndigo")
-    static let bbListMagenta = Color("ListMagenta")
-    static let bbListOrange = Color("ListOrange")
-    static let bbListPink = Color("ListPink")
-    static let bbListPurple = Color("ListPurple")
-    static let bbListRed = Color("ListRed")
-    static let bbListYellow = Color("ListYellow")
+    enum text {
+        static let primary = Color("PrimaryText")
+        static let secondary = Color("SecondaryText")
+    }
     
-    // List section colors
-    static let bbListSectionInactiveColor = Color("ListSectionInactiveColor")
-    static let bbListSectionPendingColor = Color("ListSectionPendingColor")
-    static let bbListSectionPurchasedColor = Color("ListSectionPurchasedColor")
+    enum list {
+        static let blue = Color("ListBlue")
+        static let brown = Color("ListBrown")
+        static let cyan = Color("ListCyan")
+        static let gray = Color("ListGray")
+        static let green = Color("ListGreen")
+        static let indigo = Color("ListIndigo")
+        static let magenta = Color("ListMagenta")
+        static let orange = Color("ListOrange")
+        static let pink = Color("ListPink")
+        static let purple = Color("ListPurple")
+        static let red = Color("ListRed")
+        static let yellow = Color("ListYellow")
+    }
+    
+    enum itemStatus {
+        static let inactive = Color("ItemStatusInactiveColor")
+        static let pending = Color("ItemStatusPendingColor")
+        static let purchased = Color("ItemStatusPurchasedColor")
+    }
+}
+
+extension Color {
+    static let bb = BBColor.self
 }

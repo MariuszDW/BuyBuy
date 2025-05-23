@@ -25,18 +25,18 @@ enum ListColor: String, CaseIterable {
 
     var color: Color {
         switch self {
-        case .blue: .bbListBlue
-        case .brown: .bbListBrown
-        case .cyan: .bbListCyan
-        case .gray: .bbListGray
-        case .green: .bbListGreen
-        case .indigo: .bbListIndigo
-        case .magenta: .bbListMagenta
-        case .orange: .bbListOrange
-        case .pink: .bbListPink
-        case .purple: .bbListPurple
-        case .red: .bbListRed
-        case .yellow: .bbListYellow
+        case .blue: .bb.list.blue
+        case .brown: .bb.list.brown
+        case .cyan: .bb.list.cyan
+        case .gray: .bb.list.gray
+        case .green: .bb.list.green
+        case .indigo: .bb.list.indigo
+        case .magenta: .bb.list.magenta
+        case .orange: .bb.list.orange
+        case .pink: .bb.list.pink
+        case .purple: .bb.list.purple
+        case .red: .bb.list.red
+        case .yellow: .bb.list.yellow
         }
     }
 }

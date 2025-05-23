@@ -56,11 +56,18 @@ struct ShoppingListView: View {
     @ViewBuilder
     private func itemsSection(items: [ShoppingItem], section: ShoppingListSection) -> some View {
         ForEach(items) { item in
-            ShoppingItemRow(item: item, disabled: localEditMode == .active) { [weak viewModel] toggledItem in
-                Task {
-                    await viewModel?.toggleStatus(for: toggledItem)
+            ShoppingItemRow(
+                item: item,
+                disabled: localEditMode == .active,
+                onToggleStatus: { [weak viewModel] toggledItem in
+                    Task {
+                        await viewModel?.toggleStatus(for: toggledItem)
+                    }
+                },
+                onRowTap: { tappedItem in
+                    viewModel.openItemSettings(item: tappedItem)
                 }
-            }
+            )
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                 Button(role: .destructive) {
                     Task {
@@ -155,7 +162,7 @@ struct ShoppingListView: View {
             } label: {
                 Image(systemName: section.isCollapsed ? "chevron.down" : "chevron.up")
                     .font(.boldDynamic(style: .body))
-                    .foregroundColor(.gray)
+                    .foregroundColor(.bb.text.primary)
             }
             .buttonStyle(PlainButtonStyle())
         }

@@ -14,18 +14,24 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     static let uuid4 = UUID(uuidString: "44444444-4444-4444-4444-444444444444")!
     
     static let list1 = ShoppingList(id: uuid1, name: "Grocery Store", items: [
-        ShoppingItem(order: 0, listID: uuid1, name: "Milk", status: .pending),
-        ShoppingItem(order: 1, listID: uuid1, name: "Bread", status: .purchased),
-        ShoppingItem(order: 2, listID: uuid1, name: "Eggs", status: .inactive),
-        ShoppingItem(order: 3, listID: uuid1, name: "Apples", status: .pending),
+        ShoppingItem(
+            order: 0, listID: uuid1, name: "Milk",
+            note: "Pilos 3.2%, 1 L", status: .pending),
+        ShoppingItem(order: 1, listID: uuid1, name: "Bread", status: .pending),
+        ShoppingItem(order: 2, listID: uuid1, name: "Eggs",
+                     note: "12x", status: .inactive),
+        ShoppingItem(order: 3, listID: uuid1, name: "Apples",
+                     note: "2 kg (in promotion)", status: .purchased),
         ShoppingItem(order: 4, listID: uuid1, name: "Chicken", status: .purchased),
         ShoppingItem(order: 5, listID: uuid1, name: "Butter", status: .purchased),
-        ShoppingItem(order: 6, listID: uuid1, name: "Yogurt", status: .inactive)
+        ShoppingItem(order: 6, listID: uuid1, name: "Yogurt",
+                     note: "Natural, 500 g", status: .inactive)
     ], order: 0, icon: .cart, color: .orange)
     
     static let list2 = ShoppingList(id: uuid2, name: "Hardware Store", items: [
         ShoppingItem(order: 0, listID: uuid2, name: "Screws", status: .purchased),
-        ShoppingItem(order: 1, listID: uuid2, name: "Hammer", status: .pending),
+        ShoppingItem(order: 1, listID: uuid2, name: "Hammer",
+                     note: "As big as possible", status: .pending),
         ShoppingItem(order: 2, listID: uuid2, name: "Paint", status: .inactive),
         ShoppingItem(order: 3, listID: uuid2, name: "Wrench", status: .purchased),
         ShoppingItem(order: 4, listID: uuid2, name: "Drill", status: .pending),
@@ -47,7 +53,8 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     ], order: 2, icon: .sport, color: .blue)
     
     static let list4 = ShoppingList(id: uuid4, name: "Pet Supplies", items: [
-        ShoppingItem(order: 0, listID: uuid4, name: "Cat Food", status: .purchased),
+        ShoppingItem(order: 0, listID: uuid4, name: "Cat Food",
+                     note: "6x", status: .purchased),
         ShoppingItem(order: 1, listID: uuid4, name: "Dog Leash", status: .inactive),
         ShoppingItem(order: 2, listID: uuid4, name: "Bird Seed", status: .pending),
         ShoppingItem(order: 3, listID: uuid4, name: "Pet Shampoo", status: .purchased),
