@@ -95,23 +95,26 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func toggleStatus(for item: ShoppingItem) async {
+        await setStatus(item.status.toggled(), forItem: item)
+    }
+    
+    func setStatus(_ status: ShoppingItemStatus, forItem item: ShoppingItem) async {
         guard var currentList = self.list else { return }
         guard let oldItemIndex = currentList.items.firstIndex(where: { $0.id == item.id }) else { return }
         
         var updatedItem = currentList.items[oldItemIndex]
         let oldStatus = updatedItem.status
-        let newStatus = oldStatus.toggled()
         
-        guard oldStatus != newStatus else { return }
+        guard oldStatus != status else { return }
         
-        updatedItem.status = newStatus
+        updatedItem.status = status
         
         currentList.items[oldItemIndex] = updatedItem
         
         var oldSectionItems = currentList.items(for: oldStatus)
             .filter { $0.id != updatedItem.id }
         
-        var newSectionItems = currentList.items(for: newStatus)
+        var newSectionItems = currentList.items(for: status)
             .filter { $0.id != updatedItem.id }
         
         let maxOrder = newSectionItems.map(\.order).max() ?? -1

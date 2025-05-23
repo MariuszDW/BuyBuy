@@ -68,7 +68,13 @@ struct ShoppingListView: View {
                     viewModel.openItemSettings(item: tappedItem)
                 }
             )
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            .contextMenu {
+                Button {
+                    viewModel.openItemSettings(item: item)
+                } label: {
+                    Label("Edit", systemImage: "square.and.pencil")
+                }
+                
                 Button(role: .destructive) {
                     Task {
                         await handleDeleteTapped(for: item)
@@ -77,13 +83,35 @@ struct ShoppingListView: View {
                     Label("Delete", systemImage: "trash.fill")
                 }
             }
-            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                Button(role: .destructive) {
+                    Task {
+                        await handleDeleteTapped(for: item)
+                    }
+                } label: {
+                    Label("Delete", systemImage: "trash.fill")
+                }
+                
                 Button {
                     viewModel.openItemSettings(item: item)
                 } label: {
                     Label("Edit", systemImage: "square.and.pencil")
                 }
                 .tint(.blue)
+            }
+            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
+                    if item.status != status {
+                        Button {
+                            Task {
+                                await viewModel.setStatus(status, forItem: item)
+                            }
+                        } label: {
+                            Label(status.rawValue, systemImage: status.imageSystemName)
+                        }
+                        .tint(status.color)
+                    }
+                }
             }
         }
         .onDelete { offsets in
