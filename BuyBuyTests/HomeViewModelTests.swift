@@ -27,7 +27,7 @@ final class HomeViewModelTests: XCTestCase {
         let mockRepository = TestMockShoppingListsRepository()
 
         let addItemExp = expectation(description: "addItemExp")
-        mockRepository.addItemHandler = { item in
+        mockRepository.addOrUpdateItemHandler = { item in
             XCTAssertEqual(item.id, testItemID)
             XCTAssertEqual(item.listID, testListID)
             XCTAssertEqual(item.name, "Milk")
@@ -44,7 +44,7 @@ final class HomeViewModelTests: XCTestCase {
         }
         
         let viewModel = ShoppingListViewModel(listID: testListID, repository: mockRepository, coordinator: TestMockAppCoordinator())
-        await viewModel.addItem(testItem)
+        await viewModel.addOrUpdateItem(testItem)
 
         await fulfillment(of: [addItemExp, fetchListExp], timeout: 5)
     }

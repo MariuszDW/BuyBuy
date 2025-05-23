@@ -13,7 +13,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     @Published var shoppingItem: ShoppingItem
     
     /// Indicates whether the edited list is a newly created one.
-    private(set) var isNew: Bool
+    private(set) var isNew: Bool // TODO: Not necessary now. Remove?
     private let onSave: () -> Void
     
     private let repository: ShoppingListsRepositoryProtocol
@@ -29,11 +29,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func applyChanges() async {
         shoppingItem.prepareToSave()
-        if isNew {
-            try? await repository.addItem(shoppingItem)
-        } else {
-            try? await repository.updateItem(shoppingItem)
-        }
+        try? await repository.addOrUpdateItem(shoppingItem)
         onSave()
     }
 }

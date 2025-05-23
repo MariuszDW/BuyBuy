@@ -86,9 +86,7 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
         return Self.list1.items
     }
     
-    func addItem(_ item: ShoppingItem) async throws {}
-    
-    func updateItem(_ item: ShoppingItem) async throws {}
+    func addOrUpdateItem(_ item: ShoppingItem) async throws {}
     
     func deleteItem(with id: UUID) async throws {}
     

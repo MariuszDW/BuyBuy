@@ -9,7 +9,7 @@ import Foundation
 @testable import BuyBuy
 
 final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol, @unchecked Sendable {
-    var addItemHandler: ((BuyBuy.ShoppingItem) -> Void)?
+    var addOrUpdateItemHandler: ((BuyBuy.ShoppingItem) -> Void)?
     var fetchListHandler: ((UUID) -> Void)?
     
     func deleteItem(with id: UUID) async throws {
@@ -43,13 +43,10 @@ final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol, @u
         return []
     }
     
-    func addItem(_ item: BuyBuy.ShoppingItem) {
-        addItemHandler?(item)
+    func addOrUpdateItem(_ item: ShoppingItem) {
+        addOrUpdateItemHandler?(item)
     }
     
-    func updateItem(_ item: BuyBuy.ShoppingItem) {
-        // TODO: implement...
-    }
     func getAllLists() -> [BuyBuy.ShoppingList] {
         // TODO: implement...
         return []

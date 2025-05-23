@@ -114,38 +114,32 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
         }
     }
     
-    func addItem(_ item: ShoppingItem) async throws {
-        try await saveQueue.performSave { context in
-            let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-            listRequest.predicate = NSPredicate(format: "id == %@", item.listID.uuidString)
-            guard let listEntity = try context.fetch(listRequest).first else {
-                throw NSError(domain: "ShoppingRepository", code: 2, userInfo: [NSLocalizedDescriptionKey: "List not found"])
-            }
-            
-            let itemEntity = ShoppingItemEntity(context: context)
-            itemEntity.update(from: item, context: context)
-            itemEntity.list = listEntity
-        }
-    }
-    
-    func updateItem(_ item: ShoppingItem) async throws {
+    func addOrUpdateItem(_ item: ShoppingItem) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", item.id.uuidString)
-            guard let entity = try context.fetch(request).first else {
-                throw NSError(domain: "ShoppingRepository", code: 3, userInfo: [NSLocalizedDescriptionKey: "Item not found"])
-            }
             
-            if entity.list?.id != item.listID {
+            if let entity = try context.fetch(request).first {
+                if entity.list?.id != item.listID {
+                    let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
+                    listRequest.predicate = NSPredicate(format: "id == %@", item.listID.uuidString)
+                    guard let newList = try context.fetch(listRequest).first else {
+                        throw NSError(domain: "ShoppingRepository", code: 4, userInfo: [NSLocalizedDescriptionKey: "New list not found"])
+                    }
+                    entity.list = newList
+                }
+                entity.update(from: item, context: context)
+            } else {
                 let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
                 listRequest.predicate = NSPredicate(format: "id == %@", item.listID.uuidString)
-                guard let newList = try context.fetch(listRequest).first else {
-                    throw NSError(domain: "ShoppingRepository", code: 4, userInfo: [NSLocalizedDescriptionKey: "New list not found"])
+                guard let listEntity = try context.fetch(listRequest).first else {
+                    throw NSError(domain: "ShoppingRepository", code: 2, userInfo: [NSLocalizedDescriptionKey: "List not found"])
                 }
-                entity.list = newList
+                
+                let newEntity = ShoppingItemEntity(context: context)
+                newEntity.update(from: item, context: context)
+                newEntity.list = listEntity
             }
-            
-            entity.update(from: item, context: context)
         }
     }
     

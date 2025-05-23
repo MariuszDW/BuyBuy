@@ -46,13 +46,8 @@ final class ShoppingListViewModel: ObservableObject {
 //        print("-------------")
     }
     
-    func addItem(_ item: ShoppingItem) async {
-        try? await repository.addItem(item)
-        await loadList()
-    }
-    
-    func updateItem(_ item: ShoppingItem) async {
-        try? await repository.updateItem(item)
+    func addOrUpdateItem(_ item: ShoppingItem) async {
+        try? await repository.addOrUpdateItem(item)
         await loadList()
     }
     
@@ -74,7 +69,7 @@ final class ShoppingListViewModel: ObservableObject {
         }
 
         for item in reorderedItems {
-            try? await repository.updateItem(item)
+            try? await repository.addOrUpdateItem(item)
         }
 
         await loadList()
@@ -139,11 +134,11 @@ final class ShoppingListViewModel: ObservableObject {
         self.list = currentList
         
         for item in newSectionItems {
-            try? await repository.updateItem(item)
+            try? await repository.addOrUpdateItem(item)
         }
         
         for item in oldSectionItems {
-            try? await repository.updateItem(item)
+            try? await repository.addOrUpdateItem(item)
         }
         
         await loadList()
