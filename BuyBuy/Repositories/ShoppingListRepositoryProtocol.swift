@@ -11,8 +11,7 @@ protocol ShoppingListsRepositoryProtocol: Sendable {
     // Lists
     func fetchAllLists() async throws -> [ShoppingList]
     func fetchList(with id: UUID) async throws -> ShoppingList?
-    func addList(_ list: ShoppingList) async throws
-    func updateList(_ list: ShoppingList) async throws
+    func addOrUpdateList(_ list: ShoppingList) async throws
     func deleteList(with id: UUID) async throws
     func deleteLists(with ids: [UUID]) async throws
 

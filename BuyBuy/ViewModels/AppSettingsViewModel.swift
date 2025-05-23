@@ -7,14 +7,23 @@
 
 import Foundation
 
+@MainActor
 class AppSettingsViewModel: ObservableObject {
+    private let repository: ShoppingListsRepositoryProtocol
     private var coordinator: any AppCoordinatorProtocol
-
-    init(coordinator: any AppCoordinatorProtocol) {
+    
+    init(repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol) {
+        self.repository = repository
         self.coordinator = coordinator
     }
-
-    func close() {
-        coordinator.back()
+    
+#if DEBUG
+    func copyMockToRepository() async {
+        MockShoppingListsRepository.allLists.forEach { list in
+            Task {
+                try? await repository.addOrUpdateList(list)
+            }
+        }
     }
+#endif
 }

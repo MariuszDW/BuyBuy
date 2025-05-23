@@ -11,11 +11,11 @@ import CoreData
 /// A helper actor that serializes write operations to ensure they are executed one at a time.
 actor SaveQueue {
     private let newContext: () -> NSManagedObjectContext
-
+    
     init(newContext: @escaping () -> NSManagedObjectContext) {
         self.newContext = newContext
     }
-
+    
     func performSave(_ block: @escaping (NSManagedObjectContext) throws -> Void) async throws {
         let context = newContext()
         return try await withCheckedThrowingContinuation { continuation in
@@ -37,14 +37,14 @@ actor SaveQueue {
 final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
     private let coreDataStack: CoreDataStack
     private let saveQueue: SaveQueue
-
+    
     init(coreDataStack: CoreDataStack) {
         self.coreDataStack = coreDataStack
         self.saveQueue = SaveQueue(newContext: { coreDataStack.newBackgroundContext() })
     }
-
+    
     // MARK: - Lists
-
+    
     func fetchAllLists() async throws -> [ShoppingList] {
         let context = coreDataStack.viewContext
         return try await context.perform {
@@ -63,22 +63,18 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
             return try context.fetch(request).first.map(ShoppingList.init)
         }
     }
-
-    func addList(_ list: ShoppingList) async throws {
-        try await saveQueue.performSave { context in
-            let entity = ShoppingListEntity(context: context)
-            entity.update(from: list, context: context)
-        }
-    }
-
-    func updateList(_ list: ShoppingList) async throws {
+    
+    func addOrUpdateList(_ list: ShoppingList) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", list.id.uuidString)
-            guard let entity = try context.fetch(request).first else {
-                throw NSError(domain: "ShoppingRepository", code: 1, userInfo: [NSLocalizedDescriptionKey: "List not found"])
+            
+            if let entity = try context.fetch(request).first {
+                entity.update(from: list, context: context)
+            } else {
+                let newEntity = ShoppingListEntity(context: context)
+                newEntity.update(from: list, context: context)
             }
-            entity.update(from: list, context: context)
         }
     }
     
@@ -104,9 +100,9 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
             }
         }
     }
-
+    
     // MARK: - Items
-
+    
     func fetchItems(for listID: UUID) async throws -> [ShoppingItem] {
         let context = coreDataStack.viewContext
         return try await context.perform {
@@ -117,7 +113,7 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
             return entities.map(ShoppingItem.init)
         }
     }
-
+    
     func addItem(_ item: ShoppingItem) async throws {
         try await saveQueue.performSave { context in
             let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
@@ -125,13 +121,13 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
             guard let listEntity = try context.fetch(listRequest).first else {
                 throw NSError(domain: "ShoppingRepository", code: 2, userInfo: [NSLocalizedDescriptionKey: "List not found"])
             }
-
+            
             let itemEntity = ShoppingItemEntity(context: context)
             itemEntity.update(from: item, context: context)
             itemEntity.list = listEntity
         }
     }
-
+    
     func updateItem(_ item: ShoppingItem) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -139,7 +135,7 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
             guard let entity = try context.fetch(request).first else {
                 throw NSError(domain: "ShoppingRepository", code: 3, userInfo: [NSLocalizedDescriptionKey: "Item not found"])
             }
-
+            
             if entity.list?.id != item.listID {
                 let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
                 listRequest.predicate = NSPredicate(format: "id == %@", item.listID.uuidString)
@@ -148,11 +144,11 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
                 }
                 entity.list = newList
             }
-
+            
             entity.update(from: item, context: context)
         }
     }
-
+    
     func deleteItem(with id: UUID) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()

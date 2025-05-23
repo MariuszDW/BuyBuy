@@ -70,7 +70,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             )
         case .appSettings:
             AppSettingsView(
-                viewModel: AppSettingsViewModel(coordinator: self)
+                viewModel: AppSettingsViewModel(repository: self.dependencies.repository,
+                                                coordinator: self)
             )
         }
     }

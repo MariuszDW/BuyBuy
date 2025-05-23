@@ -63,17 +63,20 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
         ShoppingItem(order: 6, listID: uuid4, name: "Fish Tank Filter", status: .purchased)
     ], order: 3, icon: .cat, color: .pink)
     
+    static let allLists: [ShoppingList] = [MockShoppingListsRepository.list1,
+                                           MockShoppingListsRepository.list2,
+                                           MockShoppingListsRepository.list3,
+                                           MockShoppingListsRepository.list4]
+    
     func fetchAllLists() async throws -> [ShoppingList] {
-        return [Self.list1, Self.list2, Self.list3, Self.list4]
+        return Self.allLists
     }
     
     func fetchList(with id: UUID) async throws -> ShoppingList? {
         Self.list1
     }
     
-    func addList(_ list: ShoppingList) async throws {}
-    
-    func updateList(_ list: ShoppingList) async throws {}
+    func addOrUpdateList(_ list: ShoppingList) async throws {}
     
     func deleteList(with id: UUID) async throws {}
     

@@ -55,11 +55,7 @@ final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol, @u
         return []
     }
     
-    func addList(_ list: BuyBuy.ShoppingList) {
-        // TODO: implement...
-    }
-    
-    func updateList(_ list: BuyBuy.ShoppingList) {
+    func addOrUpdateList(_ list: ShoppingList) {
         // TODO: implement...
     }
     

@@ -42,7 +42,7 @@ class ShoppingListsViewModel: ObservableObject {
         shoppingLists.move(fromOffsets: source, toOffset: destination)
         for index in shoppingLists.indices {
             shoppingLists[index].order = index
-            try? await repository.updateList(shoppingLists[index])
+            try? await repository.addOrUpdateList(shoppingLists[index])
         }
     }
     

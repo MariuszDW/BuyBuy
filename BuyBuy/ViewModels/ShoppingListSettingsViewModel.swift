@@ -11,7 +11,7 @@ import Foundation
 final class ShoppingListSettingsViewModel: ObservableObject {
     @Published var list: ShoppingList
     
-    private(set) var isNew: Bool
+    private(set) var isNew: Bool // TODO: It's not necessary now. Remove?
     private let onSave: () -> Void
     
     private let coordinator: any AppCoordinatorProtocol
@@ -27,11 +27,7 @@ final class ShoppingListSettingsViewModel: ObservableObject {
 
     func applyChanges() async {
         list.prepareToSave()
-        if isNew {
-            try? await repository.addList(self.list)
-        } else {
-            try? await repository.updateList(self.list)
-        }
+        try? await repository.addOrUpdateList(self.list)
         onSave()
     }
 }
