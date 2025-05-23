@@ -11,7 +11,7 @@ struct ShoppingItemRow: View {
     let item: ShoppingItem
     let disabled: Bool
     let onToggleStatus: (ShoppingItem) -> Void
-    let onRowTap: (ShoppingItem) -> Void
+    let onRowTap: (ShoppingItem) -> Void // TODO: Klikanie na calym row chyba jednak nie powinno pokazywac detali itema.
     
     var body: some View {
         HStack(alignment: .top) {
