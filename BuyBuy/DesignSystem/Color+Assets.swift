@@ -11,6 +11,9 @@ struct BBColor {
     static let accent = Color("Accent")
     static let background = Color("Background")
     static let selection = Color("Selection")
+    static let grey50 = Color("Grey50")
+    static let grey75 = Color("Grey75")
+    static let grey85 = Color("Grey85")
     
     enum text {
         static let primary = Color("PrimaryText")

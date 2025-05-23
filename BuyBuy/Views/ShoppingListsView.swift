@@ -12,6 +12,8 @@ struct ShoppingListsView: View {
     
     @State private var localEditMode: EditMode = .inactive
     @State private var listPendingDeletion: ShoppingList?
+    @State private var basketAngle: Double = 0
+    @State private var animationTimer: Timer? = nil
     
     init(viewModel: ShoppingListsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -20,10 +22,13 @@ struct ShoppingListsView: View {
     var body: some View {
         VStack {
             if viewModel.shoppingLists.isEmpty {
-                Spacer()
-                emptyView()
+                emptyView(angle: basketAngle)
                     .onAppear {
                         localEditMode = .inactive
+                        startBasketAnimation()
+                    }
+                    .onDisappear {
+                        stopBasketAnimation()
                     }
             } else {
                 shoppingListsSection
@@ -34,7 +39,7 @@ struct ShoppingListsView: View {
             
             bottomPanel
         }
-        .navigationTitle("Shopping lists")
+        .navigationTitle(viewModel.shoppingLists.isEmpty ? "" : "Shopping lists")
         .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.shoppingLists) { newValue in
             if newValue.isEmpty {
@@ -223,15 +228,65 @@ struct ShoppingListsView: View {
     }
     
     @ViewBuilder
-    private func emptyView() -> some View {
-        VStack {
-            Text("No shopping list.")
-                .font(.boldDynamic(style: .body))
+    private func emptyView(angle: Double) -> some View {
+        GeometryReader { geometry in
+            let baseSize = min(geometry.size.width, geometry.size.height)
+            let listImageSize = baseSize * 0.8
+            let basketImageSize = baseSize * 0.4
+            
+            VStack(spacing: 46) {
+                ZStack {
+                    Image(systemName: "list.bullet.clipboard.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: listImageSize, height: listImageSize)
+                        .foregroundColor(.bb.grey85)
+
+                    Image(systemName: "basket.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: basketImageSize, height: basketImageSize)
+                        .foregroundColor(.bb.grey85)
+                        .offset(x: -basketImageSize * 0.5, y: 0)
+                        .rotationEffect(Angle(degrees: angle), anchor: .topLeading)
+                        .offset(x: basketImageSize * 0.5, y: 0)
+                        .offset(x: listImageSize * 0.2, y: listImageSize * 0.38)
+                        .shadow(color: .black.opacity(0.5), radius: 10)
+                }
+                
+                Text("No shopping lists available.")
+                    .font(Font.boldDynamic(style: .title2))
+                    .foregroundColor(.bb.grey75)
+                    .multilineTextAlignment(.center)
+
+                Text("Tap the \"Add list\" button to create a new list.")
+                    .font(.headline)
+                    .foregroundColor(.bb.grey75)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.42)
         }
         .padding()
     }
-    
+
     // MARK: - Private
+    
+    private func startBasketAnimation() {
+        animationTimer?.invalidate()
+        animationTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { _ in
+            let now = Date().timeIntervalSinceReferenceDate
+            let newAngle = sin(now * 3) * 16
+            DispatchQueue.main.async {
+                basketAngle = newAngle
+            }
+        }
+    }
+
+    private func stopBasketAnimation() {
+        animationTimer?.invalidate()
+        animationTimer = nil
+    }
     
     private func handleDeleteTapped(for list: ShoppingList) async {
         Task {
