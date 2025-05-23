@@ -44,7 +44,7 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
         ShoppingItem(order: 6, listID: uuid3, name: "Gym Bag", status: .pending),
         ShoppingItem(order: 7, listID: uuid3, name: "Basketball", status: .purchased),
         ShoppingItem(order: 8, listID: uuid3, name: "Swim Goggles", status: .purchased)
-    ], order: 2, icon: .run, color: .blue)
+    ], order: 2, icon: .sport, color: .blue)
     
     static let list4 = ShoppingList(id: uuid4, name: "Pet Supplies", items: [
         ShoppingItem(order: 0, listID: uuid4, name: "Cat Food", status: .purchased),
