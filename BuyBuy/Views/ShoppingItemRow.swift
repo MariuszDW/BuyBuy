@@ -18,7 +18,7 @@ struct ShoppingItemRow: View {
                 Button {
                     onToggleStatus(item)
                 } label: {
-                    Image(systemName: item.status.iconName)
+                    item.status.checkBoxImage
                         .foregroundColor(.bbSelection)
                         .font(.title2)
                 }

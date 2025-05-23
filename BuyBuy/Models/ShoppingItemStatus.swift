@@ -12,11 +12,27 @@ enum ShoppingItemStatus: String, CaseIterable, Hashable {
     case purchased  // Item has been bought (done).
     case inactive   // Item is currently not relevant or temporarily inactive.
     
-    var iconName: String {
+    var checkBoxImage: Image {
         switch self {
-        case .pending: return "circle"
-        case .purchased: return "inset.filled.circle"
-        case .inactive: return "pause.circle"
+        case .pending: return Image(systemName: "circle")
+        case .purchased: return Image(systemName: "inset.filled.circle")
+        case .inactive: return Image(systemName: "pause.circle")
+        }
+    }
+    
+    var image: Image {
+        switch self {
+        case .pending: return Image(systemName: "hourglass")
+        case .purchased: return Image(systemName: "checkmark")
+        case .inactive: return Image(systemName: "zzz")
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .pending: .bbListSectionPendingColor
+        case .purchased: .bbListSectionPurchasedColor
+        case .inactive: .bbListSectionInactiveColor
         }
     }
     

@@ -8,7 +8,7 @@
 import SwiftUI
 
 internal extension Image {
-    static let bbItemPendingImage = Image(systemName: "hourglass")
-    static let bbItemPurchasedImage = Image(systemName: "checkmark")
-    static let bbItemInactiveImage = Image(systemName: "zzz")
+//    static let bbItemPendingImage = Image(systemName: "hourglass")
+//    static let bbItemPurchasedImage = Image(systemName: "checkmark")
+//    static let bbItemInactiveImage = Image(systemName: "zzz")
 }

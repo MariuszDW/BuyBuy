@@ -25,18 +25,10 @@ struct ShoppingListSection: Hashable  {
     }
     
     var image: Image {
-        switch status {
-        case .pending: .bbItemPendingImage
-        case .purchased: .bbItemPurchasedImage
-        case .inactive: .bbItemInactiveImage
-        }
+        status.image
     }
     
     var color: Color {
-        switch status {
-        case .pending: .bbListSectionPendingColor
-        case .purchased: .bbListSectionPurchasedColor
-        case .inactive: .bbListSectionInactiveColor
-        }
+        status.color
     }
 }

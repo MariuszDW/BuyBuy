@@ -46,7 +46,7 @@ struct ShoppingListView: View {
                 let items = list.items(for: section.status)
                 Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
                     if !section.isCollapsed {
-                        sectionItems(items: items, section: section)
+                        itemsSection(items: items, section: section)
                     }
                 }
             }
@@ -54,7 +54,7 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func sectionItems(items: [ShoppingItem], section: ShoppingListSection) -> some View {
+    private func itemsSection(items: [ShoppingItem], section: ShoppingListSection) -> some View {
         ForEach(items) { item in
             ShoppingItemRow(item: item, disabled: localEditMode == .active) { [weak viewModel] toggledItem in
                 Task {

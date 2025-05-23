@@ -141,27 +141,27 @@ struct ShoppingListsView: View {
                     .font(.title3)
                 
                 HStack {
-                    Image.bbItemPendingImage
+                    ShoppingItemStatus.pending.image
                         .font(.callout)
-                        .foregroundColor(.bbListSectionPendingColor)
+                        .foregroundColor(ShoppingItemStatus.pending.color)
                     Text("\(list.items(for: .pending).count)")
-                        .foregroundColor(.bbListSectionPendingColor)
+                        .foregroundColor(ShoppingItemStatus.pending.color)
                         .font(.callout)
                     
-                    Image.bbItemPurchasedImage
+                    ShoppingItemStatus.purchased.image
                         .font(.callout)
-                        .foregroundColor(.bbListSectionPurchasedColor)
+                        .foregroundColor(ShoppingItemStatus.purchased.color)
                         .padding(.leading, 16)
                     Text("\(list.items(for: .purchased).count)")
-                        .foregroundColor(.bbListSectionPurchasedColor)
+                        .foregroundColor(ShoppingItemStatus.purchased.color)
                         .font(.callout)
-                    
-                    Image.bbItemInactiveImage
+
+                    ShoppingItemStatus.inactive.image
                         .font(.callout)
-                        .foregroundColor(.bbListSectionInactiveColor)
+                        .foregroundColor(ShoppingItemStatus.inactive.color)
                         .padding(.leading, 16)
                     Text("\(list.items(for: .inactive).count)")
-                        .foregroundColor(.bbListSectionInactiveColor)
+                        .foregroundColor(ShoppingItemStatus.inactive.color)
                         .font(.callout)
                 }
             }
