@@ -8,7 +8,10 @@
 import Foundation
 @testable import BuyBuy
 
-final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
+final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol, @unchecked Sendable {
+    var addItemHandler: ((BuyBuy.ShoppingItem) -> Void)?
+    var fetchListHandler: ((UUID) -> Void)?
+    
     func deleteItem(with id: UUID) async throws {
         // TODO: implement...
     }
@@ -27,7 +30,7 @@ final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     }
     
     func fetchList(with id: UUID) async throws -> BuyBuy.ShoppingList? {
-        // TODO: implement...
+        fetchListHandler?(id)
         return nil
     }
     
@@ -41,7 +44,7 @@ final class TestMockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     }
     
     func addItem(_ item: BuyBuy.ShoppingItem) {
-        // TODO: implement...
+        addItemHandler?(item)
     }
     
     func updateItem(_ item: BuyBuy.ShoppingItem) {

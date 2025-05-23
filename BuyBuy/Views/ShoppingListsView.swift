@@ -34,6 +34,8 @@ struct ShoppingListsView: View {
             
             bottomPanel
         }
+        .navigationTitle("Shopping lists")
+        .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.shoppingLists) { newValue in
             if newValue.isEmpty {
                 localEditMode = .inactive
@@ -128,18 +130,44 @@ struct ShoppingListsView: View {
             Image(systemName: list.icon.rawValue)
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(.white, list.color.color)
-                .font(.title)
-
-            Text(list.name)
-                .foregroundColor(.text)
-                .padding(.vertical, 8)
+                .font(.largeTitle)
+                .scaleEffect(1.2)
+                .padding(.leading, 8)
+                .padding(.trailing, 2)
             
-            Spacer()
-            
-            Text("\(list.items(for: .purchased).count) / \(list.items(for: .pending).count + list.items(for: .purchased).count)")
-                .foregroundColor(.secondary)
-                .font(.subheadline)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(list.name)
+                    .foregroundColor(.text)
+                    .font(.title3)
+                
+                HStack {
+                    Image.bbItemPendingImage
+                        .font(.callout)
+                        .foregroundColor(.bbListSectionPendingColor)
+                    Text("\(list.items(for: .pending).count)")
+                        .foregroundColor(.bbListSectionPendingColor)
+                        .font(.callout)
+                    
+                    Image.bbItemPurchasedImage
+                        .font(.callout)
+                        .foregroundColor(.bbListSectionPurchasedColor)
+                        .padding(.leading, 16)
+                    Text("\(list.items(for: .purchased).count)")
+                        .foregroundColor(.bbListSectionPurchasedColor)
+                        .font(.callout)
+                    
+                    Image.bbItemInactiveImage
+                        .font(.callout)
+                        .foregroundColor(.bbListSectionInactiveColor)
+                        .padding(.leading, 16)
+                    Text("\(list.items(for: .inactive).count)")
+                        .foregroundColor(.bbListSectionInactiveColor)
+                        .font(.callout)
+                }
+            }
+            .padding(.leading, 4)
         }
+        .padding(.vertical, 2)
     }
     
     private var bottomPanel: some View {

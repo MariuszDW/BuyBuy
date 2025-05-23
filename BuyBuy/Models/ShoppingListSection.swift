@@ -24,19 +24,19 @@ struct ShoppingListSection: Hashable  {
         }
     }
     
-    var systemImage: String {
+    var image: Image {
         switch status {
-        case .pending: "hourglass"
-        case .purchased: "checkmark"
-        case .inactive: "zzz"
+        case .pending: .bbItemPendingImage
+        case .purchased: .bbItemPurchasedImage
+        case .inactive: .bbItemInactiveImage
         }
     }
     
     var color: Color {
         switch status {
-        case .pending: .orange
-        case .purchased: .green
-        case .inactive: .red
+        case .pending: .bbListSectionPendingColor
+        case .purchased: .bbListSectionPurchasedColor
+        case .inactive: .bbListSectionInactiveColor
         }
     }
 }

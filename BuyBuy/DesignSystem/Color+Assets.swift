@@ -27,4 +27,9 @@ internal extension Color {
     static let bbListPurple = Color("ListPurple")
     static let bbListRed = Color("ListRed")
     static let bbListYellow = Color("ListYellow")
+    
+    // List section colors
+    static let bbListSectionInactiveColor = Color("ListSectionInactiveColor")
+    static let bbListSectionPendingColor = Color("ListSectionPendingColor")
+    static let bbListSectionPurchasedColor = Color("ListSectionPurchasedColor")
 }

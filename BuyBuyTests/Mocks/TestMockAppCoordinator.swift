@@ -10,29 +10,22 @@ import Combine
 @testable import BuyBuy
 
 final class TestMockAppCoordinator: AppCoordinatorProtocol {
-    var needRefreshListsPublisher: AnyPublisher<Bool, Never> = Just(false).eraseToAnyPublisher()
     var openListBlock: ((UUID) -> Void)?
     var onBack: (() -> Void)?
     
-    var needRefreshLists: Bool = false
-    
-    func setNeedRefreshLists(_ state: Bool) {
-        // TODO: implement...
-    }
-
     func openList(_ id: UUID) {
         openListBlock?(id)
     }
     
-    func resetNeedRefreshListsFlag() {
+    func openShoppingList(_ id: UUID) {
+        // TODO: Implement...
+    }
+    
+    func openShoppingListSettings(_ list: BuyBuy.ShoppingList, isNew: Bool, onSave: @escaping () -> Void) {
         // TODO: implement...
     }
     
-    func openListSettings(_ list: BuyBuy.ShoppingList, isNew: Bool) {
-        // TODO: implement...
-    }
-    
-    func openItemDetails(_ item: BuyBuy.ShoppingItem, isNew: Bool) {
+    func openShoppingItemDetails(_ item: BuyBuy.ShoppingItem, isNew: Bool, onSave: @escaping () -> Void) {
         // TODO: implement...
     }
     
@@ -40,7 +33,7 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
         // TODO: implement...
     }
     
-    func openSettings() {
+    func openAppSettings() {
         // TODO: implement...
     }
 

@@ -129,12 +129,12 @@ struct ShoppingListView: View {
         let title: String = section.isCollapsed ? section.title + " (\(sectionItemCount))" : section.title
         
         HStack(spacing: 8) {
-            Image(systemName: section.systemImage)
-                .font(.boldDynamic(style: .title3))
+            section.image
+                .font(.boldDynamic(style: .headline))
                 .foregroundColor(section.color)
             
             Text(title)
-                .font(.boldDynamic(style: .title3))
+                .font(.boldDynamic(style: .headline))
                 .foregroundColor(section.color)
                 .opacity(0.7)
             
@@ -151,7 +151,6 @@ struct ShoppingListView: View {
             }
             .buttonStyle(PlainButtonStyle())
         }
-        .padding(.top, 8)
         .padding(.bottom, 4)
     }
     

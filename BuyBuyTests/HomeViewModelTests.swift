@@ -18,18 +18,34 @@ final class HomeViewModelTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
-    func testAddItemCallsHandler() {
-        let mockRepository = MockShoppingListRepository()
+    @MainActor
+    func testAddItem() async {
+        let testListID = UUID()
+        let testItemID = UUID()
+        let testItem = ShoppingItem(id: testItemID, order: 0, listID: testListID, name: "Milk", note: "Pilos 3.2%, 1L", status: .pending)
+        
+        let mockRepository = TestMockShoppingListsRepository()
 
-        var wasCalled = false
+        let addItemExp = expectation(description: "addItemExp")
         mockRepository.addItemHandler = { item in
-            wasCalled = true
+            XCTAssertEqual(item.id, testItemID)
+            XCTAssertEqual(item.listID, testListID)
             XCTAssertEqual(item.name, "Milk")
+            XCTAssertEqual(item.note, "Pilos 3.2%, 1L")
+            XCTAssertEqual(item.status, .pending)
+            XCTAssertEqual(item.order, 0)
+            addItemExp.fulfill()
         }
+        
+        let fetchListExp = expectation(description: "fetchListExp")
+        mockRepository.fetchListHandler = { listID in
+            XCTAssertEqual(listID, testListID)
+            fetchListExp.fulfill()
+        }
+        
+        let viewModel = ShoppingListViewModel(listID: testListID, repository: mockRepository, coordinator: TestMockAppCoordinator())
+        await viewModel.addItem(testItem)
 
-        let item = ShoppingItem(name: "Milk", status: .pending)
-        mockRepository.addItem(item)
-
-        XCTAssertTrue(wasCalled)
+        await fulfillment(of: [addItemExp, fetchListExp], timeout: 5)
     }
 }
