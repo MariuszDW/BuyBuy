@@ -132,7 +132,7 @@ struct ShoppingListSettingsView: View {
                             .frame(width: 48, height: 48)
                     }
                     
-                    Image(systemName: icon.rawValue)
+                    icon.image
                         .resizable()
                         .scaledToFit()
                         .frame(width: 36, height: 36)
