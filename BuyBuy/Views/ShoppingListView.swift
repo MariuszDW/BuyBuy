@@ -161,11 +161,40 @@ struct ShoppingListView: View {
     
     @ViewBuilder
     private func emptyView() -> some View {
-        VStack {
-            Text("Empty list.")
-                .font(.boldDynamic(style: .body))
+        if let list = viewModel.list {
+            GeometryReader { geometry in
+                VStack(spacing: 50) {
+                    Spacer()
+                    
+                    let iconSize = min(geometry.size.width, geometry.size.height) * 0.5
+                    
+                    AnimatedIconView(
+                        image: list.icon.image,
+                        color: list.color.color.opacity(0.4),
+                        size: iconSize,
+                        response: 0.8,
+                        dampingFraction: 0.3
+                    )
+                    
+                    Text("This shopping list is empty.")
+                        .font(Font.boldDynamic(style: .title2))
+                        .foregroundColor(.bb.grey75)
+                        .multilineTextAlignment(.center)
+
+                    Text("Use the 'Add item' button to add your first shopping item.")
+                        .font(Font.boldDynamic(style: .headline))
+                        .foregroundColor(.bb.grey75)
+                        .multilineTextAlignment(.center)
+
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+            }
+        } else {
+            ProgressView()
+                .padding()
         }
-        .padding()
     }
     
     @ViewBuilder
@@ -208,10 +237,10 @@ struct ShoppingListView: View {
 
 // MARK: - Preview
 
-#Preview("Light Mode") {
+#Preview("Light/items") {
     let repository = MockShoppingListsRepository()
     let coordinator = AppCoordinator(dependencies: AppDependencies())
-    let viewModel = ShoppingListViewModel(listID: UUID(),
+    let viewModel = ShoppingListViewModel(listID: MockShoppingListsRepository.uuid1,
                                           repository: repository,
                                           coordinator: coordinator)
     
@@ -221,10 +250,36 @@ struct ShoppingListView: View {
     .preferredColorScheme(.light)
 }
 
-#Preview("Dark Mode") {
+#Preview("Dark/items") {
     let repository = MockShoppingListsRepository()
     let coordinator = AppCoordinator(dependencies: AppDependencies())
-    let viewModel = ShoppingListViewModel(listID: UUID(),
+    let viewModel = ShoppingListViewModel(listID: MockShoppingListsRepository.uuid1,
+                                          repository: repository,
+                                          coordinator: coordinator)
+    
+    NavigationStack {
+        ShoppingListView(viewModel: viewModel)
+    }
+    .preferredColorScheme(.dark)
+}
+
+#Preview("Light/empty") {
+    let repository = MockShoppingListsRepository()
+    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let viewModel = ShoppingListViewModel(listID: MockShoppingListsRepository.uuid5,
+                                          repository: repository,
+                                          coordinator: coordinator)
+    
+    NavigationStack {
+        ShoppingListView(viewModel: viewModel)
+    }
+    .preferredColorScheme(.light)
+}
+
+#Preview("Dark/empty") {
+    let repository = MockShoppingListsRepository()
+    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let viewModel = ShoppingListViewModel(listID: MockShoppingListsRepository.uuid5,
                                           repository: repository,
                                           coordinator: coordinator)
     
