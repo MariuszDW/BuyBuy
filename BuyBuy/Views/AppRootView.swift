@@ -27,12 +27,12 @@ struct AppRootView: View {
 
 // MARK: - Preview
 
-#Preview("Light Mode") {
+#Preview("Light") {
     AppRootView(coordinator: AppCoordinator(dependencies: AppDependencies()))
         .preferredColorScheme(.light)
 }
 
-#Preview("Dark Mode") {
+#Preview("Dark") {
     AppRootView(coordinator: AppCoordinator(dependencies: AppDependencies()))
         .preferredColorScheme(.dark)
 }

@@ -49,7 +49,7 @@ struct AppSettingsView: View {
 
 // MARK: - Preview
 
-#Preview("Light Mode") {
+#Preview("Light") {
     let repository = MockShoppingListsRepository()
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     
@@ -59,7 +59,7 @@ struct AppSettingsView: View {
     .preferredColorScheme(.light)
 }
 
-#Preview("Dark Mode") {
+#Preview("Dark") {
     let repository = MockShoppingListsRepository()
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     

@@ -63,7 +63,7 @@ struct ShoppingItemDetailsView: View {
 
 // MARK: - Preview
 
-#Preview("Light Mode") {
+#Preview("Light") {
     let repository = MockShoppingListsRepository()
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockShoppingListsRepository.list1.items.first!,
@@ -75,7 +75,7 @@ struct ShoppingItemDetailsView: View {
         .preferredColorScheme(.light)
 }
 
-#Preview("Dark Mode") {
+#Preview("Dark") {
     let repository = MockShoppingListsRepository()
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockShoppingListsRepository.list1.items.first!,

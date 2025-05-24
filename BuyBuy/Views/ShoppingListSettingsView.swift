@@ -154,7 +154,7 @@ struct ShoppingListSettingsView: View {
 
 // MARK: - Preview
 
-#Preview("Light Mode") {
+#Preview("Light") {
     let repository = MockShoppingListsRepository()
     let viewModel = ShoppingListSettingsViewModel(
         list: MockShoppingListsRepository.list1,
@@ -167,7 +167,7 @@ struct ShoppingListSettingsView: View {
         .preferredColorScheme(.light)
 }
 
-#Preview("Dark Mode") {
+#Preview("Dark") {
     let repository = MockShoppingListsRepository()
     let viewModel = ShoppingListSettingsViewModel(
         list: MockShoppingListsRepository.list1,
