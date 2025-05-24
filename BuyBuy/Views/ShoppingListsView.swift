@@ -234,7 +234,7 @@ struct ShoppingListsView: View {
             let listImageSize = baseSize * 0.8
             let basketImageSize = baseSize * 0.4
             
-            VStack(spacing: 46) {
+            VStack(spacing: 50) {
                 ZStack {
                     Image(systemName: "list.bullet.clipboard.fill")
                         .resizable()
@@ -251,7 +251,7 @@ struct ShoppingListsView: View {
                         .rotationEffect(Angle(degrees: angle), anchor: .topLeading)
                         .offset(x: basketImageSize * 0.5, y: 0)
                         .offset(x: listImageSize * 0.2, y: listImageSize * 0.38)
-                        .shadow(color: .black.opacity(0.5), radius: 10)
+                        .shadow(color: .black.opacity(0.6), radius: 8)
                 }
                 
                 Text("No shopping lists available.")
@@ -260,7 +260,7 @@ struct ShoppingListsView: View {
                     .multilineTextAlignment(.center)
 
                 Text("Tap the \"Add list\" button to create a new list.")
-                    .font(.headline)
+                    .font(Font.boldDynamic(style: .headline))
                     .foregroundColor(.bb.grey75)
                     .multilineTextAlignment(.center)
             }
@@ -301,7 +301,7 @@ struct ShoppingListsView: View {
 
 // MARK: - Preview
 
-#Preview("Light Mode") {
+#Preview("Light/items") {
     let mockViewModel = ShoppingListsViewModel(
         coordinator: AppCoordinator(dependencies: AppDependencies()),
         repository: MockShoppingListsRepository()
@@ -313,10 +313,34 @@ struct ShoppingListsView: View {
     .preferredColorScheme(.light)
 }
 
-#Preview("Dark Mode") {
+#Preview("Dark/items") {
     let mockViewModel = ShoppingListsViewModel(
         coordinator: AppCoordinator(dependencies: AppDependencies()),
         repository: MockShoppingListsRepository()
+    )
+    
+    NavigationStack {
+        ShoppingListsView(viewModel: mockViewModel)
+    }
+    .preferredColorScheme(.dark)
+}
+
+#Preview("Light/empty") {
+    let mockViewModel = ShoppingListsViewModel(
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        repository: MockShoppingListsRepository(lists: [])
+    )
+    
+    NavigationStack {
+        ShoppingListsView(viewModel: mockViewModel)
+    }
+    .preferredColorScheme(.light)
+}
+
+#Preview("Dark/empty") {
+    let mockViewModel = ShoppingListsViewModel(
+        coordinator: AppCoordinator(dependencies: AppDependencies()),
+        repository: MockShoppingListsRepository(lists: [])
     )
     
     NavigationStack {
