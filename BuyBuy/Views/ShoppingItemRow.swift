@@ -55,3 +55,33 @@ struct ShoppingItemRow: View {
         }
     }
 }
+
+#Preview("Light") {
+    let item = ShoppingItem(id: UUID(), order: 0, listID: UUID(), name: "Milk Pilos",
+                            note: "3.2% 1L", status: .pending)
+    
+    ZStack {
+        ShoppingItemRow(item: item, disabled: false, onToggleStatus: {_ in }, onRowTap: {_ in })
+            .padding(12)
+            .background(Color(.systemBackground))
+            .padding(16)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.gray)
+    .preferredColorScheme(.light)
+}
+
+#Preview("Dark") {
+    let item = ShoppingItem(id: UUID(), order: 0, listID: UUID(), name: "Milk Pilos",
+                            note: "3.2% 1L", status: .pending)
+    
+    ZStack {
+        ShoppingItemRow(item: item, disabled: false, onToggleStatus: {_ in }, onRowTap: {_ in })
+            .padding(12)
+            .background(Color(.systemBackground))
+            .padding(16)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.gray)
+    .preferredColorScheme(.dark)
+}
