@@ -21,7 +21,10 @@ struct ShoppingListsView: View {
     
     var body: some View {
         VStack {
-            if viewModel.shoppingLists.isEmpty {
+            if !viewModel.shoppingLists.isEmpty {
+                shoppingListsView
+                    .environment(\.editMode, $localEditMode)
+            } else {
                 emptyView(angle: basketAngle)
                     .onAppear {
                         localEditMode = .inactive
@@ -30,9 +33,6 @@ struct ShoppingListsView: View {
                     .onDisappear {
                         stopBasketAnimation()
                     }
-            } else {
-                shoppingListsSection
-                    .environment(\.editMode, $localEditMode)
             }
             
             Spacer()
@@ -70,7 +70,7 @@ struct ShoppingListsView: View {
     
     // MARK: - Subviews
     
-    private var shoppingListsSection: some View {
+    private var shoppingListsView: some View {
         List {
             ForEach(viewModel.shoppingLists) { list in
                 Group {
@@ -251,7 +251,7 @@ struct ShoppingListsView: View {
                         .rotationEffect(Angle(degrees: angle), anchor: .topLeading)
                         .offset(x: basketImageSize * 0.5, y: 0)
                         .offset(x: listImageSize * 0.2, y: listImageSize * 0.38)
-                        .shadow(color: .black.opacity(0.6), radius: 8)
+                        .shadow(color: .black.opacity(0.5), radius: 8)
                 }
                 
                 Text("No shopping lists available.")
@@ -265,9 +265,10 @@ struct ShoppingListsView: View {
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
-            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.42)
+            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
         }
-        .padding()
+        .padding(.horizontal, 20)
+        .padding(.vertical, 40)
     }
 
     // MARK: - Private

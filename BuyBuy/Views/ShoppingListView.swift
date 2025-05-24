@@ -19,7 +19,6 @@ struct ShoppingListView: View {
                     .environment(\.editMode, $localEditMode)
                     .listStyle(.grouped)
             } else {
-                Spacer()
                 emptyView()
                     .onAppear {
                         localEditMode = .inactive
@@ -27,6 +26,7 @@ struct ShoppingListView: View {
             }
             
             Spacer()
+            
             bottomPanel
         }
         .toolbar {
@@ -163,15 +163,13 @@ struct ShoppingListView: View {
     private func emptyView() -> some View {
         if let list = viewModel.list {
             GeometryReader { geometry in
+                let baseSize = min(geometry.size.width, geometry.size.height)
+                
                 VStack(spacing: 50) {
-                    Spacer()
-                    
-                    let iconSize = min(geometry.size.width, geometry.size.height) * 0.5
-                    
                     AnimatedIconView(
                         image: list.icon.image,
                         color: list.color.color.opacity(0.4),
-                        size: iconSize,
+                        size: baseSize * 0.5,
                         response: 0.8,
                         dampingFraction: 0.3
                     )
@@ -185,12 +183,12 @@ struct ShoppingListView: View {
                         .font(Font.boldDynamic(style: .headline))
                         .foregroundColor(.bb.grey75)
                         .multilineTextAlignment(.center)
-
-                    Spacer()
                 }
                 .frame(maxWidth: .infinity)
-                .padding()
+                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
             }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 40)
         } else {
             ProgressView()
                 .padding()
