@@ -12,6 +12,7 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     static let uuid2 = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
     static let uuid3 = UUID(uuidString: "33333333-3333-3333-3333-333333333333")!
     static let uuid4 = UUID(uuidString: "44444444-4444-4444-4444-444444444444")!
+    static let uuid5 = UUID(uuidString: "55555555-5555-5555-5555-555555555555")!
     
     static let list1 = ShoppingList(id: uuid1, name: "Grocery Store", items: [
         ShoppingItem(
@@ -63,17 +64,26 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
         ShoppingItem(order: 6, listID: uuid4, name: "Fish Tank Filter", status: .purchased)
     ], order: 3, icon: .cat, color: .pink)
     
+    static let list5 = ShoppingList(id: uuid5, name: "Empty", items: [], order: 4, icon: .questionmark, color: .cyan)
+    
     static let allLists: [ShoppingList] = [MockShoppingListsRepository.list1,
                                            MockShoppingListsRepository.list2,
                                            MockShoppingListsRepository.list3,
-                                           MockShoppingListsRepository.list4]
+                                           MockShoppingListsRepository.list4,
+                                           MockShoppingListsRepository.list5]
+    
+    let shoppingLists: [ShoppingList]
+    
+    init(lists: [ShoppingList] = MockShoppingListsRepository.allLists) {
+        self.shoppingLists = lists
+    }
     
     func fetchAllLists() async throws -> [ShoppingList] {
-        return Self.allLists
+        return shoppingLists
     }
     
     func fetchList(with id: UUID) async throws -> ShoppingList? {
-        Self.list1
+        return shoppingLists.first(where: { $0.id == id })
     }
     
     func addOrUpdateList(_ list: ShoppingList) async throws {}
@@ -83,7 +93,7 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     func deleteLists(with ids: [UUID]) async throws {}
     
     func fetchItems(for listID: UUID) async throws -> [ShoppingItem] {
-        return Self.list1.items
+        return shoppingLists.first(where: { $0.id == listID })?.items ?? []
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async throws {}
