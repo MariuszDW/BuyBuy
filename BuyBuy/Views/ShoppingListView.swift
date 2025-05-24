@@ -99,7 +99,7 @@ struct ShoppingListView: View {
                 }
                 .tint(.blue)
             }
-            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+            .swipeActions(edge: .leading, allowsFullSwipe: true) {
                 ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
                     if item.status != status {
                         Button {
