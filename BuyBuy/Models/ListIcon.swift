@@ -5,6 +5,8 @@
 //  Created by MDW on 16/05/2025.
 //
 
+import SwiftUI
+
 enum ListIcon: String, CaseIterable {
     case list = "list.bullet.circle.fill"
     case cart = "cart.circle.fill"
@@ -38,4 +40,8 @@ enum ListIcon: String, CaseIterable {
     case exclamationmark = "exclamationmark.circle.fill"
 
     static var `default`: ListIcon { .list }
+    
+    var image: Image {
+        Image(systemName: rawValue)
+    }
 }
