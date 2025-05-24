@@ -21,7 +21,7 @@ struct ShoppingItemRow: View {
                 } label: {
                     item.status.checkBoxImage
                         .foregroundColor(.bb.selection)
-                        .font(.headline)
+                        .font(.regularDynamic(style: .headline))
                         .scaleEffect(1.5)
                 }
                 .buttonStyle(.plain)
@@ -35,13 +35,13 @@ struct ShoppingItemRow: View {
                     VStack(alignment: .leading) {
                         Text(item.name)
                             .foregroundColor(.bb.text.primary)
-                            .font(.headline)
+                            .font(.regularDynamic(style: .headline))
                             .multilineTextAlignment(.leading)
                             .lineLimit(5)
                         if !item.note.isEmpty {
                             Text(item.note)
                                 .foregroundColor(.bb.text.secondary)
-                                .font(.subheadline)
+                                .font(.regularDynamic(style: .subheadline))
                                 .multilineTextAlignment(.leading)
                                 .lineLimit(8)
                         }

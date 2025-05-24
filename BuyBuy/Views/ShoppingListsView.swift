@@ -135,7 +135,7 @@ struct ShoppingListsView: View {
             Image(systemName: list.icon.rawValue)
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(.white, list.color.color)
-                .font(.largeTitle)
+                .font(.regularDynamic(style: .largeTitle))
                 .scaleEffect(1.2)
                 .padding(.leading, 8)
                 .padding(.trailing, 2)
@@ -143,33 +143,33 @@ struct ShoppingListsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(list.name)
                     .foregroundColor(.bb.text.primary)
-                    .font(.title3)
+                    .font(.regularDynamic(style: .title3))
                     .multilineTextAlignment(.leading)
                     .lineLimit(4)
                 
                 HStack {
                     ShoppingItemStatus.pending.image
-                        .font(.callout)
+                        .font(.regularDynamic(style: .callout))
                         .foregroundColor(ShoppingItemStatus.pending.color)
                     Text("\(list.items(for: .pending).count)")
                         .foregroundColor(ShoppingItemStatus.pending.color)
-                        .font(.callout)
+                        .font(.regularDynamic(style: .callout))
                     
                     ShoppingItemStatus.purchased.image
-                        .font(.callout)
+                        .font(.regularDynamic(style: .callout))
                         .foregroundColor(ShoppingItemStatus.purchased.color)
                         .padding(.leading, 16)
                     Text("\(list.items(for: .purchased).count)")
                         .foregroundColor(ShoppingItemStatus.purchased.color)
-                        .font(.callout)
+                        .font(.regularDynamic(style: .callout))
 
                     ShoppingItemStatus.inactive.image
-                        .font(.callout)
+                        .font(.regularDynamic(style: .callout))
                         .foregroundColor(ShoppingItemStatus.inactive.color)
                         .padding(.leading, 16)
                     Text("\(list.items(for: .inactive).count)")
                         .foregroundColor(ShoppingItemStatus.inactive.color)
-                        .font(.callout)
+                        .font(.regularDynamic(style: .callout))
                 }
             }
             .padding(.leading, 4)
@@ -255,12 +255,12 @@ struct ShoppingListsView: View {
                 }
                 
                 Text("No shopping lists available.")
-                    .font(Font.boldDynamic(style: .title2))
+                    .font(.boldDynamic(style: .title2))
                     .foregroundColor(.bb.grey75)
                     .multilineTextAlignment(.center)
 
                 Text("Tap the \"Add list\" button to create a new list.")
-                    .font(Font.boldDynamic(style: .headline))
+                    .font(.boldDynamic(style: .headline))
                     .foregroundColor(.bb.grey75)
                     .multilineTextAlignment(.center)
             }

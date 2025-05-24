@@ -15,10 +15,10 @@ struct AboutView: View {
             Spacer()
 
             Text("BuyBuy")
-                .font(.title.bold())
+                .font(.boldDynamic(style: .title))
 
             Text(Bundle.main.appVersion)
-                .font(.footnote)
+                .font(.regularDynamic(style: .footnote))
                 .foregroundColor(.secondary)
 
             Spacer()

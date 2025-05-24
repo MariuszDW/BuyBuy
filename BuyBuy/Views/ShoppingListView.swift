@@ -175,12 +175,12 @@ struct ShoppingListView: View {
                     )
                     
                     Text("This shopping list is empty.")
-                        .font(Font.boldDynamic(style: .title2))
+                        .font(.boldDynamic(style: .title2))
                         .foregroundColor(.bb.grey75)
                         .multilineTextAlignment(.center)
 
                     Text("Use the 'Add item' button to add your first shopping item.")
-                        .font(Font.boldDynamic(style: .headline))
+                        .font(.boldDynamic(style: .headline))
                         .foregroundColor(.bb.grey75)
                         .multilineTextAlignment(.center)
                 }
