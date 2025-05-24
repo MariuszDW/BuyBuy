@@ -12,7 +12,7 @@ extension ShoppingItem {
         self.id = entity.id ?? UUID()
         self.listID = entity.list?.id ?? UUID()
         self.name = entity.name ?? ""
-        self.note = entity.note
+        self.note = entity.note ?? ""
         self.status = ShoppingItemStatus(rawValue: entity.status ?? "") ?? .pending
         self.order = Int(entity.order)
     }

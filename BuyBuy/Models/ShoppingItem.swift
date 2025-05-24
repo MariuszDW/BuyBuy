@@ -11,11 +11,11 @@ struct ShoppingItem: Identifiable, Hashable {
     let id: UUID
     let listID: UUID
     var name: String
-    var note: String?
+    var note: String
     var status: ShoppingItemStatus
     var order: Int
 
-    init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String? = nil, status: ShoppingItemStatus) {
+    init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus) {
         self.id = id
         self.order = order
         self.listID = listID
@@ -26,6 +26,6 @@ struct ShoppingItem: Identifiable, Hashable {
     
     mutating func prepareToSave() {
         name = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        note = note?.trimmingCharacters(in: .whitespacesAndNewlines)
+        note = note.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

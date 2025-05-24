@@ -38,8 +38,8 @@ struct ShoppingItemRow: View {
                             .font(.headline)
                             .multilineTextAlignment(.leading)
                             .lineLimit(5)
-                        if let note = item.note {
-                            Text(note)
+                        if !item.note.isEmpty {
+                            Text(item.note)
                                 .foregroundColor(.bb.text.secondary)
                                 .font(.subheadline)
                                 .multilineTextAlignment(.leading)
