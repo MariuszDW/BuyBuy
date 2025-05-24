@@ -19,7 +19,7 @@ struct AppSettingsView: View {
     }
     
     var body: some View {
-        List {
+        Form {
             Section {
                 Text("Application Settings Placeholder")
             }
