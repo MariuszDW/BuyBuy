@@ -15,6 +15,9 @@ extension ShoppingItem {
         self.note = entity.note ?? ""
         self.status = ShoppingItemStatus(rawValue: entity.status ?? "") ?? .pending
         self.order = Int(entity.order)
+        self.price = entity.price?.doubleValue
+        self.quantity = entity.quantity?.doubleValue
+        self.unit = ShoppingItemUnit(string: entity.unit)
     }
 }
 
@@ -25,5 +28,8 @@ extension ShoppingItemEntity {
         self.note = model.note
         self.status = model.status.rawValue
         self.order = Int64(model.order)
+        self.price = model.price as NSNumber?
+        self.quantity = model.quantity as NSNumber?
+        self.unit = model.unit?.symbol
     }
 }

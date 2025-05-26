@@ -12,6 +12,15 @@ enum ShoppingItemStatus: String, CaseIterable, Hashable {
     case purchased  // Item has been bought (done).
     case inactive   // Item is currently not relevant or temporarily inactive.
     
+    var localizedName: String {
+        // TODO: localized strings...
+        switch self {
+        case .pending: return "Pending"
+        case .purchased: return "Purchased"
+        case .inactive: return "Inactive"
+        }
+    }
+    
     var checkBoxImage: Image {
         return Image(systemName: checkBoxImageName)
     }

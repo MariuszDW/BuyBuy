@@ -14,14 +14,19 @@ struct ShoppingItem: Identifiable, Hashable {
     var note: String
     var status: ShoppingItemStatus
     var order: Int
+    var price: Double?
+    var quantity: Double?
+    var unit: ShoppingItemUnit?
 
-    init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus) {
+    init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus, price: Double? = nil, quantity: Double? = nil, unit: ShoppingItemUnit? = nil) {
         self.id = id
         self.order = order
         self.listID = listID
         self.name = name
         self.note = note
         self.status = status
+        self.price = price
+        self.quantity = quantity
     }
     
     mutating func prepareToSave() {
