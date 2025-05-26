@@ -174,7 +174,7 @@ struct ShoppingListsView: View {
             }
             .padding(.leading, 4)
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
     }
     
     private var bottomPanel: some View {
