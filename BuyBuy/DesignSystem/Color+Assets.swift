@@ -14,6 +14,16 @@ struct BBColor {
     static let grey50 = Color("Grey50")
     static let grey75 = Color("Grey75")
     static let grey85 = Color("Grey85")
+    static let grey90 = Color("Grey90")
+    
+    enum sheet {
+        static let background = Color("SheetBackground")
+        enum section {
+            static let background = Color("SheetSectionBackground")
+            static let primaryText = Color("SheetSectionPrimaryText")
+            static let secondaryText = Color("SheetSectionSecondaryText")
+        }
+    }
     
     enum text {
         static let primary = Color("PrimaryText")
@@ -36,9 +46,9 @@ struct BBColor {
     }
     
     enum itemStatus {
-        static let inactive = Color("ItemStatusInactiveColor")
-        static let pending = Color("ItemStatusPendingColor")
-        static let purchased = Color("ItemStatusPurchasedColor")
+        static let inactive = Color("ItemStatusInactive")
+        static let pending = Color("ItemStatusPending")
+        static let purchased = Color("ItemStatusPurchased")
     }
 }
 

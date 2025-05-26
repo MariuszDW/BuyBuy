@@ -17,6 +17,11 @@ struct ShoppingItem: Identifiable, Hashable {
     var price: Double?
     var quantity: Double?
     var unit: ShoppingItemUnit?
+    
+    var unitText: String {
+        get { unit?.symbol ?? "" }
+        set { unit = ShoppingItemUnit(string: newValue) }
+    }
 
     init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus, price: Double? = nil, quantity: Double? = nil, unit: ShoppingItemUnit? = nil) {
         self.id = id

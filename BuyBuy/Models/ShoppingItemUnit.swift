@@ -11,13 +11,12 @@ import Foundation
 struct ShoppingItemUnit: Codable, Hashable {
     let predefined: MeasuredUnit?
     let custom: String?
-
+    
     init?(string: String?) {
-        guard let string = string else {
-            return nil
-        }
-        if let unit = MeasuredUnit(rawValue: string) {
-            self.predefined = unit
+        guard let string = string else { return nil }
+        
+        if let unitBySymbol = MeasuredUnit.from(symbol: string) {
+            self.predefined = unitBySymbol
             self.custom = nil
         } else {
             self.predefined = nil

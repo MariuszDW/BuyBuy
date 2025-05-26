@@ -19,7 +19,7 @@ struct AboutView: View {
 
             Text(Bundle.main.appVersion)
                 .font(.regularDynamic(style: .footnote))
-                .foregroundColor(.secondary)
+                .foregroundColor(.bb.text.primary)
 
             Spacer()
         }

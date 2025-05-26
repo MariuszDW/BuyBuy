@@ -7,6 +7,47 @@
 
 import Foundation
 
+enum MeasuredUnitCategory: String, CaseIterable {
+    case quantity
+    case massMetric
+    case massImperial
+    case volumeMetric
+    case volumeImperial
+    case lengthMetric
+    case lengthImperial
+    
+    var name: String {
+        switch self {
+        case .quantity: return "Quantity"
+        case .massMetric: return "Mass (Metric)"
+        case .massImperial: return "Mass (Imperial)"
+        case .volumeMetric: return "Volume (Metric)"
+        case .volumeImperial: return "Volume (Imperial)"
+        case .lengthMetric: return "Length (Metric)"
+        case .lengthImperial: return "Length (Imperial)"
+        }
+    }
+    
+    var units: [MeasuredUnit] {
+        switch self {
+        case .quantity:
+            return [.piece]
+        case .massMetric:
+            return [.microgram, .milligram, .gram, .kilogram]
+        case .massImperial:
+            return [.ounce, .pound, .stone]
+        case .volumeMetric:
+            return [.milliliter, .liter]
+        case .volumeImperial:
+            return [.teaspoon, .tablespoon, .fluidOunce, .cup, .pint, .quart, .gallon]
+        case .lengthMetric:
+            return [.millimeter, .centimeter, .meter, .kilometer]
+        case .lengthImperial:
+            return [.inch, .foot, .yard, .mile]
+        }
+    }
+}
+
 enum MeasuredUnit: String, Codable, CaseIterable {
     // quantity
     case piece
@@ -46,6 +87,8 @@ enum MeasuredUnit: String, Codable, CaseIterable {
     case foot
     case yard
     case mile
+    
+    static private let pieceSymbol = "x"
 
     private var dimension: Dimension? {
         switch self {
@@ -110,7 +153,7 @@ enum MeasuredUnit: String, Codable, CaseIterable {
 
     var symbol: String {
         if self == .piece {
-            return "x"
+            return Self.pieceSymbol
         }
         return dimension?.symbol ?? ""
     }
@@ -141,5 +184,20 @@ enum MeasuredUnit: String, Codable, CaseIterable {
         formatter.numberFormatter.minimumFractionDigits = 0
         formatter.numberFormatter.maximumFractionDigits = fractionDigits
         return formatter
+    }
+    
+    static func from(symbol: String) -> MeasuredUnit? {
+        if symbol.lowercased() == Self.pieceSymbol {
+            return .piece
+        }
+        
+        for unit in MeasuredUnit.allCases {
+            if let dim = unit.dimension {
+                if dim.symbol.lowercased() == symbol.lowercased() {
+                    return unit
+                }
+            }
+        }
+        return nil
     }
 }
