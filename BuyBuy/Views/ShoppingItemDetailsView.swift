@@ -19,8 +19,18 @@ struct ShoppingItemDetailsView: View {
     var body: some View {
         NavigationStack {
             List {
-                statusSection
-                nameAndNoteSection
+                Section {
+                    HStack {
+                        statusSection
+                    }
+                }
+                .listRowBackground(Color.bb.sheet.section.background)
+                
+                Section {
+                    nameField
+                    noteField
+                }
+                .listRowBackground(Color.bb.sheet.section.background)
                 
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
@@ -38,7 +48,7 @@ struct ShoppingItemDetailsView: View {
                 .listRowBackground(Color.bb.sheet.section.background)
             }
             .scrollContentBackground(.hidden)
-            .background(Color.sheetBackground)
+            .background(Color.bb.sheet.background)
             .safeAreaInset(edge: .bottom) {
                 if isNameFocused || isNoteFocused || isQuantityFocused || isUnitFocused || isPricePerUnitFocused {
                     HStack {
@@ -85,57 +95,57 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var statusSection: some View {
-        Section {
-            HStack {
-                Text("Status")
-                Spacer()
-                Menu {
-                    ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
-                        Button {
-                            viewModel.status = status
-                        } label: {
-                            Label(status.localizedName, systemImage: status.imageSystemName)
-                                .foregroundColor(status.color)
-                        }
-                    }
-                } label: {
-                    let status = viewModel.status
-                    HStack(spacing: 8) {
-                        status.image
+        Group {
+            Text("Status")
+            Spacer()
+            Menu {
+                ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
+                    Button {
+                        viewModel.status = status
+                    } label: {
+                        Label(status.localizedName, systemImage: status.imageSystemName)
                             .foregroundColor(status.color)
-                        Text(status.localizedName)
-                            .foregroundColor(status.color)
-                        Image(systemName: "chevron.up.chevron.down")
-                            .foregroundColor(.bb.accent)
-                            .padding(.leading, 8)
                     }
+                }
+            } label: {
+                let status = viewModel.status
+                HStack(spacing: 8) {
+                    status.image
+                        .foregroundColor(status.color)
+                    Text(status.localizedName)
+                        .foregroundColor(status.color)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .foregroundColor(.bb.accent)
+                        .padding(.leading, 8)
                 }
             }
         }
-        .listRowBackground(Color.bb.sheet.section.background)
     }
     
-    private var nameAndNoteSection: some View {
-        Section {
-            TextField("name", text: viewModel.nameBinding, axis: .vertical)
-                .lineLimit(4)
-                .multilineTextAlignment(.leading)
-                .font(.boldDynamic(style: .title3))
-                .focused($isNameFocused)
-                .onSubmit {
-                    isNameFocused = false
-                }
-            
-            TextField("note", text: viewModel.noteBinding, axis: .vertical)
-                .lineLimit(8)
-                .multilineTextAlignment(.leading)
-                .font(.regularDynamic(style: .body))
-                .focused($isNoteFocused)
-                .onSubmit {
-                    isNoteFocused = false
-                }
-        }
-        .listRowBackground(Color.bb.sheet.section.background)
+    private var nameField: some View {
+        TextField("name", text: viewModel.nameBinding, axis: .vertical)
+            .lineLimit(4)
+            .multilineTextAlignment(.leading)
+            .font(.boldDynamic(style: .title3))
+        // TODO: Workaround for Apple's bug (https://developer.apple.com/forums/thread/738726)
+        // .onLongPressGesture(minimumDuration: 0.0) {
+        //     isNameFocused = true
+        // }
+            .focused($isNameFocused)
+            .onSubmit {
+                isNameFocused = false
+            }
+    }
+    
+    private var noteField: some View {
+        TextField("note", text: viewModel.noteBinding, axis: .vertical)
+            .lineLimit(8)
+            .multilineTextAlignment(.leading)
+            .font(.regularDynamic(style: .body))
+            .focused($isNoteFocused)
+            .onSubmit {
+                isNoteFocused = false
+            }
     }
     
     private var quantityField: some View {
