@@ -7,13 +7,12 @@
 
 import Foundation
 
-// Wrapper do jednostki z customową obsługą
 struct ShoppingItemUnit: Codable, Hashable {
     let predefined: MeasuredUnit?
     let custom: String?
     
     init?(string: String?) {
-        guard let string = string else { return nil }
+        guard let string = string?.trimmingCharacters(in: .whitespacesAndNewlines) else { return nil }
         
         if let unitBySymbol = MeasuredUnit.from(symbol: string) {
             self.predefined = unitBySymbol

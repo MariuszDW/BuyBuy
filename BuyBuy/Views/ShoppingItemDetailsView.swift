@@ -24,8 +24,15 @@ struct ShoppingItemDetailsView: View {
                 
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
-                        quantityAndUnit
-                        priceAndTotalPrice
+                        HStack(spacing: 12) {
+                            quantityField
+                            unitField
+                        }
+                        
+                        HStack(spacing: 12) {
+                            priceField
+                            totalPriceField
+                        }
                     }
                 }
                 .listRowBackground(Color.bb.sheet.section.background)
@@ -71,7 +78,7 @@ struct ShoppingItemDetailsView: View {
                             dismiss()
                         }
                     }
-                    .disabled(viewModel.shoppingItem.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(viewModel.isOkButtonDisabled)
                 }
             }
         }
@@ -85,14 +92,14 @@ struct ShoppingItemDetailsView: View {
                 Menu {
                     ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
                         Button {
-                            viewModel.shoppingItem.status = status
+                            viewModel.status = status
                         } label: {
                             Label(status.localizedName, systemImage: status.imageSystemName)
                                 .foregroundColor(status.color)
                         }
                     }
                 } label: {
-                    let status = viewModel.shoppingItem.status
+                    let status = viewModel.status
                     HStack(spacing: 8) {
                         status.image
                             .foregroundColor(status.color)
@@ -110,7 +117,7 @@ struct ShoppingItemDetailsView: View {
     
     private var nameAndNoteSection: some View {
         Section {
-            TextField("name", text: $viewModel.shoppingItem.name, axis: .vertical)
+            TextField("name", text: viewModel.nameBinding, axis: .vertical)
                 .lineLimit(4)
                 .multilineTextAlignment(.leading)
                 .font(.boldDynamic(style: .title3))
@@ -119,7 +126,7 @@ struct ShoppingItemDetailsView: View {
                     isNameFocused = false
                 }
             
-            TextField("note", text: $viewModel.shoppingItem.note, axis: .vertical)
+            TextField("note", text: viewModel.noteBinding, axis: .vertical)
                 .lineLimit(8)
                 .multilineTextAlignment(.leading)
                 .font(.regularDynamic(style: .body))
@@ -131,125 +138,112 @@ struct ShoppingItemDetailsView: View {
         .listRowBackground(Color.bb.sheet.section.background)
     }
     
-    private var quantityAndUnit: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Quantity")
-                    .font(.regularDynamic(style:.caption))
-                    .foregroundColor(.bb.sheet.section.secondaryText)
-                    .padding(.leading, 4)
-                
-                TextField(quantityPlaceholder, value: $viewModel.shoppingItem.quantity, format: .number)
-                    .keyboardType(.decimalPad)
+    private var quantityField: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Quantity")
+                .font(.regularDynamic(style:.caption))
+                .foregroundColor(.bb.sheet.section.secondaryText)
+                .padding(.leading, 4)
+            
+            TextField(viewModel.quantityPlaceholder, value: viewModel.quantityBinding, format: .number)
+                .keyboardType(.decimalPad)
+                .padding(10)
+                .background(Color.bb.sheet.background)
+                .foregroundColor(.bb.sheet.section.primaryText)
+                .cornerRadius(8)
+                .focused($isQuantityFocused)
+                .onSubmit {
+                    isQuantityFocused = false
+                }
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    private var unitField: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Unit")
+                .font(.regularDynamic(style:.caption))
+                .foregroundColor(.bb.sheet.section.secondaryText)
+                .padding(.leading, 4)
+            
+            HStack(spacing: 8) {
+                TextField(viewModel.unitPlaceholder, text: viewModel.unitBinding)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
                     .padding(10)
                     .background(Color.bb.sheet.background)
                     .foregroundColor(.bb.sheet.section.primaryText)
                     .cornerRadius(8)
-                    .focused($isQuantityFocused)
+                    .focused($isUnitFocused)
                     .onSubmit {
-                        isQuantityFocused = false
+                        isUnitFocused = false
                     }
-            }
-            .frame(maxWidth: .infinity)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Unit")
-                    .font(.regularDynamic(style:.caption))
-                    .foregroundColor(.bb.sheet.section.secondaryText)
-                    .padding(.leading, 4)
                 
-                HStack(spacing: 8) {
-                    TextField(unitPlaceholder, text: $viewModel.shoppingItem.unitText)
-                        .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
-                        .padding(10)
-                        .background(Color.bb.sheet.background)
-                        .foregroundColor(.bb.sheet.section.primaryText)
-                        .cornerRadius(8)
-                        .focused($isUnitFocused)
-                        .onSubmit {
-                            isUnitFocused = false
-                        }
-                    
-                    Menu {
-                        ForEach(MeasuredUnitCategory.allCases, id: \.self) { category in
-                            Section(header: Text(category.name)
-                                .font(.regularDynamic(style:.caption))
-                                .foregroundColor(.bb.sheet.section.secondaryText)) {
-                                    ForEach(category.units, id: \.self) { unit in
-                                        Button {
-                                            viewModel.shoppingItem.unitText = unit.symbol
-                                        } label: {
-                                            Text(unit.symbol)
-                                        }
-                                    }
-                                }
-                        }
+                Menu {
+                    ForEach(MeasuredUnitCategory.allCases, id: \.self) { category in
+                        unitMenuSection(for: category)
+                    }
+                } label: {
+                    Image(systemName: "chevron.up.chevron.down")
+                        .foregroundColor(.bb.accent)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    private func unitMenuSection(for category: MeasuredUnitCategory) -> some View {
+        return Section(header: Text(category.name)
+            .font(.regularDynamic(style:.caption))
+            .foregroundColor(.bb.sheet.section.secondaryText)) {
+                ForEach(category.units, id: \.self) { unit in
+                    Button {
+                        viewModel.unit = unit.symbol
                     } label: {
-                        Image(systemName: "chevron.up.chevron.down")
-                            .foregroundColor(.bb.accent)
+                        Text(unit.symbol)
                     }
                 }
             }
-            .frame(maxWidth: .infinity)
-        }
     }
     
-    private var priceAndTotalPrice: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Price per unit")
-                    .font(.regularDynamic(style:.caption))
-                    .foregroundColor(.bb.sheet.section.secondaryText)
-                    .padding(.leading, 4)
-                
-                TextField(pricePerUnitPlaceholder, value: $viewModel.shoppingItem.price, format: .number)
-                    .keyboardType(.decimalPad)
-                    .padding(10)
-                    .background(Color.bb.sheet.background)
-                    .foregroundColor(.bb.sheet.section.primaryText)
-                    .cornerRadius(8)
-                    .focused($isPricePerUnitFocused)
-                    .onSubmit {
-                        isPricePerUnitFocused = false
-                    }
-            }
-            .frame(maxWidth: .infinity)
+    private var priceField: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Price per unit")
+                .font(.regularDynamic(style:.caption))
+                .foregroundColor(.bb.sheet.section.secondaryText)
+                .padding(.leading, 4)
             
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Total price")
-                    .font(.regularDynamic(style:.caption))
-                    .foregroundColor(.bb.sheet.section.secondaryText)
-                    .padding(.leading, 4)
-                
-                Text(viewModel.shoppingItem.totalPriceString ?? "N/A")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(10)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.bb.sheet.background, lineWidth: 1)
-                    )
-                    .foregroundColor(.bb.sheet.section.primaryText)
-            }
-            .frame(maxWidth: .infinity)
+            TextField(viewModel.pricePerUnitPlaceholder, value: viewModel.priceBinding, format: .number)
+                .keyboardType(.decimalPad)
+                .padding(10)
+                .background(Color.bb.sheet.background)
+                .foregroundColor(.bb.sheet.section.primaryText)
+                .cornerRadius(8)
+                .focused($isPricePerUnitFocused)
+                .onSubmit {
+                    isPricePerUnitFocused = false
+                }
         }
+        .frame(maxWidth: .infinity)
     }
     
-    private var quantityPlaceholder: String {
-        let formatter = NumberFormatter.localizedDecimal(minFractionDigits: 1)
-        let valueString = formatter.string(from: 1.5) ?? "1.5"
-        return "e.g. \(valueString)"
-    }
-    
-    private var unitPlaceholder: String {
-        let unitExampleString = Locale.current.measurementSystem == "Metric" ? MeasuredUnit.kilogram.symbol : MeasuredUnit.pound.symbol
-        return "e.g. \(unitExampleString)"
-    }
-    
-    private var pricePerUnitPlaceholder: String{
-        let formatter = NumberFormatter.localizedDecimal(minFractionDigits: 1)
-        let valueString = formatter.string(from: 10.99) ?? "10.99"
-        return "e.g. \(valueString)"
+    private var totalPriceField: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Total price")
+                .font(.regularDynamic(style:.caption))
+                .foregroundColor(.bb.sheet.section.secondaryText)
+                .padding(.leading, 4)
+            
+            Text(viewModel.totalPriceString)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(10)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.bb.sheet.background, lineWidth: 1)
+                )
+                .foregroundColor(.bb.sheet.section.primaryText)
+        }
+        .frame(maxWidth: .infinity)
     }
     
     private func clearTextFieldFocus() {
