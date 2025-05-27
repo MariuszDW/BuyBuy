@@ -22,6 +22,21 @@ struct ShoppingItem: Identifiable, Hashable {
         get { unit?.symbol ?? "" }
         set { unit = ShoppingItemUnit(string: newValue) }
     }
+    
+    var totalPrice: Double? {
+        guard let price = price, let quantity = quantity else {
+            return nil
+        }
+        return price * quantity
+    }
+    
+    var totalPriceString: String? {
+        guard let totalPriceValue = totalPrice else {
+            return nil
+        }
+        let formatter = NumberFormatter.localizedDecimal(minFractionDigits: 2, maxFractionDigits: 2)
+        return formatter.string(from: totalPriceValue as NSNumber) ?? "\(totalPriceValue)"
+    }
 
     init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus, price: Double? = nil, quantity: Double? = nil, unit: ShoppingItemUnit? = nil) {
         self.id = id
