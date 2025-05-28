@@ -22,6 +22,11 @@ struct ShoppingItemUnit: Codable, Hashable {
             self.custom = string
         }
     }
+    
+    init(_ unit: MeasuredUnit) {
+        self.predefined = unit
+        self.custom = nil
+    }
 
     var symbol: String {
         if let unit = predefined {
