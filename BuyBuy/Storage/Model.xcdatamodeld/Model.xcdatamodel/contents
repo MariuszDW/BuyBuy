@@ -9,7 +9,12 @@
         <attribute name="quantity" optional="YES" attributeType="Double" usesScalarValueType="NO"/>
         <attribute name="status" attributeType="String"/>
         <attribute name="unit" optional="YES" attributeType="String"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShoppingItemImageEntity" inverseName="item" inverseEntity="ShoppingItemImageEntity"/>
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShoppingListEntity" inverseName="items" inverseEntity="ShoppingListEntity"/>
+    </entity>
+    <entity name="ShoppingItemImageEntity" representedClassName="ShoppingItemImageEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" attributeType="String"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShoppingItemEntity" inverseName="images" inverseEntity="ShoppingItemEntity"/>
     </entity>
     <entity name="ShoppingListEntity" representedClassName="ShoppingListEntity" syncable="YES" codeGenerationType="class">
         <attribute name="color" attributeType="String"/>

@@ -96,6 +96,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     item: item,
                     isNew: isNew,
                     repository: self.dependencies.repository,
+                    imageStorage: self.dependencies.imageStorage,
                     coordinator: self,
                     onSave: onSave
                 )

@@ -18,6 +18,12 @@ extension ShoppingItem {
         self.price = entity.price?.doubleValue
         self.quantity = entity.quantity?.doubleValue
         self.unit = ShoppingItemUnit(string: entity.unit)
+        
+        if let imagesSet = entity.images as? Set<ShoppingItemImageEntity> {
+            self.imageIDs = imagesSet.compactMap { $0.id }
+        } else {
+            self.imageIDs = []
+        }
     }
 }
 
@@ -31,5 +37,19 @@ extension ShoppingItemEntity {
         self.price = model.price as NSNumber?
         self.quantity = model.quantity as NSNumber?
         self.unit = model.unit?.symbol
+
+        if let oldImages = self.images as? Set<ShoppingItemImageEntity> {
+            for imageEntity in oldImages {
+                context.delete(imageEntity)
+            }
+            self.removeFromImages(oldImages as NSSet)
+        }
+        
+        for imageID in model.imageIDs {
+            let imageEntity = ShoppingItemImageEntity(context: context)
+            imageEntity.id = imageID
+            imageEntity.item = self
+            self.addToImages(imageEntity)
+        }
     }
 }

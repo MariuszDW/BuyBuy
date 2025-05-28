@@ -13,6 +13,9 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     /// The shopping item being edited.
     @Published private var shoppingItem: ShoppingItem
     
+    /// Thumbnail of the shopping item images.
+    @Published var imageThumbnails: [UIImage] = []
+    
     /// Indicates whether the edited shopping list is a newly created one.
     private(set) var isNew: Bool
     
@@ -20,6 +23,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     private let onSave: () -> Void
     
     private let repository: ShoppingListsRepositoryProtocol
+    private let imageStorage: ImageStorageServiceProtocol
     private var coordinator: any AppCoordinatorProtocol
     
     var status: ShoppingItemStatus {
@@ -103,12 +107,32 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         return "e.g. \(valueString)"
     }
     
-    init(item: ShoppingItem, isNew: Bool = false, repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol, onSave: @escaping () -> Void) {
+    init(item: ShoppingItem, isNew: Bool = false, repository: ShoppingListsRepositoryProtocol, imageStorage: ImageStorageServiceProtocol, coordinator: any AppCoordinatorProtocol, onSave: @escaping () -> Void) {
         self.shoppingItem = item
         self.isNew = isNew
         self.coordinator = coordinator
         self.repository = repository
+        self.imageStorage = imageStorage
         self.onSave = onSave
+        loadImageThumbnails()
+    }
+    
+    func addImage(_ image: UIImage) async {
+        let baseName = UUID().uuidString
+        
+        do {
+            try await Task.detached {
+                try await self.imageStorage.saveImage(image, baseFileName: baseName)
+                try await self.imageStorage.saveThumbnail(for: image, baseFileName: baseName)
+            }.value
+            
+            await MainActor.run {
+                shoppingItem.imageIDs.append(baseName)
+                imageThumbnails.append(image)
+            }
+        } catch {
+            print("Failed to save image: \(error)")
+        }
     }
     
     func applyChanges() async {
@@ -131,5 +155,22 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
         return formatter.number(from: string)?.doubleValue
+    }
+    
+    private func loadImageThumbnails() {
+        let imageStorage = self.imageStorage
+
+        Task {
+            var images: [UIImage] = []
+            for id in shoppingItem.imageIDs {
+                if let image = try? await imageStorage.loadThumbnail(baseFileName: id) {
+                    images.append(image)
+                }
+            }
+
+            await MainActor.run {
+                self.imageThumbnails = images
+            }
+        }
     }
 }

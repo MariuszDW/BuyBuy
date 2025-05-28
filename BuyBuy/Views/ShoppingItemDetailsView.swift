@@ -9,12 +9,17 @@ import SwiftUI
 
 struct ShoppingItemDetailsView: View {
     @StateObject var viewModel: ShoppingItemDetailsViewModel
+    
     @Environment(\.dismiss) private var dismiss
+    
+    // TODO: Replace the focus states with a different solution.
     @FocusState private var isNameFocused: Bool
     @FocusState private var isNoteFocused: Bool
     @FocusState private var isQuantityFocused: Bool
     @FocusState private var isUnitFocused: Bool
     @FocusState private var isPricePerUnitFocused: Bool
+    
+    @State private var showImageSourceSheet = false
     
     var body: some View {
         NavigationStack {
@@ -44,6 +49,16 @@ struct ShoppingItemDetailsView: View {
                             totalPriceField
                         }
                     }
+                }
+                .listRowBackground(Color.bb.sheet.section.background)
+                
+                Section {
+                    ShoppingItemImageGridView(
+                        images: viewModel.imageThumbnails,
+                        onAddImage: {
+                            showImageSourceSheet = true
+                        }
+                    )
                 }
                 .listRowBackground(Color.bb.sheet.section.background)
             }
@@ -89,6 +104,13 @@ struct ShoppingItemDetailsView: View {
                         }
                     }
                     .disabled(viewModel.isOkButtonDisabled)
+                }
+            }
+            .sheet(isPresented: $showImageSourceSheet) {
+                ImageSourcePickerView { image in
+                    if let image = image {
+                        Task { await viewModel.addImage(image) }
+                    }
                 }
             }
         }
@@ -265,6 +287,7 @@ struct ShoppingItemDetailsView: View {
     }
 }
 
+
 // MARK: - Preview
 
 #Preview("Light") {
@@ -272,6 +295,7 @@ struct ShoppingItemDetailsView: View {
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockShoppingListsRepository.list1.items.first!,
         repository: repository,
+        imageStorage: MockImageStorageService(),
         coordinator: AppCoordinator(dependencies: AppDependencies()),
         onSave: {})
     
@@ -284,6 +308,7 @@ struct ShoppingItemDetailsView: View {
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockShoppingListsRepository.list1.items.first!,
         repository: repository,
+        imageStorage: MockImageStorageService(),
         coordinator: AppCoordinator(dependencies: AppDependencies()),
         onSave: {})
     

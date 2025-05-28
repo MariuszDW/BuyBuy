@@ -12,4 +12,8 @@ final class AppDependencies: ObservableObject {
     lazy var repository: ShoppingListsRepositoryProtocol = {
         ShoppingListsRepository(coreDataStack: coreDataStack)
     }()
+    
+    lazy var imageStorage: ImageStorageServiceProtocol = {
+        ImageStorageService()
+    }()
 }

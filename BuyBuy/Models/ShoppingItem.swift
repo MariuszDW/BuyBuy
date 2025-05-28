@@ -17,6 +17,7 @@ struct ShoppingItem: Identifiable, Hashable {
     var price: Double?
     var quantity: Double?
     var unit: ShoppingItemUnit?
+    var imageIDs: [String] = []
     
     var unitText: String {
         get { unit?.symbol ?? "" }
@@ -38,7 +39,7 @@ struct ShoppingItem: Identifiable, Hashable {
         return formatter.string(from: totalPriceValue as NSNumber) ?? "\(totalPriceValue)"
     }
 
-    init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus, price: Double? = nil, quantity: Double? = nil, unit: ShoppingItemUnit? = nil) {
+    init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus, price: Double? = nil, quantity: Double? = nil, unit: ShoppingItemUnit? = nil, imageIDs: [String] = []) {
         self.id = id
         self.order = order
         self.listID = listID
@@ -48,6 +49,7 @@ struct ShoppingItem: Identifiable, Hashable {
         self.price = price
         self.quantity = quantity
         self.unit = unit
+        self.imageIDs = imageIDs
     }
     
     mutating func prepareToSave() {
