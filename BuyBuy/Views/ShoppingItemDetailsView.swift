@@ -57,6 +57,9 @@ struct ShoppingItemDetailsView: View {
                         images: viewModel.imageThumbnails,
                         onAddImage: {
                             showImageSourceSheet = true
+                        },
+                        onTapImage: { index in
+                            viewModel.handleThumbnailTap(at: index)
                         }
                     )
                 }

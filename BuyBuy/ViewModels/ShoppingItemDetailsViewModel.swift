@@ -117,6 +117,11 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         loadImageThumbnails()
     }
     
+    func handleThumbnailTap(at index: Int) {
+        // TODO: Implement action on tap on a thumbnail at index.
+        print("Tapped thumbnail at \(index).")
+    }
+    
     func addImage(_ image: UIImage) async {
         let baseName = UUID().uuidString
         

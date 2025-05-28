@@ -11,6 +11,7 @@ import UIKit
 struct ShoppingItemImageGridView: View {
     let images: [UIImage]
     var onAddImage: () -> Void
+    var onTapImage: (Int) -> Void
 
     private let columns = [
         GridItem(.adaptive(minimum: 64), spacing: 12)
@@ -19,22 +20,29 @@ struct ShoppingItemImageGridView: View {
     var body: some View {
         LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
             ForEach(images.indices, id: \.self) { index in
-                Image(uiImage: images[index])
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 64, height: 64)
-                    .clipped()
-                    .cornerRadius(8)
+                Button {
+                    onTapImage(index)
+                } label: {
+                    Image(uiImage: images[index])
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 64, height: 64)
+                        .clipped()
+                        .cornerRadius(8)
+                }
+                .buttonStyle(.plain)
             }
 
             Button(action: onAddImage) {
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 26, weight: .medium))
+                    .font(.system(size: 30, weight: .medium))
                     .foregroundColor(.bb.text.secondary)
                     .frame(width: 64, height: 64)
                     .background(Color.bb.sheet.background)
                     .cornerRadius(8)
             }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
         }
         .padding(.vertical, 8)
     }
@@ -49,13 +57,13 @@ let mockImage3 = MockImageStorageService.generateMockImage(text: "TEST IMAGE 3",
 let mockImages = [mockImage1, mockImage2, mockImage3, mockImage1, mockImage2, mockImage3, mockImage1, mockImage2, mockImage3]
 
 #Preview("Light") {
-    ShoppingItemImageGridView(images: mockImages, onAddImage: {})
+    ShoppingItemImageGridView(images: mockImages, onAddImage: {}, onTapImage: {_ in})
         .padding()
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
-    ShoppingItemImageGridView(images: mockImages, onAddImage: {})
+    ShoppingItemImageGridView(images: mockImages, onAddImage: {}, onTapImage: {_ in})
         .padding()
         .preferredColorScheme(.dark)
 }
