@@ -22,7 +22,7 @@ struct ShoppingItemImageGridView: View {
                 Image(uiImage: images[index])
                     .resizable()
                     .scaledToFill()
-                    .frame(minWidth: 64, minHeight: 64)
+                    .frame(width: 64, height: 64)
                     .clipped()
                     .cornerRadius(8)
             }
@@ -31,12 +31,10 @@ struct ShoppingItemImageGridView: View {
                 Image(systemName: "plus.circle.fill")
                     .font(.system(size: 26, weight: .medium))
                     .foregroundColor(.bb.text.secondary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(8)
+                    .frame(width: 64, height: 64)
                     .background(Color.bb.sheet.background)
                     .cornerRadius(8)
             }
-            .aspectRatio(1, contentMode: .fit)
         }
         .padding(.vertical, 8)
     }
