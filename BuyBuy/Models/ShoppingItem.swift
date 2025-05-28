@@ -47,6 +47,7 @@ struct ShoppingItem: Identifiable, Hashable {
         self.status = status
         self.price = price
         self.quantity = quantity
+        self.unit = unit
     }
     
     mutating func prepareToSave() {
