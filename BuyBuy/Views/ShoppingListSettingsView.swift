@@ -7,11 +7,14 @@
 
 import SwiftUI
 
+enum ShoppingListSettingsField: Hashable {
+    case name
+}
+
 struct ShoppingListSettingsView: View {
     @StateObject var viewModel: ShoppingListSettingsViewModel
     @Environment(\.dismiss) private var dismiss
-    
-    @FocusState private var focusedNameField: Bool?
+    @FocusState private var focusedField: ShoppingItemDetailsField?
     
     init(viewModel: ShoppingListSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -21,7 +24,7 @@ struct ShoppingListSettingsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    nameSection
+                    nameField
                     iconAndColorSection
                     iconsGridSection
                 }
@@ -29,26 +32,56 @@ struct ShoppingListSettingsView: View {
             }
             .navigationTitle("List settings")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
+            .safeAreaInset(edge: .bottom) {
+                if focusedField != nil {
+                    HStack {
+                        Spacer()
+                        Button {
+                            focusedField = nil
+                        } label: {
+                            Image(systemName: "keyboard.chevron.compact.down")
+                                .font(.regularDynamic(style: .title2))
+                                .foregroundColor(.bb.accent)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(Color.bb.background.opacity(0.5))
+                                )
+                        }
                     }
                 }
+            }
+            .task {
+                focusedField = viewModel.isNew ? .name : nil
+            }
+            .onChange(of: focusedField) { newValue in
+                Task {
+                    await viewModel.applyChanges()
+                }
+            }
+            .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("OK") {
+                    Button {
                         Task {
                             await viewModel.applyChanges()
                             dismiss()
                         }
+                    } label: {
+                        Image(systemName: "xmark.circle")
+                            .accessibilityLabel("Close")
                     }
-                    .disabled(viewModel.shoppingList.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+            .onDisappear {
+                Task {
+                    await viewModel.applyChanges()
                 }
             }
         }
     }
     
-    private var nameSection: some View {
+    private var nameField: some View {
         VStack(alignment: .leading, spacing: 8) {
             TextField(
                 "List name",
@@ -56,9 +89,9 @@ struct ShoppingListSettingsView: View {
             )
             // .textInputAutocapitalization(.sentences) // TODO: To dodac jako opcje w ustawieniach aplikacji.
             .font(.boldDynamic(style: .title3))
-            .focused($focusedNameField, equals: true)
-            .task {
-                focusedNameField = viewModel.isNew
+            .focused($focusedField, equals: .name)
+            .onSubmit {
+                focusedField = nil
             }
         }
         .padding()
@@ -105,7 +138,11 @@ struct ShoppingListSettingsView: View {
                         .frame(width: 42, height: 42)
                         .contentShape(Circle())
                         .onTapGesture {
+                            focusedField = nil
                             viewModel.shoppingList.color = color
+                            Task {
+                                await viewModel.applyChanges()
+                            }
                         }
                     }
                 }
@@ -142,7 +179,11 @@ struct ShoppingListSettingsView: View {
                 .frame(width: 48, height: 48)
                 .contentShape(Rectangle())
                 .onTapGesture {
+                    focusedField = nil
                     viewModel.shoppingList.icon = icon
+                    Task {
+                        await viewModel.applyChanges()
+                    }
                 }
             }
         }
