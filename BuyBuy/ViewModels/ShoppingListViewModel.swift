@@ -154,7 +154,7 @@ final class ShoppingListViewModel: ObservableObject {
         
         let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: newItemStatus)
         
-        coordinator.openShoppingItemDetails(newItem, isNew: true, onSave: { [weak self] in
+        coordinator.openShoppingItemDetails(newItem, isNew: true, onDismiss: { [weak self] in
             Task {
                 await self?.loadList()
             }
@@ -162,7 +162,7 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func openItemSettings(item: ShoppingItem) {
-        coordinator.openShoppingItemDetails(item, isNew: false, onSave: { [weak self] in
+        coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: { [weak self] in
             Task {
                 await self?.loadList()
             }

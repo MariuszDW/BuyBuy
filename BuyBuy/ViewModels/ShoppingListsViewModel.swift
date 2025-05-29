@@ -53,7 +53,7 @@ class ShoppingListsViewModel: ObservableObject {
             return ShoppingList(id: uniqueUUID, name: "", items: [], order: maxOrder + 1, icon: .default, color: .default)
         }()
         
-        coordinator.openShoppingListSettings(listToEdit, isNew: list == nil, onSave: { [weak self] in
+        coordinator.openShoppingListSettings(listToEdit, isNew: list == nil, onDismiss: { [weak self] in
             Task {
                 await self?.loadLists()
             }

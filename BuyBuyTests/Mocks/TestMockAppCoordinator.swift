@@ -21,11 +21,11 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
         // TODO: Implement...
     }
     
-    func openShoppingListSettings(_ list: BuyBuy.ShoppingList, isNew: Bool, onSave: @escaping () -> Void) {
+    func openShoppingListSettings(_ list: BuyBuy.ShoppingList, isNew: Bool, onDismiss: @escaping () -> Void) {
         // TODO: implement...
     }
     
-    func openShoppingItemDetails(_ item: BuyBuy.ShoppingItem, isNew: Bool, onSave: @escaping () -> Void) {
+    func openShoppingItemDetails(_ item: BuyBuy.ShoppingItem, isNew: Bool, onDismiss: @escaping () -> Void) {
         // TODO: implement...
     }
     
@@ -36,7 +36,7 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     func openAppSettings() {
         // TODO: implement...
     }
-
+    
     func back() {
         onBack?()
     }

@@ -54,7 +54,7 @@ struct ShoppingListSettingsView: View {
                 "List name",
                 text: $viewModel.shoppingList.name
             )
-            // .textInputAutocapitalization(.sentences) // TODO: To dodac jak opcje w ustawieniach aplikacji.
+            // .textInputAutocapitalization(.sentences) // TODO: To dodac jako opcje w ustawieniach aplikacji.
             .font(.boldDynamic(style: .title3))
             .focused($focusedNameField, equals: true)
             .task {
@@ -159,9 +159,7 @@ struct ShoppingListSettingsView: View {
     let viewModel = ShoppingListSettingsViewModel(
         list: MockShoppingListsRepository.list1,
         repository: repository,
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        onSave: {}
-    )
+        coordinator: AppCoordinator(dependencies: AppDependencies()))
     
     ShoppingListSettingsView(viewModel: viewModel)
         .preferredColorScheme(.light)
@@ -172,9 +170,7 @@ struct ShoppingListSettingsView: View {
     let viewModel = ShoppingListSettingsViewModel(
         list: MockShoppingListsRepository.list1,
         repository: repository,
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        onSave: {}
-    )
+        coordinator: AppCoordinator(dependencies: AppDependencies()))
     
     ShoppingListSettingsView(viewModel: viewModel)
         .preferredColorScheme(.dark)

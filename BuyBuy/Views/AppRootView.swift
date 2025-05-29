@@ -16,7 +16,10 @@ struct AppRootView: View {
                 .navigationDestination(for: AppRoute.self) { route in
                     coordinator.view(for: route)
                 }
-                .sheet(item: $coordinator.sheet) { sheet in
+                .sheet(item: $coordinator.sheet, onDismiss: {
+                    coordinator.onSheetDismissed?()
+                    coordinator.onSheetDismissed = nil
+                }) { sheet in
                     NavigationStack {
                         coordinator.sheetView(for: sheet)
                     }

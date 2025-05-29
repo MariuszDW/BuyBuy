@@ -7,18 +7,14 @@
 
 import SwiftUI
 
+enum Field: Hashable {
+    case name, note, quantity, unit, pricePerUnit
+}
+
 struct ShoppingItemDetailsView: View {
     @StateObject var viewModel: ShoppingItemDetailsViewModel
-    
     @Environment(\.dismiss) private var dismiss
-    
-    // TODO: Replace the focus states with a different solution.
-    @FocusState private var isNameFocused: Bool
-    @FocusState private var isNoteFocused: Bool
-    @FocusState private var isQuantityFocused: Bool
-    @FocusState private var isUnitFocused: Bool
-    @FocusState private var isPricePerUnitFocused: Bool
-    
+    @FocusState private var focusedField: Field?
     @State private var showImageSourceSheet = false
     
     var body: some View {
@@ -56,9 +52,11 @@ struct ShoppingItemDetailsView: View {
                     ShoppingItemImageGridView(
                         images: viewModel.imageThumbnails,
                         onAddImage: {
+                            focusedField = nil
                             showImageSourceSheet = true
                         },
                         onTapImage: { index in
+                            focusedField = nil
                             viewModel.handleThumbnailTap(at: index)
                         }
                     )
@@ -68,11 +66,11 @@ struct ShoppingItemDetailsView: View {
             .scrollContentBackground(.hidden)
             .background(Color.bb.sheet.background)
             .safeAreaInset(edge: .bottom) {
-                if isNameFocused || isNoteFocused || isQuantityFocused || isUnitFocused || isPricePerUnitFocused {
+                if focusedField != nil {
                     HStack {
                         Spacer()
                         Button {
-                            clearTextFieldFocus()
+                            focusedField = nil
                         } label: {
                             Image(systemName: "keyboard.chevron.compact.down")
                                 .font(.regularDynamic(style: .title2))
@@ -88,25 +86,27 @@ struct ShoppingItemDetailsView: View {
                 }
             }
             .task {
-                isNameFocused = viewModel.isNew
+                focusedField = viewModel.isNew ? .name : nil
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Item details")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
+            .onChange(of: focusedField) { newValue in
+                Task {
+                    await viewModel.applyChanges()
                 }
+            }
+            .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("OK") {
+                    Button {
                         Task {
                             await viewModel.applyChanges()
                             dismiss()
                         }
+                    } label: {
+                        Image(systemName: "xmark.circle")
+                            .accessibilityLabel("Close")
                     }
-                    .disabled(viewModel.isOkButtonDisabled)
                 }
             }
             .sheet(isPresented: $showImageSourceSheet) {
@@ -126,7 +126,11 @@ struct ShoppingItemDetailsView: View {
             Menu {
                 ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
                     Button {
+                        focusedField = nil
                         viewModel.status = status
+                        Task {
+                            await viewModel.applyChanges()
+                        }
                     } label: {
                         Label(status.localizedName, systemImage: status.imageSystemName)
                             .foregroundColor(status.color)
@@ -152,13 +156,9 @@ struct ShoppingItemDetailsView: View {
             .lineLimit(4)
             .multilineTextAlignment(.leading)
             .font(.boldDynamic(style: .title3))
-        // TODO: Workaround for Apple's bug (https://developer.apple.com/forums/thread/738726)
-        // .onLongPressGesture(minimumDuration: 0.0) {
-        //     isNameFocused = true
-        // }
-            .focused($isNameFocused)
+            .focused($focusedField, equals: .name)
             .onSubmit {
-                isNameFocused = false
+                focusedField = nil
             }
     }
     
@@ -167,9 +167,9 @@ struct ShoppingItemDetailsView: View {
             .lineLimit(8)
             .multilineTextAlignment(.leading)
             .font(.regularDynamic(style: .body))
-            .focused($isNoteFocused)
+            .focused($focusedField, equals: .note)
             .onSubmit {
-                isNoteFocused = false
+                focusedField = nil
             }
     }
     
@@ -186,9 +186,9 @@ struct ShoppingItemDetailsView: View {
                 .background(Color.bb.sheet.background)
                 .foregroundColor(.bb.sheet.section.primaryText)
                 .cornerRadius(8)
-                .focused($isQuantityFocused)
+                .focused($focusedField, equals: .quantity)
                 .onSubmit {
-                    isQuantityFocused = false
+                    focusedField = nil
                 }
         }
         .frame(maxWidth: .infinity)
@@ -209,9 +209,9 @@ struct ShoppingItemDetailsView: View {
                     .background(Color.bb.sheet.background)
                     .foregroundColor(.bb.sheet.section.primaryText)
                     .cornerRadius(8)
-                    .focused($isUnitFocused)
+                    .focused($focusedField, equals: .unit)
                     .onSubmit {
-                        isUnitFocused = false
+                        focusedField = nil
                     }
                 
                 Menu {
@@ -233,6 +233,7 @@ struct ShoppingItemDetailsView: View {
             .foregroundColor(.bb.sheet.section.secondaryText)) {
                 ForEach(category.units, id: \.self) { unit in
                     Button {
+                        focusedField = nil
                         viewModel.unit = unit.symbol
                     } label: {
                         Text(unit.symbol)
@@ -254,9 +255,9 @@ struct ShoppingItemDetailsView: View {
                 .background(Color.bb.sheet.background)
                 .foregroundColor(.bb.sheet.section.primaryText)
                 .cornerRadius(8)
-                .focused($isPricePerUnitFocused)
+                .focused($focusedField, equals: .pricePerUnit)
                 .onSubmit {
-                    isPricePerUnitFocused = false
+                    focusedField = nil
                 }
         }
         .frame(maxWidth: .infinity)
@@ -280,14 +281,6 @@ struct ShoppingItemDetailsView: View {
         }
         .frame(maxWidth: .infinity)
     }
-    
-    private func clearTextFieldFocus() {
-        isNameFocused = false
-        isNoteFocused = false
-        isQuantityFocused = false
-        isUnitFocused = false
-        isPricePerUnitFocused = false
-    }
 }
 
 
@@ -299,8 +292,7 @@ struct ShoppingItemDetailsView: View {
         item: MockShoppingListsRepository.list1.items.first!,
         repository: repository,
         imageStorage: MockImageStorageService(),
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        onSave: {})
+        coordinator: AppCoordinator(dependencies: AppDependencies()))
     
     ShoppingItemDetailsView(viewModel: viewModel)
         .preferredColorScheme(.light)
@@ -312,8 +304,7 @@ struct ShoppingItemDetailsView: View {
         item: MockShoppingListsRepository.list1.items.first!,
         repository: repository,
         imageStorage: MockImageStorageService(),
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        onSave: {})
+        coordinator: AppCoordinator(dependencies: AppDependencies()))
     
     ShoppingItemDetailsView(viewModel: viewModel)
         .preferredColorScheme(.dark)

@@ -15,6 +15,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     
     private let dependencies: AppDependencies
     private(set) var shoppingListsViewModel: ShoppingListsViewModel!
+    var onSheetDismissed: (() -> Void)?
     
     @MainActor
     init(dependencies: AppDependencies) {
@@ -38,12 +39,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         navigationPath.append(AppRoute.appSettings)
     }
 
-    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onSave: @escaping () -> Void) {
-        self.sheet = .shoppingListSettings(list, isNew, onSave: onSave)
+    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: @escaping () -> Void) {
+        onSheetDismissed = onDismiss
+        sheet = .shoppingListSettings(list, isNew)
     }
     
-    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onSave: @escaping () -> Void) {
-        sheet = .shoppintItemDetails(item, isNew, onSave: onSave)
+    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: @escaping () -> Void) {
+        onSheetDismissed = onDismiss
+        sheet = .shoppintItemDetails(item, isNew)
     }
     
     func openAbout() {
@@ -80,25 +83,23 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @ViewBuilder
     func sheetView(for sheet: SheetRoute) -> some View {
         switch sheet {
-        case let .shoppingListSettings(list, isNew, onSave):
+        case let .shoppingListSettings(list, isNew):
             ShoppingListSettingsView(
                 viewModel: ShoppingListSettingsViewModel(
                     list: list,
                     isNew: isNew,
                     repository: self.dependencies.repository,
-                    coordinator: self,
-                    onSave: onSave
+                    coordinator: self
                 )
             )
-        case let .shoppintItemDetails(item, isNew, onSave):
+        case let .shoppintItemDetails(item, isNew):
             ShoppingItemDetailsView(
                 viewModel: ShoppingItemDetailsViewModel(
                     item: item,
                     isNew: isNew,
                     repository: self.dependencies.repository,
                     imageStorage: self.dependencies.imageStorage,
-                    coordinator: self,
-                    onSave: onSave
+                    coordinator: self
                 )
             )
         case .about:
