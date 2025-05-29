@@ -29,12 +29,12 @@ extension ShoppingListEntity {
         self.color = model.color.rawValue
         
         let existingItems = (self.items as? Set<ShoppingItemEntity>) ?? []
-        var existingItemsMap = [UUID: ShoppingItemEntity]()
-        for item in existingItems {
-            if let id = item.id {
-                existingItemsMap[id] = item
-            }
-        }
+        let existingItemsMap = Dictionary(
+            uniqueKeysWithValues:
+                existingItems.compactMap { item in
+                    item.id.map { ($0, item) }
+                }
+        )
         
         var updatedEntities = Set<ShoppingItemEntity>()
         let incomingIDs = Set(model.items.map(\.id))

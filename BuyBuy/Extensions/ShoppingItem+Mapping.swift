@@ -37,17 +37,23 @@ extension ShoppingItemEntity {
         self.price = model.price as NSNumber?
         self.quantity = model.quantity as NSNumber?
         self.unit = model.unit?.symbol
-
-        if let oldImages = self.images as? Set<ShoppingItemImageEntity> {
-            for imageEntity in oldImages {
+        
+        let oldEntities = self.images as? Set<ShoppingItemImageEntity> ?? []
+        let oldIDs: Set<String> = Set(oldEntities.compactMap { $0.id })
+        let newIDs = Set(model.imageIDs)
+        
+        for imageEntity in oldEntities {
+            guard let id = imageEntity.id else { continue }
+            if !newIDs.contains(id) {
                 context.delete(imageEntity)
+                self.removeFromImages(imageEntity)
+                
             }
-            self.removeFromImages(oldImages as NSSet)
         }
         
-        for imageID in model.imageIDs {
+        for id in newIDs.subtracting(oldIDs) {
             let imageEntity = ShoppingItemImageEntity(context: context)
-            imageEntity.id = imageID
+            imageEntity.id = id
             imageEntity.item = self
             self.addToImages(imageEntity)
         }
