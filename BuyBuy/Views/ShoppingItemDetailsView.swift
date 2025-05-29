@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-enum Field: Hashable {
+enum ShoppingItemDetailsField: Hashable {
     case name, note, quantity, unit, pricePerUnit
 }
 
 struct ShoppingItemDetailsView: View {
     @StateObject var viewModel: ShoppingItemDetailsViewModel
     @Environment(\.dismiss) private var dismiss
-    @FocusState private var focusedField: Field?
+    @FocusState private var focusedField: ShoppingItemDetailsField?
     @State private var showImageSourceSheet = false
     
     var body: some View {
@@ -92,6 +92,11 @@ struct ShoppingItemDetailsView: View {
             .navigationTitle("Item details")
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: focusedField) { newValue in
+                Task {
+                    await viewModel.applyChanges()
+                }
+            }
+            .onDisappear {
                 Task {
                     await viewModel.applyChanges()
                 }
@@ -235,6 +240,9 @@ struct ShoppingItemDetailsView: View {
                     Button {
                         focusedField = nil
                         viewModel.unit = unit.symbol
+                        Task {
+                            await viewModel.applyChanges()
+                        }
                     } label: {
                         Text(unit.symbol)
                     }
