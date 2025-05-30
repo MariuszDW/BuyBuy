@@ -9,19 +9,19 @@ import Foundation
 
 @MainActor
 class AppSettingsViewModel: ObservableObject {
-    private let repository: ShoppingListsRepositoryProtocol
+    private let dataManager: DataManagerProtocol
     private var coordinator: any AppCoordinatorProtocol
     
-    init(repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol) {
-        self.repository = repository
+    init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
+        self.dataManager = dataManager
         self.coordinator = coordinator
     }
     
 #if DEBUG
-    func copyMockToRepository() async {
+    func copyMockToData() async {
         MockShoppingListsRepository.allLists.forEach { list in
             Task {
-                try? await repository.addOrUpdateList(list)
+                try? await dataManager.addOrUpdateList(list)
             }
         }
     }

@@ -18,8 +18,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     /// Indicates whether the edited shopping list is a newly created one.
     private(set) var isNew: Bool
     
-    private let repository: ShoppingListsRepositoryProtocol
-    private let imageStorage: ImageStorageServiceProtocol
+    private let dataManager: DataManagerProtocol
     private var coordinator: any AppCoordinatorProtocol
     
     var status: ShoppingItemStatus {
@@ -99,12 +98,11 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         return "e.g. \(valueString)"
     }
     
-    init(item: ShoppingItem, isNew: Bool = false, repository: ShoppingListsRepositoryProtocol, imageStorage: ImageStorageServiceProtocol, coordinator: any AppCoordinatorProtocol/*, onSave: @escaping () -> Void*/) {
+    init(item: ShoppingItem, isNew: Bool = false, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.shoppingItem = item
         self.isNew = isNew
         self.coordinator = coordinator
-        self.repository = repository
-        self.imageStorage = imageStorage
+        self.dataManager = dataManager
         Task {
             await loadImageThumbnails()
         }
@@ -119,10 +117,8 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         let baseName = UUID().uuidString
         
         do {
-            try await Task.detached {
-                try await self.imageStorage.saveImage(image, baseFileName: baseName)
-                try await self.imageStorage.saveThumbnail(for: image, baseFileName: baseName)
-            }.value
+            try await self.dataManager.saveImage(image, baseFileName: baseName)
+            try await self.dataManager.saveThumbnail(for: image, baseFileName: baseName)
             
             shoppingItem.imageIDs.append(baseName)
             await loadImageThumbnails()
@@ -135,7 +131,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func applyChanges() async {
         shoppingItem.prepareToSave()
-        try? await repository.addOrUpdateItem(shoppingItem)
+        try? await dataManager.addOrUpdateItem(shoppingItem)
     }
     
     // MARK: - Private
@@ -155,10 +151,10 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     private func loadImageThumbnails() async {
-        let imageStorage = self.imageStorage
+        let dataManager = self.dataManager // TODO: sprawdzic czy teraz trzeba robic te kopie
         var images: [UIImage] = []
         for id in shoppingItem.imageIDs {
-            if let image = try? await imageStorage.loadThumbnail(baseFileName: id) {
+            if let image = try? await dataManager.loadThumbnail(baseFileName: id) {
                 images.append(image)
             }
         }

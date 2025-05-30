@@ -24,7 +24,7 @@ final class HomeViewModelTests: XCTestCase {
         let testItemID = UUID()
         let testItem = ShoppingItem(id: testItemID, order: 0, listID: testListID, name: "Milk", note: "Pilos 3.2%, 1L", status: .pending)
         
-        let mockRepository = TestMockShoppingListsRepository()
+        let mockRepository = TestMockDataManager()
 
         let addItemExp = expectation(description: "addItemExp")
         mockRepository.addOrUpdateItemHandler = { item in
@@ -43,7 +43,7 @@ final class HomeViewModelTests: XCTestCase {
             fetchListExp.fulfill()
         }
         
-        let viewModel = ShoppingListViewModel(listID: testListID, repository: mockRepository, coordinator: TestMockAppCoordinator())
+        let viewModel = ShoppingListViewModel(listID: testListID, dataManager: mockRepository, coordinator: TestMockAppCoordinator())
         await viewModel.addOrUpdateItem(testItem)
 
         await fulfillment(of: [addItemExp, fetchListExp], timeout: 5)

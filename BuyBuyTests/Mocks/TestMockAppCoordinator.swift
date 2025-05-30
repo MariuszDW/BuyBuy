@@ -10,15 +10,11 @@ import Combine
 @testable import BuyBuy
 
 final class TestMockAppCoordinator: AppCoordinatorProtocol {
-    var openListBlock: ((UUID) -> Void)?
-    var onBack: (() -> Void)?
-    
-    func openList(_ id: UUID) {
-        openListBlock?(id)
-    }
+    var openShoppingListBlock: ((UUID) -> Void)?
+    var backBlock: (() -> Void)?
     
     func openShoppingList(_ id: UUID) {
-        // TODO: Implement...
+        openShoppingListBlock?(id)
     }
     
     func openShoppingListSettings(_ list: BuyBuy.ShoppingList, isNew: Bool, onDismiss: @escaping () -> Void) {
@@ -38,6 +34,6 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     }
     
     func back() {
-        onBack?()
+        backBlock?()
     }
 }

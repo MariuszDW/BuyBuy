@@ -10,7 +10,7 @@ import SwiftUI
 
 @MainActor
 final class ShoppingListViewModel: ObservableObject {
-    private let repository: ShoppingListsRepositoryProtocol
+    private let dataManager: DataManagerProtocol
     private var coordinator: any AppCoordinatorProtocol
     
     private let listID: UUID
@@ -22,14 +22,14 @@ final class ShoppingListViewModel: ObservableObject {
         ShoppingListSection(status: .inactive)
     ]
     
-    init(listID: UUID, repository: ShoppingListsRepositoryProtocol, coordinator: any AppCoordinatorProtocol) {
+    init(listID: UUID, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.listID = listID
-        self.repository = repository
+        self.dataManager = dataManager
         self.coordinator = coordinator
     }
     
     func loadList() async {
-        let fetchedList = try? await repository.fetchList(with: listID)
+        let fetchedList = try? await dataManager.fetchList(with: listID)
         self.list = fetchedList
         
         // TODO: temporary test or order
@@ -47,12 +47,12 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async {
-        try? await repository.addOrUpdateItem(item)
+        try? await dataManager.addOrUpdateItem(item)
         await loadList()
     }
     
     func deleteItem(with id: UUID) async {
-        try? await repository.deleteItem(with: id)
+        try? await dataManager.deleteItem(with: id)
         await loadList()
     }
     
@@ -69,7 +69,7 @@ final class ShoppingListViewModel: ObservableObject {
         }
 
         for item in reorderedItems {
-            try? await repository.addOrUpdateItem(item)
+            try? await dataManager.addOrUpdateItem(item)
         }
 
         await loadList()
@@ -83,7 +83,7 @@ final class ShoppingListViewModel: ObservableObject {
         guard let items = list?.items(for: section.status) else { return }
         let idsToDelete = offsets.map { items[$0].id }
         list?.items.removeAll { idsToDelete.contains($0.id) }
-        try? await repository.deleteItems(with: idsToDelete)
+        try? await dataManager.deleteItems(with: idsToDelete)
         await loadList()
     }
     
@@ -137,11 +137,11 @@ final class ShoppingListViewModel: ObservableObject {
         self.list = currentList
         
         for item in newSectionItems {
-            try? await repository.addOrUpdateItem(item)
+            try? await dataManager.addOrUpdateItem(item)
         }
         
         for item in oldSectionItems {
-            try? await repository.addOrUpdateItem(item)
+            try? await dataManager.addOrUpdateItem(item)
         }
         
         await loadList()

@@ -12,29 +12,29 @@ import Combine
 class ShoppingListsViewModel: ObservableObject {
     @Published var shoppingLists: [ShoppingList] = []
 
-    private let repository: ShoppingListsRepositoryProtocol
+    private let dataManager: DataManagerProtocol
     private let coordinator: any AppCoordinatorProtocol
 
-    init(coordinator: any AppCoordinatorProtocol, repository: ShoppingListsRepositoryProtocol) {
+    init(coordinator: any AppCoordinatorProtocol, dataManager: DataManagerProtocol) {
         self.coordinator = coordinator
-        self.repository = repository
+        self.dataManager = dataManager
     }
     
     func loadLists() async {
-        let fetchedLists = try? await repository.fetchAllLists()
+        let fetchedLists = try? await dataManager.fetchAllLists()
         self.shoppingLists = fetchedLists ?? []
     }
 
     func deleteLists(atOffsets offsets: IndexSet) async {
         let idsToDelete = offsets.map { shoppingLists[$0].id }
         shoppingLists.removeAll { idsToDelete.contains($0.id) }
-        try? await repository.deleteLists(with: idsToDelete)
+        try? await dataManager.deleteLists(with: idsToDelete)
         await loadLists()
     }
 
     func deleteList(id: UUID) async {
         shoppingLists.removeAll { $0.id == id }
-        try? await repository.deleteList(with: id)
+        try? await dataManager.deleteList(with: id)
         await loadLists()
     }
 
@@ -42,7 +42,7 @@ class ShoppingListsViewModel: ObservableObject {
         shoppingLists.move(fromOffsets: source, toOffset: destination)
         for index in shoppingLists.indices {
             shoppingLists[index].order = index
-            try? await repository.addOrUpdateList(shoppingLists[index])
+            try? await dataManager.addOrUpdateList(shoppingLists[index])
         }
     }
     

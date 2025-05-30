@@ -22,13 +22,13 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         self.dependencies = dependencies
         self.shoppingListsViewModel = ShoppingListsViewModel(
             coordinator: self,
-            repository: dependencies.repository
+            dataManager: dependencies.dataManager
         )
     }
     
     @MainActor
     func performStartupTasks() async {
-        try? await dependencies.repository.cleanOrphanedItems()
+        try? await dependencies.dataManager.cleanOrphanedItems()
     }
     
     func openShoppingList(_ id: UUID) {
@@ -67,13 +67,13 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
                     listID: id,
-                    repository: self.dependencies.repository,
+                    dataManager: self.dependencies.dataManager,
                     coordinator: self,
                 )
             )
         case .appSettings:
             AppSettingsView(
-                viewModel: AppSettingsViewModel(repository: self.dependencies.repository,
+                viewModel: AppSettingsViewModel(dataManager: self.dependencies.dataManager,
                                                 coordinator: self)
             )
         }
@@ -88,7 +88,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: ShoppingListSettingsViewModel(
                     list: list,
                     isNew: isNew,
-                    repository: self.dependencies.repository,
+                    dataManager: self.dependencies.dataManager,
                     coordinator: self
                 )
             )
@@ -97,8 +97,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: ShoppingItemDetailsViewModel(
                     item: item,
                     isNew: isNew,
-                    repository: self.dependencies.repository,
-                    imageStorage: self.dependencies.imageStorage,
+                    dataManager: self.dependencies.dataManager,
                     coordinator: self
                 )
             )

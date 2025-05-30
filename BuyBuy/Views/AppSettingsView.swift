@@ -39,7 +39,7 @@ struct AppSettingsView: View {
             Button("Cancel", role: .cancel) {}
             Button("Copy") {
                 Task {
-                    await viewModel.copyMockToRepository()
+                    await viewModel.copyMockToData()
                 }
             }
         }
@@ -50,21 +50,23 @@ struct AppSettingsView: View {
 // MARK: - Preview
 
 #Preview("Light") {
-    let repository = MockShoppingListsRepository()
+    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+                                  imageStorage: MockImageStorageService())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
-    
     NavigationStack {
-        AppSettingsView(viewModel: AppSettingsViewModel(repository: repository, coordinator: coordinator))
+        AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
+                                                        coordinator: coordinator))
     }
     .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
-    let repository = MockShoppingListsRepository()
+    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+                                  imageStorage: MockImageStorageService())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
-    
     NavigationStack {
-        AppSettingsView(viewModel: AppSettingsViewModel(repository: repository, coordinator: coordinator))
+        AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
+                                                        coordinator: coordinator))
     }
     .preferredColorScheme(.dark)
 }

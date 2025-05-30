@@ -196,10 +196,11 @@ struct ShoppingListSettingsView: View {
 // MARK: - Preview
 
 #Preview("Light") {
-    let repository = MockShoppingListsRepository()
+    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+                                  imageStorage: MockImageStorageService())
     let viewModel = ShoppingListSettingsViewModel(
         list: MockShoppingListsRepository.list1,
-        repository: repository,
+        dataManager: dataManager,
         coordinator: AppCoordinator(dependencies: AppDependencies()))
     
     ShoppingListSettingsView(viewModel: viewModel)
@@ -207,10 +208,11 @@ struct ShoppingListSettingsView: View {
 }
 
 #Preview("Dark") {
-    let repository = MockShoppingListsRepository()
+    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+                                  imageStorage: MockImageStorageService())
     let viewModel = ShoppingListSettingsViewModel(
         list: MockShoppingListsRepository.list1,
-        repository: repository,
+        dataManager: dataManager,
         coordinator: AppCoordinator(dependencies: AppDependencies()))
     
     ShoppingListSettingsView(viewModel: viewModel)

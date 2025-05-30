@@ -7,13 +7,17 @@
 
 import SwiftUI
 
+@MainActor
 final class AppDependencies: ObservableObject {
-    private let coreDataStack = CoreDataStack()
-    lazy var repository: ShoppingListsRepositoryProtocol = {
-        ShoppingListsRepository(coreDataStack: coreDataStack)
-    }()
-    
-    lazy var imageStorage: ImageStorageServiceProtocol = {
-        ImageStorageService()
-    }()
+    private let coreDataStack: CoreDataStack
+    private let repository: ShoppingListsRepositoryProtocol
+    private let imageStorage: ImageStorageServiceProtocol
+    let dataManager: DataManager
+
+    init() {
+        self.coreDataStack = CoreDataStack()
+        self.repository = ShoppingListsRepository(coreDataStack: coreDataStack)
+        self.imageStorage = ImageStorageService()
+        self.dataManager = DataManager(repository: repository, imageStorage: imageStorage)
+    }
 }
