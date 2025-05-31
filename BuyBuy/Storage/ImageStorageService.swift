@@ -22,7 +22,7 @@ struct ImageStorageHelper {
         return baseFileName + ".jpg"
     }
     
-    static let thumbnailSize = CGSize(width: 100, height: 100)
+    static let thumbnailSize = CGSize(width: 64, height: 64)
 }
 
 actor ImageStorageService: ImageStorageServiceProtocol {
