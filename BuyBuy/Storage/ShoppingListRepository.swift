@@ -103,7 +103,17 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
     
     // MARK: - Items
     
-    func fetchItems(for listID: UUID) async throws -> [ShoppingItem] {
+    func fetchAllItems() async throws -> [ShoppingItem] {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            request.sortDescriptors = [NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: true)]
+            let entities = try context.fetch(request)
+            return entities.map(ShoppingItem.init)
+        }
+    }
+    
+    func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -111,6 +121,28 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
             request.sortDescriptors = [NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: true)]
             let entities = try context.fetch(request)
             return entities.map(ShoppingItem.init)
+        }
+    }
+    
+    func fetchItem(with id: UUID) async throws -> ShoppingItem? {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            request.fetchLimit = 1
+            let results = try context.fetch(request)
+            return results.first.map(ShoppingItem.init)
+        }
+    }
+    
+    func fetchItems(with ids: [UUID]) async throws -> [ShoppingItem] {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            let uuidStrings = ids.map { $0.uuidString }
+            request.predicate = NSPredicate(format: "id IN %@", uuidStrings)
+            let results = try context.fetch(request)
+            return results.map(ShoppingItem.init)
         }
     }
     

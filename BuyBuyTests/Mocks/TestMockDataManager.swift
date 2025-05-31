@@ -35,7 +35,7 @@ final class TestMockDataManager: DataManagerProtocol, @unchecked Sendable {
         // TODO: implement...
     }
     
-    func fetchItems(for listID: UUID) async throws -> [BuyBuy.ShoppingItem] {
+    func fetchItemsOfList(with listID: UUID) async throws -> [BuyBuy.ShoppingItem] {
         // TODO: implement...
         return []
     }

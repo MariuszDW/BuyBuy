@@ -96,8 +96,27 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     
     func deleteLists(with ids: [UUID]) async throws {}
     
-    func fetchItems(for listID: UUID) async throws -> [ShoppingItem] {
+    func fetchAllItems() async throws -> [ShoppingItem] {
+        return shoppingLists.flatMap { $0.items }
+    }
+    
+    func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
         return shoppingLists.first(where: { $0.id == listID })?.items ?? []
+    }
+    
+    func fetchItem(with id: UUID) async throws -> ShoppingItem? {
+        for list in shoppingLists {
+            if let item = list.items.first(where: { $0.id == id }) {
+                return item
+            }
+        }
+        return nil
+    }
+    
+    func fetchItems(with ids: [UUID]) async throws -> [ShoppingItem] {
+        return shoppingLists
+            .flatMap { $0.items }
+            .filter { ids.contains($0.id) }
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async throws {}
