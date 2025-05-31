@@ -36,8 +36,7 @@ final class DataManager: DataManagerProtocol {
             let newImageIDs = Set(list.items.flatMap { $0.imageIDs })
             let removedImageIDs = oldImageIDs.subtracting(newImageIDs)
             for id in removedImageIDs {
-                try await imageStorage.deleteImage(baseFileName: id)
-                try await imageStorage.deleteThumbnail(baseFileName: id)
+                try await imageStorage.deleteImageAndThumbnail(baseFileName: id)
             }
         }
         try await repository.addOrUpdateList(list)
@@ -47,8 +46,7 @@ final class DataManager: DataManagerProtocol {
         let items = try await repository.fetchItemsOfList(with: id)
         let allImageIDs = items.flatMap { $0.imageIDs }
         for imageID in allImageIDs {
-            try await imageStorage.deleteImage(baseFileName: imageID)
-            try await imageStorage.deleteThumbnail(baseFileName: imageID)
+            try await imageStorage.deleteImageAndThumbnail(baseFileName: imageID)
         }
         try await repository.deleteList(with: id)
     }
@@ -58,8 +56,7 @@ final class DataManager: DataManagerProtocol {
             let items = try await repository.fetchItemsOfList(with: id)
             let allImageIDs = items.flatMap { $0.imageIDs }
             for imageID in allImageIDs {
-                try await imageStorage.deleteImage(baseFileName: imageID)
-                try await imageStorage.deleteThumbnail(baseFileName: imageID)
+                try await imageStorage.deleteImageAndThumbnail(baseFileName: imageID)
             }
         }
         try await repository.deleteLists(with: ids)
@@ -86,8 +83,7 @@ final class DataManager: DataManagerProtocol {
         let orphanedImageIDs = oldImageIDs.filter { !usedImageIDs.contains($0) }
 
         for id in orphanedImageIDs {
-            try await imageStorage.deleteImage(baseFileName: id)
-            try await imageStorage.deleteThumbnail(baseFileName: id)
+            try await imageStorage.deleteImageAndThumbnail(baseFileName: id)
         }
     }
     
@@ -105,8 +101,7 @@ final class DataManager: DataManagerProtocol {
         let orphanedImageIDs = oldImageIDs.filter { !usedImageIDs.contains($0) }
 
         for id in orphanedImageIDs {
-            try await imageStorage.deleteImage(baseFileName: id)
-            try await imageStorage.deleteThumbnail(baseFileName: id)
+            try await imageStorage.deleteImageAndThumbnail(baseFileName: id)
         }
     }
     
@@ -122,8 +117,7 @@ final class DataManager: DataManagerProtocol {
         let orphanedImageIDs = Set(oldImageIDs).subtracting(usedImageIDs)
 
         for id in orphanedImageIDs {
-            try await imageStorage.deleteImage(baseFileName: id)
-            try await imageStorage.deleteThumbnail(baseFileName: id)
+            try await imageStorage.deleteImageAndThumbnail(baseFileName: id)
         }
     }
     
@@ -134,12 +128,8 @@ final class DataManager: DataManagerProtocol {
     
     // MARK: - ImageStorage
     
-    func saveImage(_ image: UIImage, baseFileName: String) async throws {
-        try await imageStorage.saveImage(image, baseFileName: baseFileName)
-    }
-    
-    func saveThumbnail(for image: UIImage, baseFileName: String) async throws {
-        try await imageStorage.saveThumbnail(for: image, baseFileName: baseFileName)
+    func saveImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws {
+        try await imageStorage.saveImageAndThumbnail(image, baseFileName: baseFileName)
     }
     
     func loadImage(baseFileName: String) async throws -> UIImage {
@@ -150,12 +140,8 @@ final class DataManager: DataManagerProtocol {
         return try await imageStorage.loadThumbnail(baseFileName: baseFileName)
     }
     
-    func deleteImage(baseFileName: String) async throws {
-        try await imageStorage.deleteImage(baseFileName: baseFileName)
-    }
-    
-    func deleteThumbnail(baseFileName: String) async throws {
-        try await imageStorage.deleteThumbnail(baseFileName: baseFileName)
+    func deleteImageAndThumbnail(baseFileName: String) async throws {
+        try await imageStorage.deleteImageAndThumbnail(baseFileName: baseFileName)
     }
     
     func clearThumbnailCache() async {

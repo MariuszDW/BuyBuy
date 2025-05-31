@@ -8,10 +8,12 @@
 import UIKit
 
 actor MockImageStorage: ImageStorageProtocol {
-    func saveThumbnail(for image: UIImage, baseFileName: String) async throws {}
     func saveImage(_ image: UIImage, baseFileName: String) async throws {}
+    func saveThumbnail(for image: UIImage, baseFileName: String) async throws {}
+    func saveImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws {}
     func deleteImage(baseFileName: String) async throws {}
     func deleteThumbnail(baseFileName: String) async throws {}
+    func deleteImageAndThumbnail(baseFileName: String) async throws {}
 
     func loadImage(baseFileName: String) async throws -> UIImage {
         return Self.generateMockImage(text: baseFileName, size: CGSize(width: 1024, height: 1024))

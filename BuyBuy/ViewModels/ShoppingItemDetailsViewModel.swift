@@ -117,8 +117,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         let baseName = UUID().uuidString
         
         do {
-            try await self.dataManager.saveImage(image, baseFileName: baseName)
-            try await self.dataManager.saveThumbnail(for: image, baseFileName: baseName)
+            try await self.dataManager.saveImageAndThumbnail(image, baseFileName: baseName)
             
             shoppingItem.imageIDs.append(baseName)
             await loadImageThumbnails()

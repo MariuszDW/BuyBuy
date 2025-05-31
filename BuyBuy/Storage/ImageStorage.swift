@@ -45,22 +45,8 @@ actor ImageStorage: ImageStorageProtocol {
     // MARK: - Save
     
     func saveThumbnail(for image: UIImage, baseFileName: String) async throws {
-        let originalSize = image.size
-        let squareLength = min(originalSize.width, originalSize.height)
-        
-        let cropOriginX = (originalSize.width - squareLength) / 2
-        let cropOriginY = (originalSize.height - squareLength) / 2
-        let cropRect = CGRect(x: cropOriginX, y: cropOriginY, width: squareLength, height: squareLength)
-        
-        guard let cgImage = image.cgImage?.cropping(to: cropRect) else {
+        guard let thumbnail = await createThumbnail(from: image) else {
             throw ImageStorageError.failedToSaveThumbnail
-        }
-        
-        let croppedImage = UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
-        
-        let renderer = UIGraphicsImageRenderer(size: ImageStorageHelper.thumbnailSize)
-        let thumbnail = renderer.image { _ in
-            croppedImage.draw(in: CGRect(origin: .zero, size: ImageStorageHelper.thumbnailSize))
         }
         
         guard let data = thumbnail.jpegData(compressionQuality: 0.7) else {
@@ -78,6 +64,11 @@ actor ImageStorage: ImageStorageProtocol {
         
         let fileName = ImageStorageHelper.imageFileName(for: baseFileName)
         try await writeData(data, to: fileName)
+    }
+    
+    func saveImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws {
+        try await saveImage(image, baseFileName: baseFileName)
+        try await saveThumbnail(for: image, baseFileName: baseFileName)
     }
     
     // MARK: - Load
@@ -119,6 +110,11 @@ actor ImageStorage: ImageStorageProtocol {
         try await deleteData(fileName: fileName)
     }
     
+    func deleteImageAndThumbnail(baseFileName: String) async throws {
+        try await deleteImage(baseFileName: baseFileName)
+        try await deleteThumbnail(baseFileName: baseFileName)
+    }
+    
     // MARK: - Private
     
     private func writeData(_ data: Data, to fileName: String) async throws {
@@ -145,5 +141,27 @@ actor ImageStorage: ImageStorageProtocol {
                 try FileManager.default.removeItem(at: fileURL)
             }
         }.value
+    }
+    
+    private func createThumbnail(from image: UIImage) async -> UIImage? {
+        let originalSize = image.size
+        let squareLength = min(originalSize.width, originalSize.height)
+        
+        let cropOriginX = (originalSize.width - squareLength) / 2
+        let cropOriginY = (originalSize.height - squareLength) / 2
+        let cropRect = CGRect(x: cropOriginX, y: cropOriginY, width: squareLength, height: squareLength)
+        
+        guard let cgImage = image.cgImage?.cropping(to: cropRect) else {
+            return nil
+        }
+        
+        let croppedImage = UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
+        
+        let renderer = UIGraphicsImageRenderer(size: ImageStorageHelper.thumbnailSize)
+        let thumbnail = renderer.image { _ in
+            croppedImage.draw(in: CGRect(origin: .zero, size: ImageStorageHelper.thumbnailSize))
+        }
+        
+        return thumbnail
     }
 }
