@@ -1,5 +1,5 @@
 //
-//  MockImageStorageService.swift
+//  MockImageStorage.swift
 //  BuyBuy
 //
 //  Created by MDW on 28/05/2025.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-actor MockImageStorageService: ImageStorageServiceProtocol {
+actor MockImageStorage: ImageStorageProtocol {
     func saveThumbnail(for image: UIImage, baseFileName: String) async throws {}
     func saveImage(_ image: UIImage, baseFileName: String) async throws {}
     func deleteImage(baseFileName: String) async throws {}

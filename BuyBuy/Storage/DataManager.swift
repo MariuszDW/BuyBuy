@@ -11,10 +11,10 @@ import UIKit
 @MainActor
 final class DataManager: DataManagerProtocol {
     private let repository: ShoppingListsRepositoryProtocol
-    private let imageStorage: ImageStorageServiceProtocol
+    private let imageStorage: ImageStorageProtocol
 
     init(repository: ShoppingListsRepositoryProtocol,
-         imageStorage: ImageStorageServiceProtocol) {
+         imageStorage: ImageStorageProtocol) {
         self.repository = repository
         self.imageStorage = imageStorage
     }
@@ -132,7 +132,7 @@ final class DataManager: DataManagerProtocol {
         try await repository.cleanOrphanedItems()
     }
     
-    // MARK: - ImageStorageService
+    // MARK: - ImageStorage
     
     func saveImage(_ image: UIImage, baseFileName: String) async throws {
         try await imageStorage.saveImage(image, baseFileName: baseFileName)

@@ -1,5 +1,5 @@
 //
-//  ImageStorageService.swift
+//  ImageStorage.swift
 //  BuyBuy
 //
 //  Created by MDW on 27/05/2025.
@@ -25,7 +25,7 @@ struct ImageStorageHelper {
     static let thumbnailSize = CGSize(width: 64, height: 64)
 }
 
-actor ImageStorageService: ImageStorageServiceProtocol {
+actor ImageStorage: ImageStorageProtocol {
     static private let imagesDirectoryURL: URL = {
         let fileManager = FileManager.default
         let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]

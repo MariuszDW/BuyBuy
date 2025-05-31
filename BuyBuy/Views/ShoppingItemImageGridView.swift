@@ -50,9 +50,9 @@ struct ShoppingItemImageGridView: View {
 
 // MARK: - Preview
 
-let mockImage1 = MockImageStorageService.generateMockImage(text: "TEST IMAGE 1", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.yellow, textColor: UIColor.gray)
-let mockImage2 = MockImageStorageService.generateMockImage(text: "TEST IMAGE 2", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.green, textColor: UIColor.black)
-let mockImage3 = MockImageStorageService.generateMockImage(text: "TEST IMAGE 3", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.red, textColor: UIColor.white)
+let mockImage1 = MockImageStorage.generateMockImage(text: "TEST IMAGE 1", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.yellow, textColor: UIColor.gray)
+let mockImage2 = MockImageStorage.generateMockImage(text: "TEST IMAGE 2", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.green, textColor: UIColor.black)
+let mockImage3 = MockImageStorage.generateMockImage(text: "TEST IMAGE 3", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.red, textColor: UIColor.white)
 
 let mockImages = [mockImage1, mockImage2, mockImage3, mockImage1, mockImage2, mockImage3, mockImage1, mockImage2, mockImage3]
 
