@@ -45,9 +45,22 @@ actor ImageStorageService: ImageStorageServiceProtocol {
     // MARK: - Save
     
     func saveThumbnail(for image: UIImage, baseFileName: String) async throws {
+        let originalSize = image.size
+        let squareLength = min(originalSize.width, originalSize.height)
+        
+        let cropOriginX = (originalSize.width - squareLength) / 2
+        let cropOriginY = (originalSize.height - squareLength) / 2
+        let cropRect = CGRect(x: cropOriginX, y: cropOriginY, width: squareLength, height: squareLength)
+        
+        guard let cgImage = image.cgImage?.cropping(to: cropRect) else {
+            throw ImageStorageError.failedToSaveThumbnail
+        }
+        
+        let croppedImage = UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
+        
         let renderer = UIGraphicsImageRenderer(size: ImageStorageHelper.thumbnailSize)
         let thumbnail = renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: ImageStorageHelper.thumbnailSize))
+            croppedImage.draw(in: CGRect(origin: .zero, size: ImageStorageHelper.thumbnailSize))
         }
         
         guard let data = thumbnail.jpegData(compressionQuality: 0.7) else {
