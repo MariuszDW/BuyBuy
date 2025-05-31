@@ -18,16 +18,36 @@ extension ShoppingItem {
         self.price = entity.price?.doubleValue
         self.quantity = entity.quantity?.doubleValue
         self.unit = ShoppingItemUnit(string: entity.unit)
-        
-        if let imagesSet = entity.images as? Set<ShoppingItemImageEntity> {
-            self.imageIDs = imagesSet.compactMap { $0.id }
-        } else {
-            self.imageIDs = []
-        }
+        self.imageIDs = entity.imageIDs
     }
 }
 
 extension ShoppingItemEntity {
+    var imageIDs: [String] {
+        get {
+            guard let object = imageIDsData else { return [] }
+            guard let data = object as? Data else {
+                print("imageIDsData is not Data")
+                return []
+            }
+            do {
+                return try JSONDecoder().decode([String].self, from: data)
+            } catch {
+                print("Error decoding imageIDsData: \(error)")
+                return []
+            }
+        }
+        set {
+            do {
+                let data = try JSONEncoder().encode(newValue)
+                imageIDsData = data as NSData
+            } catch {
+                print("Error encoding imageIDsData: \(error)")
+                imageIDsData = nil
+            }
+        }
+    }
+    
     func update(from model: ShoppingItem, context: NSManagedObjectContext) {
         self.id = model.id
         self.name = model.name
@@ -37,25 +57,6 @@ extension ShoppingItemEntity {
         self.price = model.price as NSNumber?
         self.quantity = model.quantity as NSNumber?
         self.unit = model.unit?.symbol
-        
-        let oldEntities = self.images as? Set<ShoppingItemImageEntity> ?? []
-        let oldIDs: Set<String> = Set(oldEntities.compactMap { $0.id })
-        let newIDs = Set(model.imageIDs)
-        
-        for imageEntity in oldEntities {
-            guard let id = imageEntity.id else { continue }
-            if !newIDs.contains(id) {
-                context.delete(imageEntity)
-                self.removeFromImages(imageEntity)
-                
-            }
-        }
-        
-        for id in newIDs.subtracting(oldIDs) {
-            let imageEntity = ShoppingItemImageEntity(context: context)
-            imageEntity.id = id
-            imageEntity.item = self
-            self.addToImages(imageEntity)
-        }
+        self.imageIDs = model.imageIDs
     }
 }
