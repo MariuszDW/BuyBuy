@@ -41,6 +41,18 @@ struct ShoppingItemImageGridView: View {
                         }
                     }
                     .contentShape(Rectangle())
+                    .popover(isPresented: Binding(
+                        get: {
+                            showingActionsForIndex == index
+                        },
+                        set: { newValue in
+                            if !newValue {
+                                showingActionsForIndex = nil
+                            }
+                        })
+                    ) {
+                        imageActionMenu
+                    }
                     .onTapGesture {
                         onUserInteraction()
                         onTapImage(index)
@@ -72,24 +84,40 @@ struct ShoppingItemImageGridView: View {
                 }
             }
         }
-        .confirmationDialog("Actions", isPresented: Binding(
-            get: { showingActionsForIndex != nil },
-            set: { newValue in
-                if !newValue {
+    }
+    
+    private var imageActionMenu: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            Button {
+                if let index = showingActionsForIndex {
+                    onTapImage(index)
                     showingActionsForIndex = nil
                 }
-            })) {
-                Button("Show") {
-                    if let index = showingActionsForIndex {
-                        onTapImage(index)
-                    }
+            } label: {
+                HStack {
+                    Text("Show")
+                    Spacer()
+                    Image(systemName: "eye")
                 }
-                Button("Delete", role: .destructive) {
-                    if let index = showingActionsForIndex {
-                        onDeleteImage(index)
-                    }
-                }
+                .foregroundColor(.bb.selection)
             }
+            
+            Button {
+                if let index = showingActionsForIndex {
+                    onDeleteImage(index)
+                    showingActionsForIndex = nil
+                }
+            } label: {
+                HStack {
+                    Text("Delete")
+                    Spacer()
+                    Image(systemName: "trash")
+                }
+                .foregroundColor(.bb.destructive)
+            }
+        }
+        .padding()
+        .presentationCompactAdaptation(.popover)
     }
 }
 
