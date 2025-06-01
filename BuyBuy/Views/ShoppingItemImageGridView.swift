@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ShoppingItemImageGridView: View {
     let images: [UIImage]
-    var onAddImage: () -> Void
+    var onAddImage: (UIImage) -> Void
     var onTapImage: (Int) -> Void
     var onDeleteImage: (Int) -> Void
     
@@ -19,6 +19,7 @@ struct ShoppingItemImageGridView: View {
     static let selectionLineWidth: CGFloat = 6
     
     @State private var showingActionsForIndex: Int? = nil
+    @State private var showImageSourceSheet = false
     
     private let columns = [
         GridItem(.adaptive(minimum: Self.itemSize), spacing: Self.itemSpacing)
@@ -47,7 +48,7 @@ struct ShoppingItemImageGridView: View {
                     }
             }
             
-            Button(action: onAddImage) {
+            Button(action: { showImageSourceSheet = true }) {
                 Image(systemName: "plus.circle.fill")
                     .font(.system(size: 30, weight: .medium))
                     .foregroundColor(.bb.text.secondary)
@@ -57,6 +58,13 @@ struct ShoppingItemImageGridView: View {
             }
             .buttonStyle(.plain)
             .contentShape(Rectangle())
+            .popover(isPresented: $showImageSourceSheet, attachmentAnchor: .rect(.bounds), arrowEdge: .bottom) {
+                ImageSourcePickerView { image in
+                    if let image = image {
+                        onAddImage(image)
+                    }
+                }
+            }
         }
         .confirmationDialog("Actions", isPresented: Binding(
             get: { showingActionsForIndex != nil },
@@ -88,13 +96,13 @@ let mockImage3 = MockImageStorage.generateMockImage(text: "TEST IMAGE 3", size: 
 let mockImages = [mockImage1, mockImage2, mockImage3, mockImage1, mockImage2, mockImage3, mockImage1, mockImage2, mockImage3]
 
 #Preview("Light") {
-    ShoppingItemImageGridView(images: mockImages, onAddImage: {}, onTapImage: {_ in}, onDeleteImage: {_ in})
+    ShoppingItemImageGridView(images: mockImages, onAddImage: {_ in}, onTapImage: {_ in}, onDeleteImage: {_ in})
         .padding()
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
-    ShoppingItemImageGridView(images: mockImages, onAddImage: {}, onTapImage: {_ in}, onDeleteImage: {_ in})
+    ShoppingItemImageGridView(images: mockImages, onAddImage: {_ in}, onTapImage: {_ in}, onDeleteImage: {_ in})
         .padding()
         .preferredColorScheme(.dark)
 }

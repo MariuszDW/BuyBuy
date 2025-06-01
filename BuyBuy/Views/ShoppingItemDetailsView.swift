@@ -15,7 +15,6 @@ struct ShoppingItemDetailsView: View {
     @StateObject var viewModel: ShoppingItemDetailsViewModel
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: ShoppingItemDetailsField?
-    @State private var showImageSourceSheet = false
     
     var body: some View {
         NavigationStack {
@@ -237,9 +236,9 @@ struct ShoppingItemDetailsView: View {
         Section {
             ShoppingItemImageGridView(
                 images: viewModel.imageThumbnails,
-                onAddImage: {
+                onAddImage: { image in
                     focusedField = nil
-                    showImageSourceSheet = true
+                    Task { await viewModel.addImage(image) }
                 },
                 onTapImage: { index in
                     focusedField = nil
@@ -254,13 +253,6 @@ struct ShoppingItemDetailsView: View {
             )
         }
         .listRowBackground(Color.bb.sheet.section.background)
-        .popover(isPresented: $showImageSourceSheet, attachmentAnchor: .rect(.bounds), arrowEdge: .bottom) {
-            ImageSourcePickerView { image in
-                if let image = image {
-                    Task { await viewModel.addImage(image) }
-                }
-            }
-        }
     }
     
     private func unitMenuSection(for category: MeasuredUnitCategory) -> some View {
