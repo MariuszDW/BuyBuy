@@ -12,8 +12,19 @@ import SwiftUI
 final class ShoppingItemDetailsViewModel: ObservableObject {
     /// The shopping item being edited.
     @Published private var shoppingItem: ShoppingItem
-    
     @Published var imageThumbnails: [UIImage] = []
+    @Published var selectedImage: UIImage?
+    
+    var isFullscreenImagePresented: Binding<Bool> {
+        Binding(
+            get: { self.selectedImage != nil },
+            set: { newValue in
+                if !newValue {
+                    self.selectedImage = nil
+                }
+            }
+        )
+    }
     
     /// Indicates whether the edited shopping list is a newly created one.
     private(set) var isNew: Bool
@@ -108,9 +119,10 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         }
     }
     
-    func handleThumbnailTap(at index: Int) {
-        // TODO: Implement action on tap on a thumbnail at index.
-        print("Tapped thumbnail at \(index).")
+    func openFullscreenImage(at index: Int) async {
+        guard index >= 0 && index < shoppingItem.imageIDs.count else { return }
+        let selectedImageID = shoppingItem.imageIDs[index]
+        selectedImage = try? await dataManager.loadImage(baseFileName: selectedImageID)
     }
     
     func addImage(_ image: UIImage) async {

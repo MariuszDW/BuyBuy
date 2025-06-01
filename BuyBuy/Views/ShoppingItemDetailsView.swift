@@ -19,141 +19,144 @@ struct ShoppingItemDetailsView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    HStack {
-                        statusSection
+            content
+        }
+    }
+    
+    private var content: some View {
+        List {
+            statusSection
+            nameAndNoteSection
+            quantityUnitPriceSection
+            imagesSection
+        }
+        .scrollContentBackground(.hidden)
+        .background(Color.bb.sheet.background)
+        .safeAreaInset(edge: .bottom) {
+            if focusedField != nil {
+                hideKeyboardButton
+            }
+        }
+        .task {
+            focusedField = viewModel.isNew ? .name : nil
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle("Item details")
+        .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: focusedField) { newValue in
+            Task {
+                await viewModel.applyChanges()
+            }
+        }
+        .onDisappear {
+            Task {
+                await viewModel.applyChanges()
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    Task {
+                        await viewModel.applyChanges()
+                        dismiss()
                     }
+                } label: {
+                    Image(systemName: "xmark.circle")
+                        .accessibilityLabel("Close")
                 }
-                .listRowBackground(Color.bb.sheet.section.background)
-                
-                Section {
-                    nameField
-                    noteField
+            }
+        }
+        .sheet(isPresented: $showImageSourceSheet) {
+            ImageSourcePickerView { image in
+                if let image = image {
+                    Task { await viewModel.addImage(image) }
                 }
-                .listRowBackground(Color.bb.sheet.section.background)
-                
-                Section {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack(spacing: 12) {
-                            quantityField
-                            unitField
-                        }
-                        
-                        HStack(spacing: 12) {
-                            priceField
-                            totalPriceField
-                        }
-                    }
-                }
-                .listRowBackground(Color.bb.sheet.section.background)
-                
-                Section {
-                    ShoppingItemImageGridView(
-                        images: viewModel.imageThumbnails,
-                        onAddImage: {
-                            focusedField = nil
-                            showImageSourceSheet = true
-                        },
-                        onTapImage: { index in
-                            focusedField = nil
-                            viewModel.handleThumbnailTap(at: index)
-                        }
+            }
+        }
+        .fullScreenCover(isPresented: viewModel.isFullscreenImagePresented) {
+            if let image = viewModel.selectedImage {
+                FullscreenImageView(viewModel: FullscreenImageViewModel(image: image))
+            }
+        }
+    }
+    
+    private var hideKeyboardButton: some View {
+        HStack {
+            Spacer()
+            Button {
+                focusedField = nil
+            } label: {
+                Image(systemName: "keyboard.chevron.compact.down")
+                    .font(.regularDynamic(style: .title2))
+                    .foregroundColor(.bb.accent)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Color.bb.background.opacity(0.5))
                     )
-                }
-                .listRowBackground(Color.bb.sheet.section.background)
-            }
-            .scrollContentBackground(.hidden)
-            .background(Color.bb.sheet.background)
-            .safeAreaInset(edge: .bottom) {
-                if focusedField != nil {
-                    HStack {
-                        Spacer()
-                        Button {
-                            focusedField = nil
-                        } label: {
-                            Image(systemName: "keyboard.chevron.compact.down")
-                                .font(.regularDynamic(style: .title2))
-                                .foregroundColor(.bb.accent)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .fill(Color.bb.background.opacity(0.5))
-                                )
-                        }
-                    }
-                }
-            }
-            .task {
-                focusedField = viewModel.isNew ? .name : nil
-            }
-            .listStyle(.insetGrouped)
-            .navigationTitle("Item details")
-            .navigationBarTitleDisplayMode(.inline)
-            .onChange(of: focusedField) { newValue in
-                Task {
-                    await viewModel.applyChanges()
-                }
-            }
-            .onDisappear {
-                Task {
-                    await viewModel.applyChanges()
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        Task {
-                            await viewModel.applyChanges()
-                            dismiss()
-                        }
-                    } label: {
-                        Image(systemName: "xmark.circle")
-                            .accessibilityLabel("Close")
-                    }
-                }
-            }
-            .sheet(isPresented: $showImageSourceSheet) {
-                ImageSourcePickerView { image in
-                    if let image = image {
-                        Task { await viewModel.addImage(image) }
-                    }
-                }
             }
         }
     }
     
     private var statusSection: some View {
-        Group {
-            Text("Status")
-            Spacer()
-            Menu {
-                ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
-                    Button {
-                        focusedField = nil
-                        viewModel.status = status
-                        Task {
-                            await viewModel.applyChanges()
+        Section {
+            HStack {
+                Text("Status")
+                Spacer()
+                Menu {
+                    ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
+                        Button {
+                            focusedField = nil
+                            viewModel.status = status
+                            Task {
+                                await viewModel.applyChanges()
+                            }
+                        } label: {
+                            Label(status.localizedName, systemImage: status.imageSystemName)
+                                .foregroundColor(status.color)
                         }
-                    } label: {
-                        Label(status.localizedName, systemImage: status.imageSystemName)
-                            .foregroundColor(status.color)
                     }
-                }
-            } label: {
-                let status = viewModel.status
-                HStack(spacing: 8) {
-                    status.image
-                        .foregroundColor(status.color)
-                    Text(status.localizedName)
-                        .foregroundColor(status.color)
-                    Image(systemName: "chevron.up.chevron.down")
-                        .foregroundColor(.bb.accent)
-                        .padding(.leading, 8)
+                } label: {
+                    let status = viewModel.status
+                    HStack(spacing: 8) {
+                        status.image
+                            .foregroundColor(status.color)
+                        Text(status.localizedName)
+                            .foregroundColor(status.color)
+                        Image(systemName: "chevron.up.chevron.down")
+                            .foregroundColor(.bb.accent)
+                            .padding(.leading, 8)
+                    }
                 }
             }
         }
+        .listRowBackground(Color.bb.sheet.section.background)
+    }
+    
+    private var quantityUnitPriceSection: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 12) {
+                    quantityField
+                    unitField
+                }
+                
+                HStack(spacing: 12) {
+                    priceField
+                    totalPriceField
+                }
+            }
+        }
+        .listRowBackground(Color.bb.sheet.section.background)
+    }
+    
+    private var nameAndNoteSection: some View {
+        Section {
+            nameField
+            noteField
+        }
+        .listRowBackground(Color.bb.sheet.section.background)
     }
     
     private var nameField: some View {
@@ -230,6 +233,25 @@ struct ShoppingItemDetailsView: View {
             }
         }
         .frame(maxWidth: .infinity)
+    }
+    
+    private var imagesSection: some View {
+        Section {
+            ShoppingItemImageGridView(
+                images: viewModel.imageThumbnails,
+                onAddImage: {
+                    focusedField = nil
+                    showImageSourceSheet = true
+                },
+                onTapImage: { index in
+                    focusedField = nil
+                    Task {
+                        await viewModel.openFullscreenImage(at: index)
+                    }
+                }
+            )
+        }
+        .listRowBackground(Color.bb.sheet.section.background)
     }
     
     private func unitMenuSection(for category: MeasuredUnitCategory) -> some View {
