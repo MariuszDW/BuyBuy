@@ -13,14 +13,14 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     /// The shopping item being edited.
     @Published private var shoppingItem: ShoppingItem
     @Published var imageThumbnails: [UIImage] = []
-    @Published var selectedImage: UIImage?
+    @Published var selectedImageID: String?
     
     var isFullscreenImagePresented: Binding<Bool> {
         Binding(
-            get: { self.selectedImage != nil },
+            get: { self.selectedImageID != nil },
             set: { newValue in
                 if !newValue {
-                    self.selectedImage = nil
+                    self.selectedImageID = nil
                 }
             }
         )
@@ -29,7 +29,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     /// Indicates whether the edited shopping list is a newly created one.
     private(set) var isNew: Bool
     
-    private let dataManager: DataManagerProtocol
+    let dataManager: DataManagerProtocol
     private var coordinator: any AppCoordinatorProtocol
     
     var status: ShoppingItemStatus {
@@ -119,10 +119,9 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         }
     }
     
-    func openFullscreenImage(at index: Int) async {
+    func openFullscreenImage(at index: Int) {
         guard index >= 0 && index < shoppingItem.imageIDs.count else { return }
-        let selectedImageID = shoppingItem.imageIDs[index]
-        selectedImage = try? await dataManager.loadImage(baseFileName: selectedImageID)
+        selectedImageID = shoppingItem.imageIDs[index]
     }
     
     func addImage(_ image: UIImage) async {

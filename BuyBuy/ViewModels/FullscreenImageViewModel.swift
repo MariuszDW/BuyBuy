@@ -7,10 +7,22 @@
 
 import SwiftUI
 
+@MainActor
 final class FullscreenImageViewModel: ObservableObject {
-    let image: UIImage
+    @Published var image: UIImage?
+    let imageID: String
+    private let dataManager: DataManagerProtocol
+
+    init(imageID: String, dataManager: DataManagerProtocol) {
+        self.imageID = imageID
+        self.dataManager = dataManager
+        Task {
+            await loadImage()
+        }
+    }
     
-    init(image: UIImage) {
-        self.image = image
+    func loadImage() async {
+        let loadedImage = try? await dataManager.loadImage(baseFileName: imageID)
+        image = loadedImage
     }
 }

@@ -13,8 +13,15 @@ struct FullscreenImageView: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            ZoomableImageView(image: viewModel.image) {
-                dismiss()
+            if let image = viewModel.image {
+                ZoomableImageView(image: image) {
+                    dismiss()
+                }
+            } else {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.black)
             }
 
             Button(action: { dismiss() }) {
@@ -25,19 +32,26 @@ struct FullscreenImageView: View {
                     .padding()
             }
         }
+        .background(Color.black.ignoresSafeArea())
     }
 }
 
 // MARK: - Preview
 
 #Preview("Light") {
-    let viewModel = FullscreenImageViewModel(image: UIImage())
+    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+                                  imageStorage: MockImageStorage())
+    let viewModel = FullscreenImageViewModel(imageID: UUID().uuidString,
+                                             dataManager: dataManager)
     FullscreenImageView(viewModel: viewModel)
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
-    let viewModel = FullscreenImageViewModel(image: UIImage())
+    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+                                  imageStorage: MockImageStorage())
+    let viewModel = FullscreenImageViewModel(imageID: UUID().uuidString,
+                                             dataManager: dataManager)
     FullscreenImageView(viewModel: viewModel)
         .preferredColorScheme(.dark)
 }

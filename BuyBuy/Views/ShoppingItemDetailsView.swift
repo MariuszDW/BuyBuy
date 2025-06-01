@@ -74,8 +74,13 @@ struct ShoppingItemDetailsView: View {
             }
         }
         .fullScreenCover(isPresented: viewModel.isFullscreenImagePresented) {
-            if let image = viewModel.selectedImage {
-                FullscreenImageView(viewModel: FullscreenImageViewModel(image: image))
+            if let imageID = viewModel.selectedImageID {
+                FullscreenImageView(
+                    viewModel: FullscreenImageViewModel(
+                        imageID: imageID,
+                        dataManager: viewModel.dataManager // lub z miejsca, gdzie masz instancję
+                    )
+                )
             }
         }
     }
@@ -245,9 +250,7 @@ struct ShoppingItemDetailsView: View {
                 },
                 onTapImage: { index in
                     focusedField = nil
-                    Task {
-                        await viewModel.openFullscreenImage(at: index)
-                    }
+                    viewModel.openFullscreenImage(at: index)
                 }
             )
         }
