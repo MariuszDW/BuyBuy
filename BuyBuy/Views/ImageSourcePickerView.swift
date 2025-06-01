@@ -80,11 +80,12 @@ struct ImageSourcePickerView: View {
             .padding(.bottom, 12)
         }
         .background(Color.bb.sheet.section.background)
-        .sheet(isPresented: $isCameraPresented) {
+        .fullScreenCover(isPresented: $isCameraPresented) {
             CameraPickerView { image in
                 onImagePicked(image)
                 dismiss()
             }
+            .ignoresSafeArea()
         }
         .onChange(of: selectedPhotoItem) { newItem in
             guard let item = newItem else { return }
