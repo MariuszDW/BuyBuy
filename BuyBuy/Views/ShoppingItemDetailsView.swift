@@ -78,7 +78,7 @@ struct ShoppingItemDetailsView: View {
                 FullscreenImageView(
                     viewModel: FullscreenImageViewModel(
                         imageID: imageID,
-                        dataManager: viewModel.dataManager // lub z miejsca, gdzie masz instancję
+                        dataManager: viewModel.dataManager
                     )
                 )
             }
@@ -282,7 +282,9 @@ struct ShoppingItemDetailsView: View {
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
             
-            TextField(viewModel.pricePerUnitPlaceholder, value: viewModel.priceBinding, format: .number)
+            TextField(viewModel.pricePerUnitPlaceholder,
+                      value: viewModel.priceBinding,
+                      format: .number.precision(.fractionLength(NumberFormatter.priceMinPrecision...NumberFormatter.priceMaxPrecision)))
                 .keyboardType(.decimalPad)
                 .padding(10)
                 .background(Color.bb.sheet.background)
@@ -315,7 +317,6 @@ struct ShoppingItemDetailsView: View {
         .frame(maxWidth: .infinity)
     }
 }
-
 
 // MARK: - Preview
 

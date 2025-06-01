@@ -8,6 +8,15 @@
 import Foundation
 
 extension NumberFormatter {
+    static let priceMinPrecision = 2
+    static let priceMaxPrecision = 4
+
+    static func priceFormatter(minPrecision: Int = NumberFormatter.priceMinPrecision,
+                               maxPrecision: Int = NumberFormatter.priceMaxPrecision) -> NumberFormatter {
+        localizedDecimal(minFractionDigits: minPrecision,
+                         maxFractionDigits: maxPrecision)
+    }
+    
     static func localizedDecimal(minFractionDigits: Int = 0, maxFractionDigits: Int = 2) -> NumberFormatter {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current

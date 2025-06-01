@@ -67,7 +67,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     var totalPriceString: String {
-        shoppingItem.totalPriceString ?? "N/A"
+        shoppingItem.totalPrice?.priceFormat ?? "N/A"
     }
     
     // MARK: - Bindings
@@ -104,7 +104,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     var pricePerUnitPlaceholder: String {
-        let formatter = NumberFormatter.localizedDecimal(minFractionDigits: 1)
+        let formatter = NumberFormatter.priceFormatter()
         let valueString = formatter.string(from: 10.99) ?? "10.99"
         return "e.g. \(valueString)"
     }

@@ -31,13 +31,6 @@ struct ShoppingItem: Identifiable, Hashable {
         return price * quantity
     }
     
-    var totalPriceString: String? {
-        guard let totalPriceValue = totalPrice else {
-            return nil
-        }
-        let formatter = NumberFormatter.localizedDecimal(minFractionDigits: 2, maxFractionDigits: 2)
-        return formatter.string(from: totalPriceValue as NSNumber) ?? "\(totalPriceValue)"
-    }
 
     init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus, price: Double? = nil, quantity: Double? = nil, unit: ShoppingItemUnit? = nil, imageIDs: [String] = []) {
         self.id = id
