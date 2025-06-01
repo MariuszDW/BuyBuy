@@ -236,19 +236,17 @@ struct ShoppingItemDetailsView: View {
         Section {
             ShoppingItemImageGridView(
                 images: viewModel.imageThumbnails,
-                onAddImage: { image in
+                onUserInteraction: {
                     focusedField = nil
+                },
+                onAddImage: { image in
                     Task { await viewModel.addImage(image) }
                 },
-                onTapImage: { index in
-                    focusedField = nil
-                    viewModel.openFullscreenImage(at: index)
+                onTapImage: { imageIndex in
+                    viewModel.openFullscreenImage(at: imageIndex)
                 },
-                onDeleteImage: { index in
-                    focusedField = nil
-                    Task {
-                        await viewModel.deleteImage(at: index)
-                    }
+                onDeleteImage: { imageIndex in
+                    Task { await viewModel.deleteImage(at: imageIndex) }
                 }
             )
         }
