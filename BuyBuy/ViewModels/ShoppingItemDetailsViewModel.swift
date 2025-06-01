@@ -139,6 +139,19 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         }
     }
     
+    func deleteImage(at index: Int) async {
+        guard index >= 0 && index < shoppingItem.imageIDs.count else { return }
+        let id = shoppingItem.imageIDs.remove(at: index)
+
+        do {
+            try await dataManager.deleteImageAndThumbnail(baseFileName: id)
+            await loadImageThumbnails()
+            await applyChanges()
+        } catch {
+            print("Failed to delete image: \(error)")
+        }
+    }
+    
     func applyChanges() async {
         shoppingItem.prepareToSave()
         try? await dataManager.addOrUpdateItem(shoppingItem)

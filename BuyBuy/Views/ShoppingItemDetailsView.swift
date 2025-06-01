@@ -251,6 +251,12 @@ struct ShoppingItemDetailsView: View {
                 onTapImage: { index in
                     focusedField = nil
                     viewModel.openFullscreenImage(at: index)
+                },
+                onDeleteImage: { index in
+                    focusedField = nil
+                    Task {
+                        await viewModel.deleteImage(at: index)
+                    }
                 }
             )
         }
