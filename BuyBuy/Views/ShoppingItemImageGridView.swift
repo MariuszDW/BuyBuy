@@ -75,7 +75,6 @@ struct ShoppingItemImageGridView: View {
                         onDeleteImage(index)
                     }
                 }
-                Button("Cancel", role: .cancel) { }
             }
     }
 }
