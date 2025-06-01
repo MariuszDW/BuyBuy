@@ -66,13 +66,6 @@ struct ShoppingItemDetailsView: View {
                 }
             }
         }
-        .sheet(isPresented: $showImageSourceSheet) {
-            ImageSourcePickerView { image in
-                if let image = image {
-                    Task { await viewModel.addImage(image) }
-                }
-            }
-        }
         .fullScreenCover(isPresented: viewModel.isFullscreenImagePresented) {
             if let imageID = viewModel.selectedImageID {
                 FullscreenImageView(
@@ -261,6 +254,13 @@ struct ShoppingItemDetailsView: View {
             )
         }
         .listRowBackground(Color.bb.sheet.section.background)
+        .popover(isPresented: $showImageSourceSheet, attachmentAnchor: .rect(.bounds), arrowEdge: .bottom) {
+            ImageSourcePickerView { image in
+                if let image = image {
+                    Task { await viewModel.addImage(image) }
+                }
+            }
+        }
     }
     
     private func unitMenuSection(for category: MeasuredUnitCategory) -> some View {
