@@ -28,8 +28,8 @@ struct ImageSourcePickerView: View {
     @State private var selectedPhotoItem: PhotosPickerItem?
 
     var body: some View {
-        VStack(spacing: 36) {
-            HStack {
+        VStack(spacing: 32) {
+            HStack(spacing: 32) {
                 Spacer()
                 
                 Button {
@@ -71,14 +71,13 @@ struct ImageSourcePickerView: View {
                 
                 Spacer()
             }
-            .padding(.top, 32)
             
             Button("Cancel") {
                 dismiss()
             }
             .foregroundColor(.bb.accent)
-            .padding(.bottom, 12)
         }
+        .padding([.top, .bottom], 32)
         .background(Color.bb.sheet.section.background)
         .fullScreenCover(isPresented: $isCameraPresented) {
             CameraPickerView { image in
@@ -97,8 +96,7 @@ struct ImageSourcePickerView: View {
                 dismiss()
             }
         }
-        .presentationDetents([.height(180)])
-        .presentationDragIndicator(.visible)
+        .presentationDetents([.height(200)])
     }
 }
 
