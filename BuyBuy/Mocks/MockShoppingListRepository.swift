@@ -138,7 +138,7 @@ final class MockDataRepository: DataRepositoryProtocol {
 
     // MARK: - Loyalty images
 
-    func fetchAllCardImageIDs() async throws -> Set<String> {
+    func fetchAllLoyaltyCardImageIDs() async throws -> Set<String> {
         return Set<String>()
     }
 }

@@ -267,7 +267,7 @@ final actor DataRepository: DataRepositoryProtocol {
     
     // MARK: - Layalty Card images
     
-    func fetchAllCardImageIDs() async throws -> Set<String> {
+    func fetchAllLoyaltyCardImageIDs() async throws -> Set<String> {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()

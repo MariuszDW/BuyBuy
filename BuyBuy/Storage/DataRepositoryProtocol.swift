@@ -35,5 +35,5 @@ protocol DataRepositoryProtocol: Sendable {
     func deleteLoyaltyCard(with id: UUID) async throws
     
     // Loyalty images
-    func fetchAllCardImageIDs() async throws -> Set<String>
+    func fetchAllLoyaltyCardImageIDs() async throws -> Set<String>
 }

@@ -180,7 +180,7 @@ final class DataManager: DataManagerProtocol {
     
     func cleanOrphanedCardImages() async throws {
         let allCardImageBaseNames = try await imageStorage.listAllCardImageBaseNames()
-        let usedCardImageIDs = try await repository.fetchAllCardImageIDs()
+        let usedCardImageIDs = try await repository.fetchAllLoyaltyCardImageIDs()
         
         let orphanedCardIDs = allCardImageBaseNames.subtracting(usedCardImageIDs)
         
