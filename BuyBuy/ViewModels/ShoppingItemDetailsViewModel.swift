@@ -175,12 +175,11 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     private func loadItemThumbnails() async {
         let dataManager = self.dataManager // TODO: sprawdzic czy teraz trzeba robic te kopie
-        var images: [UIImage] = []
+        self.imageThumbnails = []
         for id in shoppingItem.imageIDs {
             if let image = try? await dataManager.loadItemThumbnail(baseFileName: id) {
-                images.append(image)
+                self.imageThumbnails.append(image)
             }
         }
-        self.imageThumbnails = images
     }
 }
