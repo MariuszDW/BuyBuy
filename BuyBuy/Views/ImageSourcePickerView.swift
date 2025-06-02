@@ -14,7 +14,6 @@ struct ImageSourcePickerView: View {
     
     private let buttonSize = 50.0
     private let buttonPadding = 8.0
-    private let presentationHeight = 200
     
     private var isSimulator: Bool {
         #if targetEnvironment(simulator)
@@ -30,8 +29,6 @@ struct ImageSourcePickerView: View {
     var body: some View {
         VStack(spacing: 32) {
             HStack(spacing: 32) {
-                Spacer()
-                
                 Button {
                     isCameraPresented = true
                 } label: {
@@ -42,16 +39,14 @@ struct ImageSourcePickerView: View {
                             .frame(width: buttonSize, height: buttonSize)
                             .foregroundColor(isSimulator ? Color.gray : .bb.accent)
                         Text("Camera")
+                            .font(.regularDynamic(style:.body))
                             .foregroundColor(.bb.text.primary)
                     }
-                    .padding(.vertical, buttonPadding)
-                    .padding(.horizontal, buttonPadding + buttonPadding)
+                    .padding(buttonPadding)
                     .background(Color.bb.sheet.background)
                     .cornerRadius(8)
                 }
                 .disabled(isSimulator)
-                
-                Spacer()
                 
                 PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
                     VStack {
@@ -61,23 +56,16 @@ struct ImageSourcePickerView: View {
                             .frame(width: buttonSize, height: buttonSize)
                             .foregroundColor(.bb.accent)
                         Text("Library")
+                            .font(.regularDynamic(style:.body))
                             .foregroundColor(.bb.text.primary)
                     }
-                    .padding(.vertical, buttonPadding)
-                    .padding(.horizontal, buttonPadding + buttonPadding)
+                    .padding(buttonPadding)
                     .background(Color.bb.sheet.background)
                     .cornerRadius(8)
                 }
-                
-                Spacer()
             }
-            
-            Button("Cancel") {
-                dismiss()
-            }
-            .foregroundColor(.bb.accent)
         }
-        .padding([.top, .bottom], 32)
+        .padding()
         .background(Color.bb.sheet.section.background)
         .fullScreenCover(isPresented: $isCameraPresented) {
             CameraPickerView { image in
@@ -87,16 +75,24 @@ struct ImageSourcePickerView: View {
             .ignoresSafeArea()
         }
         .onChange(of: selectedPhotoItem) { newItem in
-            guard let item = newItem else { return }
+            guard let item = newItem else {
+                dismiss()
+                return
+            }
+
             Task {
+                defer {
+                    Task { @MainActor in dismiss() }
+                }
+
                 if let data = try? await item.loadTransferable(type: Data.self),
                    let image = UIImage(data: data) {
-                    onImagePicked(image)
+                    await MainActor.run {
+                        onImagePicked(image)
+                    }
                 }
-                dismiss()
             }
         }
-        .presentationDetents([.height(200)])
     }
 }
 

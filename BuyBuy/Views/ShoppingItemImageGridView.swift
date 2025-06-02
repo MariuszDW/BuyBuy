@@ -52,6 +52,7 @@ struct ShoppingItemImageGridView: View {
                         })
                     ) {
                         imageActionMenu
+                            .presentationCompactAdaptation(.popover)
                     }
                     .onTapGesture {
                         onUserInteraction()
@@ -82,12 +83,13 @@ struct ShoppingItemImageGridView: View {
                         onAddImage(image)
                     }
                 }
+                .presentationCompactAdaptation(.popover)
             }
         }
     }
     
     private var imageActionMenu: some View {
-        VStack(alignment: .leading, spacing: 24) {
+        VStack(alignment: .leading, spacing: 32) {
             Button {
                 if let index = showingActionsForIndex {
                     onTapImage(index)
@@ -117,7 +119,6 @@ struct ShoppingItemImageGridView: View {
             }
         }
         .padding()
-        .presentationCompactAdaptation(.popover)
     }
 }
 
