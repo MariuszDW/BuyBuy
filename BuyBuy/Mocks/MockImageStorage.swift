@@ -23,6 +23,10 @@ actor MockImageStorage: ImageStorageProtocol {
         return Self.generateMockImage(text: "\(baseFileName)_thumb", size: ImageStorageHelper.thumbnailSize)
     }
     
+    func listAllImageBaseNames() async throws -> Set<String> {
+        return Set<String>()
+    }
+    
     func clearThumbnailCache() {}
 
     // MARK: - Helpers

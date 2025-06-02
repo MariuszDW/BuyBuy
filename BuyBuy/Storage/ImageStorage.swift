@@ -14,12 +14,15 @@ enum ImageStorageError: Int, Error {
 }
 
 struct ImageStorageHelper {
+    static let imageSuffix = ".jpg"
+    static let thumbnailSuffix = "_thumb.jpg"
+    
     static func thumbnailFileName(for baseFileName: String) -> String {
-        return baseFileName + "_thumb.jpg"
+        return baseFileName + thumbnailSuffix
     }
     
     static func imageFileName(for baseFileName: String) -> String {
-        return baseFileName + ".jpg"
+        return baseFileName + imageSuffix
     }
     
     static let thumbnailSize = CGSize(width: 64, height: 64)
@@ -113,6 +116,24 @@ actor ImageStorage: ImageStorageProtocol {
     func deleteImageAndThumbnail(baseFileName: String) async throws {
         try await deleteImage(baseFileName: baseFileName)
         try await deleteThumbnail(baseFileName: baseFileName)
+    }
+    
+    func listAllImageBaseNames() async throws -> Set<String> {
+        let fileManager = FileManager.default
+        let fileNames = try fileManager.contentsOfDirectory(atPath: Self.imagesDirectoryURL.path)
+        
+        let baseFileNames = Set(fileNames.compactMap { file -> String? in
+            // guard file.hasSuffix(ImageStorageHelper.imageSuffix) else { return nil }
+            var name = file
+            if name.hasSuffix(ImageStorageHelper.thumbnailSuffix) {
+                name = String(name.dropLast(ImageStorageHelper.thumbnailSuffix.count))
+            } else if name.hasSuffix(ImageStorageHelper.imageSuffix) {
+                name = String(name.dropLast(ImageStorageHelper.imageSuffix.count))
+            }
+            return name
+        })
+        
+        return baseFileNames
     }
     
     // MARK: - Private

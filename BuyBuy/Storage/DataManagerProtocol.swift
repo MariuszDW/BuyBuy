@@ -23,6 +23,7 @@ protocol DataManagerProtocol {
     func addOrUpdateItem(_ item: ShoppingItem) async throws
     func deleteItem(with id: UUID) async throws
     func deleteItems(with ids: [UUID]) async throws
+    func cleanOrphanedItems() async throws
     
     // Images
     func saveImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws
@@ -30,7 +31,5 @@ protocol DataManagerProtocol {
     func loadThumbnail(baseFileName: String) async throws -> UIImage
     func deleteImageAndThumbnail(baseFileName: String) async throws
     func clearThumbnailCache() async
-    
-    // Clean
-    func cleanOrphanedItems() async throws
+    func cleanOrphanedImages() async throws
 }

@@ -207,4 +207,19 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
             }
         }
     }
+    
+    func fetchAllImageIDs() async throws -> Set<String> {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            let entities = try context.fetch(request)
+            
+            var allIDs = Set<String>()
+            for entity in entities {
+                let ids = entity.imageIDs
+                allIDs.formUnion(ids)
+            }
+            return allIDs
+        }
+    }
 }

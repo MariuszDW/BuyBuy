@@ -19,5 +19,7 @@ protocol ImageStorageProtocol: Sendable {
     func deleteThumbnail(baseFileName: String) async throws
     func deleteImageAndThumbnail(baseFileName: String) async throws
     
+    func listAllImageBaseNames() async throws -> Set<String>
+    
     func clearThumbnailCache() async
 }

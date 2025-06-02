@@ -121,7 +121,6 @@ final class DataManager: DataManagerProtocol {
         }
     }
     
-    // Data cleaning
     func cleanOrphanedItems() async throws {
         try await repository.cleanOrphanedItems()
     }
@@ -146,5 +145,16 @@ final class DataManager: DataManagerProtocol {
     
     func clearThumbnailCache() async {
         await imageStorage.clearThumbnailCache()
+    }
+    
+    func cleanOrphanedImages() async throws {
+        let allImageFileBaseNames = try await imageStorage.listAllImageBaseNames()
+        let usedImageIDs = try await repository.fetchAllImageIDs()
+        
+        let orphanedIDs = allImageFileBaseNames.subtracting(usedImageIDs)
+        
+        for id in orphanedIDs {
+            try await deleteImageAndThumbnail(baseFileName: id)
+        }
     }
 }

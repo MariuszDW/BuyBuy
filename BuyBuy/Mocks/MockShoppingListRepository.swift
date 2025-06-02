@@ -126,4 +126,8 @@ final class MockShoppingListsRepository: ShoppingListsRepositoryProtocol {
     func deleteItems(with ids: [UUID]) async throws {}
     
     func cleanOrphanedItems() async throws {}
+    
+    func fetchAllImageIDs() async throws -> Set<String> {
+        return Set<String>()
+    }
 }

@@ -24,4 +24,6 @@ protocol ShoppingListsRepositoryProtocol: Sendable {
     func deleteItem(with id: UUID) async throws
     func deleteItems(with ids: [UUID]) async throws
     func cleanOrphanedItems() async throws
+    
+    func fetchAllImageIDs() async throws -> Set<String>
 }
