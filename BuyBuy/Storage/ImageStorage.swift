@@ -16,6 +16,7 @@ enum ImageStorageError: Int, Error {
 struct ImageStorageHelper {
     static let imageSuffix = ".jpg"
     static let thumbnailSuffix = "_thumb.jpg"
+    static let itemImagesFolderName = "item_images"
     
     static func thumbnailFileName(for baseFileName: String) -> String {
         return baseFileName + thumbnailSuffix
@@ -32,7 +33,7 @@ actor ImageStorage: ImageStorageProtocol {
     static private let imagesDirectoryURL: URL = {
         let fileManager = FileManager.default
         let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let imagesURL = documents.appendingPathComponent("images")
+        let imagesURL = documents.appendingPathComponent(ImageStorageHelper.itemImagesFolderName)
         if !fileManager.fileExists(atPath: imagesURL.path) {
             try? fileManager.createDirectory(at: imagesURL, withIntermediateDirectories: true)
         }
