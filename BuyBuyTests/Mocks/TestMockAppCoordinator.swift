@@ -33,6 +33,10 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
         // TODO: implement...
     }
     
+    func openLoyaltyCardList() {
+        // TODO: implement...
+    }
+    
     func back() {
         backBlock?()
     }

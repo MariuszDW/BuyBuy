@@ -40,6 +40,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     func openAppSettings() {
         navigationPath.append(AppRoute.appSettings)
     }
+    
+    func openLoyaltyCardList() {
+        navigationPath.append(AppRoute.loyaltyCards)
+    }
 
     func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: @escaping () -> Void) {
         onSheetDismissed = onDismiss
@@ -65,6 +69,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         switch route {
         case .shoppingLists:
             ShoppingListsView(viewModel: shoppingListsViewModel)
+            
         case .shoppingList(let id):
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
@@ -73,10 +78,16 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     coordinator: self,
                 )
             )
+            
         case .appSettings:
             AppSettingsView(
                 viewModel: AppSettingsViewModel(dataManager: self.dependencies.dataManager,
                                                 coordinator: self)
+            )
+            
+        case .loyaltyCards:
+            LoyaltyCardsView(viewModel: LoyaltyCardsViewModel(dataManager: self.dependencies.dataManager,
+                                                              coordinator: self)
             )
         }
     }
@@ -94,6 +105,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     coordinator: self
                 )
             )
+            
         case let .shoppintItemDetails(item, isNew):
             ShoppingItemDetailsView(
                 viewModel: ShoppingItemDetailsViewModel(
@@ -103,6 +115,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     coordinator: self
                 )
             )
+            
         case .about:
             AboutView()
         }

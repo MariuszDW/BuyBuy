@@ -227,7 +227,7 @@ final actor DataRepository: DataRepositoryProtocol {
     
     // MARK: - Loyalty Cards
     
-    func fetchAllLoyaltyCards() async throws -> [LoyaltyCard] {
+    func fetchLoyaltyCards() async throws -> [LoyaltyCard] {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()

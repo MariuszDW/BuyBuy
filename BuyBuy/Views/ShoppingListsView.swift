@@ -206,6 +206,14 @@ struct ShoppingListsView: View {
             
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button {
+                    viewModel.openLoyaltyCards()
+                } label: {
+                    Image(systemName: "creditcard.circle")
+                }
+                .accessibilityLabel("Loyalty cards")
+                .disabled(localEditMode.isEditing)
+                
+                Button {
                     withAnimation {
                         localEditMode = (localEditMode == .active) ? .inactive : .active
                     }
@@ -250,8 +258,8 @@ struct ShoppingListsView: View {
                         .offset(x: -basketImageSize * 0.5, y: 0)
                         .rotationEffect(Angle(degrees: angle), anchor: .topLeading)
                         .offset(x: basketImageSize * 0.5, y: 0)
-                        .offset(x: listImageSize * 0.2, y: listImageSize * 0.38)
-                        .shadow(color: .black.opacity(0.5), radius: 8)
+                        .offset(x: listImageSize * 0.2, y: listImageSize * 0.36)
+                        .shadow(color: .black.opacity(0.5), radius: 6)
                 }
                 
                 Text("No shopping lists available.")

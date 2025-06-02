@@ -22,7 +22,7 @@ class ShoppingListsViewModel: ObservableObject {
     
     func loadLists() async {
         let fetchedLists = try? await dataManager.fetchAllLists()
-        self.shoppingLists = fetchedLists ?? []
+        shoppingLists = fetchedLists ?? []
     }
 
     func deleteLists(atOffsets offsets: IndexSet) async {
@@ -66,5 +66,9 @@ class ShoppingListsViewModel: ObservableObject {
 
     func openSettings() {
         coordinator.openAppSettings()
+    }
+    
+    func openLoyaltyCards() {
+        coordinator.openLoyaltyCardList()
     }
 }

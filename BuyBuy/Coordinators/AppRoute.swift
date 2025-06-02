@@ -11,4 +11,5 @@ enum AppRoute: Hashable {
     case shoppingLists
     case shoppingList(UUID)
     case appSettings
+    case loyaltyCards
 }

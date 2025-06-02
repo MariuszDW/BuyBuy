@@ -14,5 +14,6 @@ protocol AppCoordinatorProtocol: ObservableObject {
     func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: @escaping () -> Void)
     func openAbout()
     func openAppSettings()
+    func openLoyaltyCardList()
     func back()
 }

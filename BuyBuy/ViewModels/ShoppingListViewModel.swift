@@ -30,7 +30,7 @@ final class ShoppingListViewModel: ObservableObject {
     
     func loadList() async {
         let fetchedList = try? await dataManager.fetchList(with: listID)
-        self.list = fetchedList
+        list = fetchedList
         
         // TODO: temporary test or order
 //        let pending = self.list?.items(for: .pending)

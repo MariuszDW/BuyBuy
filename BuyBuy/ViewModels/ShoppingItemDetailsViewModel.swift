@@ -115,7 +115,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         self.coordinator = coordinator
         self.dataManager = dataManager
         Task {
-            await loadImageThumbnails()
+            await loadItemThumbnails()
         }
     }
     
@@ -131,7 +131,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
             try await self.dataManager.saveItemImageAndThumbnail(image, baseFileName: baseName)
             
             shoppingItem.imageIDs.append(baseName)
-            await loadImageThumbnails()
+            await loadItemThumbnails()
             await applyChanges()
             
         } catch {
@@ -145,7 +145,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
 
         do {
             try await dataManager.deleteItemImageAndThumbnail(baseFileName: id)
-            await loadImageThumbnails()
+            await loadItemThumbnails()
             await applyChanges()
         } catch {
             print("Failed to delete image: \(error)")
@@ -173,7 +173,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         return formatter.number(from: string)?.doubleValue
     }
     
-    private func loadImageThumbnails() async {
+    private func loadItemThumbnails() async {
         let dataManager = self.dataManager // TODO: sprawdzic czy teraz trzeba robic te kopie
         var images: [UIImage] = []
         for id in shoppingItem.imageIDs {

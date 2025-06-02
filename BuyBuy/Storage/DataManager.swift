@@ -125,6 +125,23 @@ final class DataManager: DataManagerProtocol {
         try await repository.cleanOrphanedItems()
     }
     
+    // MARK: - Loyalty Cards
+    func fetchLoyaltyCards() async throws -> [LoyaltyCard] {
+        return try await repository.fetchLoyaltyCards()
+    }
+    
+    func fetchLoyaltyCard(with id: UUID) async throws -> LoyaltyCard? {
+        return try await repository.fetchLoyaltyCard(with: id)
+    }
+    
+    func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws {
+        try await repository.addOrUpdateLoyaltyCard(card)
+    }
+    
+    func deleteLoyaltyCard(with id: UUID) async throws {
+        try await repository.deleteLoyaltyCard(with: id)
+    }
+    
     // MARK: - ImageStorage for Items
     
     func saveItemImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws {

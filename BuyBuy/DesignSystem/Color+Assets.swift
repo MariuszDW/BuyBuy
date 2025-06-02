@@ -10,6 +10,7 @@ import SwiftUI
 struct BBColor {
     static let accent = Color("Accent")
     static let background = Color("Background")
+    static let background2 = Color("Background2")
     static let destructive = Color("Destructive")
     static let selection = Color("Selection")
     static let grey50 = Color("Grey50")
@@ -29,6 +30,8 @@ struct BBColor {
     enum text {
         static let primary = Color("PrimaryText")
         static let secondary = Color("SecondaryText")
+        static let tertiary = Color("TertiaryText")
+        static let quaternary = Color("QuaternaryText")
     }
     
     enum list {
