@@ -22,7 +22,7 @@ final class FullscreenImageViewModel: ObservableObject {
     }
     
     func loadImage() async {
-        let loadedImage = try? await dataManager.loadImage(baseFileName: imageID)
+        let loadedImage = try? await dataManager.loadItemImage(baseFileName: imageID)
         image = loadedImage
     }
 }

@@ -17,6 +17,7 @@ struct ImageStorageHelper {
     static let imageSuffix = ".jpg"
     static let thumbnailSuffix = "_thumb.jpg"
     static let itemImagesFolderName = "item_images"
+    static let cardImagesFolderName = "card_images"
     
     static func thumbnailFileName(for baseFileName: String) -> String {
         return baseFileName + thumbnailSuffix
@@ -30,70 +31,153 @@ struct ImageStorageHelper {
 }
 
 actor ImageStorage: ImageStorageProtocol {
-    static private let imagesDirectoryURL: URL = {
-        let fileManager = FileManager.default
-        let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let imagesURL = documents.appendingPathComponent(ImageStorageHelper.itemImagesFolderName)
-        if !fileManager.fileExists(atPath: imagesURL.path) {
-            try? fileManager.createDirectory(at: imagesURL, withIntermediateDirectories: true)
+    enum ImageType {
+        case item
+        case card
+        
+        var folderName: String {
+            switch self {
+            case .item: return ImageStorageHelper.itemImagesFolderName
+            case .card: return ImageStorageHelper.cardImagesFolderName
+            }
         }
-        return imagesURL
-    }()
+    }
     
     private let thumbnailCache = NSCache<NSString, UIImage>()
     
-    func clearThumbnailCache() {
+    func clearThumbnailCache() async {
         thumbnailCache.removeAllObjects()
     }
     
-    // MARK: - Save
+    // MARK: - Item images
     
-    func saveThumbnail(for image: UIImage, baseFileName: String) async throws {
-        guard let thumbnail = await createThumbnail(from: image) else {
-            throw ImageStorageError.failedToSaveThumbnail
-        }
-        
-        guard let data = thumbnail.jpegData(compressionQuality: 0.7) else {
-            throw ImageStorageError.failedToSaveThumbnail
-        }
-        
-        let fileName = ImageStorageHelper.thumbnailFileName(for: baseFileName)
-        try await writeData(data, to: fileName)
+    func saveItemImage(_ image: UIImage, baseFileName: String) async throws {
+        try await saveImage(image, baseFileName: baseFileName, type: .item)
     }
     
-    func saveImage(_ image: UIImage, baseFileName: String) async throws {
+    func saveItemThumbnail(for image: UIImage, baseFileName: String) async throws {
+        try await saveThumbnail(for: image, baseFileName: baseFileName, type: .item)
+    }
+    
+    func saveItemImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws {
+        try await saveImageAndThumbnail(image, baseFileName: baseFileName, type: .item)
+    }
+    
+    func loadItemImage(baseFileName: String) async throws -> UIImage {
+        try await loadImage(baseFileName: baseFileName, type: .item)
+    }
+    
+    func loadItemThumbnail(baseFileName: String) async throws -> UIImage {
+        try await loadThumbnail(baseFileName: baseFileName, type: .item)
+    }
+    
+    func deleteItemImage(baseFileName: String) async throws {
+        try await deleteImage(baseFileName: baseFileName, type: .item)
+    }
+    
+    func deleteItemThumbnail(baseFileName: String) async throws {
+        try await deleteThumbnail(baseFileName: baseFileName, type: .item)
+    }
+    
+    func deleteItemImageAndThumbnail(baseFileName: String) async throws {
+        try await deleteImageAndThumbnail(baseFileName: baseFileName, type: .item)
+    }
+    
+    func listAllItemImageBaseNames() async throws -> Set<String> {
+        try await listAllImageBaseNames(in: .item)
+    }
+    
+    // MARK: - Card images
+    
+    func saveCardImage(_ image: UIImage, baseFileName: String) async throws {
+        try await saveImage(image, baseFileName: baseFileName, type: .card)
+    }
+    
+    func saveCardThumbnail(for image: UIImage, baseFileName: String) async throws {
+        try await saveThumbnail(for: image, baseFileName: baseFileName, type: .card)
+    }
+    
+    func saveCardImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws {
+        try await saveImageAndThumbnail(image, baseFileName: baseFileName, type: .card)
+    }
+    
+    func loadCardImage(baseFileName: String) async throws -> UIImage {
+        try await loadImage(baseFileName: baseFileName, type: .card)
+    }
+    
+    func loadCardThumbnail(baseFileName: String) async throws -> UIImage {
+        try await loadThumbnail(baseFileName: baseFileName, type: .card)
+    }
+    
+    func deleteCardImage(baseFileName: String) async throws {
+        try await deleteImage(baseFileName: baseFileName, type: .card)
+    }
+    
+    func deleteCardThumbnail(baseFileName: String) async throws {
+        try await deleteThumbnail(baseFileName: baseFileName, type: .card)
+    }
+    
+    func deleteCardImageAndThumbnail(baseFileName: String) async throws {
+        try await deleteImageAndThumbnail(baseFileName: baseFileName, type: .card)
+    }
+    
+    func listAllCardImageBaseNames() async throws -> Set<String> {
+        try await listAllImageBaseNames(in: .card)
+    }
+    
+    // MARK: - Private common methods
+    
+    private static func directoryURL(for type: ImageType) -> URL {
+        let fileManager = FileManager.default
+        let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let folderURL = documents.appendingPathComponent(type.folderName)
+        if !fileManager.fileExists(atPath: folderURL.path) {
+            try? fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true)
+        }
+        return folderURL
+    }
+    
+    private func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws {
         guard let data = image.jpegData(compressionQuality: 0.8) else {
             throw ImageStorageError.failedToSaveImage
         }
-        
         let fileName = ImageStorageHelper.imageFileName(for: baseFileName)
-        try await writeData(data, to: fileName)
+        try await writeData(data, to: fileName, in: type)
     }
     
-    func saveImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws {
-        try await saveImage(image, baseFileName: baseFileName)
-        try await saveThumbnail(for: image, baseFileName: baseFileName)
+    private func saveThumbnail(for image: UIImage, baseFileName: String, type: ImageType) async throws {
+        guard let thumbnail = await createThumbnail(from: image) else {
+            throw ImageStorageError.failedToSaveThumbnail
+        }
+        guard let data = thumbnail.jpegData(compressionQuality: 0.7) else {
+            throw ImageStorageError.failedToSaveThumbnail
+        }
+        let fileName = ImageStorageHelper.thumbnailFileName(for: baseFileName)
+        try await writeData(data, to: fileName, in: type)
     }
     
-    // MARK: - Load
+    private func saveImageAndThumbnail(_ image: UIImage, baseFileName: String, type: ImageType) async throws {
+        try await saveImage(image, baseFileName: baseFileName, type: type)
+        try await saveThumbnail(for: image, baseFileName: baseFileName, type: type)
+    }
     
-    func loadImage(baseFileName: String) async throws -> UIImage {
+    private func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage {
         let fileName = ImageStorageHelper.imageFileName(for: baseFileName)
-        let data = try await readData(from: fileName)
+        let data = try await readData(from: fileName, in: type)
         guard let image = UIImage(data: data) else {
             throw ImageStorageError.imageNotFound
         }
         return image
     }
     
-    func loadThumbnail(baseFileName: String) async throws -> UIImage {
-        let cacheKey = baseFileName as NSString
+    private func loadThumbnail(baseFileName: String, type: ImageType) async throws -> UIImage {
+        let cacheKey = "\(type.folderName)_\(baseFileName)" as NSString
         if let cached = thumbnailCache.object(forKey: cacheKey) {
             print("Thumbnail \(baseFileName) loaded from cache.")
             return cached
         }
         let fileName = ImageStorageHelper.thumbnailFileName(for: baseFileName)
-        let data = try await readData(from: fileName)
+        let data = try await readData(from: fileName, in: type)
         guard let image = UIImage(data: data) else {
             throw ImageStorageError.imageNotFound
         }
@@ -102,29 +186,26 @@ actor ImageStorage: ImageStorageProtocol {
         return image
     }
     
-    // MARK: - Delete
-    
-    func deleteImage(baseFileName: String) async throws {
+    private func deleteImage(baseFileName: String, type: ImageType) async throws {
         let fileName = ImageStorageHelper.imageFileName(for: baseFileName)
-        try await deleteData(fileName: fileName)
+        try await deleteData(fileName: fileName, in: type)
     }
     
-    func deleteThumbnail(baseFileName: String) async throws {
+    private func deleteThumbnail(baseFileName: String, type: ImageType) async throws {
         let fileName = ImageStorageHelper.thumbnailFileName(for: baseFileName)
-        try await deleteData(fileName: fileName)
+        try await deleteData(fileName: fileName, in: type)
     }
     
-    func deleteImageAndThumbnail(baseFileName: String) async throws {
-        try await deleteImage(baseFileName: baseFileName)
-        try await deleteThumbnail(baseFileName: baseFileName)
+    private func deleteImageAndThumbnail(baseFileName: String, type: ImageType) async throws {
+        try await deleteImage(baseFileName: baseFileName, type: type)
+        try await deleteThumbnail(baseFileName: baseFileName, type: type)
     }
     
-    func listAllImageBaseNames() async throws -> Set<String> {
+    private func listAllImageBaseNames(in type: ImageType) async throws -> Set<String> {
         let fileManager = FileManager.default
-        let fileNames = try fileManager.contentsOfDirectory(atPath: Self.imagesDirectoryURL.path)
+        let fileNames = try fileManager.contentsOfDirectory(atPath: Self.directoryURL(for: type).path)
         
         let baseFileNames = Set(fileNames.compactMap { file -> String? in
-            // guard file.hasSuffix(ImageStorageHelper.imageSuffix) else { return nil }
             var name = file
             if name.hasSuffix(ImageStorageHelper.thumbnailSuffix) {
                 name = String(name.dropLast(ImageStorageHelper.thumbnailSuffix.count))
@@ -133,22 +214,21 @@ actor ImageStorage: ImageStorageProtocol {
             }
             return name
         })
-        
         return baseFileNames
     }
     
-    // MARK: - Private
+    // MARK: - Private file operations
     
-    private func writeData(_ data: Data, to fileName: String) async throws {
+    private func writeData(_ data: Data, to fileName: String, in type: ImageType) async throws {
         try await Task.detached {
-            let fileURL = Self.imagesDirectoryURL.appendingPathComponent(fileName)
+            let fileURL = Self.directoryURL(for: type).appendingPathComponent(fileName)
             try data.write(to: fileURL)
         }.value
     }
     
-    private func readData(from fileName: String) async throws -> Data {
+    private func readData(from fileName: String, in type: ImageType) async throws -> Data {
         try await Task.detached {
-            let fileURL = Self.imagesDirectoryURL.appendingPathComponent(fileName)
+            let fileURL = Self.directoryURL(for: type).appendingPathComponent(fileName)
             guard FileManager.default.fileExists(atPath: fileURL.path) else {
                 throw ImageStorageError.imageNotFound
             }
@@ -156,14 +236,16 @@ actor ImageStorage: ImageStorageProtocol {
         }.value
     }
     
-    private func deleteData(fileName: String) async throws {
+    private func deleteData(fileName: String, in type: ImageType) async throws {
         try await Task.detached {
-            let fileURL = Self.imagesDirectoryURL.appendingPathComponent(fileName)
+            let fileURL = Self.directoryURL(for: type).appendingPathComponent(fileName)
             if FileManager.default.fileExists(atPath: fileURL.path) {
                 try FileManager.default.removeItem(at: fileURL)
             }
         }.value
     }
+    
+    // MARK: - Thumbnail creation
     
     private func createThumbnail(from image: UIImage) async -> UIImage? {
         let originalSize = image.size

@@ -1,5 +1,5 @@
 //
-//  ShoppingListRepositoryProtocol.swift
+//  DataRepositoryProtocol.swift
 //  BuyBuy
 //
 //  Created by MDW on 20/05/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ShoppingListsRepositoryProtocol: Sendable {
+protocol DataRepositoryProtocol: Sendable {
     // Lists
     func fetchAllLists() async throws -> [ShoppingList]
     func fetchList(with id: UUID) async throws -> ShoppingList?
@@ -25,5 +25,15 @@ protocol ShoppingListsRepositoryProtocol: Sendable {
     func deleteItems(with ids: [UUID]) async throws
     func cleanOrphanedItems() async throws
     
-    func fetchAllImageIDs() async throws -> Set<String>
+    // Item images
+    func fetchAllItemImageIDs() async throws -> Set<String>
+    
+    // Loyalty Cards
+    func fetchAllLoyaltyCards() async throws -> [LoyaltyCard]
+    func fetchLoyaltyCard(with id: UUID) async throws -> LoyaltyCard?
+    func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws
+    func deleteLoyaltyCard(with id: UUID) async throws
+    
+    // Loyalty images
+    func fetchAllCardImageIDs() async throws -> Set<String>
 }

@@ -1,5 +1,5 @@
 //
-//  ShoppingListRepository.swift
+//  DataRepository.swift
 //  BuyBuy
 //
 //  Created by MDW on 20/05/2025.
@@ -34,7 +34,7 @@ actor SaveQueue {
     }
 }
 
-final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
+final actor DataRepository: DataRepositoryProtocol {
     private let coreDataStack: CoreDataStack
     private let saveQueue: SaveQueue
     
@@ -208,7 +208,9 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
         }
     }
     
-    func fetchAllImageIDs() async throws -> Set<String> {
+    // MARK: - Item images
+    
+    func fetchAllItemImageIDs() async throws -> Set<String> {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -220,6 +222,59 @@ final actor ShoppingListsRepository: ShoppingListsRepositoryProtocol {
                 allIDs.formUnion(ids)
             }
             return allIDs
+        }
+    }
+    
+    // MARK: - Loyalty Cards
+    
+    func fetchAllLoyaltyCards() async throws -> [LoyaltyCard] {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
+            let entities = try context.fetch(request)
+            return entities.map(LoyaltyCard.init)
+        }
+    }
+    
+    func fetchLoyaltyCard(with id: UUID) async throws -> LoyaltyCard? {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            return try context.fetch(request).first.map(LoyaltyCard.init)
+        }
+    }
+    
+    func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws {
+        try await saveQueue.performSave { context in
+            let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", card.id.uuidString)
+            
+            let entity = try context.fetch(request).first ?? LoyaltyCardEntity(context: context)
+            entity.update(from: card)
+        }
+    }
+    
+    func deleteLoyaltyCard(with id: UUID) async throws {
+        try await saveQueue.performSave { context in
+            let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            if let entity = try context.fetch(request).first {
+                context.delete(entity)
+            }
+        }
+    }
+    
+    // MARK: - Layalty Card images
+    
+    func fetchAllCardImageIDs() async throws -> Set<String> {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
+            let entities = try context.fetch(request)
+            
+            let allIDs = entities.compactMap { $0.imageID }
+            return Set(allIDs)
         }
     }
 }

@@ -25,11 +25,19 @@ protocol DataManagerProtocol {
     func deleteItems(with ids: [UUID]) async throws
     func cleanOrphanedItems() async throws
     
-    // Images
-    func saveImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws
-    func loadImage(baseFileName: String) async throws -> UIImage
-    func loadThumbnail(baseFileName: String) async throws -> UIImage
-    func deleteImageAndThumbnail(baseFileName: String) async throws
+    // Images - Items
+    func saveItemImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws
+    func loadItemImage(baseFileName: String) async throws -> UIImage
+    func loadItemThumbnail(baseFileName: String) async throws -> UIImage
+    func deleteItemImageAndThumbnail(baseFileName: String) async throws
+    
+    // Images - Cards
+    func saveCardImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws
+    func loadCardImage(baseFileName: String) async throws -> UIImage
+    func loadCardThumbnail(baseFileName: String) async throws -> UIImage
+    func deleteCardImageAndThumbnail(baseFileName: String) async throws
+    
     func clearThumbnailCache() async
-    func cleanOrphanedImages() async throws
+    func cleanOrphanedItemImages() async throws
+    func cleanOrphanedCardImages() async throws
 }

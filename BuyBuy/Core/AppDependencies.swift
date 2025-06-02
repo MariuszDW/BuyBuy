@@ -10,13 +10,13 @@ import SwiftUI
 @MainActor
 final class AppDependencies: ObservableObject {
     private let coreDataStack: CoreDataStack
-    private let repository: ShoppingListsRepositoryProtocol
+    private let repository: DataRepositoryProtocol
     private let imageStorage: ImageStorageProtocol
     let dataManager: DataManager
 
     init() {
         self.coreDataStack = CoreDataStack()
-        self.repository = ShoppingListsRepository(coreDataStack: coreDataStack)
+        self.repository = DataRepository(coreDataStack: coreDataStack)
         self.imageStorage = ImageStorage()
         self.dataManager = DataManager(repository: repository, imageStorage: imageStorage)
     }

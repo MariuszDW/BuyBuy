@@ -303,7 +303,7 @@ struct ShoppingListsView: View {
 // MARK: - Preview
 
 #Preview("Light/items") {
-    let dataManager = DataManager(repository: MockShoppingListsRepository(),
+    let dataManager = DataManager(repository: MockDataRepository(),
                                   imageStorage: MockImageStorage())
     let mockViewModel = ShoppingListsViewModel(
         coordinator: AppCoordinator(dependencies: AppDependencies()),
@@ -317,7 +317,7 @@ struct ShoppingListsView: View {
 }
 
 #Preview("Dark/items") {
-    let dataManager = DataManager(repository: MockShoppingListsRepository(),
+    let dataManager = DataManager(repository: MockDataRepository(),
                                   imageStorage: MockImageStorage())
     let mockViewModel = ShoppingListsViewModel(
         coordinator: AppCoordinator(dependencies: AppDependencies()),
@@ -331,7 +331,7 @@ struct ShoppingListsView: View {
 }
 
 #Preview("Light/empty") {
-    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+    let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
     let mockViewModel = ShoppingListsViewModel(
         coordinator: AppCoordinator(dependencies: AppDependencies()),
@@ -345,7 +345,7 @@ struct ShoppingListsView: View {
 }
 
 #Preview("Dark/empty") {
-    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+    let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
     let mockViewModel = ShoppingListsViewModel(
         coordinator: AppCoordinator(dependencies: AppDependencies()),

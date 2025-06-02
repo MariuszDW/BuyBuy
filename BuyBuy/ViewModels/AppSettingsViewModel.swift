@@ -19,7 +19,7 @@ class AppSettingsViewModel: ObservableObject {
     
 #if DEBUG
     func copyMockToData() async {
-        MockShoppingListsRepository.allLists.forEach { list in
+        MockDataRepository.allLists.forEach { list in
             Task {
                 try? await dataManager.addOrUpdateList(list)
             }

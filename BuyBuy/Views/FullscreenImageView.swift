@@ -39,7 +39,7 @@ struct FullscreenImageView: View {
 // MARK: - Preview
 
 #Preview("Light") {
-    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+    let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
     let viewModel = FullscreenImageViewModel(imageID: UUID().uuidString,
                                              dataManager: dataManager)
@@ -48,7 +48,7 @@ struct FullscreenImageView: View {
 }
 
 #Preview("Dark") {
-    let dataManager = DataManager(repository: MockShoppingListsRepository(lists: []),
+    let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
     let viewModel = FullscreenImageViewModel(imageID: UUID().uuidString,
                                              dataManager: dataManager)

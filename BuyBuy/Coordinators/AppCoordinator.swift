@@ -29,7 +29,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @MainActor
     func performStartupTasks() async {
         try? await dependencies.dataManager.cleanOrphanedItems()
-        try? await dependencies.dataManager.cleanOrphanedImages()
+        try? await dependencies.dataManager.cleanOrphanedItemImages()
+        try? await dependencies.dataManager.cleanOrphanedCardImages()
     }
     
     func openShoppingList(_ id: UUID) {
