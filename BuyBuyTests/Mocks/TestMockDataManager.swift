@@ -82,7 +82,7 @@ final class TestMockDataManager: DataManagerProtocol, @unchecked Sendable {
         // TODO: implement...
     }
     
-    func clearThumbnailCache() async {
+    func cleanThumbnailCache() async {
         // TODO: implement...
     }
 }

@@ -37,7 +37,8 @@ protocol DataManagerProtocol {
     func loadCardThumbnail(baseFileName: String) async throws -> UIImage
     func deleteCardImageAndThumbnail(baseFileName: String) async throws
     
-    func clearThumbnailCache() async
+    // Cleaning data
+    func cleanThumbnailCache() async
     func cleanOrphanedItemImages() async throws
     func cleanOrphanedCardImages() async throws
 }

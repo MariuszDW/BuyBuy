@@ -9,7 +9,7 @@ import UIKit
 
 protocol ImageStorageProtocol: Sendable {
     // Thumbnail cache
-    func clearThumbnailCache() async
+    func cleanThumbnailCache() async
     
     // Item images
     func saveItemImage(_ image: UIImage, baseFileName: String) async throws

@@ -45,7 +45,7 @@ actor ImageStorage: ImageStorageProtocol {
     
     private let thumbnailCache = NSCache<NSString, UIImage>()
     
-    func clearThumbnailCache() async {
+    func cleanThumbnailCache() async {
         thumbnailCache.removeAllObjects()
     }
     

@@ -163,8 +163,8 @@ final class DataManager: DataManagerProtocol {
     
     // MARK: - Cache and cleanup
     
-    func clearThumbnailCache() async {
-        await imageStorage.clearThumbnailCache()
+    func cleanThumbnailCache() async {
+        await imageStorage.cleanThumbnailCache()
     }
     
     func cleanOrphanedItemImages() async throws {

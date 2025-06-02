@@ -8,7 +8,7 @@
 import UIKit
 
 actor MockImageStorage: ImageStorageProtocol {
-    func clearThumbnailCache() async {}
+    func cleanThumbnailCache() async {}
     
     func saveItemImage(_ image: UIImage, baseFileName: String) async throws {}
     
