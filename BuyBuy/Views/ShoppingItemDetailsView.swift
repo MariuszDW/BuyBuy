@@ -70,7 +70,7 @@ struct ShoppingItemDetailsView: View {
                 FullscreenImageView(
                     viewModel: FullscreenImageViewModel(
                         imageID: imageID,
-                        imageType: .item,
+                        imageType: .itemImage,
                         dataManager: viewModel.dataManager
                     )
                 )

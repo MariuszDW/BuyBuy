@@ -128,7 +128,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         let baseName = UUID().uuidString
         
         do {
-            try await self.dataManager.saveImageAndThumbnail(image, baseFileName: baseName, type: .item)
+            try await self.dataManager.saveImage(image, baseFileName: baseName, types: [.itemImage, .itemThumbnail])
             
             shoppingItem.imageIDs.append(baseName)
             await loadItemThumbnails()
@@ -144,7 +144,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         let id = shoppingItem.imageIDs.remove(at: index)
 
         do {
-            try await dataManager.deleteImageAndThumbnail(baseFileName: id, type: .item)
+            try await dataManager.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
             await loadItemThumbnails()
             await applyChanges()
         } catch {
@@ -177,7 +177,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         let dataManager = self.dataManager // TODO: sprawdzic czy teraz trzeba robic te kopie
         self.imageThumbnails = []
         for id in shoppingItem.imageIDs {
-            if let image = try? await dataManager.loadThumbnail(baseFileName: id, type: .item) {
+            if let image = try? await dataManager.loadImage(baseFileName: id, type: .itemThumbnail) {
                 self.imageThumbnails.append(image)
             }
         }

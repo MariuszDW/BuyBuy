@@ -14,119 +14,137 @@ enum ImageStorageError: Int, Error { // TODO: zrobic porzadek z tymi errorami, b
 }
 
 struct ImageStorageHelper {
-    static let imageSuffix = ".jpg"
-    static let thumbnailSuffix = "_thumb.jpg"
-    static let itemImagesFolderName = "item_images"
-    static let cardImagesFolderName = "card_images"
-    
-    static func thumbnailFileName(for baseFileName: String) -> String {
-        return baseFileName + thumbnailSuffix
-    }
-    
-    static func imageFileName(for baseFileName: String) -> String {
-        return baseFileName + imageSuffix
-    }
-    
     static let thumbnailSize = CGSize(width: 64, height: 64)
 }
 
-enum ImageType { // TODO: Rozszerzyc enum do itemImage, itemThumbnail, cardItem, cardThumbnail
-    case item
-    case card
+enum ImageType: CaseIterable {
+    case itemImage
+    case itemThumbnail
+    case cardImage
+    case cardThumbnail
     
     var folderName: String {
         switch self {
-        case .item: return ImageStorageHelper.itemImagesFolderName
-        case .card: return ImageStorageHelper.cardImagesFolderName
+        case .itemImage, .itemThumbnail:
+            return "item_images"
+        case .cardImage, .cardThumbnail:
+            return "card_images"
+        }
+    }
+    
+    var fileNameExtension: String {
+        return ".jpg"
+    }
+    
+    var fileNameSuffix: String {
+        switch self {
+        case .itemImage, .cardImage:
+            return ""
+        case .itemThumbnail, .cardThumbnail:
+            return "_thumb"
+        }
+    }
+    
+    var isThumbnail: Bool {
+        return self == .itemThumbnail || self == .cardThumbnail
+    }
+    
+    var useCache: Bool {
+        return self == .itemThumbnail || self == .cardThumbnail
+    }
+    
+    func fileName(for baseFileName: String) -> String {
+        return baseFileName + fileNameSuffix + fileNameExtension
+    }
+    
+    func cacheKey(for baseFileName: String) -> NSString {
+        return "\(self.folderName)_\(baseFileName)_\(self.fileNameSuffix)" as NSString
+    }
+    
+    var jpegCompressionQuality: CGFloat {
+        switch self {
+        case .itemImage, .cardImage:
+            return 0.8
+        case .itemThumbnail, .cardThumbnail:
+            return 0.7
         }
     }
 }
 
 actor ImageStorage: ImageStorageProtocol {
-    private let thumbnailCache = NSCache<NSString, UIImage>()
+    private let cache = NSCache<NSString, UIImage>()
     
-    func cleanThumbnailCache() async {
-        thumbnailCache.removeAllObjects()
+    func cleanCache() async {
+        cache.removeAllObjects()
     }
     
     func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws {
-        guard let data = image.jpegData(compressionQuality: 0.8) else {
+        guard let imageToSave = type.isThumbnail ? await createThumbnail(from: image) : image else {
             throw ImageStorageError.failedToSaveImage
         }
-        let fileName = ImageStorageHelper.imageFileName(for: baseFileName)
-        try await writeData(data, to: fileName, in: type)
-    }
-    
-    func saveThumbnail(for image: UIImage, baseFileName: String, type: ImageType) async throws {
-        guard let thumbnail = await createThumbnail(from: image) else {
-            throw ImageStorageError.failedToSaveThumbnail
+        
+        guard let data = imageToSave.jpegData(compressionQuality: type.jpegCompressionQuality) else {
+            throw ImageStorageError.failedToSaveImage
         }
-        guard let data = thumbnail.jpegData(compressionQuality: 0.7) else {
-            throw ImageStorageError.failedToSaveThumbnail
-        }
-        let fileName = ImageStorageHelper.thumbnailFileName(for: baseFileName)
+        
+        let fileName = type.fileName(for: baseFileName)
         try await writeData(data, to: fileName, in: type)
-    }
-    
-    func saveImageAndThumbnail(_ image: UIImage, baseFileName: String, type: ImageType) async throws {
-        try await saveImage(image, baseFileName: baseFileName, type: type)
-        try await saveThumbnail(for: image, baseFileName: baseFileName, type: type)
     }
     
     func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage {
-        let fileName = ImageStorageHelper.imageFileName(for: baseFileName)
+        let cacheKey: NSString = type.useCache ? type.cacheKey(for: baseFileName) : ""
+        
+        if type.useCache {
+            if let cached = cache.object(forKey: cacheKey) {
+                print("Thumbnail \(baseFileName) loaded from cache.")
+                return cached
+            }
+        }
+        
+        let fileName = type.fileName(for: baseFileName)
         let data = try await readData(from: fileName, in: type)
         guard let image = UIImage(data: data) else {
             throw ImageStorageError.imageNotFound
         }
-        return image
-    }
-    
-    func loadThumbnail(baseFileName: String, type: ImageType) async throws -> UIImage {
-        let cacheKey = "\(type.folderName)_\(baseFileName)" as NSString
-        if let cached = thumbnailCache.object(forKey: cacheKey) {
-            print("Thumbnail \(baseFileName) loaded from cache.")
-            return cached
+        
+        if type.useCache {
+            cache.setObject(image, forKey: cacheKey)
+            print("Thumbnail \(baseFileName) loaded.")
         }
-        let fileName = ImageStorageHelper.thumbnailFileName(for: baseFileName)
-        let data = try await readData(from: fileName, in: type)
-        guard let image = UIImage(data: data) else {
-            throw ImageStorageError.imageNotFound
-        }
-        thumbnailCache.setObject(image, forKey: cacheKey)
-        print("Thumbnail \(baseFileName) loaded.")
+        
         return image
     }
     
     func deleteImage(baseFileName: String, type: ImageType) async throws {
-        let fileName = ImageStorageHelper.imageFileName(for: baseFileName)
+        let fileName = type.fileName(for: baseFileName)
         try await deleteData(fileName: fileName, in: type)
     }
     
-    func deleteThumbnail(baseFileName: String, type: ImageType) async throws {
-        let fileName = ImageStorageHelper.thumbnailFileName(for: baseFileName)
-        try await deleteData(fileName: fileName, in: type)
+    func deleteImage(baseFileName: String, types: [ImageType]) async throws {
+        for type in types {
+            try await deleteImage(baseFileName: baseFileName, type: type)
+        }
     }
     
-    func deleteImageAndThumbnail(baseFileName: String, type: ImageType) async throws {
-        try await deleteImage(baseFileName: baseFileName, type: type)
-        try await deleteThumbnail(baseFileName: baseFileName, type: type)
-    }
-    
-    func listAllImageBaseNames(type: ImageType) async throws -> Set<String> {
+    func listImageBaseNames(type: ImageType) async throws -> Set<String> {
         let fileManager = FileManager.default
-        let fileNames = try fileManager.contentsOfDirectory(atPath: Self.directoryURL(for: type).path)
+        let directoryPath = Self.directoryURL(for: type).path
+        let fileNames = try fileManager.contentsOfDirectory(atPath: directoryPath)
         
-        let baseFileNames = Set(fileNames.compactMap { file -> String? in
-            var name = file
-            if name.hasSuffix(ImageStorageHelper.thumbnailSuffix) {
-                name = String(name.dropLast(ImageStorageHelper.thumbnailSuffix.count))
-            } else if name.hasSuffix(ImageStorageHelper.imageSuffix) {
-                name = String(name.dropLast(ImageStorageHelper.imageSuffix.count))
+        let uniqueSuffixes = Set(ImageType.allCases.map { $0.fileNameSuffix }).filter { !$0.isEmpty }
+        
+        let baseFileNames = fileNames
+            .map { file -> String in
+                var name = (file as NSString).deletingPathExtension
+                for suffix in uniqueSuffixes {
+                    if name.hasSuffix(suffix) {
+                        name = String(name.dropLast(suffix.count))
+                    }
+                }
+                return name
             }
-            return name
-        })
-        return baseFileNames
+        
+        return Set(baseFileNames)
     }
     
     // MARK: - Private common methods

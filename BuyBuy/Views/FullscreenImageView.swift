@@ -42,7 +42,7 @@ struct FullscreenImageView: View {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
     let viewModel = FullscreenImageViewModel(imageID: UUID().uuidString,
-                                             imageType: .item,
+                                             imageType: .itemImage,
                                              dataManager: dataManager)
     FullscreenImageView(viewModel: viewModel)
         .preferredColorScheme(.light)
@@ -52,7 +52,7 @@ struct FullscreenImageView: View {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
     let viewModel = FullscreenImageViewModel(imageID: UUID().uuidString,
-                                             imageType: .item,
+                                             imageType: .itemImage,
                                              dataManager: dataManager)
     FullscreenImageView(viewModel: viewModel)
         .preferredColorScheme(.dark)

@@ -19,7 +19,7 @@ final class DataManager: DataManagerProtocol {
         self.imageStorage = imageStorage
     }
     
-    // MARK: - DataRepository
+    // MARK: - Shopping lists
     
     func fetchAllLists() async throws -> [ShoppingList] {
         return try await repository.fetchAllLists()
@@ -35,7 +35,7 @@ final class DataManager: DataManagerProtocol {
             let newImageIDs = Set(list.items.flatMap { $0.imageIDs })
             let removedImageIDs = oldImageIDs.subtracting(newImageIDs)
             for id in removedImageIDs {
-                try await imageStorage.deleteImageAndThumbnail(baseFileName: id, type: .item)
+                try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
             }
         }
         try await repository.addOrUpdateList(list)
@@ -45,7 +45,7 @@ final class DataManager: DataManagerProtocol {
         let items = try await repository.fetchItemsOfList(with: id)
         let allImageIDs = items.flatMap { $0.imageIDs }
         for imageID in allImageIDs {
-            try await imageStorage.deleteImageAndThumbnail(baseFileName: imageID, type: .item)
+            try await imageStorage.deleteImage(baseFileName: imageID, types: [.itemImage, .itemThumbnail])
         }
         try await repository.deleteList(with: id)
     }
@@ -55,13 +55,13 @@ final class DataManager: DataManagerProtocol {
             let items = try await repository.fetchItemsOfList(with: id)
             let allImageIDs = items.flatMap { $0.imageIDs }
             for imageID in allImageIDs {
-                try await imageStorage.deleteImageAndThumbnail(baseFileName: imageID, type: .item)
+                try await imageStorage.deleteImage(baseFileName: imageID, types: [.itemImage, .itemThumbnail])
             }
         }
         try await repository.deleteLists(with: ids)
     }
 
-    // Shopping items
+    // MARK: - Shopping items
     
     func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
         return try await repository.fetchItemsOfList(with: listID)
@@ -83,7 +83,7 @@ final class DataManager: DataManagerProtocol {
         let orphanedImageIDs = oldImageIDs.filter { !usedImageIDs.contains($0) }
 
         for id in orphanedImageIDs {
-            try await imageStorage.deleteImageAndThumbnail(baseFileName: id, type: .item)
+            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
         }
     }
     
@@ -101,7 +101,7 @@ final class DataManager: DataManagerProtocol {
         let orphanedImageIDs = oldImageIDs.filter { !usedImageIDs.contains($0) }
 
         for id in orphanedImageIDs {
-            try await imageStorage.deleteImageAndThumbnail(baseFileName: id, type: .item)
+            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
         }
     }
     
@@ -117,7 +117,7 @@ final class DataManager: DataManagerProtocol {
         let orphanedImageIDs = Set(oldImageIDs).subtracting(usedImageIDs)
 
         for id in orphanedImageIDs {
-            try await imageStorage.deleteImageAndThumbnail(baseFileName: id, type: .item)
+            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
         }
     }
     
@@ -126,6 +126,7 @@ final class DataManager: DataManagerProtocol {
     }
     
     // MARK: - Loyalty Cards
+    
     func fetchLoyaltyCards() async throws -> [LoyaltyCard] {
         return try await repository.fetchLoyaltyCards()
     }
@@ -144,47 +145,61 @@ final class DataManager: DataManagerProtocol {
     
     // MARK: - Images
     
-    func saveImageAndThumbnail(_ image: UIImage, baseFileName: String, type: ImageType) async throws {
-        try await imageStorage.saveImageAndThumbnail(image, baseFileName: baseFileName, type: type)
+    func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws {
+        try await imageStorage.saveImage(image, baseFileName: baseFileName, type: type)
+    }
+    
+    func saveImage(_ image: UIImage, baseFileName: String, types: [ImageType]) async throws {
+        for type in types {
+            try await imageStorage.saveImage(image, baseFileName: baseFileName, type: type)
+        }
     }
     
     func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage {
         return try await imageStorage.loadImage(baseFileName: baseFileName, type: type)
     }
     
-    func loadThumbnail(baseFileName: String, type: ImageType) async throws -> UIImage {
-        return try await imageStorage.loadThumbnail(baseFileName: baseFileName, type: type)
+    func deleteImage(baseFileName: String, type: ImageType) async throws {
+        try await imageStorage.deleteImage(baseFileName: baseFileName, type: type)
     }
     
-    func deleteImageAndThumbnail(baseFileName: String, type: ImageType) async throws {
-        try await imageStorage.deleteImageAndThumbnail(baseFileName: baseFileName, type: type)
+    func deleteImage(baseFileName: String, types: [ImageType]) async throws {
+        for type in types {
+            try await imageStorage.deleteImage(baseFileName: baseFileName, type: type)
+        }
     }
     
-    // MARK: - Cache and cleanup
+    // MARK: - Image cache
     
-    func cleanThumbnailCache() async {
-        await imageStorage.cleanThumbnailCache()
+    func cleanImageCache() async {
+        await imageStorage.cleanCache()
     }
     
     func cleanOrphanedItemImages() async throws {
-        let allItemImageBaseNames = try await imageStorage.listAllImageBaseNames(type: .item)
+        let itemImageBaseNames = try await imageStorage.listImageBaseNames(type: .itemImage)
+        let itemThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .itemThumbnail)
+        let allBaseNames: Set<String> = itemImageBaseNames.union(itemThumbnailBaseNames)
+        
         let usedItemImageIDs = try await repository.fetchAllItemImageIDs()
         
-        let orphanedItemIDs = allItemImageBaseNames.subtracting(usedItemImageIDs)
+        let orphanedItemIDs = allBaseNames.subtracting(usedItemImageIDs)
         
         for id in orphanedItemIDs {
-            try await imageStorage.deleteImageAndThumbnail(baseFileName: id, type: .item)
+            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
         }
     }
     
     func cleanOrphanedCardImages() async throws {
-        let allCardImageBaseNames = try await imageStorage.listAllImageBaseNames(type: .card)
+        let cardImageBaseNames = try await imageStorage.listImageBaseNames(type: .cardImage)
+        let cardThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .cardThumbnail)
+        let allBaseNames: Set<String> = cardImageBaseNames.union(cardThumbnailBaseNames)
+        
         let usedCardImageIDs = try await repository.fetchAllLoyaltyCardImageIDs()
         
-        let orphanedCardIDs = allCardImageBaseNames.subtracting(usedCardImageIDs)
+        let orphanedCardIDs = allBaseNames.subtracting(usedCardImageIDs)
         
         for id in orphanedCardIDs {
-            try await imageStorage.deleteImageAndThumbnail(baseFileName: id, type: .card)
+            try await imageStorage.deleteImage(baseFileName: id, types: [.cardImage, .cardThumbnail])
         }
     }
 }

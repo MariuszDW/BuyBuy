@@ -66,7 +66,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
         thumbnails = [:]
         for card in cards {
             guard let imageID = card.imageID else { continue }
-            if let image = try? await dataManager.loadThumbnail(baseFileName: imageID, type: .card) {
+            if let image = try? await dataManager.loadImage(baseFileName: imageID, type: .cardThumbnail) {
                 thumbnails[card.id] = image
             }
         }

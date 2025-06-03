@@ -124,7 +124,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             FullscreenImageView(
                 viewModel: FullscreenImageViewModel(
                     imageID: imageID,
-                    imageType: .card,
+                    imageType: .cardImage,
                     dataManager: self.dependencies.dataManager
                 )
             )
