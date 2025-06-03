@@ -11,10 +11,12 @@ import SwiftUI
 final class FullscreenImageViewModel: ObservableObject {
     @Published var image: UIImage?
     let imageID: String
+    let imageType: ImageType
     private let dataManager: DataManagerProtocol
 
-    init(imageID: String, dataManager: DataManagerProtocol) {
+    init(imageID: String, imageType: ImageType, dataManager: DataManagerProtocol) {
         self.imageID = imageID
+        self.imageType = imageType
         self.dataManager = dataManager
         Task {
             await loadImage()
@@ -22,7 +24,6 @@ final class FullscreenImageViewModel: ObservableObject {
     }
     
     func loadImage() async {
-        let loadedImage = try? await dataManager.loadItemImage(baseFileName: imageID)
-        image = loadedImage
+        image = try? await dataManager.loadImage(baseFileName: imageID, type: imageType)
     }
 }

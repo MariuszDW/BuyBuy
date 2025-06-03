@@ -55,6 +55,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         sheet = .shoppintItemDetails(item, isNew)
     }
     
+    func openLoyaltyCardPreview(with imageID: String) {
+        sheet = .loyaltyCardPreview(imageID)
+    }
+    
     func openAbout() {
         sheet = .about
     }
@@ -113,6 +117,15 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     isNew: isNew,
                     dataManager: self.dependencies.dataManager,
                     coordinator: self
+                )
+            )
+            
+        case let .loyaltyCardPreview(imageID):
+            FullscreenImageView(
+                viewModel: FullscreenImageViewModel(
+                    imageID: imageID,
+                    imageType: .card,
+                    dataManager: self.dependencies.dataManager
                 )
             )
             

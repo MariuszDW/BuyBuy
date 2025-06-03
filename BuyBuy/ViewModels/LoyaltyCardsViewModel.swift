@@ -31,16 +31,42 @@ final class LoyaltyCardsViewModel: ObservableObject {
         thumbnails[cardID]
     }
 
-    func openCardCreation() {
+    func openCardPreview(_ card: LoyaltyCard) {
+        guard let imageID = card.imageID else { return }
+        coordinator.openLoyaltyCardPreview(with: imageID)
+    }
+    
+    func openNewCardDetails(/*listID: UUID*/) {
+        print("TODO: openNewCardDetails()")
         // TODO: implement...
-        // coordinator.presentLoyaltyCardCreation()
+//        let newItemStatus: ShoppingItemStatus = .pending
+//        let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
+//        let maxOrder = list?.items(for: newItemStatus).map(\.order).max() ?? 0
+//        
+//        let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: newItemStatus)
+//        
+//        coordinator.openShoppingItemDetails(newItem, isNew: true, onDismiss: { [weak self] in
+//            Task {
+//                await self?.loadList()
+//            }
+//        })
+    }
+    
+    func openCardDetails(_ card: LoyaltyCard) {
+        print("TODO: openCardDetails()")
+        // TODO: implement...
+//        coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: { [weak self] in
+//            Task {
+//                await self?.loadList()
+//            }
+//        })
     }
     
     private func loadThumbnails() async {
         thumbnails = [:]
         for card in cards {
             guard let imageID = card.imageID else { continue }
-            if let image = try? await dataManager.loadCardThumbnail(baseFileName: imageID) {
+            if let image = try? await dataManager.loadThumbnail(baseFileName: imageID, type: .card) {
                 thumbnails[card.id] = image
             }
         }

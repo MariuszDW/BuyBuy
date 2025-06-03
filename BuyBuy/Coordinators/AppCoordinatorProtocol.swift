@@ -15,5 +15,6 @@ protocol AppCoordinatorProtocol: ObservableObject {
     func openAbout()
     func openAppSettings()
     func openLoyaltyCardList()
+    func openLoyaltyCardPreview(with imageID: String)
     func back()
 }

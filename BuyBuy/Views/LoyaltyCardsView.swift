@@ -48,6 +48,9 @@ struct LoyaltyCardsView: View {
                         tileWidth: tileWidth
                     )
                     .frame(width: tileWidth, alignment: .top)
+                    .onTapGesture {
+                        viewModel.openCardPreview(card)
+                    }
                 }
             }
             .padding(16)
@@ -87,7 +90,8 @@ struct LoyaltyCardsView: View {
     private var bottomPanel: some View {
         HStack {
             Button(action: {
-                viewModel.openCardCreation()
+                viewModel.openNewCardDetails()
+                print("TODO: Add card")
             }) {
                 Label("Add card", systemImage: "plus.circle")
                     .font(.headline)
@@ -96,7 +100,7 @@ struct LoyaltyCardsView: View {
             Spacer()
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.bb.background)
     }
 }
 

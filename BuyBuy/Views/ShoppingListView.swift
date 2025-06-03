@@ -65,12 +65,12 @@ struct ShoppingListView: View {
                     }
                 },
                 onRowTap: { tappedItem in
-                    viewModel.openItemSettings(item: tappedItem)
+                    viewModel.openItemDetails(item: tappedItem)
                 }
             )
             .contextMenu {
                 Button {
-                    viewModel.openItemSettings(item: item)
+                    viewModel.openItemDetails(item: item)
                 } label: {
                     Label("Edit", systemImage: "square.and.pencil")
                 }
@@ -93,7 +93,7 @@ struct ShoppingListView: View {
                 }
                 
                 Button {
-                    viewModel.openItemSettings(item: item)
+                    viewModel.openItemDetails(item: item)
                 } label: {
                     Label("Edit", systemImage: "square.and.pencil")
                 }
@@ -147,16 +147,18 @@ struct ShoppingListView: View {
             Button(action: {
                 if let listID = viewModel.list?.id {
                     localEditMode = .inactive
-                    viewModel.openNewItemSettings(listID: listID)
+                    viewModel.openNewItemDetails(listID: listID)
                 }
             }) {
                 Label("Add item", systemImage: "plus.circle")
+                    .font(.headline)
             }
             .disabled(localEditMode.isEditing)
             
             Spacer()
         }
         .padding()
+        .background(Color.bb.background)
     }
     
     @ViewBuilder

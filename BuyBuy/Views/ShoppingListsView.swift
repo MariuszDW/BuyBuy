@@ -184,12 +184,14 @@ struct ShoppingListsView: View {
                 viewModel.openListSettings()
             }) {
                 Label("Add list", systemImage: "plus.circle")
+                    .font(.headline)
             }
             .disabled(localEditMode.isEditing)
             
             Spacer()
         }
         .padding()
+        .background(Color.bb.background)
     }
     
     private var toolbarContent: some ToolbarContent {

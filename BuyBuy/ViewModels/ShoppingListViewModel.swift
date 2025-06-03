@@ -147,7 +147,7 @@ final class ShoppingListViewModel: ObservableObject {
         await loadList()
     }
     
-    func openNewItemSettings(listID: UUID) {
+    func openNewItemDetails(listID: UUID) {
         let newItemStatus: ShoppingItemStatus = .pending
         let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
         let maxOrder = list?.items(for: newItemStatus).map(\.order).max() ?? 0
@@ -161,7 +161,7 @@ final class ShoppingListViewModel: ObservableObject {
         })
     }
     
-    func openItemSettings(item: ShoppingItem) {
+    func openItemDetails(item: ShoppingItem) {
         coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: { [weak self] in
             Task {
                 await self?.loadList()

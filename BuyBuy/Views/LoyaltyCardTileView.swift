@@ -12,6 +12,7 @@ struct LoyaltyCardTileView: View {
     let name: String
     let thumbnail: UIImage?
     let tileWidth: CGFloat
+    static private let cornderRadius: CGFloat = 12
 
     var body: some View {
         VStack(alignment: .center, spacing: 6) {
@@ -31,7 +32,12 @@ struct LoyaltyCardTileView: View {
             }
             .frame(width: tileWidth, height: tileWidth)
             .background(Color.bb.background2)
-            .cornerRadius(12)
+            .cornerRadius(Self.cornderRadius)
+            .shadow(color: Color.black.opacity(0.4), radius: 5, x: 0, y: 2)
+            .overlay {
+                RoundedRectangle(cornerRadius: Self.cornderRadius)
+                    .stroke(Color.bb.text.tertiary, lineWidth: 2)
+            }
 
             Text(name)
                 .font(.regularDynamic(style: .headline))

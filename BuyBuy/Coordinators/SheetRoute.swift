@@ -11,6 +11,7 @@ enum SheetRoute: Identifiable {
     case shoppingListSettings(ShoppingList, Bool)
     case shoppintItemDetails(ShoppingItem, Bool)
     case about
+    case loyaltyCardPreview(String)
 
     var id: String {
         switch self {
@@ -20,6 +21,8 @@ enum SheetRoute: Identifiable {
             return "shoppingItemDetails"
         case .about:
             return "about"
+        case .loyaltyCardPreview:
+            return "loyaltyCardPreview"
         }
     }
 }

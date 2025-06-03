@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import UIKit
+import SwiftUI
 
 @MainActor
 protocol DataManagerProtocol {
@@ -31,17 +31,11 @@ protocol DataManagerProtocol {
     func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws
     func deleteLoyaltyCard(with id: UUID) async throws
     
-    // Item images
-    func saveItemImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws
-    func loadItemImage(baseFileName: String) async throws -> UIImage
-    func loadItemThumbnail(baseFileName: String) async throws -> UIImage
-    func deleteItemImageAndThumbnail(baseFileName: String) async throws
-    
-    // Loyalty Card images
-    func saveCardImageAndThumbnail(_ image: UIImage, baseFileName: String) async throws
-    func loadCardImage(baseFileName: String) async throws -> UIImage
-    func loadCardThumbnail(baseFileName: String) async throws -> UIImage
-    func deleteCardImageAndThumbnail(baseFileName: String) async throws
+    // Images
+    func saveImageAndThumbnail(_ image: UIImage, baseFileName: String, type: ImageType) async throws
+    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage
+    func loadThumbnail(baseFileName: String, type: ImageType) async throws -> UIImage
+    func deleteImageAndThumbnail(baseFileName: String, type: ImageType) async throws
     
     // Cleaning data
     func cleanThumbnailCache() async
