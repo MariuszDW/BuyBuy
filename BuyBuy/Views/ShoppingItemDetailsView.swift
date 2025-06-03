@@ -65,17 +65,6 @@ struct ShoppingItemDetailsView: View {
                 }
             }
         }
-        .fullScreenCover(isPresented: viewModel.isFullscreenImagePresented) {
-            if let imageID = viewModel.selectedImageID {
-                FullscreenImageView(
-                    viewModel: FullscreenImageViewModel(
-                        imageID: imageID,
-                        imageType: .itemImage,
-                        dataManager: viewModel.dataManager
-                    )
-                )
-            }
-        }
     }
     
     private var hideKeyboardButton: some View {
@@ -244,7 +233,7 @@ struct ShoppingItemDetailsView: View {
                     Task { await viewModel.addImage(image) }
                 },
                 onTapImage: { imageIndex in
-                    viewModel.openFullscreenImage(at: imageIndex)
+                    viewModel.openImagePreview(at: imageIndex)
                 },
                 onDeleteImage: { imageIndex in
                     Task { await viewModel.deleteImage(at: imageIndex) }

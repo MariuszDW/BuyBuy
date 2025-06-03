@@ -14,7 +14,6 @@ final class TestMockDataManager: DataManagerProtocol, @unchecked Sendable {
     var fetchListHandler: ((UUID) -> Void)?
     
     func fetchAllLists() async throws -> [BuyBuy.ShoppingList] {
-        // TODO: implement...
         return []
     }
     
@@ -40,6 +39,11 @@ final class TestMockDataManager: DataManagerProtocol, @unchecked Sendable {
         return []
     }
     
+    func fetchItem(with id: UUID) async throws -> BuyBuy.ShoppingItem? {
+        // TODO: implement...
+        return nil
+    }
+    
     func addOrUpdateItem(_ item: BuyBuy.ShoppingItem) async throws {
         addOrUpdateItemHandler?(item)
     }
@@ -56,33 +60,54 @@ final class TestMockDataManager: DataManagerProtocol, @unchecked Sendable {
         // TODO: implement...
     }
     
-    func saveImage(_ image: UIImage, baseFileName: String) async throws {
+    func fetchLoyaltyCards() async throws -> [BuyBuy.LoyaltyCard] {
+        // TODO: implement...
+        return []
+    }
+    
+    func fetchLoyaltyCard(with id: UUID) async throws -> BuyBuy.LoyaltyCard? {
+        // TODO: implement...
+        return nil
+    }
+    
+    func addOrUpdateLoyaltyCard(_ card: BuyBuy.LoyaltyCard) async throws {
         // TODO: implement...
     }
     
-    func saveThumbnail(for image: UIImage, baseFileName: String) async throws {
+    func deleteLoyaltyCard(with id: UUID) async throws {
         // TODO: implement...
     }
     
-    func loadImage(baseFileName: String) async throws -> UIImage {
+    func saveImage(_ image: UIImage, baseFileName: String, type: BuyBuy.ImageType) async throws {
+        // TODO: implement...
+    }
+    
+    func saveImage(_ image: UIImage, baseFileName: String, types: [BuyBuy.ImageType]) async throws {
+        // TODO: implement...
+    }
+    
+    func loadImage(baseFileName: String, type: BuyBuy.ImageType) async throws -> UIImage {
         // TODO: implement...
         return UIImage()
     }
     
-    func loadThumbnail(baseFileName: String) async throws -> UIImage {
-        // TODO: implement...
-        return UIImage()
-    }
-    
-    func deleteImage(baseFileName: String) async throws {
+    func deleteImage(baseFileName: String, type: BuyBuy.ImageType) async throws {
         // TODO: implement...
     }
     
-    func deleteThumbnail(baseFileName: String) async throws {
+    func deleteImage(baseFileName: String, types: [BuyBuy.ImageType]) async throws {
         // TODO: implement...
     }
     
-    func cleanThumbnailCache() async {
+    func cleanImageCache() async {
+        // TODO: implement...
+    }
+    
+    func cleanOrphanedItemImages() async throws {
+        // TODO: implement...
+    }
+    
+    func cleanOrphanedCardImages() async throws {
         // TODO: implement...
     }
 }

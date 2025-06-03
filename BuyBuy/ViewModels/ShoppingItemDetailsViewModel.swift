@@ -119,9 +119,9 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         }
     }
     
-    func openFullscreenImage(at index: Int) {
+    func openImagePreview(at index: Int) {
         guard index >= 0 && index < shoppingItem.imageIDs.count else { return }
-        selectedImageID = shoppingItem.imageIDs[index]
+        coordinator.openShoppingItemImage(with: shoppingItem.imageIDs[index], onDismiss: {})
     }
     
     func addImage(_ image: UIImage) async {

@@ -17,24 +17,31 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
         openShoppingListBlock?(id)
     }
     
-    func openShoppingListSettings(_ list: BuyBuy.ShoppingList, isNew: Bool, onDismiss: @escaping () -> Void) {
-        // TODO: implement...
-    }
-    
-    func openShoppingItemDetails(_ item: BuyBuy.ShoppingItem, isNew: Bool, onDismiss: @escaping () -> Void) {
-        // TODO: implement...
-    }
-    
-    func openAbout() {
-        // TODO: implement...
-    }
-    
     func openAppSettings() {
-        // TODO: implement...
     }
     
     func openLoyaltyCardList() {
-        // TODO: implement...
+    }
+    
+    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: @escaping () -> Void) {
+    }
+    
+    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: @escaping () -> Void) {
+    }
+    
+    func openShoppingItemImage(with imageID: String, onDismiss: @escaping () -> Void) {
+    }
+    
+    func openLoyaltyCardPreview(with imageID: String, onDismiss: @escaping () -> Void) {
+    }
+    
+    func openAbout(onDismiss: @escaping () -> Void) {
+    }
+    
+    func closeTopSheet() {
+    }
+    
+    func closeAllSheets() {
     }
     
     func back() {

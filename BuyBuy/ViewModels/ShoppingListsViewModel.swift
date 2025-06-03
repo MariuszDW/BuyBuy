@@ -61,7 +61,7 @@ class ShoppingListsViewModel: ObservableObject {
     }
 
     func openAbout() {
-        coordinator.openAbout()
+        coordinator.openAbout(onDismiss: {})
     }
 
     func openSettings() {

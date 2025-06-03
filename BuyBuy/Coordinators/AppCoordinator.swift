@@ -6,16 +6,14 @@
 //
 
 import Foundation
-import Combine
 import SwiftUI
 
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
-    @Published var sheet: SheetRoute?
-    
+    let sheetPresenter = SheetPresenter()
+
     private let dependencies: AppDependencies
     private(set) var shoppingListsViewModel: ShoppingListsViewModel!
-    var onSheetDismissed: (() -> Void)?
     
     @MainActor
     init(dependencies: AppDependencies) {
@@ -46,25 +44,37 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
 
     func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: @escaping () -> Void) {
-        onSheetDismissed = onDismiss
-        sheet = .shoppingListSettings(list, isNew)
+        sheetPresenter.present(.shoppingListSettings(list, isNew), onDismiss: onDismiss)
     }
     
     func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: @escaping () -> Void) {
-        onSheetDismissed = onDismiss
-        sheet = .shoppintItemDetails(item, isNew)
+        sheetPresenter.present(.shoppintItemDetails(item, isNew), onDismiss: onDismiss)
     }
     
-    func openLoyaltyCardPreview(with imageID: String) {
-        sheet = .loyaltyCardPreview(imageID)
+    func openShoppingItemImage(with imageID: String, onDismiss: @escaping () -> Void) {
+        sheetPresenter.present(.shoppingItemImage(imageID), onDismiss: onDismiss)
     }
     
-    func openAbout() {
-        sheet = .about
+    func openLoyaltyCardPreview(with imageID: String, onDismiss: @escaping () -> Void) {
+        sheetPresenter.present(.loyaltyCardPreview(imageID), onDismiss: onDismiss)
+    }
+    
+    func openAbout(onDismiss: @escaping () -> Void) {
+        sheetPresenter.present(.about)
+    }
+    
+    func closeTopSheet() {
+        sheetPresenter.dismissTop()
+    }
+    
+    func closeAllSheets() {
+        sheetPresenter.dismissAll()
     }
     
     func back() {
-        navigationPath.removeLast()
+        if !navigationPath.isEmpty {
+            navigationPath.removeLast()
+        }
     }
 
     @MainActor
@@ -117,6 +127,15 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     isNew: isNew,
                     dataManager: self.dependencies.dataManager,
                     coordinator: self
+                )
+            )
+            
+        case let .shoppingItemImage(imageID):
+            FullscreenImageView(
+                viewModel: FullscreenImageViewModel(
+                    imageID: imageID,
+                    imageType: .itemImage,
+                    dataManager: self.dependencies.dataManager
                 )
             )
             
