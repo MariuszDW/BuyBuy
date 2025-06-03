@@ -26,7 +26,7 @@ struct AppRootView: View {
                     isPresented: Binding<Bool>(
                         get: { !sheetPresenter.stack.isEmpty },
                         set: { isPresented in
-                            if !isPresented {
+                            if !isPresented && !sheetPresenter.stack.isEmpty {
                                 sheetPresenter.dismiss(at: 0)
                             }
                         }
@@ -49,7 +49,7 @@ struct AppRootView: View {
                             isPresented: Binding<Bool>(
                                 get: { index + 1 < sheetPresenter.stack.count },
                                 set: { isPresented in
-                                    if !isPresented {
+                                    if !isPresented && index + 1 < sheetPresenter.stack.count {
                                         sheetPresenter.dismiss(at: index + 1)
                                     }
                                 }
