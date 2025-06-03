@@ -29,20 +29,34 @@ final class SheetPresenter: ObservableObject {
         stack.append(presented)
     }
 
-    func dismissTop() {
-        guard let top = stack.popLast() else { return }
-        top.onDismiss?()
-    }
-
     func dismiss(at index: Int) {
         guard index >= 0 && index < stack.count else { return }
         let dismissed = stack.remove(at: index)
         dismissed.onDismiss?()
+    }
+    
+    func dismiss(after index: Int) {
+        let nextIndex = index + 1
+        guard nextIndex < stack.count else { return }
+        dismiss(at: nextIndex)
+    }
+    
+    func dismissTop() {
+        guard let top = stack.popLast() else { return }
+        top.onDismiss?()
     }
 
     func dismissAll() {
         while let dismissed = stack.popLast() {
             dismissed.onDismiss?()
         }
+    }
+
+    func hasSheet(at index: Int) -> Bool {
+        return index >= 0 && index < stack.count
+    }
+
+    func hasSheet(after index: Int) -> Bool {
+        return (index + 1) < stack.count
     }
 }

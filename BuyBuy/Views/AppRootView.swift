@@ -10,12 +10,12 @@ import SwiftUI
 struct AppRootView: View {
     @ObservedObject var coordinator: AppCoordinator
     @ObservedObject var sheetPresenter: SheetPresenter
-
+    
     init(coordinator: AppCoordinator) {
         self.coordinator = coordinator
         self.sheetPresenter = coordinator.sheetPresenter
     }
-
+    
     var body: some View {
         NavigationStack(path: $coordinator.navigationPath) {
             coordinator.view(for: .shoppingLists)
@@ -23,10 +23,10 @@ struct AppRootView: View {
                     coordinator.view(for: route)
                 }
                 .fullScreenCover(
-                    isPresented: Binding<Bool>(
+                    isPresented: Binding(
                         get: { !sheetPresenter.stack.isEmpty },
                         set: { isPresented in
-                            if !isPresented && !sheetPresenter.stack.isEmpty {
+                            if !isPresented {
                                 sheetPresenter.dismiss(at: 0)
                             }
                         }
@@ -38,30 +38,30 @@ struct AppRootView: View {
     }
     
     private func nestedSheet(at index: Int) -> AnyView {
-        if index < sheetPresenter.stack.count {
-            let presentedSheet = sheetPresenter.stack[index]
-            let view = coordinator.sheetView(for: presentedSheet.route)
-            
-            return AnyView(
-                NavigationStack {
-                    view
-                        .fullScreenCover(
-                            isPresented: Binding<Bool>(
-                                get: { index + 1 < sheetPresenter.stack.count },
-                                set: { isPresented in
-                                    if !isPresented && index + 1 < sheetPresenter.stack.count {
-                                        sheetPresenter.dismiss(at: index + 1)
-                                    }
-                                }
-                            )
-                        ) {
-                            nestedSheet(at: index + 1)
-                        }
-                }
-            )
-        } else {
+        guard sheetPresenter.hasSheet(at: index) else {
             return AnyView(EmptyView())
         }
+        
+        let presentedSheet = sheetPresenter.stack[index]
+        let view = coordinator.sheetView(for: presentedSheet.route)
+        
+        return AnyView(
+            NavigationStack {
+                view
+                    .fullScreenCover(
+                        isPresented: Binding(
+                            get: { sheetPresenter.hasSheet(after: index) },
+                            set: { isPresented in
+                                if !isPresented {
+                                    sheetPresenter.dismiss(after: index)
+                                }
+                            }
+                        )
+                    ) {
+                        nestedSheet(at: index + 1)
+                    }
+            }
+        )
     }
 }
 
