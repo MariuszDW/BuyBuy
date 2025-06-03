@@ -23,19 +23,19 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     func openLoyaltyCardList() {
     }
     
-    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: @escaping () -> Void) {
+    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: (() -> Void)? = nil) {
     }
     
-    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: @escaping () -> Void) {
+    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: (() -> Void)? = nil) {
     }
     
-    func openShoppingItemImage(with imageID: String, onDismiss: @escaping () -> Void) {
+    func openShoppingItemImage(with imageID: String, onDismiss: (() -> Void)? = nil) {
     }
     
-    func openLoyaltyCardPreview(with imageID: String, onDismiss: @escaping () -> Void) {
+    func openLoyaltyCardPreview(with imageID: String, onDismiss: (() -> Void)? = nil) {
     }
     
-    func openAbout(onDismiss: @escaping () -> Void) {
+    func openAbout() {
     }
     
     func closeTopSheet() {

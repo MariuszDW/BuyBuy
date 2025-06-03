@@ -9,9 +9,9 @@ import Foundation
 
 final class SheetPresenter: ObservableObject {
     struct PresentedSheet: Identifiable, Equatable {
-        let id = UUID()
         let route: SheetRoute
         let onDismiss: (() -> Void)?
+        var id: String { route.id }
 
         static func == (lhs: PresentedSheet, rhs: PresentedSheet) -> Bool {
             lhs.id == rhs.id
@@ -41,7 +41,8 @@ final class SheetPresenter: ObservableObject {
     }
 
     func dismissAll() {
-        stack.forEach { $0.onDismiss?() }
-        stack.removeAll()
+        while let dismissed = stack.popLast() {
+            dismissed.onDismiss?()
+        }
     }
 }

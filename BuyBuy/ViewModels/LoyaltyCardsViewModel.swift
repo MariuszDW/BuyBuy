@@ -33,7 +33,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
 
     func openCardPreview(_ card: LoyaltyCard) {
         guard let imageID = card.imageID else { return }
-        coordinator.openLoyaltyCardPreview(with: imageID, onDismiss: {})
+        coordinator.openLoyaltyCardPreview(with: imageID, onDismiss: nil)
     }
     
     func openNewCardDetails(/*listID: UUID*/) {
