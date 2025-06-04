@@ -10,14 +10,16 @@ import SwiftUI
 struct FullscreenImageView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: FullscreenImageViewModel
+    @State private var canDismissByDrag = true
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Group {
                 if let image = viewModel.image {
-                    ZoomableImageView(image: image, onDismiss: {
-                        dismiss()
-                    })
+                    ZoomableImageView(
+                        image: image,
+                        canDismissByDrag: $canDismissByDrag
+                    )
                 } else if viewModel.showProgressIndicator {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: .bb.text.primary))
@@ -27,6 +29,14 @@ struct FullscreenImageView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .gesture(
+                DragGesture()
+                    .onEnded { value in
+                        if canDismissByDrag && value.translation.height > 100 {
+                            dismiss()
+                        }
+                    }
+            )
 
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark.circle")
