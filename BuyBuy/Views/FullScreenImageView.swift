@@ -1,5 +1,5 @@
 //
-//  FullscreenImageView.swift
+//  FullScreenImageView.swift
 //  BuyBuy
 //
 //  Created by MDW on 01/06/2025.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct FullscreenImageView: View {
+struct FullScreenImageView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject var viewModel: FullscreenImageViewModel
+    @StateObject var viewModel: FullScreenImageViewModel
     @State private var canDismissByDrag = true
 
     var body: some View {
@@ -86,39 +86,39 @@ struct FullscreenImageView: View {
 #Preview("Light") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
-    let viewModel = FullscreenImageViewModel(imageID: UUID().uuidString,
+    let viewModel = FullScreenImageViewModel(imageID: UUID().uuidString,
                                              imageType: .itemImage,
                                              dataManager: dataManager)
-    FullscreenImageView(viewModel: viewModel)
+    FullScreenImageView(viewModel: viewModel)
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
-    let viewModel = FullscreenImageViewModel(imageID: UUID().uuidString,
+    let viewModel = FullScreenImageViewModel(imageID: UUID().uuidString,
                                              imageType: .itemImage,
                                              dataManager: dataManager)
-    FullscreenImageView(viewModel: viewModel)
+    FullScreenImageView(viewModel: viewModel)
         .preferredColorScheme(.dark)
 }
 
 #Preview("Light/empty") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
-    let viewModel = FullscreenImageViewModel(imageID: nil,
+    let viewModel = FullScreenImageViewModel(imageID: nil,
                                              imageType: .itemImage,
                                              dataManager: dataManager)
-    FullscreenImageView(viewModel: viewModel)
+    FullScreenImageView(viewModel: viewModel)
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark/empty") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
-    let viewModel = FullscreenImageViewModel(imageID: nil,
+    let viewModel = FullScreenImageViewModel(imageID: nil,
                                              imageType: .itemImage,
                                              dataManager: dataManager)
-    FullscreenImageView(viewModel: viewModel)
+    FullScreenImageView(viewModel: viewModel)
         .preferredColorScheme(.dark)
 }

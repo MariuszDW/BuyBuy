@@ -1,5 +1,5 @@
 //
-//  FullscreenImageViewModel.swift
+//  FullScreenImageViewModel.swift
 //  BuyBuy
 //
 //  Created by MDW on 01/06/2025.
@@ -14,7 +14,7 @@ enum ImageLoadState {
 }
 
 @MainActor
-final class FullscreenImageViewModel: ObservableObject {
+final class FullScreenImageViewModel: ObservableObject {
     @Published var state: ImageLoadState = .loading
 
     let imageID: String?

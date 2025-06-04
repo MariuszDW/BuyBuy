@@ -131,8 +131,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             )
             
         case let .shoppingItemImage(imageID):
-            FullscreenImageView(
-                viewModel: FullscreenImageViewModel(
+            FullScreenImageView(
+                viewModel: FullScreenImageViewModel(
                     imageID: imageID,
                     imageType: .itemImage,
                     dataManager: self.dependencies.dataManager
@@ -140,8 +140,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             )
             
         case let .loyaltyCardPreview(imageID):
-            FullscreenImageView(
-                viewModel: FullscreenImageViewModel(
+            FullScreenImageView(
+                viewModel: FullScreenImageViewModel(
                     imageID: imageID,
                     imageType: .cardImage,
                     dataManager: self.dependencies.dataManager
