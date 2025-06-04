@@ -34,22 +34,7 @@ struct ShoppingListSettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 if focusedField != nil {
-                    HStack {
-                        Spacer()
-                        Button {
-                            focusedField = nil
-                        } label: {
-                            Image(systemName: "keyboard.chevron.compact.down")
-                                .font(.regularDynamic(style: .title2))
-                                .foregroundColor(.bb.selection)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .fill(Color.bb.background.opacity(0.5))
-                                )
-                        }
-                    }
+                    hideKeyboardButton
                 }
             }
             .task {
@@ -77,6 +62,25 @@ struct ShoppingListSettingsView: View {
                 Task {
                     await viewModel.applyChanges()
                 }
+            }
+        }
+    }
+    
+    private var hideKeyboardButton: some View {
+        HStack {
+            Spacer()
+            Button {
+                focusedField = nil
+            } label: {
+                Image(systemName: "keyboard.chevron.compact.down")
+                    .font(.regularDynamic(style: .title2))
+                    .foregroundColor(.bb.selection)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Color.bb.background.opacity(0.5))
+                    )
             }
         }
     }
