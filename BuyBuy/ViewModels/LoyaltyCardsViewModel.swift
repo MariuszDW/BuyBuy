@@ -35,8 +35,20 @@ final class LoyaltyCardsViewModel: ObservableObject {
         coordinator.openLoyaltyCardPreview(with: card.imageID, onDismiss: nil)
     }
     
-    func openNewCardDetails(/*listID: UUID*/) {
-        print("TODO: openNewCardDetails()")
+    func openCardPreview(at index: Int) {
+        if index < cards.count {
+            coordinator.openLoyaltyCardPreview(with: cards[index].imageID, onDismiss: nil)
+        }
+    }
+    
+    func deleteCard(at index: Int) async {
+        if index < cards.count {
+            try? await dataManager.deleteLoyaltyCard(with: cards[index].id)
+            await loadCards()
+        }
+    }
+    
+    func openNewCardDetails() {
         // TODO: implement...
 //        let newItemStatus: ShoppingItemStatus = .pending
 //        let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
@@ -51,9 +63,10 @@ final class LoyaltyCardsViewModel: ObservableObject {
 //        })
     }
     
-    func openCardDetails(_ card: LoyaltyCard) {
-        print("TODO: openCardDetails()")
-        // TODO: implement...
+    func openCardDetails(at index: Int) {
+        guard index < cards.count else { return }
+//        coordinator.openLoyaltyCardDetails(cards[index])
+        
 //        coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: { [weak self] in
 //            Task {
 //                await self?.loadList()

@@ -9,6 +9,10 @@ import SwiftUI
 
 struct LoyaltyCardsView: View {
     @StateObject var viewModel: LoyaltyCardsViewModel
+    
+    @State private var showActionsForIndex: Int? = nil
+    
+    private static let tileSize: CGFloat = 150
 
     var body: some View {
         VStack {
@@ -40,20 +44,42 @@ struct LoyaltyCardsView: View {
 
         return ScrollView {
             LazyVGrid(columns: columns, spacing: tileSpacing * 2) {
-                ForEach(viewModel.cards) { card in
-                    LoyaltyCardTileView(
-                        id: card.id,
-                        name: card.name,
-                        thumbnail: viewModel.thumbnail(for: card.id),
-                        tileWidth: tileWidth
-                    )
-                    .frame(width: tileWidth, alignment: .top)
-                    .onTapGesture {
-                        viewModel.openCardPreview(card)
-                    }
+                ForEach(Array(viewModel.cards.enumerated()), id: \.element.id) { index, card in
+                    tileView(for: card, index: index)
                 }
             }
             .padding(16)
+        }
+    }
+    
+    @ViewBuilder
+    private func tileView(for card: LoyaltyCard, index: Int) -> some View {
+        LoyaltyCardTileView(
+            id: card.id,
+            name: card.name,
+            thumbnail: viewModel.thumbnail(for: card.id),
+            tileWidth: Self.tileSize,
+            selected: showActionsForIndex == index
+        )
+        .frame(width: Self.tileSize, alignment: .top)
+        .onTapGesture {
+            viewModel.openCardPreview(card)
+        }
+        .onLongPressGesture {
+            showActionsForIndex = index
+        }
+        .popover(isPresented: Binding(
+            get: {
+                showActionsForIndex == index
+            },
+            set: { newValue in
+                if !newValue {
+                    showActionsForIndex = nil
+                }
+            })
+        ) {
+            imageActionMenu
+                .presentationCompactAdaptation(.popover)
         }
     }
     
@@ -101,6 +127,56 @@ struct LoyaltyCardsView: View {
         }
         .padding()
         .background(Color.bb.background)
+    }
+    
+    private var imageActionMenu: some View {
+        VStack(alignment: .leading, spacing: 32) {
+            Button {
+                if let index = showActionsForIndex {
+                    viewModel.openCardPreview(at: index)
+                    showActionsForIndex = nil
+                }
+            } label: {
+                HStack {
+                    Text("Show")
+                    Spacer()
+                    Image(systemName: "eye")
+                }
+                .foregroundColor(.bb.selection)
+            }
+            
+            Button {
+                if let index = showActionsForIndex {
+                    viewModel.openCardDetails(at: index)
+                    showActionsForIndex = nil
+                }
+            } label: {
+                HStack {
+                    Text("Edit")
+                    Spacer()
+                    Image(systemName: "square.and.pencil")
+                }
+                .foregroundColor(.bb.selection)
+            }
+            
+            Button {
+                if let index = showActionsForIndex {
+                    // TODO: zrobic jakies potwierdzenie usuniecia
+                    Task {
+                        await viewModel.deleteCard(at: index)
+                        showActionsForIndex = nil
+                    }
+                }
+            } label: {
+                HStack {
+                    Text("Delete")
+                    Spacer()
+                    Image(systemName: "trash")
+                }
+                .foregroundColor(.bb.destructive)
+            }
+        }
+        .padding()
     }
 }
 

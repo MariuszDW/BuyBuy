@@ -12,8 +12,18 @@ struct LoyaltyCardTileView: View {
     let name: String
     let thumbnail: UIImage?
     let tileWidth: CGFloat
-    static private let cornderRadius: CGFloat = 12
-
+    let selected: Bool
+    
+    private var strokeLineWidth: CGFloat {
+        selected ? 4 : 2
+    }
+    
+    private var strokeLineColor: Color {
+        selected ? .bb.selection : .bb.text.tertiary
+    }
+    
+    static let cornderRadius: CGFloat = 12
+    
     var body: some View {
         VStack(alignment: .center, spacing: 6) {
             ZStack {
@@ -33,10 +43,12 @@ struct LoyaltyCardTileView: View {
             .frame(width: tileWidth, height: tileWidth)
             .background(Color.bb.background2)
             .cornerRadius(Self.cornderRadius)
+            .contentShape(Rectangle())
+            .clipShape(RoundedRectangle(cornerRadius: Self.cornderRadius))
             .shadow(color: Color.black.opacity(0.4), radius: 5, x: 0, y: 2)
             .overlay {
                 RoundedRectangle(cornerRadius: Self.cornderRadius)
-                    .stroke(Color.bb.text.tertiary, lineWidth: 2)
+                    .stroke(strokeLineColor, lineWidth: strokeLineWidth)
             }
 
             Text(name)
