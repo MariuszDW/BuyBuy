@@ -17,7 +17,7 @@ struct ShoppingItemImageGridView: View {
     static let itemSize: CGFloat = 64
     static let itemCornerRadius: CGFloat = 8
     static let itemSpacing: CGFloat = 12
-    static let selectionLineWidth: CGFloat = 6
+    static let selectionLineWidth: CGFloat = 4
     
     @State private var showingActionsForIndex: Int? = nil
     @State private var showImageSourceSheet = false
@@ -37,7 +37,7 @@ struct ShoppingItemImageGridView: View {
                     .overlay {
                         if showingActionsForIndex == index {
                             RoundedRectangle(cornerRadius: Self.itemCornerRadius)
-                                .stroke(Color.accentColor, lineWidth: Self.selectionLineWidth)
+                                .stroke(Color.bb.selection, lineWidth: Self.selectionLineWidth)
                         }
                     }
                     .contentShape(Rectangle())

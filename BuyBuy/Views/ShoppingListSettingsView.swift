@@ -41,7 +41,7 @@ struct ShoppingListSettingsView: View {
                         } label: {
                             Image(systemName: "keyboard.chevron.compact.down")
                                 .font(.regularDynamic(style: .title2))
-                                .foregroundColor(.bb.accent)
+                                .foregroundColor(.bb.selection)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
                                 .background(

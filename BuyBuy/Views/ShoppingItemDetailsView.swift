@@ -75,7 +75,7 @@ struct ShoppingItemDetailsView: View {
             } label: {
                 Image(systemName: "keyboard.chevron.compact.down")
                     .font(.regularDynamic(style: .title2))
-                    .foregroundColor(.bb.accent)
+                    .foregroundColor(.bb.selection)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 6)
                     .background(
@@ -112,7 +112,7 @@ struct ShoppingItemDetailsView: View {
                         Text(status.localizedName)
                             .foregroundColor(status.color)
                         Image(systemName: "chevron.up.chevron.down")
-                            .foregroundColor(.bb.accent)
+                            .foregroundColor(.bb.selection)
                             .padding(.leading, 8)
                     }
                 }
@@ -215,7 +215,7 @@ struct ShoppingItemDetailsView: View {
                     }
                 } label: {
                     Image(systemName: "chevron.up.chevron.down")
-                        .foregroundColor(.bb.accent)
+                        .foregroundColor(.bb.selection)
                 }
             }
         }
