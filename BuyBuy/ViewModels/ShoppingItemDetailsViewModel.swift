@@ -12,7 +12,7 @@ import SwiftUI
 final class ShoppingItemDetailsViewModel: ObservableObject {
     /// The shopping item being edited.
     @Published private var shoppingItem: ShoppingItem
-    @Published var imageThumbnails: [UIImage] = []
+    @Published var thumbnails: [UIImage] = []
     @Published var selectedImageID: String?
     
     var isFullscreenImagePresented: Binding<Bool> {
@@ -114,9 +114,6 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         self.isNew = isNew
         self.coordinator = coordinator
         self.dataManager = dataManager
-        Task {
-            await loadItemThumbnails()
-        }
     }
     
     func openImagePreview(at index: Int) {
@@ -131,7 +128,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
             try await self.dataManager.saveImage(image, baseFileName: baseName, types: [.itemImage, .itemThumbnail])
             
             shoppingItem.imageIDs.append(baseName)
-            await loadItemThumbnails()
+            await loadThumbnails()
             await applyChanges()
             
         } catch {
@@ -145,7 +142,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
 
         do {
             try await dataManager.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
-            await loadItemThumbnails()
+            await loadThumbnails()
             await applyChanges()
         } catch {
             print("Failed to delete image: \(error)")
@@ -173,12 +170,11 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         return formatter.number(from: string)?.doubleValue
     }
     
-    private func loadItemThumbnails() async {
-        let dataManager = self.dataManager // TODO: sprawdzic czy teraz trzeba robic te kopie
-        self.imageThumbnails = []
+    func loadThumbnails() async {
+        self.thumbnails = []
         for id in shoppingItem.imageIDs {
             if let image = try? await dataManager.loadImage(baseFileName: id, type: .itemThumbnail) {
-                self.imageThumbnails.append(image)
+                self.thumbnails.append(image)
             }
         }
     }

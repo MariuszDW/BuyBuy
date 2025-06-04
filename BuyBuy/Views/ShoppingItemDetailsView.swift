@@ -38,6 +38,7 @@ struct ShoppingItemDetailsView: View {
         }
         .task {
             focusedField = viewModel.isNew ? .name : nil
+            await viewModel.loadThumbnails()
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Item details")
@@ -225,7 +226,7 @@ struct ShoppingItemDetailsView: View {
     private var imagesSection: some View {
         Section {
             ShoppingItemImageGridView(
-                images: viewModel.imageThumbnails,
+                images: viewModel.thumbnails,
                 onUserInteraction: {
                     focusedField = nil
                 },
@@ -307,7 +308,7 @@ struct ShoppingItemDetailsView: View {
 // MARK: - Preview
 
 #Preview("Light") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
                                   imageStorage: MockImageStorage())
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,
@@ -319,7 +320,7 @@ struct ShoppingItemDetailsView: View {
 }
 
 #Preview("Dark") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
                                   imageStorage: MockImageStorage())
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,
