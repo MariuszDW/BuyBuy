@@ -32,7 +32,7 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     func openShoppingItemImage(with imageID: String, onDismiss: (() -> Void)? = nil) {
     }
     
-    func openLoyaltyCardPreview(with imageID: String, onDismiss: (() -> Void)? = nil) {
+    func openLoyaltyCardPreview(with imageID: String?, onDismiss: (() -> Void)? = nil) {
     }
     
     func openAbout() {

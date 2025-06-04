@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ZoomableImageView: View {
     let image: UIImage
+    var backgroundColor: Color = .black
     var onDismiss: (() -> Void)? = nil
     
     @State private var scale: CGFloat = 1.0
@@ -21,7 +22,7 @@ struct ZoomableImageView: View {
     
     var body: some View {
         GeometryReader { proxy in
-            Color.black
+            backgroundColor
                 .onAppear {
                     screenSize = proxy.size
                 }

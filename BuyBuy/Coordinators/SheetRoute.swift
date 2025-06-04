@@ -12,7 +12,7 @@ enum SheetRoute: Identifiable {
     case shoppintItemDetails(ShoppingItem, Bool)
     case shoppingItemImage(String)
     case about
-    case loyaltyCardPreview(String)
+    case loyaltyCardPreview(String?)
 
     var id: String {
         switch self {
@@ -25,7 +25,7 @@ enum SheetRoute: Identifiable {
         case .about:
             return "about"
         case let .loyaltyCardPreview(imageID):
-            return "loyaltyCardPreview-\(imageID)"
+            return "loyaltyCardPreview-\(imageID ?? UUID().uuidString)"
         }
     }
 }

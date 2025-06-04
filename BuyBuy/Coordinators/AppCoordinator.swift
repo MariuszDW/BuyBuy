@@ -55,7 +55,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         sheetPresenter.present(.shoppingItemImage(imageID), onDismiss: onDismiss)
     }
     
-    func openLoyaltyCardPreview(with imageID: String, onDismiss: (() -> Void)? = nil) {
+    func openLoyaltyCardPreview(with imageID: String?, onDismiss: (() -> Void)? = nil) {
         sheetPresenter.present(.loyaltyCardPreview(imageID), onDismiss: onDismiss)
     }
     
