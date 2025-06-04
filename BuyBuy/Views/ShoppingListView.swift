@@ -130,6 +130,14 @@ struct ShoppingListView: View {
         Group {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button {
+                    viewModel.openLoyaltyCards()
+                } label: {
+                    Image(systemName: "creditcard.circle")
+                }
+                .accessibilityLabel("Loyalty cards")
+                .disabled(localEditMode.isEditing)
+                
+                Button {
                     withAnimation {
                         localEditMode = (localEditMode == .active) ? .inactive : .active
                     }

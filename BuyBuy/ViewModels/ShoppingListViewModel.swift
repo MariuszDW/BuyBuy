@@ -168,4 +168,8 @@ final class ShoppingListViewModel: ObservableObject {
             }
         })
     }
+    
+    func openLoyaltyCards() {
+        coordinator.openLoyaltyCardList()
+    }
 }
