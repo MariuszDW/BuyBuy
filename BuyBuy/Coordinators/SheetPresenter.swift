@@ -11,7 +11,7 @@ final class SheetPresenter: ObservableObject {
     struct PresentedSheet: Identifiable, Equatable {
         let route: SheetRoute
         let onDismiss: (() -> Void)?
-        var id: String { route.id }
+        let id = UUID()
 
         static func == (lhs: PresentedSheet, rhs: PresentedSheet) -> Bool {
             lhs.id == rhs.id
