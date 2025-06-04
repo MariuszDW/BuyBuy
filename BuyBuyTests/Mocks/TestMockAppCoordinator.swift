@@ -35,6 +35,9 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     func openLoyaltyCardPreview(with imageID: String?, onDismiss: (() -> Void)? = nil) {
     }
     
+    func openLoyaltyCardDetails(_ card: LoyaltyCard, isNew: Bool, onDismiss: (() -> Void)? = nil) {
+    }
+    
     func openAbout() {
     }
     

@@ -20,7 +20,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
         self.dataManager = dataManager
         self.coordinator = coordinator
     }
-
+    
     func loadCards() async {
         let fetchedCards = try? await dataManager.fetchLoyaltyCards()
         cards = fetchedCards ?? []
@@ -65,13 +65,11 @@ final class LoyaltyCardsViewModel: ObservableObject {
     
     func openCardDetails(at index: Int) {
         guard index < cards.count else { return }
-//        coordinator.openLoyaltyCardDetails(cards[index])
-        
-//        coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: { [weak self] in
-//            Task {
-//                await self?.loadList()
-//            }
-//        })
+        coordinator.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: { [weak self] in
+            Task {
+                await self?.loadCards()
+            }
+        })
     }
     
     private func loadThumbnails() async {

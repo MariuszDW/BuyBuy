@@ -59,6 +59,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         sheetPresenter.present(.loyaltyCardPreview(imageID), onDismiss: onDismiss)
     }
     
+    func openLoyaltyCardDetails(_ card: LoyaltyCard, isNew: Bool, onDismiss: (() -> Void)? = nil) {
+        sheetPresenter.present(.loyaltyCardDetails(card, isNew), onDismiss: onDismiss)
+    }
+    
     func openAbout() {
         sheetPresenter.present(.about)
     }
@@ -145,6 +149,16 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     imageID: imageID,
                     imageType: .cardImage,
                     dataManager: self.dependencies.dataManager
+                )
+            )
+            
+        case let .loyaltyCardDetails(card, isNew):
+            LoyaltyCardDetailsView(
+                viewModel: LoyaltyCardDetailsViewModel(
+                    card: card,
+                    isNew: isNew,
+                    dataManager: self.dependencies.dataManager,
+                    coordinator: self
                 )
             )
             

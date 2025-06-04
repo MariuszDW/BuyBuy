@@ -27,10 +27,8 @@ struct LoyaltyCardsView: View {
             bottomPanel
         }
         .navigationTitle(viewModel.cards.isEmpty ? "" : "Loyalty Cards")
-        .onAppear { // TODO: moze task?
-            Task {
-                await viewModel.loadCards()
-            }
+        .task {
+            await viewModel.loadCards()
         }
     }
     

@@ -13,4 +13,5 @@ enum SheetRoute {
     case shoppingItemImage(String)
     case about
     case loyaltyCardPreview(String?)
+    case loyaltyCardDetails(LoyaltyCard, Bool)
 }
