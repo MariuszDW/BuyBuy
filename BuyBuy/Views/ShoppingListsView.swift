@@ -250,28 +250,28 @@ struct ShoppingListsView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: listImageSize, height: listImageSize)
-                        .foregroundColor(.bb.grey85)
+                        .foregroundColor(.bb.text.quaternary)
 
                     Image(systemName: "basket.fill")
                         .resizable()
                         .scaledToFit()
                         .frame(width: basketImageSize, height: basketImageSize)
-                        .foregroundColor(.bb.grey85)
+                        .foregroundColor(.bb.text.quaternary)
                         .offset(x: -basketImageSize * 0.5, y: 0)
                         .rotationEffect(Angle(degrees: angle), anchor: .topLeading)
                         .offset(x: basketImageSize * 0.5, y: 0)
                         .offset(x: listImageSize * 0.2, y: listImageSize * 0.36)
-                        .shadow(color: .black.opacity(0.5), radius: 6)
+                        .shadow(color: .black.opacity(0.4), radius: 6)
                 }
                 
                 Text("No shopping lists available.")
                     .font(.boldDynamic(style: .title2))
-                    .foregroundColor(.bb.grey75)
+                    .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
 
                 Text("Tap the \"Add list\" button to create a new list.")
                     .font(.boldDynamic(style: .headline))
-                    .foregroundColor(.bb.grey75)
+                    .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)

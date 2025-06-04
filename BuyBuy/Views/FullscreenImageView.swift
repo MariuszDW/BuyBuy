@@ -20,7 +20,7 @@ struct FullscreenImageView: View {
                     })
                 } else if viewModel.showProgressIndicator {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .progressViewStyle(CircularProgressViewStyle(tint: .bb.text.primary))
                         .controlSize(.large)
                 } else {
                     emptyView
@@ -36,7 +36,7 @@ struct FullscreenImageView: View {
                     .padding()
             }
         }
-        .background(Color.black.ignoresSafeArea())
+        .background(Color.background.ignoresSafeArea())
     }
     
     private var emptyView: some View {
@@ -46,7 +46,7 @@ struct FullscreenImageView: View {
             VStack(spacing: 50) {
                 AnimatedIconView(
                     image: Image(systemName: "questionmark.circle"),
-                    color: .bb.grey50,
+                    color: .bb.text.quaternary,
                     size: baseSize * 0.5,
                     response: 0.8,
                     dampingFraction: 0.3
@@ -54,7 +54,7 @@ struct FullscreenImageView: View {
                 
                 Text("No image found.")
                     .font(.boldDynamic(style: .title2))
-                    .foregroundColor(.bb.grey50)
+                    .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)

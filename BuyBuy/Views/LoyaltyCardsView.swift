@@ -64,7 +64,7 @@ struct LoyaltyCardsView: View {
             VStack(spacing: 50) {
                 AnimatedIconView(
                     image: Image(systemName: "creditcard.fill"),
-                    color: .bb.grey85,
+                    color: .bb.text.quaternary,
                     size: baseSize * 0.5,
                     response: 0.8,
                     dampingFraction: 0.3
@@ -72,12 +72,12 @@ struct LoyaltyCardsView: View {
                 
                 Text("No loyalty cards yet.")
                     .font(.boldDynamic(style: .title2))
-                    .foregroundColor(.bb.grey75)
+                    .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
                 
                 Text("Use the 'Add card' button to add your first layalty card.")
                     .font(.boldDynamic(style: .headline))
-                    .foregroundColor(.bb.grey75)
+                    .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)

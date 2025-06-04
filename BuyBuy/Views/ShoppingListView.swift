@@ -170,7 +170,7 @@ struct ShoppingListView: View {
                 VStack(spacing: 50) {
                     AnimatedIconView(
                         image: list.icon.image,
-                        color: list.color.color.opacity(0.4),
+                        color: list.color.color.opacity(0.5),
                         size: baseSize * 0.5,
                         response: 0.8,
                         dampingFraction: 0.3
@@ -178,12 +178,12 @@ struct ShoppingListView: View {
                     
                     Text("This shopping list is empty.")
                         .font(.boldDynamic(style: .title2))
-                        .foregroundColor(.bb.grey75)
+                        .foregroundColor(.bb.text.tertiary)
                         .multilineTextAlignment(.center)
 
                     Text("Use the 'Add item' button to add your first shopping item.")
                         .font(.boldDynamic(style: .headline))
-                        .foregroundColor(.bb.grey75)
+                        .foregroundColor(.bb.text.tertiary)
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)
