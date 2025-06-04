@@ -14,29 +14,16 @@ struct FullscreenImageView: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            Group {
-                if let image = viewModel.image {
-                    ZoomableImageView(
-                        image: image,
-                        canDismissByDrag: $canDismissByDrag
-                    )
-                } else if viewModel.showProgressIndicator {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .bb.text.primary))
-                        .controlSize(.large)
-                } else {
-                    emptyView
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .gesture(
-                DragGesture()
-                    .onEnded { value in
-                        if canDismissByDrag && value.translation.height > 100 {
-                            dismiss()
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .gesture(
+                    DragGesture()
+                        .onEnded { value in
+                            if canDismissByDrag && value.translation.height > 100 {
+                                dismiss()
+                            }
                         }
-                    }
-            )
+                )
 
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark.circle")
@@ -46,13 +33,32 @@ struct FullscreenImageView: View {
                     .padding()
             }
         }
-        .background(Color.background.ignoresSafeArea())
+        .background(Color.bb.background.ignoresSafeArea())
     }
-    
+
+    @ViewBuilder
+    private var content: some View {
+        switch viewModel.state {
+        case .loading:
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: .bb.text.primary))
+                .controlSize(.large)
+
+        case .success(let image):
+            ZoomableImageView(
+                image: image,
+                canDismissByDrag: $canDismissByDrag
+            )
+
+        case .failure:
+            emptyView
+        }
+    }
+
     private var emptyView: some View {
         GeometryReader { geometry in
             let baseSize = min(geometry.size.width, geometry.size.height)
-            
+
             VStack(spacing: 50) {
                 AnimatedIconView(
                     image: Image(systemName: "questionmark.circle"),
@@ -61,7 +67,7 @@ struct FullscreenImageView: View {
                     response: 0.8,
                     dampingFraction: 0.3
                 )
-                
+
                 Text("No image found.")
                     .font(.boldDynamic(style: .title2))
                     .foregroundColor(.bb.text.tertiary)

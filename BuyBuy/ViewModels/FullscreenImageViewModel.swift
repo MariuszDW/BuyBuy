@@ -7,10 +7,16 @@
 
 import SwiftUI
 
+enum ImageLoadState {
+    case loading
+    case success(UIImage)
+    case failure
+}
+
 @MainActor
 final class FullscreenImageViewModel: ObservableObject {
-    @Published var image: UIImage?
-    @Published var showProgressIndicator: Bool = true
+    @Published var state: ImageLoadState = .loading
+
     let imageID: String?
     let imageType: ImageType
     private let dataManager: DataManagerProtocol
@@ -23,11 +29,17 @@ final class FullscreenImageViewModel: ObservableObject {
             await loadImage()
         }
     }
-    
+
     func loadImage() async {
-        if let imageID = imageID {
-            image = try? await dataManager.loadImage(baseFileName: imageID, type: imageType)
+        guard let imageID = imageID else {
+            state = .failure
+            return
         }
-        showProgressIndicator = false
+        do {
+            let image = try await dataManager.loadImage(baseFileName: imageID, type: imageType)
+            state = .success(image)
+        } catch {
+            state = .failure
+        }
     }
 }
