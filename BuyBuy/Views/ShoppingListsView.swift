@@ -81,7 +81,7 @@ struct ShoppingListsView: View {
     
     private var shoppingListsView: some View {
         List {
-            ForEach(viewModel.shoppingLists) { list in
+            ForEach(viewModel.shoppingLists.filter { $0.id != listPendingDeletion?.id }) { list in
                 Group {
                     if localEditMode.isEditing {
                         listRow(for: list)
