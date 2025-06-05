@@ -45,24 +45,52 @@ struct ShoppingItemDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: focusedField) { newValue in
             Task {
-                await viewModel.applyChanges()
-            }
-        }
-        .onDisappear {
-            Task {
-                await viewModel.applyChanges()
+                viewModel.finalizeInput()
             }
         }
         .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button {
-                    Task {
-                        await viewModel.applyChanges()
-                        dismiss()
+            toolbarContent
+        }
+        .onDisappear {
+            Task {
+                await viewModel.didFinishEditing()
+            }
+        }
+    }
+    
+    private var toolbarContent: some ToolbarContent {
+        Group {
+            if viewModel.isNew {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        Task {
+                            viewModel.changesConfirmed = false
+                            dismiss()
+                        }
                     }
-                } label: {
-                    Image(systemName: "xmark.circle")
-                        .accessibilityLabel("Close")
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("OK") {
+                        Task {
+                            viewModel.changesConfirmed = true
+                            dismiss()
+                        }
+                    }
+                    .disabled(!viewModel.canConfirm)
+                }
+            } else {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        Task {
+                            viewModel.changesConfirmed = true
+                            dismiss()
+                        }
+                    } label: {
+                        Image(systemName: "xmark.circle")
+                            .accessibilityLabel("Close")
+                    }
+                    .disabled(!viewModel.canConfirm)
                 }
             }
         }
@@ -98,7 +126,7 @@ struct ShoppingItemDetailsView: View {
                             focusedField = nil
                             viewModel.status = status
                             Task {
-                                await viewModel.applyChanges()
+                                viewModel.finalizeInput()
                             }
                         } label: {
                             Label(status.localizedName, systemImage: status.imageSystemName)
@@ -253,7 +281,7 @@ struct ShoppingItemDetailsView: View {
                         focusedField = nil
                         viewModel.unit = unit.symbol
                         Task {
-                            await viewModel.applyChanges()
+                            viewModel.finalizeInput()
                         }
                     } label: {
                         Text(unit.symbol)
@@ -272,15 +300,15 @@ struct ShoppingItemDetailsView: View {
             TextField(viewModel.pricePerUnitPlaceholder,
                       value: viewModel.priceBinding,
                       format: .number.precision(.fractionLength(NumberFormatter.priceMinPrecision...NumberFormatter.priceMaxPrecision)))
-                .keyboardType(.decimalPad)
-                .padding(10)
-                .background(Color.bb.sheet.background)
-                .foregroundColor(.bb.sheet.section.primaryText)
-                .cornerRadius(8)
-                .focused($focusedField, equals: .pricePerUnit)
-                .onSubmit {
-                    focusedField = nil
-                }
+            .keyboardType(.decimalPad)
+            .padding(10)
+            .background(Color.bb.sheet.background)
+            .foregroundColor(.bb.sheet.section.primaryText)
+            .cornerRadius(8)
+            .focused($focusedField, equals: .pricePerUnit)
+            .onSubmit {
+                focusedField = nil
+            }
         }
         .frame(maxWidth: .infinity)
     }

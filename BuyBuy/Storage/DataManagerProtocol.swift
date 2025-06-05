@@ -15,6 +15,7 @@ protocol DataManagerProtocol {
     func fetchList(with id: UUID) async throws -> ShoppingList?
     func addOrUpdateList(_ list: ShoppingList) async throws
     func deleteList(with id: UUID) async throws
+    func deleteList(_ list: ShoppingList) async throws
     func deleteLists(with ids: [UUID]) async throws
 
     // Shopping items
@@ -22,6 +23,7 @@ protocol DataManagerProtocol {
     func fetchItem(with id: UUID) async throws -> ShoppingItem?
     func addOrUpdateItem(_ item: ShoppingItem) async throws
     func deleteItem(with id: UUID) async throws
+    func deleteItem(_ item: ShoppingItem) async throws
     func deleteItems(with ids: [UUID]) async throws
     func cleanOrphanedItems() async throws
     
@@ -30,6 +32,7 @@ protocol DataManagerProtocol {
     func fetchLoyaltyCard(with id: UUID) async throws -> LoyaltyCard?
     func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws
     func deleteLoyaltyCard(with id: UUID) async throws
+    func deleteLoyaltyCard(_ card: LoyaltyCard) async throws
     
     // Images
     func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct LoyaltyCardsView: View {
     @StateObject var viewModel: LoyaltyCardsViewModel
-    
     @State private var showActionsForIndex: Int? = nil
     
     private static let tileSize: CGFloat = 150
@@ -25,6 +24,13 @@ struct LoyaltyCardsView: View {
             Spacer()
 
             bottomPanel
+        }
+        .onReceive(viewModel.coordinator.eventPublisher) { event in
+            if case .loyaltyCardEdited = event {
+                Task {
+                    await viewModel.loadCards()
+                }
+            }
         }
         .navigationTitle(viewModel.cards.isEmpty ? "" : "Loyalty Cards")
         .task {

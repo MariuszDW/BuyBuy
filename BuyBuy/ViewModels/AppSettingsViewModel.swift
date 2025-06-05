@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 class AppSettingsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
-    private var coordinator: any AppCoordinatorProtocol
+    var coordinator: any AppCoordinatorProtocol
     
     init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.dataManager = dataManager

@@ -13,7 +13,7 @@ class ShoppingListsViewModel: ObservableObject {
     @Published var shoppingLists: [ShoppingList] = []
 
     private let dataManager: DataManagerProtocol
-    private let coordinator: any AppCoordinatorProtocol
+    let coordinator: any AppCoordinatorProtocol
 
     init(coordinator: any AppCoordinatorProtocol, dataManager: DataManagerProtocol) {
         self.coordinator = coordinator
@@ -46,18 +46,15 @@ class ShoppingListsViewModel: ObservableObject {
         }
     }
     
-    func openListSettings(for list: ShoppingList? = nil) {
-        let listToEdit = list ?? {
-            let uniqueUUID = UUID.unique(in: shoppingLists.map { $0.id })
-            let maxOrder = shoppingLists.map(\.order).max() ?? 0
-            return ShoppingList(id: uniqueUUID, name: "", items: [], order: maxOrder + 1, icon: .default, color: .default)
-        }()
+    func openNewListSettings() {
+        let maxOrder = shoppingLists.map(\.order).max() ?? 0
+        let list = ShoppingList(id: UUID(), name: "", items: [], order: maxOrder + 1, icon: .default, color: .default)
         
-        coordinator.openShoppingListSettings(listToEdit, isNew: list == nil, onDismiss: { [weak self] in
-            Task {
-                await self?.loadLists()
-            }
-        })
+        coordinator.openShoppingListSettings(list, isNew: true, onDismiss: nil)
+    }
+    
+    func openListSettings(for list: ShoppingList) {
+        coordinator.openShoppingListSettings(list, isNew: false, onDismiss: nil)
     }
 
     func openAbout() {

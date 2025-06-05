@@ -15,6 +15,8 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     @Published var thumbnails: [UIImage] = []
     @Published var selectedImageID: String?
     
+    var changesConfirmed: Bool = false
+    
     var isFullscreenImagePresented: Binding<Bool> {
         Binding(
             get: { self.selectedImageID != nil },
@@ -30,7 +32,11 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     private(set) var isNew: Bool
     
     let dataManager: DataManagerProtocol
-    private var coordinator: any AppCoordinatorProtocol
+    var coordinator: any AppCoordinatorProtocol
+    
+    var canConfirm: Bool {
+        !shoppingItem.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
     
     var status: ShoppingItemStatus {
         get { shoppingItem.status }
@@ -129,8 +135,6 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
             
             shoppingItem.imageIDs.append(baseName)
             await loadThumbnails()
-            await applyChanges()
-            
         } catch {
             print("Failed to save image: \(error)")
         }
@@ -143,15 +147,23 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         do {
             try await dataManager.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
             await loadThumbnails()
-            await applyChanges()
         } catch {
             print("Failed to delete image: \(error)")
         }
     }
     
-    func applyChanges() async {
+    func finalizeInput() {
         shoppingItem.prepareToSave()
-        try? await dataManager.addOrUpdateItem(shoppingItem)
+    }
+    
+    func didFinishEditing() async {
+        if changesConfirmed {
+            finalizeInput()
+            try? await dataManager.addOrUpdateItem(shoppingItem)
+        } else if isNew == true {
+            try? await dataManager.deleteItem(shoppingItem)
+        }
+        coordinator.sendEvent(.shoppingItemEdited)
     }
     
     // MARK: - Private

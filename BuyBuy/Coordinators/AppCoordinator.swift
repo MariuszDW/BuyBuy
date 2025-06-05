@@ -7,21 +7,21 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
-
+    let eventPublisher = PassthroughSubject<AppEvent, Never>()
     private let dependencies: AppDependencies
-    private(set) var shoppingListsViewModel: ShoppingListsViewModel!
-    
+        
     @MainActor
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
-        self.shoppingListsViewModel = ShoppingListsViewModel(
-            coordinator: self,
-            dataManager: dependencies.dataManager
-        )
+    }
+    
+    func sendEvent(_ event: AppEvent) {
+        eventPublisher.send(event)
     }
     
     @MainActor
@@ -43,23 +43,23 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         navigationPath.append(AppRoute.loyaltyCards)
     }
 
-    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: (() -> Void)? = nil) {
+    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: ((SheetRoute) -> Void)? = nil) {
         sheetPresenter.present(.shoppingListSettings(list, isNew), onDismiss: onDismiss)
     }
     
-    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: (() -> Void)? = nil) {
+    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: ((SheetRoute) -> Void)? = nil) {
         sheetPresenter.present(.shoppintItemDetails(item, isNew), onDismiss: onDismiss)
     }
     
-    func openShoppingItemImage(with imageID: String, onDismiss: (() -> Void)? = nil) {
+    func openShoppingItemImage(with imageID: String, onDismiss: ((SheetRoute) -> Void)? = nil) {
         sheetPresenter.present(.shoppingItemImage(imageID), onDismiss: onDismiss)
     }
     
-    func openLoyaltyCardPreview(with imageID: String?, onDismiss: (() -> Void)? = nil) {
+    func openLoyaltyCardPreview(with imageID: String?, onDismiss: ((SheetRoute) -> Void)? = nil) {
         sheetPresenter.present(.loyaltyCardPreview(imageID), onDismiss: onDismiss)
     }
     
-    func openLoyaltyCardDetails(_ card: LoyaltyCard, isNew: Bool, onDismiss: (() -> Void)? = nil) {
+    func openLoyaltyCardDetails(_ card: LoyaltyCard, isNew: Bool, onDismiss: ((SheetRoute) -> Void)? = nil) {
         sheetPresenter.present(.loyaltyCardDetails(card, isNew), onDismiss: onDismiss)
     }
     
@@ -86,14 +86,19 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     func view(for route: AppRoute) -> some View {
         switch route {
         case .shoppingLists:
-            ShoppingListsView(viewModel: shoppingListsViewModel)
+            ShoppingListsView(
+                viewModel: ShoppingListsViewModel(
+                    coordinator: self,
+                    dataManager: dependencies.dataManager
+                )
+            )
             
         case .shoppingList(let id):
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
                     listID: id,
                     dataManager: self.dependencies.dataManager,
-                    coordinator: self,
+                    coordinator: self
                 )
             )
             

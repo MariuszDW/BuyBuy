@@ -30,7 +30,6 @@ struct ShoppingItem: Identifiable, Hashable {
         }
         return price * quantity
     }
-    
 
     init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus, price: Double? = nil, quantity: Double? = nil, unit: ShoppingItemUnit? = nil, imageIDs: [String] = []) {
         self.id = id

@@ -11,7 +11,7 @@ import SwiftUI
 @MainActor
 final class ShoppingListViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
-    private var coordinator: any AppCoordinatorProtocol
+    var coordinator: any AppCoordinatorProtocol
     
     private let listID: UUID
     @Published var list: ShoppingList?
@@ -31,19 +31,6 @@ final class ShoppingListViewModel: ObservableObject {
     func loadList() async {
         let fetchedList = try? await dataManager.fetchList(with: listID)
         list = fetchedList
-        
-        // TODO: temporary test or order
-//        let pending = self.list?.items(for: .pending)
-//        let purchased = self.list?.items(for: .purchased)
-//        print("pending:")
-//        pending?.forEach { item in
-//            print("    \(item.name), order=\(item.order)")
-//        }
-//        print("purchased:")
-//        purchased?.forEach { item in
-//            print("    \(item.name), order=\(item.order)")
-//        }
-//        print("-------------")
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async {
@@ -154,19 +141,11 @@ final class ShoppingListViewModel: ObservableObject {
         
         let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: newItemStatus)
         
-        coordinator.openShoppingItemDetails(newItem, isNew: true, onDismiss: { [weak self] in
-            Task {
-                await self?.loadList()
-            }
-        })
+        coordinator.openShoppingItemDetails(newItem, isNew: true, onDismiss: nil)
     }
     
     func openItemDetails(item: ShoppingItem) {
-        coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: { [weak self] in
-            Task {
-                await self?.loadList()
-            }
-        })
+        coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: nil)
     }
     
     func openLoyaltyCards() {

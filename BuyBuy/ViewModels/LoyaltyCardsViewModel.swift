@@ -12,10 +12,10 @@ import SwiftUI
 final class LoyaltyCardsViewModel: ObservableObject {
     @Published var cards: [LoyaltyCard] = []
     @Published private(set) var thumbnails: [UUID: UIImage] = [:]
-
+    
     private let dataManager: DataManagerProtocol
-    private let coordinator: any AppCoordinatorProtocol
-
+    let coordinator: any AppCoordinatorProtocol
+    
     init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.dataManager = dataManager
         self.coordinator = coordinator
@@ -50,20 +50,12 @@ final class LoyaltyCardsViewModel: ObservableObject {
     
     func openNewCardDetails() {
         let newCard = LoyaltyCard(id: UUID(), name: "", imageID: nil)
-        coordinator.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: { [weak self] in
-            Task {
-                await self?.loadCards()
-            }
-        })
+        coordinator.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: nil)
     }
     
     func openCardDetails(at index: Int) {
         guard index < cards.count else { return }
-        coordinator.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: { [weak self] in
-            Task {
-                await self?.loadCards()
-            }
-        })
+        coordinator.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: nil)
     }
     
     private func loadThumbnails() async {

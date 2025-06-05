@@ -66,6 +66,15 @@ struct ShoppingListsView: View {
                 await viewModel.loadLists()
             }
         }
+        .onReceive(viewModel.coordinator.eventPublisher) { event in
+            switch event {
+            case .shoppingListEdited, .shoppingItemEdited:
+                Task {
+                    await viewModel.loadLists()
+                }
+            default: break
+            }
+        }
     }
     
     // MARK: - Subviews
@@ -162,7 +171,7 @@ struct ShoppingListsView: View {
                     Text("\(list.items(for: .purchased).count)")
                         .foregroundColor(ShoppingItemStatus.purchased.color)
                         .font(.regularDynamic(style: .callout))
-
+                    
                     ShoppingItemStatus.inactive.image
                         .font(.regularDynamic(style: .callout))
                         .foregroundColor(ShoppingItemStatus.inactive.color)
@@ -181,7 +190,7 @@ struct ShoppingListsView: View {
         HStack {
             Button(action: {
                 localEditMode = .inactive
-                viewModel.openListSettings()
+                viewModel.openNewListSettings()
             }) {
                 Label("Add list", systemImage: "plus.circle")
                     .font(.headline)
@@ -251,7 +260,7 @@ struct ShoppingListsView: View {
                         .scaledToFit()
                         .frame(width: listImageSize, height: listImageSize)
                         .foregroundColor(.bb.text.quaternary)
-
+                    
                     Image(systemName: "basket.fill")
                         .resizable()
                         .scaledToFit()
@@ -268,7 +277,7 @@ struct ShoppingListsView: View {
                     .font(.boldDynamic(style: .title2))
                     .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
-
+                
                 Text("Tap the \"Add list\" button to create a new list.")
                     .font(.boldDynamic(style: .headline))
                     .foregroundColor(.bb.text.tertiary)
@@ -280,7 +289,7 @@ struct ShoppingListsView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 40)
     }
-
+    
     // MARK: - Private
     
     private func startBasketAnimation() {
@@ -293,7 +302,7 @@ struct ShoppingListsView: View {
             }
         }
     }
-
+    
     private func stopBasketAnimation() {
         animationTimer?.invalidate()
         animationTimer = nil

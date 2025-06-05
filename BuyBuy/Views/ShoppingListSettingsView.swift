@@ -42,25 +42,53 @@ struct ShoppingListSettingsView: View {
             }
             .onChange(of: focusedField) { newValue in
                 Task {
-                    await viewModel.applyChanges()
+                    viewModel.finalizeInput()
                 }
             }
             .toolbar {
+                toolbarContent
+            }
+            .onDisappear {
+                Task {
+                    await viewModel.didFinishEditing()
+                }
+            }
+        }
+    }
+    
+    private var toolbarContent: some ToolbarContent {
+        Group {
+            if viewModel.isNew {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        Task {
+                            viewModel.changesConfirmed = false
+                            dismiss()
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("OK") {
+                        Task {
+                            viewModel.changesConfirmed = true
+                            dismiss()
+                        }
+                    }
+                    .disabled(!viewModel.canConfirm)
+                }
+            } else {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task {
-                            await viewModel.applyChanges()
+                            viewModel.changesConfirmed = true
                             dismiss()
                         }
                     } label: {
                         Image(systemName: "xmark.circle")
                             .accessibilityLabel("Close")
                     }
-                }
-            }
-            .onDisappear {
-                Task {
-                    await viewModel.applyChanges()
+                    .disabled(!viewModel.canConfirm)
                 }
             }
         }
@@ -145,7 +173,7 @@ struct ShoppingListSettingsView: View {
                             focusedField = nil
                             viewModel.shoppingList.color = color
                             Task {
-                                await viewModel.applyChanges()
+                                viewModel.finalizeInput()
                             }
                         }
                     }
@@ -186,7 +214,7 @@ struct ShoppingListSettingsView: View {
                     focusedField = nil
                     viewModel.shoppingList.icon = icon
                     Task {
-                        await viewModel.applyChanges()
+                        viewModel.finalizeInput()
                     }
                 }
             }

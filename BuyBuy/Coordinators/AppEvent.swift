@@ -1,0 +1,14 @@
+//
+//  AppEvent.swift
+//  BuyBuy
+//
+//  Created by MDW on 05/06/2025.
+//
+
+import Foundation
+
+enum AppEvent {
+    case loyaltyCardEdited
+    case shoppingItemEdited
+    case shoppingListEdited
+}

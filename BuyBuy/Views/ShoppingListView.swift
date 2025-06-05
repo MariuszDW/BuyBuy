@@ -34,6 +34,13 @@ struct ShoppingListView: View {
         }
         .navigationTitle(viewModel.list?.name ?? "")
         .navigationBarTitleDisplayMode(.large)
+        .onReceive(viewModel.coordinator.eventPublisher) { event in
+            if case .shoppingItemEdited = event {
+                Task {
+                    await viewModel.loadList()
+                }
+            }
+        }
         .task {
             await viewModel.loadList()
         }

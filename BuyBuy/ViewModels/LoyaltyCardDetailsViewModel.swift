@@ -15,15 +15,15 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     
     private(set) var isNew: Bool
     
+    var changesConfirmed: Bool = false
+    
     let dataManager: DataManagerProtocol
-    private var coordinator: any AppCoordinatorProtocol
+    var coordinator: any AppCoordinatorProtocol
     
     private var name: String {
         get { loyaltyCard.name }
         set { loyaltyCard.name = newValue }
     }
-    
-    // MARK: - Bindings
     
     var nameBinding: Binding<String> {
         Binding(get: { self.name }, set: { self.name = $0 })
@@ -36,9 +36,22 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
         self.dataManager = dataManager
     }
     
-    func applyChanges() async {
+    var canConfirm: Bool {
+        !loyaltyCard.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
+    func finalizeInput() {
         loyaltyCard.prepareToSave()
-        try? await dataManager.addOrUpdateLoyaltyCard(loyaltyCard)
+    }
+    
+    func onFinishEditing() async {
+        if changesConfirmed {
+            finalizeInput()
+            try? await dataManager.addOrUpdateLoyaltyCard(loyaltyCard)
+        } else if isNew == true {
+            try? await dataManager.deleteLoyaltyCard(loyaltyCard)
+        }
+        coordinator.sendEvent(.loyaltyCardEdited)
     }
     
     func loadCardThumbnail() async {

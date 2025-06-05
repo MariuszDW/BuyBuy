@@ -38,25 +38,53 @@ struct LoyaltyCardDetailsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: focusedField) { newValue in
                 Task {
-                    await viewModel.applyChanges()
-                }
-            }
-            .onDisappear {
-                Task {
-                    await viewModel.applyChanges()
+                    viewModel.finalizeInput()
                 }
             }
             .toolbar {
+                toolbarContent
+            }
+            .onDisappear {
+                Task {
+                    await viewModel.onFinishEditing()
+                }
+            }
+        }
+    }
+    
+    private var toolbarContent: some ToolbarContent {
+        Group {
+            if viewModel.isNew {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        Task {
+                            viewModel.changesConfirmed = false
+                            dismiss()
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("OK") {
+                        Task {
+                            viewModel.changesConfirmed = true
+                            dismiss()
+                        }
+                    }
+                    .disabled(!viewModel.canConfirm)
+                }
+            } else {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task {
-                            await viewModel.applyChanges()
+                            viewModel.changesConfirmed = true
                             dismiss()
                         }
                     } label: {
                         Image(systemName: "xmark.circle")
                             .accessibilityLabel("Close")
                     }
+                    .disabled(!viewModel.canConfirm)
                 }
             }
         }
