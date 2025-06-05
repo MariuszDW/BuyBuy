@@ -49,18 +49,12 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }
     
     func openNewCardDetails() {
-        // TODO: implement...
-//        let newItemStatus: ShoppingItemStatus = .pending
-//        let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
-//        let maxOrder = list?.items(for: newItemStatus).map(\.order).max() ?? 0
-//        
-//        let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: newItemStatus)
-//        
-//        coordinator.openShoppingItemDetails(newItem, isNew: true, onDismiss: { [weak self] in
-//            Task {
-//                await self?.loadList()
-//            }
-//        })
+        let newCard = LoyaltyCard(id: UUID(), name: "", imageID: nil)
+        coordinator.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: { [weak self] in
+            Task {
+                await self?.loadCards()
+            }
+        })
     }
     
     func openCardDetails(at index: Int) {
