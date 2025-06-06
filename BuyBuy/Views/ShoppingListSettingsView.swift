@@ -34,7 +34,7 @@ struct ShoppingListSettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 if focusedField != nil {
-                    hideKeyboardButton
+                    keyboardDismissButton
                 }
             }
             .task {
@@ -94,7 +94,7 @@ struct ShoppingListSettingsView: View {
         }
     }
     
-    private var hideKeyboardButton: some View {
+    private var keyboardDismissButton: some View {
         HStack {
             Spacer()
             Button {

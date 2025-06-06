@@ -33,7 +33,7 @@ struct ShoppingItemDetailsView: View {
         .background(Color.bb.sheet.background)
         .safeAreaInset(edge: .bottom) {
             if focusedField != nil {
-                hideKeyboardButton
+                keyboardDismissButton
             }
         }
         .task {
@@ -96,7 +96,7 @@ struct ShoppingItemDetailsView: View {
         }
     }
     
-    private var hideKeyboardButton: some View {
+    private var keyboardDismissButton: some View {
         HStack {
             Spacer()
             Button {

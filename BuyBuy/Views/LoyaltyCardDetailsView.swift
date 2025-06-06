@@ -26,7 +26,7 @@ struct LoyaltyCardDetailsView: View {
             .background(Color.bb.sheet.background)
             .safeAreaInset(edge: .bottom) {
                 if focusedField != nil {
-                    hideKeyboardButton
+                    keyboardDismissButton
                 }
             }
             .task {
@@ -90,7 +90,7 @@ struct LoyaltyCardDetailsView: View {
         }
     }
     
-    private var hideKeyboardButton: some View {
+    private var keyboardDismissButton: some View {
         HStack {
             Spacer()
             Button {
