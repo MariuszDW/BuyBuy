@@ -41,7 +41,7 @@ struct ShoppingItemDetailsView: View {
             await viewModel.loadThumbnails()
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Item details")
+        .navigationTitle("Shopping item")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: focusedField) { newValue in
             Task {

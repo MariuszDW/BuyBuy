@@ -30,7 +30,7 @@ struct ShoppingListSettingsView: View {
                 }
                 .padding()
             }
-            .navigationTitle("List settings")
+            .navigationTitle("Shopping list")
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 if focusedField != nil {
