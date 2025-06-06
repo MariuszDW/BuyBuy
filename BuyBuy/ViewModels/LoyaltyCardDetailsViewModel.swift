@@ -10,24 +10,15 @@ import SwiftUI
 
 @MainActor
 final class LoyaltyCardDetailsViewModel: ObservableObject {
-    @Published private var loyaltyCard: LoyaltyCard
-    @Published private var thumbnail: UIImage? = nil
+    @Published var loyaltyCard: LoyaltyCard
+    @Published var cardImage: UIImage? = nil
+    @Published var loadingProgress: Bool = false
     
     private(set) var isNew: Bool
-    
     var changesConfirmed: Bool = false
     
     let dataManager: DataManagerProtocol
     var coordinator: any AppCoordinatorProtocol
-    
-    private var name: String {
-        get { loyaltyCard.name }
-        set { loyaltyCard.name = newValue }
-    }
-    
-    var nameBinding: Binding<String> {
-        Binding(get: { self.name }, set: { self.name = $0 })
-    }
     
     init(card: LoyaltyCard, isNew: Bool = false, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.loyaltyCard = card
@@ -54,9 +45,42 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
         coordinator.sendEvent(.loyaltyCardEdited)
     }
     
-    func loadCardThumbnail() async {
-        if let imageID = loyaltyCard.imageID {
-            thumbnail = try? await dataManager.loadImage(baseFileName: imageID, type: .cardThumbnail)
+    func openCardPreview() {
+        guard let imageID = loyaltyCard.imageID else { return }
+        coordinator.openLoyaltyCardPreview(with: imageID, onDismiss: nil)
+    }
+    
+    func addCardImage(_ image: UIImage) async {
+        let baseName = UUID().uuidString
+        
+        do {
+            try await self.dataManager.saveImage(image, baseFileName: baseName, types: [.cardImage, .cardThumbnail])
+            loyaltyCard.imageID = baseName
+            await loadCardImage()
+        } catch {
+            print("Failed to save image: \(error)")
         }
+    }
+    
+    func deleteCardImage() async {
+        guard let imageID = loyaltyCard.imageID else { return }
+
+        do {
+            try await dataManager.deleteImage(baseFileName: imageID, types: [.cardImage, .cardThumbnail])
+            loyaltyCard.imageID = nil
+            await loadCardImage()
+        } catch {
+            print("Failed to delete image: \(error)")
+        }
+    }
+    
+    func loadCardImage() async {
+        if let imageID = loyaltyCard.imageID {
+            loadingProgress = true
+            cardImage = try? await dataManager.loadImage(baseFileName: imageID, type: .cardImage)
+        } else {
+            cardImage = nil
+        }
+        loadingProgress = false
     }
 }
