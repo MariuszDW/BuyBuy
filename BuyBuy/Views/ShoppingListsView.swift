@@ -56,9 +56,12 @@ struct ShoppingListsView: View {
                 primaryButton: .destructive(Text("Delete")) {
                     Task {
                         await viewModel.deleteList(id: list.id)
+                        listPendingDeletion = nil
                     }
                 },
-                secondaryButton: .cancel()
+                secondaryButton: .cancel() {
+                    listPendingDeletion = nil
+                }
             )
         }
         .onAppear {
