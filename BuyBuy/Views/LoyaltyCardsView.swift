@@ -149,7 +149,7 @@ struct LoyaltyCardsView: View {
     }
     
     private var cardActionMenu: some View {
-        VStack(alignment: .leading, spacing: 32) {
+        VStack(alignment: .leading, spacing: 24) {
             Button {
                 if let index = showActionsForIndex {
                     viewModel.openCardPreview(at: index)
