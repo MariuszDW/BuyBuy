@@ -161,19 +161,19 @@ extension MockDataRepository {
     static let cardUUID6 = UUID(uuidString: "22222222-2222-2222-2222-222222222226")!
     static let cardUUID7 = UUID(uuidString: "22222222-2222-2222-2222-222222222227")!
     
-    static let card1 = LoyaltyCard(id: cardUUID1, name: "Lidl", imageID: nil)
+    static let card1 = LoyaltyCard(id: cardUUID1, name: "Lidl", imageID: nil, order: 0)
     
-    static let card2 = LoyaltyCard(id: cardUUID2, name: "Biedronka", imageID: nil)
+    static let card2 = LoyaltyCard(id: cardUUID2, name: "Biedronka", imageID: nil, order: 1)
     
-    static let card3 = LoyaltyCard(id: cardUUID3, name: "Auchan", imageID: nil)
+    static let card3 = LoyaltyCard(id: cardUUID3, name: "Auchan", imageID: nil, order: 2)
     
-    static let card4 = LoyaltyCard(id: cardUUID4, name: "BuyBuy Super Shop", imageID: nil)
+    static let card4 = LoyaltyCard(id: cardUUID4, name: "BuyBuy Super Shop", imageID: nil, order: 3)
     
-    static let card5 = LoyaltyCard(id: cardUUID5, name: "Carrefour", imageID: nil)
+    static let card5 = LoyaltyCard(id: cardUUID5, name: "Carrefour", imageID: nil, order: 4)
     
-    static let card6 = LoyaltyCard(id: cardUUID6, name: "Kaufland", imageID: nil)
+    static let card6 = LoyaltyCard(id: cardUUID6, name: "Kaufland", imageID: nil, order: 5)
     
-    static let card7 = LoyaltyCard(id: cardUUID7, name: "Castorama", imageID: nil)
+    static let card7 = LoyaltyCard(id: cardUUID7, name: "Castorama", imageID: nil, order: 6)
     
     static let allCards: [LoyaltyCard] = [card1, card2, card3, card4, card5, card6, card7]
 }

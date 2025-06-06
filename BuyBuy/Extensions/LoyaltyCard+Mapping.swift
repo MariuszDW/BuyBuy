@@ -12,6 +12,7 @@ extension LoyaltyCard {
         self.id = entity.id ?? UUID()
         self.name = entity.name ?? ""
         self.imageID = entity.imageID
+        self.order = Int(entity.order)
     }
 }
 
@@ -20,5 +21,6 @@ extension LoyaltyCardEntity {
         self.id = model.id
         self.name = model.name
         self.imageID = model.imageID
+        self.order = Int64(model.order)
     }
 }

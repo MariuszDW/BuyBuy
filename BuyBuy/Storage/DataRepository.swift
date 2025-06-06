@@ -231,6 +231,7 @@ final actor DataRepository: DataRepositoryProtocol {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
+            request.sortDescriptors = [NSSortDescriptor(keyPath: \LoyaltyCardEntity.order, ascending: true)]
             let entities = try context.fetch(request)
             return entities.map(LoyaltyCard.init)
         }

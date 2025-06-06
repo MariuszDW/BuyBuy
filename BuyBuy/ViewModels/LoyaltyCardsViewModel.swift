@@ -47,7 +47,8 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }
     
     func openNewCardDetails() {
-        let newCard = LoyaltyCard(id: UUID(), name: "", imageID: nil)
+        let maxOrder = cards.map(\.order).max() ?? 0
+        let newCard = LoyaltyCard(id: UUID(), name: "", imageID: nil, order: maxOrder + 1)
         coordinator.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: nil)
     }
     

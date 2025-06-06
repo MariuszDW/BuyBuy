@@ -11,6 +11,7 @@ struct LoyaltyCard: Identifiable {
     let id: UUID
     var name: String
     var imageID: String?
+    var order: Int
     
     mutating func prepareToSave() {
         name = name.trimmingCharacters(in: .whitespacesAndNewlines)
