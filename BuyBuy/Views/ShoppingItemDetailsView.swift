@@ -176,7 +176,7 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var nameField: some View {
-        TextField("name", text: viewModel.nameBinding, axis: .vertical)
+        TextField("name", text: $viewModel.name, axis: .vertical)
             .lineLimit(4)
             .multilineTextAlignment(.leading)
             .font(.boldDynamic(style: .title3))
@@ -187,7 +187,7 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var noteField: some View {
-        TextField("note", text: viewModel.noteBinding, axis: .vertical)
+        TextField("note", text: $viewModel.note, axis: .vertical)
             .lineLimit(8)
             .multilineTextAlignment(.leading)
             .font(.regularDynamic(style: .body))
@@ -204,7 +204,7 @@ struct ShoppingItemDetailsView: View {
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
             
-            TextField(viewModel.quantityPlaceholder, value: viewModel.quantityBinding, format: .number)
+            TextField(viewModel.quantityPlaceholder, value: $viewModel.quantity, format: .number)
                 .keyboardType(.decimalPad)
                 .padding(10)
                 .background(Color.bb.sheet.background)
@@ -226,7 +226,7 @@ struct ShoppingItemDetailsView: View {
                 .padding(.leading, 4)
             
             HStack(spacing: 8) {
-                TextField(viewModel.unitPlaceholder, text: viewModel.unitBinding)
+                TextField(viewModel.unitPlaceholder, text: $viewModel.unit)
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .padding(10)
@@ -298,7 +298,7 @@ struct ShoppingItemDetailsView: View {
                 .padding(.leading, 4)
             
             TextField(viewModel.pricePerUnitPlaceholder,
-                      value: viewModel.priceBinding,
+                      value: $viewModel.price,
                       format: .number.precision(.fractionLength(NumberFormatter.priceMinPrecision...NumberFormatter.priceMaxPrecision)))
             .keyboardType(.decimalPad)
             .padding(10)

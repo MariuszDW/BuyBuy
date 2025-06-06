@@ -11,7 +11,7 @@ import SwiftUI
 @MainActor
 final class ShoppingItemDetailsViewModel: ObservableObject {
     /// The shopping item being edited.
-    @Published private var shoppingItem: ShoppingItem
+    @Published var shoppingItem: ShoppingItem
     @Published var thumbnails: [UIImage] = []
     @Published var selectedImageID: String?
     
@@ -43,17 +43,17 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         set { shoppingItem.status = newValue }
     }
     
-    private var name: String {
+    var name: String {
         get { shoppingItem.name }
         set { shoppingItem.name = newValue }
     }
     
-    private var note: String {
+    var note: String {
         get { shoppingItem.note }
         set { shoppingItem.note = newValue }
     }
     
-    private var quantity: Double? {
+    var quantity: Double? {
         get { shoppingItem.quantity }
         set { shoppingItem.quantity = newValue }
     }
@@ -67,35 +67,13 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         }
     }
     
-    private var price: Double? {
+    var price: Double? {
         get { shoppingItem.price }
         set { shoppingItem.price = newValue }
     }
     
     var totalPriceString: String {
         shoppingItem.totalPrice?.priceFormat ?? "N/A"
-    }
-    
-    // MARK: - Bindings
-    
-    var nameBinding: Binding<String> {
-        Binding(get: { self.name }, set: { self.name = $0 })
-    }
-    
-    var noteBinding: Binding<String> {
-        Binding(get: { self.note }, set: { self.note = $0 })
-    }
-    
-    var quantityBinding: Binding<Double?> {
-        Binding(get: { self.quantity }, set: { self.quantity = $0 })
-    }
-    
-    var unitBinding: Binding<String> {
-        Binding(get: { self.unit }, set: { self.unit = $0 })
-    }
-    
-    var priceBinding: Binding<Double?> {
-        Binding(get: { self.price }, set: { self.price = $0 })
     }
     
     var quantityPlaceholder: String {
