@@ -11,12 +11,16 @@ struct LoyaltyCardsView: View {
     @StateObject var viewModel: LoyaltyCardsViewModel
     @State private var showActionsForIndex: Int? = nil
     @State private var cardPendingDeletion: LoyaltyCard?
+    @State private var isEditMode: EditMode = .inactive
+    @State private var showingListView: Bool = false
     
     private static let tileSize: CGFloat = 150
 
     var body: some View {
         VStack {
-            if !viewModel.cards.isEmpty {
+            if showingListView {
+                listView
+            } else if !viewModel.cards.isEmpty {
                 cardsList
             } else {
                 emptyView
@@ -48,10 +52,60 @@ struct LoyaltyCardsView: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    withAnimation {
+                        if showingListView {
+                            isEditMode = .inactive
+                            showingListView = false
+                        } else {
+                            isEditMode = .active
+                            showingListView = true
+                        }
+                    }
+                } label: {
+                    Image(systemName: showingListView ? "checkmark" : "pencil.circle")
+                        .imageScale(.large)
+                }
+                .disabled(viewModel.cards.isEmpty)
+                .accessibilityLabel(showingListView ? "Done Editing" : "Edit")
+            }
+        }
         .navigationTitle(viewModel.cards.isEmpty ? "" : "Loyalty Cards")
         .task {
             await viewModel.loadCards()
         }
+    }
+    
+    private var listView: some View {
+        List {
+            ForEach(viewModel.cards) { card in
+                HStack {
+                    if let thumbnail = viewModel.thumbnail(for: card.id) {
+                        Image(uiImage: thumbnail)
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .cornerRadius(4)
+                    } else {
+                        Image(systemName: "creditcard")
+                            .frame(width: 40, height: 40)
+                    }
+                    Text(card.name)
+                }
+            }
+            .onMove { indices, newOffset in
+                Task {
+                    await viewModel.moveCard(from: indices, to: newOffset)
+                }
+            }
+            .onDelete { indexSet in
+                Task {
+                    await viewModel.deleteCards(at: indexSet)
+                }
+            }
+        }
+        .environment(\.editMode, $isEditMode)
     }
     
     private var cardsList: some View {
@@ -141,6 +195,7 @@ struct LoyaltyCardsView: View {
                 Label("Add card", systemImage: "plus.circle")
                     .font(.headline)
             }
+            .disabled(isEditMode.isEditing)
 
             Spacer()
         }

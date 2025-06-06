@@ -30,6 +30,23 @@ final class LoyaltyCardsViewModel: ObservableObject {
     func thumbnail(for cardID: UUID) -> UIImage? {
         thumbnails[cardID]
     }
+    
+    func moveCard(from source: IndexSet, to destination: Int) async {
+        var updatedCards = cards
+        updatedCards.move(fromOffsets: source, toOffset: destination)
+
+        let reorderedCards = updatedCards.enumerated().map { index, card in
+            var updatedCard = card
+            updatedCard.order = index
+            return updatedCard
+        }
+
+        for card in reorderedCards {
+            try? await dataManager.addOrUpdateLoyaltyCard(card)
+        }
+
+        await loadCards()
+    }
 
     func openCardPreview(_ card: LoyaltyCard) {
         coordinator.openLoyaltyCardPreview(with: card.imageID, onDismiss: nil)
@@ -43,6 +60,14 @@ final class LoyaltyCardsViewModel: ObservableObject {
     
     func deleteCard(with id: UUID) async {
         try? await dataManager.deleteLoyaltyCard(with: id)
+        await loadCards()
+    }
+    
+    func deleteCards(at indexSet: IndexSet) async {
+        for index in indexSet {
+            let card = cards[index]
+            try? await dataManager.deleteLoyaltyCard(with: card.id)
+        }
         await loadCards()
     }
     
