@@ -10,6 +10,7 @@ import SwiftUI
 struct LoyaltyCardsView: View {
     @StateObject var viewModel: LoyaltyCardsViewModel
     @State private var showActionsForIndex: Int? = nil
+    @State private var cardPendingDeletion: LoyaltyCard?
     
     private static let tileSize: CGFloat = 150
 
@@ -24,6 +25,21 @@ struct LoyaltyCardsView: View {
             Spacer()
 
             bottomPanel
+        }
+        .alert(item: $cardPendingDeletion) { card in
+            return Alert(
+                title: Text("Delete loyalty card \"\(card.name)\"?"),
+                message: Text("Are you sure you want to delete it?"),
+                primaryButton: .destructive(Text("Delete")) {
+                    Task {
+                        await viewModel.deleteCard(with: card.id)
+                        cardPendingDeletion = nil
+                    }
+                },
+                secondaryButton: .cancel() {
+                    cardPendingDeletion = nil
+                }
+            )
         }
         .onReceive(viewModel.coordinator.eventPublisher) { event in
             if case .loyaltyCardEdited = event {
@@ -82,7 +98,7 @@ struct LoyaltyCardsView: View {
                 }
             })
         ) {
-            imageActionMenu
+            cardActionMenu
                 .presentationCompactAdaptation(.popover)
         }
     }
@@ -121,7 +137,6 @@ struct LoyaltyCardsView: View {
         HStack {
             Button(action: {
                 viewModel.openNewCardDetails()
-                print("TODO: Add card")
             }) {
                 Label("Add card", systemImage: "plus.circle")
                     .font(.headline)
@@ -133,7 +148,7 @@ struct LoyaltyCardsView: View {
         .background(Color.bb.background)
     }
     
-    private var imageActionMenu: some View {
+    private var cardActionMenu: some View {
         VStack(alignment: .leading, spacing: 32) {
             Button {
                 if let index = showActionsForIndex {
@@ -164,12 +179,9 @@ struct LoyaltyCardsView: View {
             }
             
             Button {
-                if let index = showActionsForIndex {
-                    // TODO: zrobic jakies potwierdzenie usuniecia
-                    Task {
-                        await viewModel.deleteCard(at: index)
-                        showActionsForIndex = nil
-                    }
+                if let index = showActionsForIndex, index < viewModel.cards.count {
+                    cardPendingDeletion = viewModel.cards[index]
+                    showActionsForIndex = nil
                 }
             } label: {
                 HStack {

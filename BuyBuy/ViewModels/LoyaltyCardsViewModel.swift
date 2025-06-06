@@ -41,11 +41,9 @@ final class LoyaltyCardsViewModel: ObservableObject {
         }
     }
     
-    func deleteCard(at index: Int) async {
-        if index < cards.count {
-            try? await dataManager.deleteLoyaltyCard(with: cards[index].id)
-            await loadCards()
-        }
+    func deleteCard(with id: UUID) async {
+        try? await dataManager.deleteLoyaltyCard(with: id)
+        await loadCards()
     }
     
     func openNewCardDetails() {
