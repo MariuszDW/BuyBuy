@@ -89,6 +89,7 @@ actor ImageStorage: ImageStorageProtocol {
         
         let fileName = type.fileName(for: baseFileName)
         try await writeData(data, to: fileName, in: type)
+        print("Image \(fileName) saved.")
     }
     
     func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage {
@@ -96,7 +97,7 @@ actor ImageStorage: ImageStorageProtocol {
         
         if type.useCache {
             if let cached = cache.object(forKey: cacheKey) {
-                print("Thumbnail \(baseFileName) loaded from cache.")
+                print("Image \(baseFileName) loaded from cache.")
                 return cached
             }
         }
@@ -109,8 +110,9 @@ actor ImageStorage: ImageStorageProtocol {
         
         if type.useCache {
             cache.setObject(image, forKey: cacheKey)
-            print("Thumbnail \(baseFileName) loaded.")
         }
+        
+        print("Image \(baseFileName) loaded.")
         
         return image
     }
@@ -118,6 +120,7 @@ actor ImageStorage: ImageStorageProtocol {
     func deleteImage(baseFileName: String, type: ImageType) async throws {
         let fileName = type.fileName(for: baseFileName)
         try await deleteData(fileName: fileName, in: type)
+        print("Image \(fileName) deleted.")
     }
     
     func deleteImage(baseFileName: String, types: [ImageType]) async throws {
