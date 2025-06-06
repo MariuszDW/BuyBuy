@@ -48,7 +48,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: ((SheetRoute) -> Void)? = nil) {
-        sheetPresenter.present(.shoppintItemDetails(item, isNew), onDismiss: onDismiss)
+        sheetPresenter.present(.shoppingItemDetails(item, isNew), onDismiss: onDismiss)
     }
     
     func openShoppingItemImage(with imageID: String, onDismiss: ((SheetRoute) -> Void)? = nil) {
@@ -129,7 +129,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 )
             )
             
-        case let .shoppintItemDetails(item, isNew):
+        case let .shoppingItemDetails(item, isNew):
             ShoppingItemDetailsView(
                 viewModel: ShoppingItemDetailsViewModel(
                     item: item,

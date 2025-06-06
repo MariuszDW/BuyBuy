@@ -9,7 +9,7 @@ import SwiftUI
 
 enum SheetRoute {
     case shoppingListSettings(ShoppingList, Bool)
-    case shoppintItemDetails(ShoppingItem, Bool)
+    case shoppingItemDetails(ShoppingItem, Bool)
     case shoppingItemImage(String)
     case about
     case loyaltyCardPreview(String?)
