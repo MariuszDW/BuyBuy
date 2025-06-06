@@ -10,18 +10,18 @@ import SwiftUI
 struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
     
-    @State private var localEditMode: EditMode = .inactive
+    @State private var isEditMode: EditMode = .inactive
     
     var body: some View {
         VStack {
             if let list = viewModel.list, !list.items.isEmpty {
                 listView(list)
-                    .environment(\.editMode, $localEditMode)
+                    .environment(\.editMode, $isEditMode)
                     .listStyle(.grouped)
             } else {
                 emptyView()
                     .onAppear {
-                        localEditMode = .inactive
+                        isEditMode = .inactive
                     }
             }
             
@@ -65,7 +65,7 @@ struct ShoppingListView: View {
         ForEach(items) { item in
             ShoppingItemRow(
                 item: item,
-                disabled: localEditMode == .active,
+                disabled: isEditMode == .active,
                 onToggleStatus: { [weak viewModel] toggledItem in
                     Task {
                         await viewModel?.toggleStatus(for: toggledItem)
@@ -142,17 +142,17 @@ struct ShoppingListView: View {
                     Image(systemName: "creditcard.circle")
                 }
                 .accessibilityLabel("Loyalty cards")
-                .disabled(localEditMode.isEditing)
+                .disabled(isEditMode.isEditing)
                 
                 Button {
                     withAnimation {
-                        localEditMode = (localEditMode == .active) ? .inactive : .active
+                        isEditMode = (isEditMode == .active) ? .inactive : .active
                     }
                 } label: {
-                    Image(systemName: localEditMode == .active ? "checkmark" : "pencil.circle")
+                    Image(systemName: isEditMode == .active ? "checkmark" : "pencil.circle")
                 }
                 .disabled(viewModel.list?.items.isEmpty ?? true)
-                .accessibilityLabel(localEditMode == .active ? "Done Editing" : "Edit")
+                .accessibilityLabel(isEditMode == .active ? "Done Editing" : "Edit")
             }
         }
     }
@@ -161,14 +161,14 @@ struct ShoppingListView: View {
         HStack {
             Button(action: {
                 if let listID = viewModel.list?.id {
-                    localEditMode = .inactive
+                    isEditMode = .inactive
                     viewModel.openNewItemDetails(listID: listID)
                 }
             }) {
                 Label("Add item", systemImage: "plus.circle")
                     .font(.headline)
             }
-            .disabled(localEditMode.isEditing)
+            .disabled(isEditMode.isEditing)
             
             Spacer()
         }

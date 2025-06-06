@@ -10,7 +10,7 @@ import SwiftUI
 struct ShoppingListsView: View {
     @StateObject var viewModel: ShoppingListsViewModel
     
-    @State private var localEditMode: EditMode = .inactive
+    @State private var isEditMode: EditMode = .inactive
     @State private var listPendingDeletion: ShoppingList?
     @State private var basketAngle: Double = 0
     @State private var animationTimer: Timer? = nil
@@ -23,11 +23,11 @@ struct ShoppingListsView: View {
         VStack {
             if !viewModel.shoppingLists.isEmpty {
                 shoppingListsView
-                    .environment(\.editMode, $localEditMode)
+                    .environment(\.editMode, $isEditMode)
             } else {
                 emptyView(angle: basketAngle)
                     .onAppear {
-                        localEditMode = .inactive
+                        isEditMode = .inactive
                         startBasketAnimation()
                     }
                     .onDisappear {
@@ -43,7 +43,7 @@ struct ShoppingListsView: View {
         .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.shoppingLists) { newValue in
             if newValue.isEmpty {
-                localEditMode = .inactive
+                isEditMode = .inactive
             }
         }
         .toolbar {
@@ -86,7 +86,7 @@ struct ShoppingListsView: View {
         List {
             ForEach(viewModel.shoppingLists.filter { $0.id != listPendingDeletion?.id }) { list in
                 Group {
-                    if localEditMode.isEditing {
+                    if isEditMode.isEditing {
                         listRow(for: list)
                     } else {
                         NavigationLink(value: AppRoute.shoppingList(list.id)) {
@@ -192,13 +192,13 @@ struct ShoppingListsView: View {
     private var bottomPanel: some View {
         HStack {
             Button(action: {
-                localEditMode = .inactive
+                isEditMode = .inactive
                 viewModel.openNewListSettings()
             }) {
                 Label("Add list", systemImage: "plus.circle")
                     .font(.headline)
             }
-            .disabled(localEditMode.isEditing)
+            .disabled(isEditMode.isEditing)
             
             Spacer()
         }
@@ -215,7 +215,7 @@ struct ShoppingListsView: View {
                     Image(systemName: "questionmark.circle")
                 }
                 .accessibilityLabel("About")
-                .disabled(localEditMode.isEditing)
+                .disabled(isEditMode.isEditing)
             }
             
             ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -225,26 +225,26 @@ struct ShoppingListsView: View {
                     Image(systemName: "creditcard.circle")
                 }
                 .accessibilityLabel("Loyalty cards")
-                .disabled(localEditMode.isEditing)
+                .disabled(isEditMode.isEditing)
                 
                 Button {
                     withAnimation {
-                        localEditMode = (localEditMode == .active) ? .inactive : .active
+                        isEditMode = (isEditMode == .active) ? .inactive : .active
                     }
                 } label: {
-                    Image(systemName: localEditMode == .active ? "checkmark" : "pencil.circle")
+                    Image(systemName: isEditMode == .active ? "checkmark" : "pencil.circle")
                 }
                 .disabled(viewModel.shoppingLists.isEmpty)
-                .accessibilityLabel(localEditMode == .active ? "Done Editing" : "Edit")
+                .accessibilityLabel(isEditMode == .active ? "Done Editing" : "Edit")
                 
                 Button {
-                    localEditMode = .inactive
+                    isEditMode = .inactive
                     viewModel.openSettings()
                 } label: {
                     Image(systemName: "gearshape")
                 }
                 .accessibilityLabel("Settings")
-                .disabled(localEditMode.isEditing)
+                .disabled(isEditMode.isEditing)
             }
         }
     }
