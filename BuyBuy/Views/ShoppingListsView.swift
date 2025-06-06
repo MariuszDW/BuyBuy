@@ -208,24 +208,26 @@ struct ShoppingListsView: View {
     
     private var toolbarContent: some ToolbarContent {
         Group {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    viewModel.openAbout()
-                } label: {
-                    Image(systemName: "questionmark.circle")
+            if !isEditMode.isEditing {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        viewModel.openAbout()
+                    } label: {
+                        Image(systemName: "questionmark.circle")
+                    }
+                    .accessibilityLabel("About")
                 }
-                .accessibilityLabel("About")
-                .disabled(isEditMode.isEditing)
             }
             
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button {
-                    viewModel.openLoyaltyCards()
-                } label: {
-                    Image(systemName: "creditcard.circle")
+                if !isEditMode.isEditing {
+                    Button {
+                        viewModel.openLoyaltyCards()
+                    } label: {
+                        Image(systemName: "creditcard.circle")
+                    }
+                    .accessibilityLabel("Loyalty cards")
                 }
-                .accessibilityLabel("Loyalty cards")
-                .disabled(isEditMode.isEditing)
                 
                 Button {
                     withAnimation {
@@ -237,14 +239,15 @@ struct ShoppingListsView: View {
                 .disabled(viewModel.shoppingLists.isEmpty)
                 .accessibilityLabel(isEditMode == .active ? "Done Editing" : "Edit")
                 
-                Button {
-                    isEditMode = .inactive
-                    viewModel.openSettings()
-                } label: {
-                    Image(systemName: "gearshape")
+                if !isEditMode.isEditing {
+                    Button {
+                        isEditMode = .inactive
+                        viewModel.openSettings()
+                    } label: {
+                        Image(systemName: "gearshape")
+                    }
+                    .accessibilityLabel("Settings")
                 }
-                .accessibilityLabel("Settings")
-                .disabled(isEditMode.isEditing)
             }
         }
     }

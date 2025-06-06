@@ -136,13 +136,14 @@ struct ShoppingListView: View {
     private var toolbarContent: some ToolbarContent {
         Group {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button {
-                    viewModel.openLoyaltyCards()
-                } label: {
-                    Image(systemName: "creditcard.circle")
+                if !isEditMode.isEditing {
+                    Button {
+                        viewModel.openLoyaltyCards()
+                    } label: {
+                        Image(systemName: "creditcard.circle")
+                    }
+                    .accessibilityLabel("Loyalty cards")
                 }
-                .accessibilityLabel("Loyalty cards")
-                .disabled(isEditMode.isEditing)
                 
                 Button {
                     withAnimation {
