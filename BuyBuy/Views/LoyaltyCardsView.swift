@@ -88,10 +88,20 @@ struct LoyaltyCardsView: View {
                             .frame(width: 40, height: 40)
                             .cornerRadius(4)
                     } else {
-                        Image(systemName: "creditcard")
+                        Image(systemName: "creditcard.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .padding(6)
                             .frame(width: 40, height: 40)
+                            .foregroundColor(.bb.text.quaternary)
+                            .background(Color.bb.background2)
+                            .cornerRadius(4)
                     }
                     Text(card.name)
+                        .foregroundColor(.bb.text.primary)
+                        .font(.regularDynamic(style: .headline))
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(5)
                 }
             }
             .onMove { indices, newOffset in
