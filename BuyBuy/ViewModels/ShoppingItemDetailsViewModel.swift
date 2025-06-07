@@ -55,7 +55,12 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     var quantity: Double? {
         get { shoppingItem.quantity }
-        set { shoppingItem.quantity = newValue }
+        set {
+            shoppingItem.quantity = newValue
+            if newValue != nil && shoppingItem.unit == nil {
+                shoppingItem.unit = ShoppingItemUnit(MeasuredUnit.default)
+            }
+        }
     }
     
     var unit: String {

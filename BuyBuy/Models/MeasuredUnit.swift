@@ -89,6 +89,7 @@ enum MeasuredUnit: String, Codable, CaseIterable {
     case mile
     
     static private let pieceSymbol = "x"
+    static let `default`: MeasuredUnit = .piece
 
     private var dimension: Dimension? {
         switch self {
