@@ -75,6 +75,7 @@ actor ImageStorage: ImageStorageProtocol {
     private let cache = NSCache<NSString, UIImage>()
     
     func cleanCache() async {
+        print("Clean image cache.")
         cache.removeAllObjects()
     }
     

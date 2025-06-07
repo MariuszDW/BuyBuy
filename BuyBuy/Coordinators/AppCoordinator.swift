@@ -80,6 +80,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             navigationPath.removeLast()
         }
     }
+    
+    func handleMemoryWarning() {
+        print("Received memory warning")
+        let dataManager = dependencies.dataManager
+        Task { @MainActor in
+            await dataManager.cleanImageCache()
+        }
+    }
 
     @MainActor
     @ViewBuilder
