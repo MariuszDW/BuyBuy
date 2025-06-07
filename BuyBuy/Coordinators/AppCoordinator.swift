@@ -51,8 +51,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         sheetPresenter.present(.shoppingItemDetails(item, isNew), onDismiss: onDismiss)
     }
     
-    func openShoppingItemImage(with imageID: String, onDismiss: ((SheetRoute) -> Void)? = nil) {
-        sheetPresenter.present(.shoppingItemImage(imageID), onDismiss: onDismiss)
+    func openShoppingItemImage(with imageIDs: [String], index: Int, onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.shoppingItemImage(imageIDs, index), onDismiss: onDismiss)
     }
     
     func openLoyaltyCardPreview(with imageID: String?, onDismiss: ((SheetRoute) -> Void)? = nil) {
@@ -147,19 +147,25 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 )
             )
             
-        case let .shoppingItemImage(imageID):
+        case let .shoppingItemImage(imageIDs, index):
             FullScreenImageView(
                 viewModel: FullScreenImageViewModel(
-                    imageID: imageID,
+                    imageIDs: imageIDs,
+                    startIndex: index,
                     imageType: .itemImage,
                     dataManager: self.dependencies.dataManager
                 )
             )
             
         case let .loyaltyCardPreview(imageID):
+            let imageIDs: [String] = {
+                guard let imageID = imageID else { return [] }
+                return [imageID]
+            }()
             FullScreenImageView(
                 viewModel: FullScreenImageViewModel(
-                    imageID: imageID,
+                    imageIDs: imageIDs,
+                    startIndex: 0,
                     imageType: .cardImage,
                     dataManager: self.dependencies.dataManager
                 )

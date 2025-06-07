@@ -107,7 +107,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func openImagePreview(at index: Int) {
         guard index >= 0 && index < shoppingItem.imageIDs.count else { return }
-        coordinator.openShoppingItemImage(with: shoppingItem.imageIDs[index], onDismiss: nil)
+        coordinator.openShoppingItemImage(with: shoppingItem.imageIDs, index: index, onDismiss: nil)
     }
     
     func addImage(_ image: UIImage) async {

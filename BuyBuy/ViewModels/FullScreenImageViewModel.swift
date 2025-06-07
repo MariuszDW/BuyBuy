@@ -16,30 +16,53 @@ enum ImageLoadState {
 @MainActor
 final class FullScreenImageViewModel: ObservableObject {
     @Published var state: ImageLoadState = .loading
+    @Published private(set) var currentIndex: Int = 0
 
-    let imageID: String?
+    let imageIDs: [String]
     let imageType: ImageType
     private let dataManager: DataManagerProtocol
 
-    init(imageID: String?, imageType: ImageType, dataManager: DataManagerProtocol) {
-        self.imageID = imageID
+    init(imageIDs: [String], startIndex: Int = 0, imageType: ImageType, dataManager: DataManagerProtocol) {
+        self.imageIDs = imageIDs
         self.imageType = imageType
         self.dataManager = dataManager
+        self.currentIndex = startIndex
         Task {
-            await loadImage()
+            await loadImage(at: currentIndex)
         }
     }
 
-    func loadImage() async {
-        guard let imageID = imageID else {
+    var hasPrevious: Bool {
+        currentIndex > 0
+    }
+
+    var hasNext: Bool {
+        currentIndex < imageIDs.count - 1
+    }
+
+    func loadImage(at index: Int) async {
+        guard imageIDs.indices.contains(index) else {
             state = .failure
             return
         }
+        state = .loading
         do {
-            let image = try await dataManager.loadImage(baseFileName: imageID, type: imageType)
+            let image = try await dataManager.loadImage(baseFileName: imageIDs[index], type: imageType)
             state = .success(image)
         } catch {
             state = .failure
         }
+    }
+
+    func showNextImage() {
+        guard hasNext else { return }
+        currentIndex += 1
+        Task { await loadImage(at: currentIndex) }
+    }
+
+    func showPreviousImage() {
+        guard hasPrevious else { return }
+        currentIndex -= 1
+        Task { await loadImage(at: currentIndex) }
     }
 }

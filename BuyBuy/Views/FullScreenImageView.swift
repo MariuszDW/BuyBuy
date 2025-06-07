@@ -10,7 +10,7 @@ import SwiftUI
 struct FullScreenImageView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: FullScreenImageViewModel
-    @State private var canDismissByDrag = true
+    @State private var isZoomedOut = true
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -19,12 +19,28 @@ struct FullScreenImageView: View {
                 .gesture(
                     DragGesture()
                         .onEnded { value in
-                            if canDismissByDrag && value.translation.height > 100 {
+                            guard isZoomedOut else { return }
+                            
+                            let horizontal = value.translation.width
+                            let vertical = value.translation.height
+                            
+                            // Swipe down
+                            if vertical > 100 && abs(vertical) > abs(horizontal) {
                                 dismiss()
+                            }
+                            
+                            // Swipe left = next
+                            else if horizontal < -100 && abs(horizontal) > abs(vertical) {
+                                viewModel.showNextImage()
+                            }
+                            
+                            // Swipe right = previous
+                            else if horizontal > 100 && abs(horizontal) > abs(vertical) {
+                                viewModel.showPreviousImage()
                             }
                         }
                 )
-
+            
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark.circle")
                     .font(.system(size: 30))
@@ -47,7 +63,7 @@ struct FullScreenImageView: View {
         case .success(let image):
             ZoomableImageView(
                 image: image,
-                canDismissByDrag: $canDismissByDrag
+                isZoomedOut: $isZoomedOut
             )
 
         case .failure:
@@ -86,7 +102,7 @@ struct FullScreenImageView: View {
 #Preview("Light") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
-    let viewModel = FullScreenImageViewModel(imageID: UUID().uuidString,
+    let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
                                              imageType: .itemImage,
                                              dataManager: dataManager)
     FullScreenImageView(viewModel: viewModel)
@@ -96,7 +112,7 @@ struct FullScreenImageView: View {
 #Preview("Dark") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
-    let viewModel = FullScreenImageViewModel(imageID: UUID().uuidString,
+    let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
                                              imageType: .itemImage,
                                              dataManager: dataManager)
     FullScreenImageView(viewModel: viewModel)
@@ -106,7 +122,7 @@ struct FullScreenImageView: View {
 #Preview("Light/empty") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
-    let viewModel = FullScreenImageViewModel(imageID: nil,
+    let viewModel = FullScreenImageViewModel(imageIDs: [],
                                              imageType: .itemImage,
                                              dataManager: dataManager)
     FullScreenImageView(viewModel: viewModel)
@@ -116,7 +132,7 @@ struct FullScreenImageView: View {
 #Preview("Dark/empty") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
-    let viewModel = FullScreenImageViewModel(imageID: nil,
+    let viewModel = FullScreenImageViewModel(imageIDs: [],
                                              imageType: .itemImage,
                                              dataManager: dataManager)
     FullScreenImageView(viewModel: viewModel)

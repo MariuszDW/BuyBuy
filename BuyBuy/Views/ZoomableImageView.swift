@@ -11,7 +11,7 @@ struct ZoomableImageView: View {
     let image: UIImage
     var backgroundColor: Color = .black
 
-    @Binding var canDismissByDrag: Bool
+    @Binding var isZoomedOut: Bool
 
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
@@ -28,7 +28,7 @@ struct ZoomableImageView: View {
                     screenSize = proxy.size
                 }
                 .onChange(of: scale) { newValue in
-                    canDismissByDrag = newValue <= 1.0
+                    isZoomedOut = newValue <= 1.0
                 }
                 .overlay(
                     Image(uiImage: image)

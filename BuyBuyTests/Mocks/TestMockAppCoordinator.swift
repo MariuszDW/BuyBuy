@@ -13,6 +13,8 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     var openShoppingListBlock: ((UUID) -> Void)?
     var backBlock: (() -> Void)?
     
+    var eventPublisher = PassthroughSubject<BuyBuy.AppEvent, Never>()
+    
     func openShoppingList(_ id: UUID) {
         openShoppingListBlock?(id)
     }
@@ -29,7 +31,7 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: ((SheetRoute) -> Void)? = nil) {
     }
     
-    func openShoppingItemImage(with imageID: String, onDismiss: ((SheetRoute) -> Void)? = nil) {
+    func openShoppingItemImage(with imageIDs: [String], index: Int, onDismiss: ((SheetRoute) -> Void)? = nil) {
     }
     
     func openLoyaltyCardPreview(with imageID: String?, onDismiss: ((SheetRoute) -> Void)? = nil) {
@@ -49,5 +51,8 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     
     func back() {
         backBlock?()
+    }
+    
+    func sendEvent(_ event: BuyBuy.AppEvent) {
     }
 }
