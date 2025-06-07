@@ -7,57 +7,39 @@
 
 import SwiftUI
 
+enum SlideDirection {
+    case left, right
+}
+
 struct FullScreenImageView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: FullScreenImageViewModel
     @State private var isZoomedOut = true
+    @State private var dragOffset: CGFloat = 0
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            content
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .gesture(
-                    DragGesture()
-                        .onEnded { value in
-                            guard isZoomedOut else { return }
-                            
-                            let horizontal = value.translation.width
-                            let vertical = value.translation.height
-                            
-                            // Swipe down
-                            if vertical > 100 && abs(vertical) > abs(horizontal) {
-                                dismiss()
-                            }
-                            
-                            // Swipe left = next
-                            else if horizontal < -100 && abs(horizontal) > abs(vertical) {
-                                viewModel.showNextImage()
-                            }
-                            
-                            // Swipe right = previous
-                            else if horizontal > 100 && abs(horizontal) > abs(vertical) {
-                                viewModel.showPreviousImage()
-                            }
-                        }
-                )
-            
-            Button(action: { dismiss() }) {
-                Image(systemName: "xmark.circle")
-                    .font(.system(size: 30))
-                    .foregroundColor(.white)
-                    .shadow(color: .black, radius: 3)
-                    .padding()
+        GeometryReader { geometry in
+            ZStack(alignment: .topTrailing) {
+                content(in: geometry.size.width)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.black)
+                
+                closeButton
+                    .padding(.top, geometry.safeAreaInsets.top + 4)
+                    .padding(.trailing, geometry.safeAreaInsets.trailing + 4)
             }
+            .gesture(dragGesture(width: geometry.size.width))
+            .ignoresSafeArea()
+            .background(Color.black.ignoresSafeArea())
         }
-        .background(Color.bb.background.ignoresSafeArea())
     }
 
     @ViewBuilder
-    private var content: some View {
+    private func content(in width: CGFloat) -> some View {
         switch viewModel.state {
         case .loading:
             ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: .bb.text.primary))
+                .progressViewStyle(CircularProgressViewStyle(tint: .white))
                 .controlSize(.large)
 
         case .success(let image):
@@ -65,9 +47,20 @@ struct FullScreenImageView: View {
                 image: image,
                 isZoomedOut: $isZoomedOut
             )
+            .offset(x: dragOffset)
+            .animation(.easeOut(duration: 0.25), value: dragOffset)
 
         case .failure:
             emptyView
+        }
+    }
+
+    private var closeButton: some View {
+        Button(action: { dismiss() }) {
+            Image(systemName: "xmark.circle")
+                .font(.system(size: 30))
+                .foregroundColor(.white)
+                .shadow(color: .black, radius: 3)
         }
     }
 
@@ -76,24 +69,83 @@ struct FullScreenImageView: View {
             let baseSize = min(geometry.size.width, geometry.size.height)
 
             VStack(spacing: 50) {
-                AnimatedIconView(
-                    image: Image(systemName: "questionmark.circle"),
-                    color: .bb.text.quaternary,
-                    size: baseSize * 0.5,
-                    response: 0.8,
-                    dampingFraction: 0.3
-                )
+                Image(systemName: "questionmark.circle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: baseSize * 0.5, height: baseSize * 0.5)
+                    .foregroundColor(.gray.opacity(0.5))
 
                 Text("No image found.")
-                    .font(.boldDynamic(style: .title2))
-                    .foregroundColor(.bb.text.tertiary)
+                    .font(.title2.bold())
+                    .foregroundColor(.gray.opacity(0.6))
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
-            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
+            .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 40)
+    }
+
+    private func dragGesture(width: CGFloat) -> some Gesture {
+        DragGesture()
+            .onChanged { value in
+                guard isZoomedOut else { return }
+
+                let translation = value.translation.width
+                
+                if translation < 0 && !viewModel.hasNext {
+                    dragOffset = 0
+                    return
+                }
+                
+                if translation > 0 && !viewModel.hasPrevious {
+                    dragOffset = 0
+                    return
+                }
+
+                dragOffset = translation
+            }
+            .onEnded { value in
+                guard isZoomedOut else { return }
+
+                let horizontal = value.translation.width
+                let vertical = value.translation.height
+
+                // Swipe down - close the preview
+                if vertical > 100 && abs(vertical) > abs(horizontal) {
+                    dismiss()
+                    return
+                }
+
+                // Swipe left - next image
+                if horizontal < -width * 0.4, viewModel.hasNext {
+                    withAnimation {
+                        dragOffset = -width
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        viewModel.showNextImage()
+                        dragOffset = 0
+                    }
+                    return
+                }
+
+                // Swipe right - previous image
+                if horizontal > width * 0.4, viewModel.hasPrevious {
+                    withAnimation {
+                        dragOffset = width
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        viewModel.showPreviousImage()
+                        dragOffset = 0
+                    }
+                    return
+                }
+
+                withAnimation {
+                    dragOffset = 0
+                }
+            }
     }
 }
 
