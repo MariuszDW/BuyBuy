@@ -149,6 +149,10 @@ final class ShoppingListViewModel: ObservableObject {
         coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: nil)
     }
     
+    func openItemImagePreviews(with imageIDs: [String], index: Int) {
+        coordinator.openShoppingItemImage(with: imageIDs, index: index, onDismiss: {_ in })
+    }
+    
     func openLoyaltyCards() {
         coordinator.openLoyaltyCardList()
     }

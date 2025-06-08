@@ -74,6 +74,11 @@ struct ShoppingListView: View {
                 },
                 onRowTap: { tappedItem in
                     viewModel.openItemDetails(item: tappedItem)
+                },
+                onThumbnailTap: { selectedItem, imageIndex in
+                    if imageIndex < selectedItem.imageIDs.count {
+                        viewModel.openItemImagePreviews(with: selectedItem.imageIDs, index: imageIndex)
+                    }
                 }
             )
             .contextMenu {

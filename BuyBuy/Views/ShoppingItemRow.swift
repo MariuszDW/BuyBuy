@@ -13,6 +13,7 @@ struct ShoppingItemRow: View {
     let disabled: Bool
     let onToggleStatus: (ShoppingItem) -> Void
     let onRowTap: (ShoppingItem) -> Void
+    let onThumbnailTap: (ShoppingItem, Int) -> Void
     
     var body: some View {
         HStack(alignment: .top) {
@@ -37,29 +38,34 @@ struct ShoppingItemRow: View {
         let thumbnailCornerRadius: CGFloat = 6
         let thumbnailSize: CGFloat = 38
         
-        if let image = thumbnail {
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
-                .frame(width: thumbnailSize, height: thumbnailSize)
-                .clipShape(RoundedRectangle(cornerRadius: thumbnailCornerRadius))
-                .overlay(
-                    RoundedRectangle(cornerRadius: thumbnailCornerRadius)
-                        .stroke(Color.bb.text.tertiary, lineWidth: 1)
-                )
-        } else if !item.imageIDs.isEmpty{
-            Image(systemName: "photo")
-                .resizable()
-                .scaledToFit()
-                .padding(8)
-                .frame(width: thumbnailSize, height: thumbnailSize)
-                .background(Color.bb.background2)
-                .foregroundColor(.bb.text.tertiary)
-                .clipShape(RoundedRectangle(cornerRadius: thumbnailCornerRadius))
-                .overlay(
-                    RoundedRectangle(cornerRadius: thumbnailCornerRadius)
-                        .stroke(Color.bb.text.tertiary, lineWidth: 1)
-                )
+        Group {
+            if let image = thumbnail {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: thumbnailSize, height: thumbnailSize)
+                    .clipShape(RoundedRectangle(cornerRadius: thumbnailCornerRadius))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: thumbnailCornerRadius)
+                            .stroke(Color.bb.text.tertiary, lineWidth: 1)
+                    )
+            } else if !item.imageIDs.isEmpty{
+                Image(systemName: "photo")
+                    .resizable()
+                    .scaledToFit()
+                    .padding(8)
+                    .frame(width: thumbnailSize, height: thumbnailSize)
+                    .background(Color.bb.background2)
+                    .foregroundColor(.bb.text.tertiary)
+                    .clipShape(RoundedRectangle(cornerRadius: thumbnailCornerRadius))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: thumbnailCornerRadius)
+                            .stroke(Color.bb.text.tertiary, lineWidth: 1)
+                    )
+            }
+        }
+        .onTapGesture {
+            onThumbnailTap(item, 0)
         }
     }
     
@@ -133,7 +139,7 @@ struct ShoppingItemRow: View {
     
     List {
         ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
-                        disabled: false, onToggleStatus: {_ in }, onRowTap: {_ in })
+                        disabled: false, onToggleStatus: {_ in }, onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
     .listStyle(.plain)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -149,7 +155,7 @@ struct ShoppingItemRow: View {
     
     List {
         ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
-                        disabled: false, onToggleStatus: {_ in }, onRowTap: {_ in })
+                        disabled: false, onToggleStatus: {_ in }, onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
     .listStyle(.plain)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
