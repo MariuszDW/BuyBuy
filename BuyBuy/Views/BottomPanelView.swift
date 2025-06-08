@@ -19,7 +19,7 @@ struct BottomPanelView: View {
         self.isButtonDisabled = isButtonDisabled
         self.action = action
     }
-
+    
     var body: some View {
         HStack {
             Button(action: action) {
@@ -27,11 +27,22 @@ struct BottomPanelView: View {
                     .font(.headline)
             }
             .disabled(isButtonDisabled)
-
+            
             Spacer()
         }
         .padding()
         .background(Color.bb.background)
+        .overlay(alignment: .top) {
+            LinearGradient(
+                colors: [.black.opacity(0.0), .black.opacity(0.1)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: 6)
+            .offset(y: -6
+            )
+            .allowsHitTesting(false)
+        }
     }
 }
 
