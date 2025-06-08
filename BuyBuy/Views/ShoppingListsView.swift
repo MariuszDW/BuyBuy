@@ -37,7 +37,10 @@ struct ShoppingListsView: View {
             
             Spacer()
             
-            bottomPanel
+            BottomPanelView(title: "Add list",
+                            systemImage: "plus.circle",
+                            isButtonDisabled: isEditMode.isEditing,
+                            action: { viewModel.openNewListSettings() })
         }
         .navigationTitle(viewModel.shoppingLists.isEmpty ? "" : "Shopping lists")
         .navigationBarTitleDisplayMode(.large)
@@ -187,23 +190,6 @@ struct ShoppingListsView: View {
             .padding(.leading, 4)
         }
         .padding(.vertical, 4)
-    }
-    
-    private var bottomPanel: some View {
-        HStack {
-            Button(action: {
-                isEditMode = .inactive
-                viewModel.openNewListSettings()
-            }) {
-                Label("Add list", systemImage: "plus.circle")
-                    .font(.headline)
-            }
-            .disabled(isEditMode.isEditing)
-            
-            Spacer()
-        }
-        .padding()
-        .background(Color.bb.background)
     }
     
     private var toolbarContent: some ToolbarContent {

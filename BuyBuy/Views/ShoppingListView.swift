@@ -27,7 +27,14 @@ struct ShoppingListView: View {
             
             Spacer()
             
-            bottomPanel
+            BottomPanelView(title: "Add item",
+                            systemImage: "plus.circle",
+                            isButtonDisabled: isEditMode.isEditing,
+                            action: {
+                if let listID = viewModel.list?.id {
+                    viewModel.openNewItemDetails(listID: listID)
+                }
+            })
         }
         .toolbar {
             toolbarContent
@@ -157,25 +164,6 @@ struct ShoppingListView: View {
                 .accessibilityLabel(isEditMode == .active ? "Done Editing" : "Edit")
             }
         }
-    }
-    
-    private var bottomPanel: some View {
-        HStack {
-            Button(action: {
-                if let listID = viewModel.list?.id {
-                    isEditMode = .inactive
-                    viewModel.openNewItemDetails(listID: listID)
-                }
-            }) {
-                Label("Add item", systemImage: "plus.circle")
-                    .font(.headline)
-            }
-            .disabled(isEditMode.isEditing)
-            
-            Spacer()
-        }
-        .padding()
-        .background(Color.bb.background)
     }
     
     @ViewBuilder

@@ -28,7 +28,10 @@ struct LoyaltyCardsView: View {
             
             Spacer()
 
-            bottomPanel
+            BottomPanelView(title: "Add card",
+                            systemImage: "plus.circle",
+                            isButtonDisabled: isEditMode.isEditing,
+                            action: { viewModel.openNewCardDetails() })
         }
         .alert(item: $cardPendingDeletion) { card in
             return Alert(
@@ -197,22 +200,6 @@ struct LoyaltyCardsView: View {
         .padding(.vertical, 40)
     }
 
-    private var bottomPanel: some View {
-        HStack {
-            Button(action: {
-                viewModel.openNewCardDetails()
-            }) {
-                Label("Add card", systemImage: "plus.circle")
-                    .font(.headline)
-            }
-            .disabled(isEditMode.isEditing)
-
-            Spacer()
-        }
-        .padding()
-        .background(Color.bb.background)
-    }
-    
     private var cardActionMenu: some View {
         VStack(alignment: .leading, spacing: 24) {
             Button {
