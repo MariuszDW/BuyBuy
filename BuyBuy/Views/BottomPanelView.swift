@@ -34,13 +34,12 @@ struct BottomPanelView: View {
         .background(Color.bb.background)
         .overlay(alignment: .top) {
             LinearGradient(
-                colors: [.black.opacity(0.0), .black.opacity(0.1)],
+                colors: [.bb.text.primary.opacity(0.0), .bb.text.primary.opacity(0.1)],
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .frame(height: 6)
-            .offset(y: -6
-            )
+            .frame(height: 5)
+            .offset(y: -5)
             .allowsHitTesting(false)
         }
     }
