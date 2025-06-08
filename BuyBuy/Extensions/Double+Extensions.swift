@@ -12,4 +12,9 @@ extension Double {
         let formatter = NumberFormatter.priceFormatter()
         return formatter.string(for: self) ?? "\(self)"
     }
+    
+    var quantityFormat: String {
+        let formatter = NumberFormatter.localizedDecimal()
+        return formatter.string(for: self) ?? "\(self)"
+    }
 }

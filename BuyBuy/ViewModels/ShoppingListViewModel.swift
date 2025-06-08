@@ -15,6 +15,7 @@ final class ShoppingListViewModel: ObservableObject {
     
     private let listID: UUID
     @Published var list: ShoppingList?
+    @Published var thumbnails: [String: UIImage] = [:]
     
     @Published var sections: [ShoppingListSection] = [
         ShoppingListSection(status: .pending),
@@ -150,5 +151,25 @@ final class ShoppingListViewModel: ObservableObject {
     
     func openLoyaltyCards() {
         coordinator.openLoyaltyCardList()
+    }
+    
+    func thumbnail(for imageID: String?) -> UIImage? {
+        guard let imageID, !imageID.isEmpty else { return nil }
+        if let cached = thumbnails[imageID] {
+            return cached
+        } else {
+            Task { await loadThumbnail(for: imageID) }
+            return nil
+        }
+    }
+    
+    private func loadThumbnail(for imageID: String) async {
+        guard thumbnails[imageID] == nil else { return }
+        do {
+            let image = try await dataManager.loadImage(baseFileName: imageID, type: .itemThumbnail)
+            thumbnails[imageID] = image
+        } catch {
+            print("Failed to load thumbnail for \(imageID): \(error)")
+        }
     }
 }

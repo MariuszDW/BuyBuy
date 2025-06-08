@@ -32,6 +32,8 @@ struct BBColor {
         static let secondary = Color("SecondaryText")
         static let tertiary = Color("TertiaryText")
         static let quaternary = Color("QuaternaryText")
+        static let highlightA = Color("HighlightTextA")
+        static let highlightB = Color("HighlightTextB")
     }
     
     enum list {

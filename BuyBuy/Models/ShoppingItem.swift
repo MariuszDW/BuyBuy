@@ -19,9 +19,15 @@ struct ShoppingItem: Identifiable, Hashable {
     var unit: ShoppingItemUnit?
     var imageIDs: [String] = []
     
-    var unitText: String {
-        get { unit?.symbol ?? "" }
-        set { unit = ShoppingItemUnit(string: newValue) }
+    var quantityWithUnit: String? {
+        guard let quantityString = quantity?.quantityFormat, !quantityString.isEmpty else {
+            return nil
+        }
+        if let unitString = unit?.symbol, !unitString.isEmpty {
+            return quantityString + " " + unitString
+        } else {
+            return quantityString
+        }
     }
     
     var totalPrice: Double? {

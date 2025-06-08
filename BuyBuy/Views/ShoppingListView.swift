@@ -65,6 +65,7 @@ struct ShoppingListView: View {
         ForEach(items) { item in
             ShoppingItemRow(
                 item: item,
+                thumbnail: viewModel.thumbnail(for: item.imageIDs.first),
                 disabled: isEditMode == .active,
                 onToggleStatus: { [weak viewModel] toggledItem in
                     Task {
