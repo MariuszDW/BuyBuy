@@ -82,13 +82,16 @@ final class ShoppingListViewModel: ObservableObject {
         }
     }
     
-    func toggleStatus(for item: ShoppingItem) async {
-        await setStatus(item.status.toggled(), forItem: item)
+    func toggleStatus(for itemID: UUID) {
+        guard let item = list?.item(with: itemID) else { return }
+        Task {
+            await setStatus(item.status.toggled(), itemID: item.id)
+        }
     }
     
-    func setStatus(_ status: ShoppingItemStatus, forItem item: ShoppingItem) async {
+    func setStatus(_ status: ShoppingItemStatus, itemID: UUID) async {
         guard var currentList = self.list else { return }
-        guard let oldItemIndex = currentList.items.firstIndex(where: { $0.id == item.id }) else { return }
+        guard let oldItemIndex = currentList.items.firstIndex(where: { $0.id == itemID }) else { return }
         
         var updatedItem = currentList.items[oldItemIndex]
         let oldStatus = updatedItem.status
@@ -145,12 +148,14 @@ final class ShoppingListViewModel: ObservableObject {
         coordinator.openShoppingItemDetails(newItem, isNew: true, onDismiss: nil)
     }
     
-    func openItemDetails(item: ShoppingItem) {
+    func openItemDetails(for itemID: UUID) {
+        guard let item = list?.item(with: itemID) else { return }
         coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: nil)
     }
     
-    func openItemImagePreviews(with imageIDs: [String], index: Int) {
-        coordinator.openShoppingItemImage(with: imageIDs, index: index, onDismiss: {_ in })
+    func openItemImagePreviews(for itemID: UUID, imageIndex: Int) {
+        guard let item = list?.item(with: itemID), imageIndex < item.imageIDs.count else { return }
+        coordinator.openShoppingItemImage(with: item.imageIDs, index: imageIndex, onDismiss: {_ in })
     }
     
     func openLoyaltyCards() {

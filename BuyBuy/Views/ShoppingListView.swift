@@ -53,88 +53,83 @@ struct ShoppingListView: View {
                 let items = list.items(for: section.status)
                 Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
                     if !section.isCollapsed {
-                        itemsSection(items: items, section: section)
+                        ForEach(items) { item in
+                            itemView(item: item, section: section)
+                        }
+                        .onDelete { offsets in
+                            Task {
+                                await viewModel.deleteItems(atOffsets: offsets, section: section)
+                            }
+                        }
+                        .onMove { indices, newOffset in
+                            Task {
+                                await viewModel.moveItem(from: indices, to: newOffset, in: section.status)
+                            }
+                        }
                     }
                 }
             }
         }
     }
     
-    @ViewBuilder
-    private func itemsSection(items: [ShoppingItem], section: ShoppingListSection) -> some View {
-        ForEach(items) { item in
-            ShoppingItemRow(
-                item: item,
-                thumbnail: viewModel.thumbnail(for: item.imageIDs.first),
-                disabled: isEditMode == .active,
-                onToggleStatus: { [weak viewModel] toggledItem in
-                    Task {
-                        await viewModel?.toggleStatus(for: toggledItem)
-                    }
-                },
-                onRowTap: { tappedItem in
-                    viewModel.openItemDetails(item: tappedItem)
-                },
-                onThumbnailTap: { selectedItem, imageIndex in
-                    if imageIndex < selectedItem.imageIDs.count {
-                        viewModel.openItemImagePreviews(with: selectedItem.imageIDs, index: imageIndex)
-                    }
-                }
-            )
-            .contextMenu {
-                Button {
-                    viewModel.openItemDetails(item: item)
-                } label: {
-                    Label("Edit", systemImage: "square.and.pencil")
-                }
-                
-                Button(role: .destructive) {
-                    Task {
-                        await handleDeleteTapped(for: item)
-                    }
-                } label: {
-                    Label("Delete", systemImage: "trash.fill")
-                }
+    private func itemView(item: ShoppingItem, section: ShoppingListSection) -> some View {
+        return ShoppingItemRow(
+            item: item,
+            thumbnail: viewModel.thumbnail(for: item.imageIDs.first),
+            disabled: isEditMode == .active,
+            onToggleStatus: { toggledItemID in
+                viewModel.toggleStatus(for: toggledItemID)
+            },
+            onRowTap: { tappedItemID in
+                viewModel.openItemDetails(for: tappedItemID)
+            },
+            onThumbnailTap: { selectedItemID, imageIndex in
+                viewModel.openItemImagePreviews(for: selectedItemID, imageIndex: imageIndex)
             }
-            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                Button(role: .destructive) {
-                    Task {
-                        await handleDeleteTapped(for: item)
-                    }
-                } label: {
-                    Label("Delete", systemImage: "trash.fill")
-                }
-                
-                Button {
-                    viewModel.openItemDetails(item: item)
-                } label: {
-                    Label("Edit", systemImage: "square.and.pencil")
-                }
-                .tint(.blue)
+        )
+        .contextMenu {
+            Button {
+                viewModel.openItemDetails(for: item.id)
+            } label: {
+                Label("Edit", systemImage: "square.and.pencil")
             }
-            .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
-                    if item.status != status {
-                        Button {
-                            Task {
-                                await viewModel.setStatus(status, forItem: item)
-                            }
-                        } label: {
-                            Label(status.rawValue, systemImage: status.imageSystemName)
+            
+            Button(role: .destructive) {
+                Task {
+                    await handleDeleteTapped(for: item)
+                }
+            } label: {
+                Label("Delete", systemImage: "trash.fill")
+            }
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            Button(role: .destructive) {
+                Task {
+                    await handleDeleteTapped(for: item)
+                }
+            } label: {
+                Label("Delete", systemImage: "trash.fill")
+            }
+            
+            Button {
+                viewModel.openItemDetails(for: item.id)
+            } label: {
+                Label("Edit", systemImage: "square.and.pencil")
+            }
+            .tint(.blue)
+        }
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            ForEach(ShoppingItemStatus.allCases, id: \.self) { (status: ShoppingItemStatus) in
+                if item.status != status {
+                    Button {
+                        Task {
+                            await viewModel.setStatus(status, itemID: item.id)
                         }
-                        .tint(status.color)
+                    } label: {
+                        Label(status.rawValue, systemImage: status.imageSystemName)
                     }
+                    .tint(status.color)
                 }
-            }
-        }
-        .onDelete { offsets in
-            Task {
-                await viewModel.deleteItems(atOffsets: offsets, section: section)
-            }
-        }
-        .onMove { indices, newOffset in
-            Task {
-                await viewModel.moveItem(from: indices, to: newOffset, in: section.status)
             }
         }
     }

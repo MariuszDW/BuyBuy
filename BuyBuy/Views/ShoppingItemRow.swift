@@ -11,9 +11,9 @@ struct ShoppingItemRow: View {
     let item: ShoppingItem
     let thumbnail: UIImage?
     let disabled: Bool
-    let onToggleStatus: (ShoppingItem) -> Void
-    let onRowTap: (ShoppingItem) -> Void
-    let onThumbnailTap: (ShoppingItem, Int) -> Void
+    let onToggleStatus: (UUID) -> Void
+    let onRowTap: (UUID) -> Void
+    let onThumbnailTap: (UUID, Int) -> Void
     
     var body: some View {
         HStack(alignment: .top) {
@@ -65,13 +65,13 @@ struct ShoppingItemRow: View {
             }
         }
         .onTapGesture {
-            onThumbnailTap(item, 0)
+            onThumbnailTap(item.id, 0)
         }
     }
     
     private var statusCheckBox: some View {
         Button {
-            onToggleStatus(item)
+            onToggleStatus(item.id)
         } label: {
             item.status.checkBoxImage
                 .foregroundColor(.bb.selection)
@@ -83,7 +83,7 @@ struct ShoppingItemRow: View {
     
     private var mainContent: some View {
         Button {
-            onRowTap(item)
+            onRowTap(item.id)
         } label: {
             HStack {
                 VStack(alignment: .leading) {

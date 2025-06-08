@@ -45,4 +45,8 @@ struct ShoppingList: Identifiable, Hashable {
             .filter { $0.status == status }
             .sorted { $0.order < $1.order }
     }
+    
+    func item(with id: UUID) -> ShoppingItem? {
+        items.first(where: { $0.id == id})
+    }
 }
