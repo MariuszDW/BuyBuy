@@ -31,6 +31,7 @@ struct LoyaltyCardsView: View {
             BottomPanelView(title: "Add card",
                             systemImage: "plus.circle",
                             isButtonDisabled: isEditMode.isEditing,
+                            trailingView: { EmptyView() },
                             action: { viewModel.openNewCardDetails() })
         }
         .alert(item: $cardPendingDeletion) { card in

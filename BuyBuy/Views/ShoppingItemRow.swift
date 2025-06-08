@@ -115,13 +115,13 @@ struct ShoppingItemRow: View {
             HStack {
                 if let quantityWithUnit = item.quantityWithUnit {
                     Text(quantityWithUnit)
-                        .font(.regularDynamic(style: .subheadline))
+                        .font(.regularDynamic(style: .callout))
                         .foregroundColor(.bb.text.highlightA)
                 }
                 Spacer()
                 if let totalPrice = item.totalPrice {
                     Text(totalPrice.priceFormat)
-                        .font(.regularDynamic(style: .subheadline))
+                        .font(.regularMonospaced(style: .callout))
                         .foregroundColor(.bb.text.highlightB)
                 }
             }

@@ -7,16 +7,26 @@
 
 import SwiftUI
 
-struct BottomPanelView: View {
+struct BottomPanelView<TrailingView: View>: View {
     let title: String
     let systemImage: String
     let isButtonDisabled: Bool
+    let verticalPadding: CGFloat
     let action: () -> Void
+    let trailingView: TrailingView?
     
-    init(title: String, systemImage: String, isButtonDisabled: Bool = false, action: @escaping () -> Void) {
+    init(title: String,
+         systemImage: String,
+         isButtonDisabled: Bool = false,
+         verticalPadding: CGFloat = 16,
+         @ViewBuilder trailingView: () -> TrailingView? = { nil },
+         action: @escaping () -> Void
+    ) {
         self.title = title
         self.systemImage = systemImage
         self.isButtonDisabled = isButtonDisabled
+        self.verticalPadding = verticalPadding
+        self.trailingView = trailingView()
         self.action = action
     }
     
@@ -29,8 +39,13 @@ struct BottomPanelView: View {
             .disabled(isButtonDisabled)
             
             Spacer()
+            
+            if let trailingView = trailingView {
+                trailingView
+            }
         }
-        .padding()
+        .padding(.horizontal, 16)
+        .padding(.vertical, verticalPadding)
         .background(Color.bb.background)
         .ignoresSafeArea(edges: .bottom)
         .overlay(alignment: .top) {
@@ -55,6 +70,7 @@ struct BottomPanelView: View {
             title: "Add item",
             systemImage: "plus.circle",
             isButtonDisabled: false,
+            trailingView: { EmptyView() },
             action: { print("Add item button tapped") }
         )
     }
@@ -70,6 +86,7 @@ struct BottomPanelView: View {
             title: "Add item",
             systemImage: "plus.circle",
             isButtonDisabled: false,
+            trailingView: { EmptyView() },
             action: { print("Add item button tapped") }
         )
     }

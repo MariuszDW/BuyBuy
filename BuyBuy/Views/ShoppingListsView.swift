@@ -40,6 +40,7 @@ struct ShoppingListsView: View {
             BottomPanelView(title: "Add list",
                             systemImage: "plus.circle",
                             isButtonDisabled: isEditMode.isEditing,
+                            trailingView: { EmptyView() },
                             action: { viewModel.openNewListSettings() })
         }
         .navigationTitle(viewModel.shoppingLists.isEmpty ? "" : "Shopping lists")

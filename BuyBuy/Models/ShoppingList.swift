@@ -49,4 +49,12 @@ struct ShoppingList: Identifiable, Hashable {
     func item(with id: UUID) -> ShoppingItem? {
         items.first(where: { $0.id == id})
     }
+    
+    func totalPrice(for status: ShoppingItemStatus) -> Double {
+        let filteredItems = items.filter { $0.status == status }
+        let total = filteredItems.reduce(0.0) { partialResult, item in
+            partialResult + (item.totalPrice ?? 0)
+        }
+        return total
+    }
 }

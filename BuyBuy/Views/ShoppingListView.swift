@@ -30,6 +30,8 @@ struct ShoppingListView: View {
             BottomPanelView(title: "Add item",
                             systemImage: "plus.circle",
                             isButtonDisabled: isEditMode.isEditing,
+                            verticalPadding: 5,
+                            trailingView: { summaryView() },
                             action: {
                 if let listID = viewModel.list?.id {
                     viewModel.openNewItemDetails(listID: listID)
@@ -229,6 +231,53 @@ struct ShoppingListView: View {
             .buttonStyle(PlainButtonStyle())
         }
         .padding(.bottom, 4)
+    }
+    
+    @ViewBuilder
+    private func summaryView() -> some View {
+        let numPendingItems = viewModel.list?.items(for: .pending).count ?? 0
+        let numPurchasedItems = viewModel.list?.items(for: .purchased).count ?? 0
+        let totalPriceOfPendingItems = viewModel.list?.totalPrice(for: .pending) ?? 0
+        let totalPriceOfPurchasedItems = viewModel.list?.totalPrice(for: .purchased) ?? 0
+        
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .trailing, spacing: 2) {
+                ShoppingItemStatus.pending.image
+                    .font(.boldDynamic(style: .body))
+                    .foregroundColor(ShoppingItemStatus.pending.color)
+                
+                ShoppingItemStatus.purchased.image
+                    .font(.boldDynamic(style: .body))
+                    .foregroundColor(ShoppingItemStatus.purchased.color)
+            }
+            
+            VStack(alignment: .trailing, spacing: 2) {
+                Text("\(numPendingItems)")
+                    .font(.boldMonospaced(style: .body))
+                    .foregroundColor(ShoppingItemStatus.pending.color)
+                
+                Text("\(numPurchasedItems)")
+                    .font(.boldMonospaced(style: .body))
+                    .foregroundColor(ShoppingItemStatus.purchased.color)
+            }
+            
+            Rectangle()
+                .foregroundColor(.bb.text.quaternary)
+                .frame(width: 2)
+                .frame(maxHeight: .infinity)
+            
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(totalPriceOfPendingItems.priceFormat)
+                    .font(.boldMonospaced(style: .body))
+                    .foregroundColor(ShoppingItemStatus.pending.color)
+                
+                Text(totalPriceOfPurchasedItems.priceFormat)
+                    .font(.boldMonospaced(style: .body))
+                    .foregroundColor(ShoppingItemStatus.purchased.color)
+            }
+        }
+        .padding(.trailing, 8)
+        .fixedSize(horizontal: false, vertical: true)
     }
     
     // MARK: - Private
