@@ -21,7 +21,7 @@ struct LoyaltyCardsView: View {
             if showingListView {
                 listView
             } else if !viewModel.cards.isEmpty {
-                cardsList
+                cardGrids
             } else {
                 emptyView
             }
@@ -121,7 +121,7 @@ struct LoyaltyCardsView: View {
         .environment(\.editMode, $isEditMode)
     }
     
-    private var cardsList: some View {
+    private var cardGrids: some View {
         let tileSpacing: CGFloat = 12
         let tileWidth: CGFloat = 150
 
