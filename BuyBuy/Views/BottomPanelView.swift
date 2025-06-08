@@ -32,6 +32,7 @@ struct BottomPanelView: View {
         }
         .padding()
         .background(Color.bb.background)
+        .ignoresSafeArea(edges: .bottom)
         .overlay(alignment: .top) {
             LinearGradient(
                 colors: [.bb.text.primary.opacity(0.0), .bb.text.primary.opacity(0.1)],
