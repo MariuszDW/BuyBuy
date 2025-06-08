@@ -17,7 +17,7 @@ struct LoyaltyCardsView: View {
     private static let tileSize: CGFloat = 150
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             if showingListView {
                 listView
             } else if !viewModel.cards.isEmpty {
@@ -26,7 +26,7 @@ struct LoyaltyCardsView: View {
                 emptyView
             }
             
-            Spacer()
+            Spacer(minLength: 0)
 
             BottomPanelView(title: "Add card",
                             systemImage: "plus.circle",

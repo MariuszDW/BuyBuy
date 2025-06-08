@@ -13,7 +13,7 @@ struct ShoppingListView: View {
     @State private var isEditMode: EditMode = .inactive
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             if let list = viewModel.list, !list.items.isEmpty {
                 listView(list)
                     .environment(\.editMode, $isEditMode)
@@ -25,7 +25,7 @@ struct ShoppingListView: View {
                     }
             }
             
-            Spacer()
+            Spacer(minLength: 0)
             
             BottomPanelView(title: "Add item",
                             systemImage: "plus.circle",
