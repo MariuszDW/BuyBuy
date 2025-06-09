@@ -88,6 +88,7 @@ struct ShoppingItemRow: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text(item.name)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.bb.text.primary)
                         .font(.regularDynamic(style: .headline))
                         .multilineTextAlignment(.leading)
@@ -95,6 +96,7 @@ struct ShoppingItemRow: View {
                     
                     if !item.note.isEmpty {
                         Text(item.note)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .foregroundColor(.bb.text.secondary)
                             .font(.regularDynamic(style: .subheadline))
                             .multilineTextAlignment(.leading)
