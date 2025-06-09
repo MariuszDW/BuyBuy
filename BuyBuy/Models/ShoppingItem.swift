@@ -31,10 +31,10 @@ struct ShoppingItem: Identifiable, Hashable {
     }
     
     var totalPrice: Double? {
-        guard let price = price, let quantity = quantity else {
+        guard let price = price else {
             return nil
         }
-        return price * quantity
+        return price * (quantity ?? 1)
     }
 
     init(id: UUID = UUID(), order: Int, listID: UUID, name: String, note: String = "", status: ShoppingItemStatus, price: Double? = nil, quantity: Double? = nil, unit: ShoppingItemUnit? = nil, imageIDs: [String] = []) {
