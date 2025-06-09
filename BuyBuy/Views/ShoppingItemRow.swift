@@ -15,6 +15,9 @@ struct ShoppingItemRow: View {
     let onRowTap: (UUID) -> Void
     let onThumbnailTap: (UUID, Int) -> Void
     
+    static private let thumbnailCornerRadius: CGFloat = 6
+    static private let thumbnailSize: CGFloat = 38
+    
     var body: some View {
         HStack(alignment: .top) {
             if !disabled {
@@ -24,43 +27,40 @@ struct ShoppingItemRow: View {
             }
             
             mainContent
+                .padding(.trailing, 8)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             Spacer()
             
             thumbnailView
-                .padding(.leading, 8)
         }
         .listRowInsets(EdgeInsets(top: 12, leading: 18, bottom: 8, trailing: 10))
     }
     
     @ViewBuilder
     private var thumbnailView: some View {
-        let thumbnailCornerRadius: CGFloat = 6
-        let thumbnailSize: CGFloat = 38
-        
         Group {
             if let image = thumbnail {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: thumbnailSize, height: thumbnailSize)
-                    .clipShape(RoundedRectangle(cornerRadius: thumbnailCornerRadius))
+                    .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
+                    .clipShape(RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius))
                     .overlay(
-                        RoundedRectangle(cornerRadius: thumbnailCornerRadius)
+                        RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius)
                             .stroke(Color.bb.text.tertiary, lineWidth: 1)
                     )
-            } else if !item.imageIDs.isEmpty{
+            } else if !item.imageIDs.isEmpty {
                 Image(systemName: "photo")
                     .resizable()
                     .scaledToFit()
                     .padding(8)
-                    .frame(width: thumbnailSize, height: thumbnailSize)
+                    .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
                     .background(Color.bb.background2)
                     .foregroundColor(.bb.text.tertiary)
-                    .clipShape(RoundedRectangle(cornerRadius: thumbnailCornerRadius))
+                    .clipShape(RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius))
                     .overlay(
-                        RoundedRectangle(cornerRadius: thumbnailCornerRadius)
+                        RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius)
                             .stroke(Color.bb.text.tertiary, lineWidth: 1)
                     )
             }
@@ -105,6 +105,7 @@ struct ShoppingItemRow: View {
                     }
                     
                     quantityAndPrice
+                        .padding(.trailing, item.imageIDs.count > 0 ? 0 : Self.thumbnailSize)
                 }
             }
             .contentShape(Rectangle())
