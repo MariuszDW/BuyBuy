@@ -108,7 +108,7 @@ extension MockDataRepository {
         ShoppingItem(order: 2, listID: listUUID1, name: "Eggs", note: "Box 12x", status: .inactive, quantity: 1),
         ShoppingItem(order: 3, listID: listUUID1, name: "Apples", note: "2 kg (in promotion)", status: .purchased, quantity: 2.5, unit: ShoppingItemUnit(.kilogram)),
         ShoppingItem(order: 4, listID: listUUID1, name: "Chicken", status: .purchased),
-        ShoppingItem(order: 5, listID: listUUID1, name: "Butter", note: "As cheap as possible.", status: .purchased, quantity: 1),
+        ShoppingItem(order: 5, listID: listUUID1, name: "Butter", note: "As cheap as possible.", status: .purchased, price: 4.79, quantity: 1),
         ShoppingItem(order: 6, listID: listUUID1, name: "Yogurt", note: "Natural, 500 g", status: .inactive, price: 1.79, quantity: 3)
     ], order: 0, icon: .cart, color: .orange)
     
