@@ -24,7 +24,18 @@ struct ShoppingItemDetailsView: View {
     
     private var content: some View {
         List {
-            statusSection
+            Section {
+                statusView
+                
+                if let currentList = viewModel.itemList {
+                    let lists = viewModel.shoppingLists
+                    if lists.count > 1 {
+                        listView(currentList, lists: lists)
+                    }
+                }
+            }
+            .listRowBackground(Color.bb.sheet.section.background)
+            
             nameAndNoteSection
             quantityUnitPriceSection
             imagesSection
@@ -39,6 +50,7 @@ struct ShoppingItemDetailsView: View {
         .task {
             focusedField = viewModel.isNew ? .name : nil
             await viewModel.loadThumbnails()
+            await viewModel.loadShoppingLists()
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Shopping item")
@@ -115,39 +127,78 @@ struct ShoppingItemDetailsView: View {
         }
     }
     
-    private var statusSection: some View {
-        Section {
-            HStack {
-                Text("Status")
-                Spacer()
-                Menu {
-                    ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
-                        Button {
-                            focusedField = nil
-                            viewModel.status = status
-                            Task {
-                                viewModel.finalizeInput()
-                            }
-                        } label: {
-                            Label(status.localizedName, systemImage: status.imageSystemName)
-                                .foregroundColor(status.color)
+    private var statusView: some View {
+        HStack {
+            Text("Status")
+            Spacer()
+            Menu {
+                ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
+                    Button {
+                        focusedField = nil
+                        viewModel.status = status
+                        Task {
+                            viewModel.finalizeInput()
                         }
-                    }
-                } label: {
-                    let status = viewModel.status
-                    HStack(spacing: 8) {
-                        status.image
+                    } label: {
+                        Label(status.localizedName, systemImage: status.imageSystemName)
                             .foregroundColor(status.color)
-                        Text(status.localizedName)
-                            .foregroundColor(status.color)
-                        Image(systemName: "chevron.up.chevron.down")
-                            .foregroundColor(.bb.selection)
-                            .padding(.leading, 8)
                     }
+                }
+            } label: {
+                let status = viewModel.status
+                HStack(spacing: 8) {
+                    status.image
+                        .foregroundColor(status.color)
+                    Text(status.localizedName)
+                        .foregroundColor(status.color)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .foregroundColor(.bb.selection)
+                        .padding(.leading, 4)
                 }
             }
         }
-        .listRowBackground(Color.bb.sheet.section.background)
+    }
+    
+    private func listView(_ currentList: ShoppingList, lists: [ShoppingList]) -> some View {
+        return HStack {
+            Text("List")
+            Spacer()
+            Menu {
+                ForEach(lists, id: \.id) { list in
+                    Button {
+                        focusedField = nil
+                        viewModel.listID = list.id
+                        Task {
+                            viewModel.finalizeInput()
+                        }
+                    } label: {
+                        HStack {
+                            list.icon.image
+                            Text(list.name)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+//                            if list.id == currentList.id {
+//                                Spacer()
+//                                Image(systemName: "checkmark")
+//                                    .foregroundColor(.accentColor)
+//                            }
+                        }
+                    }
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    currentList.icon.image
+                        .foregroundColor(currentList.color.color)
+                    Text(currentList.name)
+                        .foregroundColor(currentList.color.color)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .foregroundColor(.bb.selection)
+                        .padding(.leading, 4)
+                }
+            }
+        }
     }
     
     private var quantityUnitPriceSection: some View {
@@ -336,7 +387,7 @@ struct ShoppingItemDetailsView: View {
 // MARK: - Preview
 
 #Preview("Light") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
+    let dataManager = DataManager(repository: MockDataRepository(cards: []),
                                   imageStorage: MockImageStorage())
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,
@@ -348,7 +399,7 @@ struct ShoppingItemDetailsView: View {
 }
 
 #Preview("Dark") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
+    let dataManager = DataManager(repository: MockDataRepository(cards: []),
                                   imageStorage: MockImageStorage())
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,

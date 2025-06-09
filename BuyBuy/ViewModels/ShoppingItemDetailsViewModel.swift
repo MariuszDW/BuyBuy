@@ -14,6 +14,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     @Published var shoppingItem: ShoppingItem
     @Published var thumbnails: [UIImage] = []
     @Published var selectedImageID: String?
+    @Published var shoppingLists: [ShoppingList] = []
     
     var changesConfirmed: Bool = false
     
@@ -41,6 +42,11 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     var status: ShoppingItemStatus {
         get { shoppingItem.status }
         set { shoppingItem.status = newValue }
+    }
+    
+    var listID: UUID {
+        get { shoppingItem.listID }
+        set { shoppingItem.listID = newValue }
     }
     
     var name: String {
@@ -105,6 +111,10 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         self.dataManager = dataManager
     }
     
+    var itemList: ShoppingList? {
+        return shoppingLists.first(where: { $0.id == shoppingItem.listID })
+    }
+    
     func openImagePreview(at index: Int) {
         guard index >= 0 && index < shoppingItem.imageIDs.count else { return }
         coordinator.openShoppingItemImage(with: shoppingItem.imageIDs, index: index, onDismiss: nil)
@@ -135,6 +145,20 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         }
     }
     
+    func loadThumbnails() async {
+        self.thumbnails = []
+        for id in shoppingItem.imageIDs {
+            if let image = try? await dataManager.loadImage(baseFileName: id, type: .itemThumbnail) {
+                self.thumbnails.append(image)
+            }
+        }
+    }
+    
+    func loadShoppingLists() async {
+        let fetchedLists = try? await dataManager.fetchAllLists()
+        shoppingLists = fetchedLists ?? []
+    }
+    
     func finalizeInput() {
         shoppingItem.prepareToSave()
     }
@@ -163,14 +187,5 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
         return formatter.number(from: string)?.doubleValue
-    }
-    
-    func loadThumbnails() async {
-        self.thumbnails = []
-        for id in shoppingItem.imageIDs {
-            if let image = try? await dataManager.loadImage(baseFileName: id, type: .itemThumbnail) {
-                self.thumbnails.append(image)
-            }
-        }
     }
 }
