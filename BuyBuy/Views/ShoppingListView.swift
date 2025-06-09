@@ -238,41 +238,61 @@ struct ShoppingListView: View {
         let numPurchasedItems = viewModel.list?.items(for: .purchased).count ?? 0
         let totalPriceOfPendingItems = viewModel.list?.totalPrice(for: .pending) ?? 0
         let totalPriceOfPurchasedItems = viewModel.list?.totalPrice(for: .purchased) ?? 0
+        let showItemPrices = viewModel.list?.containsItemsWithPrice() ?? false
+        
+        let pendingItemsIcon = ShoppingItemStatus.pending.image
+            .font(.boldDynamic(style: .body))
+            .foregroundColor(ShoppingItemStatus.pending.color)
+        
+        let purchasedItemsIcon = ShoppingItemStatus.purchased.image
+            .font(.boldDynamic(style: .body))
+            .foregroundColor(ShoppingItemStatus.purchased.color)
+        
+        let pendingItemsText = Text("\(numPendingItems)")
+            .font(.boldMonospaced(style: .body))
+            .foregroundColor(ShoppingItemStatus.pending.color)
+        
+        let purchasedItemsText = Text("\(numPurchasedItems)")
+            .font(.boldMonospaced(style: .body))
+            .foregroundColor(ShoppingItemStatus.purchased.color)
         
         HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .trailing, spacing: 2) {
-                ShoppingItemStatus.pending.image
-                    .font(.boldDynamic(style: .body))
-                    .foregroundColor(ShoppingItemStatus.pending.color)
+            if showItemPrices {
+                VStack(alignment: .trailing, spacing: 2) {
+                    pendingItemsIcon
+                    purchasedItemsIcon
+                }
                 
-                ShoppingItemStatus.purchased.image
-                    .font(.boldDynamic(style: .body))
-                    .foregroundColor(ShoppingItemStatus.purchased.color)
-            }
-            
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("\(numPendingItems)")
-                    .font(.boldMonospaced(style: .body))
-                    .foregroundColor(ShoppingItemStatus.pending.color)
+                VStack(alignment: .trailing, spacing: 2) {
+                    pendingItemsText
+                    purchasedItemsText
+                }
                 
-                Text("\(numPurchasedItems)")
-                    .font(.boldMonospaced(style: .body))
-                    .foregroundColor(ShoppingItemStatus.purchased.color)
-            }
-            
-            Rectangle()
-                .foregroundColor(.bb.text.quaternary)
-                .frame(width: 2)
-                .frame(maxHeight: .infinity)
-            
-            VStack(alignment: .trailing, spacing: 2) {
-                Text(totalPriceOfPendingItems.priceFormat)
-                    .font(.boldMonospaced(style: .body))
-                    .foregroundColor(ShoppingItemStatus.pending.color)
+                Rectangle()
+                    .foregroundColor(.bb.text.quaternary)
+                    .frame(width: 2)
+                    .frame(maxHeight: .infinity)
                 
-                Text(totalPriceOfPurchasedItems.priceFormat)
-                    .font(.boldMonospaced(style: .body))
-                    .foregroundColor(ShoppingItemStatus.purchased.color)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(totalPriceOfPendingItems.priceFormat)
+                        .font(.boldMonospaced(style: .body))
+                        .foregroundColor(ShoppingItemStatus.pending.color)
+                    
+                    Text(totalPriceOfPurchasedItems.priceFormat)
+                        .font(.boldMonospaced(style: .body))
+                        .foregroundColor(ShoppingItemStatus.purchased.color)
+                }
+            } else {
+                HStack(spacing: 6) {
+                    pendingItemsIcon
+                    pendingItemsText
+                }
+                .padding(.trailing, 12)
+                
+                HStack(spacing: 6) {
+                    purchasedItemsIcon
+                    purchasedItemsText
+                }
             }
         }
         .padding(.trailing, 8)

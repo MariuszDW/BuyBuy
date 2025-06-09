@@ -20,6 +20,7 @@ struct ShoppingItemRow: View {
             if !disabled {
                 statusCheckBox
                     .padding(.trailing, 8)
+                    .padding(.bottom, 4)
             }
             
             mainContent
@@ -141,7 +142,8 @@ struct ShoppingItemRow: View {
     
     List {
         ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
-                        disabled: false, onToggleStatus: {_ in }, onRowTap: {_ in }, onThumbnailTap: {_, _ in })
+                        disabled: false, onToggleStatus: {_ in },
+                        onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
     .listStyle(.plain)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -157,7 +159,38 @@ struct ShoppingItemRow: View {
     
     List {
         ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
-                        disabled: false, onToggleStatus: {_ in }, onRowTap: {_ in }, onThumbnailTap: {_, _ in })
+                        disabled: false, onToggleStatus: {_ in },
+                        onRowTap: {_ in }, onThumbnailTap: {_, _ in })
+    }
+    .listStyle(.plain)
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.bb.background2)
+    .preferredColorScheme(.dark)
+}
+
+#Preview("Light/min") {
+    let item = ShoppingItem(id: UUID(), order: 0, listID: UUID(), name: "Milk",
+                            note: "", status: .purchased)
+    
+    List {
+        ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
+                        disabled: false, onToggleStatus: {_ in },
+                        onRowTap: {_ in }, onThumbnailTap: {_, _ in })
+    }
+    .listStyle(.plain)
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.bb.background2)
+    .preferredColorScheme(.light)
+}
+
+#Preview("Dark/min") {
+    let item = ShoppingItem(id: UUID(), order: 0, listID: UUID(), name: "Milk",
+                            note: "", status: .purchased)
+    
+    List {
+        ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
+                        disabled: false, onToggleStatus: {_ in },
+                        onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
     .listStyle(.plain)
     .frame(maxWidth: .infinity, maxHeight: .infinity)

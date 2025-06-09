@@ -57,4 +57,8 @@ struct ShoppingList: Identifiable, Hashable {
         }
         return total
     }
+    
+    func containsItemsWithPrice() -> Bool {
+        items.contains(where: { $0.price != nil })
+    }
 }
