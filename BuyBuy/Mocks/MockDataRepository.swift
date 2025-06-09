@@ -110,7 +110,7 @@ extension MockDataRepository {
         ShoppingItem(order: 4, listID: listUUID1, name: "Chicken", status: .purchased),
         ShoppingItem(order: 5, listID: listUUID1, name: "Butter", note: "As cheap as possible.", status: .purchased, price: 4.79, quantity: 1),
         ShoppingItem(order: 6, listID: listUUID1, name: "Yogurt", note: "Natural, 500 g", status: .inactive, price: 1.79, quantity: 3)
-    ], order: 0, icon: .cart, color: .orange)
+    ], order: 0, icon: .cart, color: .magenta)
     
     static let list2 = ShoppingList(id: listUUID2, name: "Hardware Store", items: [
         ShoppingItem(order: 0, listID: listUUID2, name: "Screws", status: .purchased),
@@ -143,7 +143,7 @@ extension MockDataRepository {
         ShoppingItem(order: 4, listID: listUUID4, name: "Dog Treats", status: .pending),
         ShoppingItem(order: 5, listID: listUUID4, name: "Cat Litter", status: .inactive),
         ShoppingItem(order: 6, listID: listUUID4, name: "Fish Tank Filter", status: .purchased)
-    ], order: 3, icon: .cat, color: .pink)
+    ], order: 3, icon: .cat, color: .orange)
     
     static let list5 = ShoppingList(id: listUUID5, name: "Empty", items: [], order: 4, icon: .questionmark, color: .cyan)
     
