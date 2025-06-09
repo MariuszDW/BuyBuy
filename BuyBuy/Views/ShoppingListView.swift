@@ -30,7 +30,6 @@ struct ShoppingListView: View {
             BottomPanelView(title: "Add item",
                             systemImage: "plus.circle",
                             isButtonDisabled: isEditMode.isEditing,
-                            verticalPadding: 5,
                             trailingView: { summaryView() },
                             action: {
                 if let listID = viewModel.list?.id {

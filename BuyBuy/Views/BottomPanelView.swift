@@ -11,21 +11,18 @@ struct BottomPanelView<TrailingView: View>: View {
     let title: String
     let systemImage: String
     let isButtonDisabled: Bool
-    let verticalPadding: CGFloat
     let action: () -> Void
     let trailingView: TrailingView?
     
     init(title: String,
          systemImage: String,
          isButtonDisabled: Bool = false,
-         verticalPadding: CGFloat = 16,
          @ViewBuilder trailingView: () -> TrailingView? = { nil },
          action: @escaping () -> Void
     ) {
         self.title = title
         self.systemImage = systemImage
         self.isButtonDisabled = isButtonDisabled
-        self.verticalPadding = verticalPadding
         self.trailingView = trailingView()
         self.action = action
     }
@@ -36,6 +33,7 @@ struct BottomPanelView<TrailingView: View>: View {
                 Label(title, systemImage: systemImage)
                     .font(.headline)
             }
+            .padding(.vertical, 16)
             .disabled(isButtonDisabled)
             
             Spacer()
@@ -45,7 +43,7 @@ struct BottomPanelView<TrailingView: View>: View {
             }
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, verticalPadding)
+        .padding(.vertical, 0)
         .background(Color.bb.background)
         .ignoresSafeArea(edges: .bottom)
         .overlay(alignment: .top) {
