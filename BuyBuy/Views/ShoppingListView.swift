@@ -9,13 +9,12 @@ import SwiftUI
 
 struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
-    
     @State private var isEditMode: EditMode = .inactive
     
     var body: some View {
         VStack(spacing: 0) {
             if let list = viewModel.list, !list.items.isEmpty {
-                listView(list)
+                sections(list)
                     .environment(\.editMode, $isEditMode)
                     .listStyle(.grouped)
             } else {
@@ -55,26 +54,32 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func listView(_ list: ShoppingList) -> some View {
+    private func sections(_ list: ShoppingList) -> some View {
         List {
             ForEach(viewModel.sections, id: \.status) { section in
                 let items = list.items(for: section.status)
                 Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
-                    if !section.isCollapsed {
-                        ForEach(items) { item in
-                            itemView(item: item, section: section)
-                        }
-                        .onDelete { offsets in
-                            Task {
-                                await viewModel.deleteItems(atOffsets: offsets, section: section)
-                            }
-                        }
-                        .onMove { indices, newOffset in
-                            Task {
-                                await viewModel.moveItem(from: indices, to: newOffset, in: section.status)
-                            }
-                        }
-                    }
+                    shoppingItems(items, of: section)
+                }
+            }
+        }
+        .animation(.default, value: list.items)
+    }
+    
+    @ViewBuilder
+    private func shoppingItems(_ items: [ShoppingItem], of section: ShoppingListSection) -> some View {
+        if !section.isCollapsed {
+            ForEach(items) { item in
+                itemView(item: item, section: section)
+            }
+            .onDelete { offsets in
+                Task {
+                    await viewModel.deleteItems(atOffsets: offsets, section: section)
+                }
+            }
+            .onMove { indices, newOffset in
+                Task {
+                    await viewModel.moveItem(from: indices, to: newOffset, in: section.status)
                 }
             }
         }
@@ -216,7 +221,7 @@ struct ShoppingListView: View {
                         .font(.boldDynamic(style: .title2))
                         .foregroundColor(.bb.text.tertiary)
                         .multilineTextAlignment(.center)
-
+                    
                     Text("Use the 'Add item' button to add your first shopping item.")
                         .font(.boldDynamic(style: .headline))
                         .foregroundColor(.bb.text.tertiary)
@@ -332,9 +337,7 @@ struct ShoppingListView: View {
     // MARK: - Private
     
     private func handleDeleteTapped(for item: ShoppingItem) async {
-        Task {
-            await viewModel.deleteItem(with: item.id)
-        }
+        await viewModel.deleteItem(with: item.id)
     }
 }
 

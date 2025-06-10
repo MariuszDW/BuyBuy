@@ -92,49 +92,39 @@ final class ShoppingListViewModel: ObservableObject {
     func setStatus(_ status: ShoppingItemStatus, itemID: UUID) async {
         guard var currentList = self.list else { return }
         guard let oldItemIndex = currentList.items.firstIndex(where: { $0.id == itemID }) else { return }
-        
+
         var updatedItem = currentList.items[oldItemIndex]
         let oldStatus = updatedItem.status
-        
+
         guard oldStatus != status else { return }
-        
-        updatedItem.status = status
-        
-        currentList.items[oldItemIndex] = updatedItem
-        
-        var oldSectionItems = currentList.items(for: oldStatus)
-            .filter { $0.id != updatedItem.id }
-        
-        var newSectionItems = currentList.items(for: status)
-            .filter { $0.id != updatedItem.id }
-        
-        let maxOrder = newSectionItems.map(\.order).max() ?? -1
-        updatedItem.order = maxOrder + 1
-        
-        newSectionItems.append(updatedItem)
-        
+
+        withAnimation {
+            currentList.items.remove(at: oldItemIndex)
+            updatedItem.status = status
+            let maxOrder = currentList.items(for: status).map(\.order).max() ?? -1
+            updatedItem.order = maxOrder + 1
+            currentList.items.append(updatedItem)
+            self.list = currentList
+        }
+
+        var newSectionItems = currentList.items(for: status).sorted(by: { $0.order < $1.order })
         newSectionItems = newSectionItems.enumerated().map { index, item in
             var mutable = item
             mutable.order = index
             return mutable
         }
-        
+
+        var oldSectionItems = currentList.items(for: oldStatus).sorted(by: { $0.order < $1.order })
         oldSectionItems = oldSectionItems.enumerated().map { index, item in
             var mutable = item
             mutable.order = index
             return mutable
         }
-        
-        self.list = currentList
-        
-        for item in newSectionItems {
+
+        for item in newSectionItems + oldSectionItems {
             try? await dataManager.addOrUpdateItem(item)
         }
-        
-        for item in oldSectionItems {
-            try? await dataManager.addOrUpdateItem(item)
-        }
-        
+
         await loadList()
     }
     
