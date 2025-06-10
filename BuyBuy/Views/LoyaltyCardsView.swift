@@ -58,22 +58,27 @@ struct LoyaltyCardsView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    withAnimation {
-                        if showingListView {
+                if isEditMode.isEditing {
+                    Button("OK") {
+                        withAnimation {
                             isEditMode = .inactive
                             showingListView = false
-                        } else {
+                        }
+                    }
+                    .accessibilityLabel("Done Editing")
+                }
+                
+                if !isEditMode.isEditing && !viewModel.cards.isEmpty {
+                    Button {
+                        withAnimation {
                             isEditMode = .active
                             showingListView = true
                         }
+                    } label: {
+                        Label("Edit list", systemImage: "pencil.circle")
                     }
-                } label: {
-                    Image(systemName: showingListView ? "checkmark" : "pencil.circle")
-                        .imageScale(.large)
+                    .accessibilityLabel("Edit")
                 }
-                .disabled(viewModel.cards.isEmpty)
-                .accessibilityLabel(showingListView ? "Done Editing" : "Edit")
             }
         }
         .navigationTitle(viewModel.cards.isEmpty ? "" : "Loyalty Cards")
