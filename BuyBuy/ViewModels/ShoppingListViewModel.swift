@@ -162,6 +162,23 @@ final class ShoppingListViewModel: ObservableObject {
         coordinator.openLoyaltyCardList()
     }
     
+    func openExportListOptions() {
+        // TODO: implement...
+        print("openExportListOptions")
+        // coordinator.openExportListSettings()
+    }
+    
+    func deletePurchasedItems() async {
+        let purchasedItemIDs = list?.items
+            .filter { $0.status == .purchased }
+            .map { $0.id } ?? []
+        
+        if !purchasedItemIDs.isEmpty {
+            try? await dataManager.deleteItems(with: purchasedItemIDs)
+            await loadList()
+        }
+    }
+    
     func thumbnail(for imageID: String?) -> UIImage? {
         guard let imageID, !imageID.isEmpty else { return nil }
         if let cached = thumbnails[imageID] {

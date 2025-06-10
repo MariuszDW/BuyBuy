@@ -154,15 +154,45 @@ struct ShoppingListView: View {
                     .accessibilityLabel("Loyalty cards")
                 }
                 
-                Button {
-                    withAnimation {
-                        isEditMode = (isEditMode == .active) ? .inactive : .active
+                if isEditMode.isEditing {
+                    Button("OK") {
+                        withAnimation {
+                            isEditMode = .inactive
+                        }
                     }
-                } label: {
-                    Image(systemName: isEditMode == .active ? "checkmark" : "pencil.circle")
+                    .accessibilityLabel("Done Editing")
                 }
-                .disabled(viewModel.list?.items.isEmpty ?? true)
-                .accessibilityLabel(isEditMode == .active ? "Done Editing" : "Edit")
+                
+                if !isEditMode.isEditing {
+                    Menu {
+                        Button {
+                            withAnimation {
+                                isEditMode = .active
+                            }
+                        } label: {
+                            Label("Edit list", systemImage: "pencil")
+                        }
+                        .accessibilityLabel("Edit")
+                        
+                        Button {
+                            viewModel.openExportListOptions()
+                        } label: {
+                            Label("Export list", systemImage: "square.and.arrow.up")
+                        }
+                        
+                        Button(role: .destructive) {
+                            Task {
+                                await viewModel.deletePurchasedItems()
+                            }
+                        } label: {
+                            Label("Delete purchased items", systemImage: "trash")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                    .disabled(viewModel.list?.items.isEmpty ?? true)
+                    .accessibilityLabel("More options")
+                }
             }
         }
     }
