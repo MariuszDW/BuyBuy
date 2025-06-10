@@ -16,6 +16,9 @@ struct ShoppingItemDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: ShoppingItemDetailsField?
     
+    @State private var priceFieldString: String = ""
+    @State private var quantityFieldString: String = ""
+    
     var body: some View {
         NavigationStack {
             content
@@ -51,6 +54,8 @@ struct ShoppingItemDetailsView: View {
             focusedField = viewModel.isNew ? .name : nil
             await viewModel.loadThumbnails()
             await viewModel.loadShoppingLists()
+            priceFieldString = viewModel.priceString
+            quantityFieldString = viewModel.quantityString
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Shopping item")
@@ -255,13 +260,21 @@ struct ShoppingItemDetailsView: View {
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
             
-            TextField(viewModel.quantityPlaceholder, value: $viewModel.quantity, format: .number)
+            TextField(viewModel.quantityPlaceholder, text: $quantityFieldString)
                 .keyboardType(.decimalPad)
                 .padding(10)
                 .background(Color.bb.sheet.background)
                 .foregroundColor(.bb.sheet.section.primaryText)
                 .cornerRadius(8)
                 .focused($focusedField, equals: .quantity)
+                .onChange(of: quantityFieldString) { newValue in
+                    viewModel.quantityString = newValue
+                }
+                .onChange(of: focusedField) { newValue in
+                    if newValue != .quantity {
+                        quantityFieldString = viewModel.quantityString
+                    }
+                }
                 .onSubmit {
                     focusedField = nil
                 }
@@ -348,18 +361,24 @@ struct ShoppingItemDetailsView: View {
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
             
-            TextField(viewModel.pricePerUnitPlaceholder,
-                      value: $viewModel.price,
-                      format: .number.precision(.fractionLength(NumberFormatter.priceMinPrecision...NumberFormatter.priceMaxPrecision)))
-            .keyboardType(.decimalPad)
-            .padding(10)
-            .background(Color.bb.sheet.background)
-            .foregroundColor(.bb.sheet.section.primaryText)
-            .cornerRadius(8)
-            .focused($focusedField, equals: .pricePerUnit)
-            .onSubmit {
-                focusedField = nil
-            }
+            TextField(viewModel.pricePerUnitPlaceholder, text: $priceFieldString)
+                .keyboardType(.decimalPad)
+                .padding(10)
+                .background(Color.bb.sheet.background)
+                .foregroundColor(.bb.sheet.section.primaryText)
+                .cornerRadius(8)
+                .focused($focusedField, equals: .pricePerUnit)
+                .onChange(of: priceFieldString) { newValue in
+                    viewModel.priceString = newValue
+                }
+                .onChange(of: focusedField) { newValue in
+                    if newValue != .pricePerUnit {
+                        priceFieldString = viewModel.priceString
+                    }
+                }
+                .onSubmit {
+                    focusedField = nil
+                }
         }
         .frame(maxWidth: .infinity)
     }

@@ -53,5 +53,7 @@ struct ShoppingItem: Identifiable, Hashable {
     mutating func prepareToSave() {
         name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         note = note.trimmingCharacters(in: .whitespacesAndNewlines)
+        price = price?.priceRound
+        quantity = quantity?.quantityRound
     }
 }

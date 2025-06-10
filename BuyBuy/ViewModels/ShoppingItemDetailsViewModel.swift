@@ -59,16 +59,6 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         set { shoppingItem.note = newValue }
     }
     
-    var quantity: Double? {
-        get { shoppingItem.quantity }
-        set {
-            shoppingItem.quantity = newValue
-            if newValue != nil && shoppingItem.unit == nil {
-                shoppingItem.unit = ShoppingItemUnit(MeasuredUnit.default)
-            }
-        }
-    }
-    
     var unit: String {
         get {
             shoppingItem.unit?.symbol ?? ""
@@ -78,9 +68,14 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         }
     }
     
-    var price: Double? {
-        get { shoppingItem.price }
-        set { shoppingItem.price = newValue }
+    var quantityString: String {
+        get { shoppingItem.quantity?.quantityFormat ?? "" }
+        set { shoppingItem.quantity = newValue.quantityDouble }
+    }
+    
+    var priceString: String {
+        get { shoppingItem.price?.priceFormat ?? "" }
+        set { shoppingItem.price = newValue.priceDouble }
     }
     
     var totalPriceString: String {
@@ -88,7 +83,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     var quantityPlaceholder: String {
-        let formatter = NumberFormatter.localizedDecimal(minFractionDigits: 1)
+        let formatter = NumberFormatter.quantity()
         let valueString = formatter.string(from: 1.5) ?? "1.5"
         return "e.g. \(valueString)"
     }
@@ -99,7 +94,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     var pricePerUnitPlaceholder: String {
-        let formatter = NumberFormatter.priceFormatter()
+        let formatter = NumberFormatter.price()
         let valueString = formatter.string(from: 10.99) ?? "10.99"
         return "e.g. \(valueString)"
     }

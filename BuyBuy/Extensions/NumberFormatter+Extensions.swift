@@ -10,9 +10,17 @@ import Foundation
 extension NumberFormatter {
     static let priceMinPrecision = 2
     static let priceMaxPrecision = 2
-
-    static func priceFormatter(minPrecision: Int = NumberFormatter.priceMinPrecision,
-                               maxPrecision: Int = NumberFormatter.priceMaxPrecision) -> NumberFormatter {
+    static let quantityMinPrecision = 0
+    static let quantityMaxPrecision = 2
+    
+    static func price(minPrecision: Int = NumberFormatter.priceMinPrecision,
+                      maxPrecision: Int = NumberFormatter.priceMaxPrecision) -> NumberFormatter {
+        localizedDecimal(minFractionDigits: minPrecision,
+                         maxFractionDigits: maxPrecision)
+    }
+    
+    static func quantity(minPrecision: Int = NumberFormatter.quantityMinPrecision,
+                         maxPrecision: Int = NumberFormatter.quantityMaxPrecision) -> NumberFormatter {
         localizedDecimal(minFractionDigits: minPrecision,
                          maxFractionDigits: maxPrecision)
     }
