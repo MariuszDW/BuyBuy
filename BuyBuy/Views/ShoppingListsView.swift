@@ -195,8 +195,8 @@ struct ShoppingListsView: View {
     
     private var toolbarContent: some ToolbarContent {
         Group {
-            if !isEditMode.isEditing {
-                ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .navigationBarLeading) {
+                if !isEditMode.isEditing {
                     Button {
                         viewModel.openAbout()
                     } label: {
@@ -207,6 +207,15 @@ struct ShoppingListsView: View {
             }
             
             ToolbarItemGroup(placement: .navigationBarTrailing) {
+                if isEditMode.isEditing {
+                    Button("OK") {
+                        withAnimation {
+                            isEditMode = .inactive
+                        }
+                    }
+                    .accessibilityLabel("Done Editing")
+                }
+                
                 if !isEditMode.isEditing {
                     Button {
                         viewModel.openLoyaltyCards()
@@ -214,26 +223,29 @@ struct ShoppingListsView: View {
                         Image(systemName: "creditcard.circle")
                     }
                     .accessibilityLabel("Loyalty cards")
-                }
-                
-                Button {
-                    withAnimation {
-                        isEditMode = (isEditMode == .active) ? .inactive : .active
-                    }
-                } label: {
-                    Image(systemName: isEditMode == .active ? "checkmark" : "pencil.circle")
-                }
-                .disabled(viewModel.shoppingLists.isEmpty)
-                .accessibilityLabel(isEditMode == .active ? "Done Editing" : "Edit")
-                
-                if !isEditMode.isEditing {
-                    Button {
-                        isEditMode = .inactive
-                        viewModel.openSettings()
+                    
+                    Menu {
+                        Button {
+                            withAnimation {
+                                isEditMode = .active
+                            }
+                        } label: {
+                            Label("Edit list", systemImage: "pencil")
+                        }
+                        .accessibilityLabel("Edit")
+                        
+                        Button {
+                            isEditMode = .inactive
+                            viewModel.openSettings()
+                        } label: {
+                            Label("Settings", systemImage: "gearshape")
+                        }
+                        .accessibilityLabel("Settings")
                     } label: {
-                        Image(systemName: "gearshape")
+                        Image(systemName: "ellipsis.circle")
                     }
-                    .accessibilityLabel("Settings")
+                    .disabled(viewModel.shoppingLists.isEmpty)
+                    .accessibilityLabel("More options")
                 }
             }
         }
