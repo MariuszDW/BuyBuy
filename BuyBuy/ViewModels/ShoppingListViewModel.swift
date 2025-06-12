@@ -158,6 +158,10 @@ final class ShoppingListViewModel: ObservableObject {
         // coordinator.openExportListSettings()
     }
     
+    var hasPurchasedItems: Bool {
+        list?.items.contains { $0.status == .purchased } ?? false
+    }
+    
     func deletePurchasedItems() async {
         let purchasedItemIDs = list?.items
             .filter { $0.status == .purchased }

@@ -10,6 +10,7 @@ import SwiftUI
 struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
     @State private var isEditMode: EditMode = .inactive
+    @State private var showDeletePurchasedAlert = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -50,6 +51,17 @@ struct ShoppingListView: View {
         }
         .task {
             await viewModel.loadList()
+        }
+        .alert("Confirm deletion of purchased items",
+               isPresented: $showDeletePurchasedAlert) {
+            Button("Delete", role: .destructive) {
+                Task {
+                    await viewModel.deletePurchasedItems()
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to delete ALL purchased items?")
         }
     }
     
@@ -186,12 +198,11 @@ struct ShoppingListView: View {
                         }
                         
                         Button(role: .destructive) {
-                            Task {
-                                await viewModel.deletePurchasedItems()
-                            }
+                            showDeletePurchasedAlert = true
                         } label: {
                             Label("Delete purchased items", systemImage: "trash")
                         }
+                        .disabled(!viewModel.hasPurchasedItems)
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
