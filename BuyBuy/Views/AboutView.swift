@@ -54,7 +54,7 @@ struct AboutView: View {
     
     func infoContext(isPortrait: Bool) -> some View {
         VStack() {
-            Text(Bundle.main.appVersion(prefix: "version" + " ", date: true))
+            Text(Bundle.main.appVersion(prefix: String(localized: "version") + " ", date: true))
                 .font(.regularMonospaced(style: .headline))
                 .foregroundColor(.bb.text.primary)
             Text("credits_role")
