@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "encore_logo_r.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

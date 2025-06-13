@@ -182,7 +182,9 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             )
             
         case .about:
-            AboutView()
+            AboutView(
+                viewModel: AboutViewModel(coordinator: self)
+            )
         }
     }
 }

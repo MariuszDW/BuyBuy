@@ -8,7 +8,10 @@
 import SwiftUI
 
 internal extension Image {
-//    static let bbItemPendingImage = Image(systemName: "hourglass")
-//    static let bbItemPurchasedImage = Image(systemName: "checkmark")
-//    static let bbItemInactiveImage = Image(systemName: "zzz")
+    static let bbBuyBuyLogo = Image("BuyBuy_logo")
+    static let bbEncoreLogoE = Image("encore_logo_e")
+    static let bbEncoreLogoN = Image("encore_logo_n")
+    static let bbEncoreLogoC = Image("encore_logo_c")
+    static let bbEncoreLogoO = Image("encore_logo_o")
+    static let bbEncoreLogoR = Image("encore_logo_r")
 }
