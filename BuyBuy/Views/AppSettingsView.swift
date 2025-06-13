@@ -25,23 +25,25 @@ struct AppSettingsView: View {
             }
             
 #if DEBUG
-            Section(header: Text("DEBUG")) {
-                Button("Copy mocks to database") {
+            Section(header: Text("debug")) {
+                Button("copy_mocks_to_database") {
                     showCopyMocksConfirmation = true
                 }
             }
 #endif
         }
-        .navigationTitle("Settings")
+        .navigationTitle("settings")
         .navigationBarTitleDisplayMode(.large)
 #if DEBUG
-        .alert("Copy mocks to DataBase?", isPresented: $showCopyMocksConfirmation) {
-            Button("Cancel", role: .cancel) {}
-            Button("Copy") {
+        .alert("copy_mocks_to_database", isPresented: $showCopyMocksConfirmation) {
+            Button("cancel", role: .cancel) {}
+            Button("ok") {
                 Task {
                     await viewModel.copyMockToData()
                 }
             }
+        } message: {
+            Text("are_you_sure")
         }
 #endif
     }

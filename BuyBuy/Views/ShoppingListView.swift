@@ -52,16 +52,16 @@ struct ShoppingListView: View {
         .task {
             await viewModel.loadList()
         }
-        .alert("Confirm deletion of purchased items",
+        .alert("delete_purchased_items_title",
                isPresented: $showDeletePurchasedAlert) {
-            Button("Delete", role: .destructive) {
+            Button("delete", role: .destructive) {
                 Task {
                     await viewModel.deletePurchasedItems()
                 }
             }
-            Button("Cancel", role: .cancel) { }
+            Button("cancel", role: .cancel) { }
         } message: {
-            Text("Are you sure you want to delete ALL purchased items?")
+            Text("delete_purchased_items_message")
         }
     }
     
@@ -116,7 +116,7 @@ struct ShoppingListView: View {
             Button {
                 viewModel.openItemDetails(for: item.id)
             } label: {
-                Label("Edit", systemImage: "square.and.pencil")
+                Label("edit", systemImage: "square.and.pencil")
             }
             
             Button(role: .destructive) {
@@ -124,7 +124,7 @@ struct ShoppingListView: View {
                     await handleDeleteTapped(for: item)
                 }
             } label: {
-                Label("Delete", systemImage: "trash.fill")
+                Label("delete", systemImage: "trash.fill")
             }
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -133,13 +133,13 @@ struct ShoppingListView: View {
                     await handleDeleteTapped(for: item)
                 }
             } label: {
-                Label("Delete", systemImage: "trash.fill")
+                Label("delete", systemImage: "trash.fill")
             }
             
             Button {
                 viewModel.openItemDetails(for: item.id)
             } label: {
-                Label("Edit", systemImage: "square.and.pencil")
+                Label("edit", systemImage: "square.and.pencil")
             }
             .tint(.blue)
         }
@@ -168,16 +168,16 @@ struct ShoppingListView: View {
                     } label: {
                         Image(systemName: "creditcard.circle")
                     }
-                    .accessibilityLabel("Loyalty cards")
+                    // .accessibilityLabel("Loyalty cards")
                 }
                 
                 if isEditMode.isEditing {
-                    Button("OK") {
+                    Button("ok") {
                         withAnimation {
                             isEditMode = .inactive
                         }
                     }
-                    .accessibilityLabel("Done Editing")
+                    // .accessibilityLabel("Done Editing")
                 }
                 
                 if !isEditMode.isEditing {
@@ -187,27 +187,27 @@ struct ShoppingListView: View {
                                 isEditMode = .active
                             }
                         } label: {
-                            Label("Edit list", systemImage: "pencil")
+                            Label("edit_list", systemImage: "pencil")
                         }
-                        .accessibilityLabel("Edit")
+                        // .accessibilityLabel("Edit")
                         
                         Button {
                             viewModel.openExportListOptions()
                         } label: {
-                            Label("Export list", systemImage: "square.and.arrow.up")
+                            Label("export_list", systemImage: "square.and.arrow.up")
                         }
                         
                         Button(role: .destructive) {
                             showDeletePurchasedAlert = true
                         } label: {
-                            Label("Delete purchased items", systemImage: "trash")
+                            Label("delete_purchased_items", systemImage: "trash")
                         }
                         .disabled(!viewModel.hasPurchasedItems)
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
                     .disabled(viewModel.list?.items.isEmpty ?? true)
-                    .accessibilityLabel("More options")
+                    // .accessibilityLabel("More options")
                 }
             }
         }
@@ -228,12 +228,12 @@ struct ShoppingListView: View {
                         dampingFraction: 0.3
                     )
                     
-                    Text("This shopping list is empty.")
+                    Text("list_empty_view_title")
                         .font(.boldDynamic(style: .title2))
                         .foregroundColor(.bb.text.tertiary)
                         .multilineTextAlignment(.center)
                     
-                    Text("Use the 'Add item' button to add your first shopping item.")
+                    Text("list_empty_view_message")
                         .font(.boldDynamic(style: .headline))
                         .foregroundColor(.bb.text.tertiary)
                         .multilineTextAlignment(.center)

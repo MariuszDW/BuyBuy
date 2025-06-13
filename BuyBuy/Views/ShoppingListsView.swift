@@ -43,7 +43,7 @@ struct ShoppingListsView: View {
                             trailingView: { EmptyView() },
                             action: { viewModel.openNewListSettings() })
         }
-        .navigationTitle(viewModel.shoppingLists.isEmpty ? "" : "Shopping lists")
+        .navigationTitle(viewModel.shoppingLists.isEmpty ? "" : "shopping_lists")
         .navigationBarTitleDisplayMode(.large)
         .onChange(of: viewModel.shoppingLists) { newValue in
             if newValue.isEmpty {
@@ -55,9 +55,9 @@ struct ShoppingListsView: View {
         }
         .alert(item: $listPendingDeletion) { list in
             Alert(
-                title: Text("Delete list \"\(list.name)\"?"),
-                message: Text("This list contains items. Are you sure you want to delete it?"),
-                primaryButton: .destructive(Text("Delete")) {
+                title: Text(String(format: String(localized: "delete_list_title"), list.name)),
+                message: Text("delete_list_message"),
+                primaryButton: .destructive(Text("delete")) {
                     Task {
                         await viewModel.deleteList(id: list.id)
                         listPendingDeletion = nil
@@ -99,7 +99,7 @@ struct ShoppingListsView: View {
                                     Button {
                                         viewModel.openListSettings(for: list)
                                     } label: {
-                                        Label("Edit", systemImage: "square.and.pencil")
+                                        Label("edit", systemImage: "square.and.pencil")
                                     }
                                     
                                     Button(role: .destructive) {
@@ -107,7 +107,7 @@ struct ShoppingListsView: View {
                                             await handleDeleteTapped(for: list)
                                         }
                                     } label: {
-                                        Label("Delete", systemImage: "trash.fill")
+                                        Label("delete", systemImage: "trash.fill")
                                     }
                                 }
                         }
@@ -117,14 +117,14 @@ struct ShoppingListsView: View {
                                     await handleDeleteTapped(for: list)
                                 }
                             } label: {
-                                Label("Delete", systemImage: "trash.fill")
+                                Label("delete", systemImage: "trash.fill")
                             }
                         }
                         .swipeActions(edge: .leading, allowsFullSwipe: true) {
                             Button {
                                 viewModel.openListSettings(for: list)
                             } label: {
-                                Label("Edit", systemImage: "square.and.pencil")
+                                Label("edit", systemImage: "square.and.pencil")
                             }
                             .tint(.blue)
                         }
@@ -202,18 +202,18 @@ struct ShoppingListsView: View {
                     } label: {
                         Image(systemName: "questionmark.circle")
                     }
-                    .accessibilityLabel("About")
+                    // .accessibilityLabel("about")
                 }
             }
             
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isEditMode.isEditing {
-                    Button("OK") {
+                    Button("ok") {
                         withAnimation {
                             isEditMode = .inactive
                         }
                     }
-                    .accessibilityLabel("Done Editing")
+                    // .accessibilityLabel("Done Editing")
                 }
                 
                 if !isEditMode.isEditing {
@@ -222,7 +222,7 @@ struct ShoppingListsView: View {
                     } label: {
                         Image(systemName: "creditcard.circle")
                     }
-                    .accessibilityLabel("Loyalty cards")
+                    // .accessibilityLabel("Loyalty cards")
                     
                     Menu {
                         Button {
@@ -230,22 +230,22 @@ struct ShoppingListsView: View {
                                 isEditMode = .active
                             }
                         } label: {
-                            Label("Edit list", systemImage: "pencil")
+                            Label("edit_list", systemImage: "pencil")
                         }
-                        .accessibilityLabel("Edit")
+                        // .accessibilityLabel("Edit")
                         
                         Button {
                             isEditMode = .inactive
                             viewModel.openSettings()
                         } label: {
-                            Label("Settings", systemImage: "gearshape")
+                            Label("list_settings", systemImage: "gearshape")
                         }
-                        .accessibilityLabel("Settings")
+                        // .accessibilityLabel("Settings")
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
                     .disabled(viewModel.shoppingLists.isEmpty)
-                    .accessibilityLabel("More options")
+                    // .accessibilityLabel("More options")
                 }
             }
         }
@@ -278,12 +278,12 @@ struct ShoppingListsView: View {
                         .shadow(color: .black.opacity(0.4), radius: 6)
                 }
                 
-                Text("No shopping lists available.")
+                Text("lists_empty_view_title")
                     .font(.boldDynamic(style: .title2))
                     .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
                 
-                Text("Tap the \"Add list\" button to create a new list.")
+                Text("lists_empty_view_message")
                     .font(.boldDynamic(style: .headline))
                     .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)

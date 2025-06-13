@@ -38,7 +38,7 @@ struct AboutView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .navigationTitle("About")
+        .navigationTitle("about")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -46,7 +46,7 @@ struct AboutView: View {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark.circle")
-                        .accessibilityLabel("Close")
+                        // .accessibilityLabel("Close")
                 }
             }
         }
@@ -54,13 +54,13 @@ struct AboutView: View {
     
     func infoContext(isPortrait: Bool) -> some View {
         VStack() {
-            Text(Bundle.main.appVersion(prefix: "version ", date: true))
+            Text(Bundle.main.appVersion(prefix: "version" + " ", date: true))
                 .font(.regularMonospaced(style: .headline))
                 .foregroundColor(.bb.text.primary)
-            Text("programming, & design")
+            Text("credits_role")
                 .padding(.top, 16)
                 .font(.regularDynamic(style: .body))
-            Text("Mariusz Włodarczyk")
+            Text("credits_name")
                 .font(.boldDynamic(style: .title3))
         }
         .frame(maxWidth: .infinity)

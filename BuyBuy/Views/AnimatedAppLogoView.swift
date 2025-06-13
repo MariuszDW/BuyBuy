@@ -69,7 +69,7 @@ struct AnimatedAppLogoView: View {
                     }
                 }
                 
-                Text("© 2025")
+                Text("copyright_year")
                     .offset(x: width * copyrightPosX, y: copyrightPosY)
                     .foregroundColor(.bb.text.primary.opacity(encoreLogoOpacity))
                     .font(.system(size: copyrightFontSize, weight: .bold))

@@ -30,7 +30,7 @@ struct ShoppingListSettingsView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Shopping list")
+            .navigationTitle("shopping_list")
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 if focusedField != nil {
@@ -60,7 +60,7 @@ struct ShoppingListSettingsView: View {
         Group {
             if viewModel.isNew {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("cancel") {
                         Task {
                             viewModel.changesConfirmed = false
                             dismiss()
@@ -69,7 +69,7 @@ struct ShoppingListSettingsView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("OK") {
+                    Button("ok") {
                         Task {
                             viewModel.changesConfirmed = true
                             dismiss()
@@ -86,7 +86,7 @@ struct ShoppingListSettingsView: View {
                         }
                     } label: {
                         Image(systemName: "xmark.circle")
-                            .accessibilityLabel("Close")
+                            // .accessibilityLabel("Close")
                     }
                     .disabled(!viewModel.canConfirm)
                 }
@@ -116,7 +116,7 @@ struct ShoppingListSettingsView: View {
     private var nameField: some View {
         VStack(alignment: .leading, spacing: 8) {
             TextField(
-                "List name",
+                "list_name",
                 text: $viewModel.shoppingList.name
             )
             // .textInputAutocapitalization(.sentences) // TODO: To dodac jako opcje w ustawieniach aplikacji.

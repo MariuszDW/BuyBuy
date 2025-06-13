@@ -38,7 +38,7 @@ struct ImageSourcePickerView: View {
                             .scaledToFit()
                             .frame(width: buttonSize, height: buttonSize)
                             .foregroundColor(isSimulator ? Color.gray : .bb.selection)
-                        Text("Camera")
+                        Text("camera")
                             .font(.regularDynamic(style:.body))
                             .foregroundColor(.bb.text.primary)
                     }
@@ -55,7 +55,7 @@ struct ImageSourcePickerView: View {
                             .scaledToFit()
                             .frame(width: buttonSize, height: buttonSize)
                             .foregroundColor(.bb.selection)
-                        Text("Library")
+                        Text("photo_library")
                             .font(.regularDynamic(style:.body))
                             .foregroundColor(.bb.text.primary)
                     }

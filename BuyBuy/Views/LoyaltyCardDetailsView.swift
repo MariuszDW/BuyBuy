@@ -23,12 +23,12 @@ struct LoyaltyCardDetailsView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Name") {
+                Section("card_name") {
                     nameSectionContent
                 }
                 .listRowBackground(Color.bb.sheet.section.background)
                 
-                Section("Card image") {
+                Section("card_image") {
                     imageSectionContent()
                 }
                 .listRowBackground(Color.bb.sheet.section.background)
@@ -45,7 +45,7 @@ struct LoyaltyCardDetailsView: View {
                 await viewModel.loadCardImage()
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Loyalty card")
+            .navigationTitle("loyalty_card")
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: focusedField) { newValue in
                 Task {
@@ -55,15 +55,15 @@ struct LoyaltyCardDetailsView: View {
             .toolbar {
                 toolbarContent
             }
-            .alert("Remove Image?", isPresented: $deleteImageConfirmation) {
-                Button("Cancel", role: .cancel) {}
-                Button("Delete", role: .destructive) {
+            .alert("card_remove_image_title", isPresented: $deleteImageConfirmation) {
+                Button("cancel", role: .cancel) {}
+                Button("delete", role: .destructive) {
                     Task {
                         await viewModel.deleteCardImage()
                     }
                 }
             } message: {
-                Text("This will permanently delete the image from the loyalty card.")
+                Text("card_remove_image_message")
             }
             .onDisappear {
                 Task {
@@ -80,7 +80,7 @@ struct LoyaltyCardDetailsView: View {
                 viewModel.openCardPreview()
             } label: {
                 HStack {
-                    Text("Show")
+                    Text("view_image")
                     Spacer()
                     Image(systemName: "eye")
                 }
@@ -92,7 +92,7 @@ struct LoyaltyCardDetailsView: View {
                 deleteImageConfirmation = true
             } label: {
                 HStack {
-                    Text("Delete")
+                    Text("delete")
                     Spacer()
                     Image(systemName: "trash")
                 }
@@ -106,7 +106,7 @@ struct LoyaltyCardDetailsView: View {
         Group {
             if viewModel.isNew {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("cancel") {
                         Task {
                             viewModel.changesConfirmed = false
                             dismiss()
@@ -115,7 +115,7 @@ struct LoyaltyCardDetailsView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("OK") {
+                    Button("ok") {
                         Task {
                             viewModel.changesConfirmed = true
                             dismiss()
@@ -132,7 +132,7 @@ struct LoyaltyCardDetailsView: View {
                         }
                     } label: {
                         Image(systemName: "xmark.circle")
-                            .accessibilityLabel("Close")
+                            // .accessibilityLabel("Close")
                     }
                     .disabled(!viewModel.canConfirm)
                 }
@@ -160,7 +160,7 @@ struct LoyaltyCardDetailsView: View {
     }
     
     private var nameSectionContent: some View {
-        TextField("card name", text: $viewModel.loyaltyCard.name, axis: .vertical)
+        TextField("card_name", text: $viewModel.loyaltyCard.name, axis: .vertical)
             .lineLimit(8)
             .multilineTextAlignment(.leading)
             .font(.boldDynamic(style: .title3))
@@ -203,7 +203,7 @@ struct LoyaltyCardDetailsView: View {
                     showingImageActionMenu = false
                     showImageSourceSheet = true
                 } label: {
-                    Label("Add card image", systemImage: "plus.circle")
+                    Label("add_card_image", systemImage: "plus.circle")
                         .font(.regularDynamic(style: .headline))
                         .foregroundColor(.bb.accent)
                         .padding(6)

@@ -36,9 +36,9 @@ struct LoyaltyCardsView: View {
         }
         .alert(item: $cardPendingDeletion) { card in
             return Alert(
-                title: Text("Delete loyalty card \"\(card.name)\"?"),
-                message: Text("Are you sure you want to delete it?"),
-                primaryButton: .destructive(Text("Delete")) {
+                title: Text(String(format: String(localized: "delete_card_title"), card.name)),
+                message: Text("delete_card_message"),
+                primaryButton: .destructive(Text("delete")) {
                     Task {
                         await viewModel.deleteCard(with: card.id)
                         cardPendingDeletion = nil
@@ -59,13 +59,13 @@ struct LoyaltyCardsView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 if isEditMode.isEditing {
-                    Button("OK") {
+                    Button("ok") {
                         withAnimation {
                             isEditMode = .inactive
                             showingListView = false
                         }
                     }
-                    .accessibilityLabel("Done Editing")
+                    // .accessibilityLabel("Done Editing")
                 }
                 
                 if !isEditMode.isEditing && !viewModel.cards.isEmpty {
@@ -75,13 +75,13 @@ struct LoyaltyCardsView: View {
                             showingListView = true
                         }
                     } label: {
-                        Label("Edit list", systemImage: "pencil.circle")
+                        Label("edit_list", systemImage: "pencil.circle")
                     }
-                    .accessibilityLabel("Edit")
+                    // .accessibilityLabel("Edit")
                 }
             }
         }
-        .navigationTitle(viewModel.cards.isEmpty ? "" : "Loyalty Cards")
+        .navigationTitle(viewModel.cards.isEmpty ? "" : "loyalty_cards")
         .task {
             await viewModel.loadCards()
         }
@@ -189,12 +189,12 @@ struct LoyaltyCardsView: View {
                     dampingFraction: 0.3
                 )
                 
-                Text("No loyalty cards yet.")
+                Text("card_empty_view_title")
                     .font(.boldDynamic(style: .title2))
                     .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
                 
-                Text("Use the 'Add card' button to add your first layalty card.")
+                Text("card_empty_view_message")
                     .font(.boldDynamic(style: .headline))
                     .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
@@ -215,7 +215,7 @@ struct LoyaltyCardsView: View {
                 }
             } label: {
                 HStack {
-                    Text("Show")
+                    Text("view_image")
                     Spacer()
                     Image(systemName: "eye")
                 }
@@ -229,7 +229,7 @@ struct LoyaltyCardsView: View {
                 }
             } label: {
                 HStack {
-                    Text("Edit")
+                    Text("edit")
                     Spacer()
                     Image(systemName: "square.and.pencil")
                 }
@@ -243,7 +243,7 @@ struct LoyaltyCardsView: View {
                 }
             } label: {
                 HStack {
-                    Text("Delete")
+                    Text("delete")
                     Spacer()
                     Image(systemName: "trash")
                 }

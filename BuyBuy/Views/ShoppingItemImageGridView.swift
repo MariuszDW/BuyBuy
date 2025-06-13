@@ -97,7 +97,7 @@ struct ShoppingItemImageGridView: View {
                 }
             } label: {
                 HStack {
-                    Text("Show")
+                    Text("view_image")
                     Spacer()
                     Image(systemName: "eye")
                 }
@@ -111,7 +111,7 @@ struct ShoppingItemImageGridView: View {
                 }
             } label: {
                 HStack {
-                    Text("Delete")
+                    Text("delete")
                     Spacer()
                     Image(systemName: "trash")
                 }

@@ -58,7 +58,7 @@ struct ShoppingItemDetailsView: View {
             quantityFieldString = viewModel.quantityString
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Shopping item")
+        .navigationTitle("shopping_item")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: focusedField) { newValue in
             Task {
@@ -79,7 +79,7 @@ struct ShoppingItemDetailsView: View {
         Group {
             if viewModel.isNew {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("cancel") {
                         Task {
                             viewModel.changesConfirmed = false
                             dismiss()
@@ -88,7 +88,7 @@ struct ShoppingItemDetailsView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("OK") {
+                    Button("ok") {
                         Task {
                             viewModel.changesConfirmed = true
                             dismiss()
@@ -105,7 +105,7 @@ struct ShoppingItemDetailsView: View {
                         }
                     } label: {
                         Image(systemName: "xmark.circle")
-                            .accessibilityLabel("Close")
+                            // .accessibilityLabel("Close")
                     }
                     .disabled(!viewModel.canConfirm)
                 }
@@ -134,7 +134,7 @@ struct ShoppingItemDetailsView: View {
     
     private var statusView: some View {
         HStack {
-            Text("Status")
+            Text("item_status")
             Spacer()
             Menu {
                 ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
@@ -166,7 +166,7 @@ struct ShoppingItemDetailsView: View {
     
     private func listView(_ currentList: ShoppingList, lists: [ShoppingList]) -> some View {
         return HStack {
-            Text("List")
+            Text("item_list")
             Spacer()
             Menu {
                 ForEach(lists, id: \.id) { list in
@@ -232,7 +232,7 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var nameField: some View {
-        TextField("name", text: $viewModel.name, axis: .vertical)
+        TextField("item_name", text: $viewModel.name, axis: .vertical)
             .lineLimit(4)
             .multilineTextAlignment(.leading)
             .font(.boldDynamic(style: .title3))
@@ -243,7 +243,7 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var noteField: some View {
-        TextField("note", text: $viewModel.note, axis: .vertical)
+        TextField("item_note", text: $viewModel.note, axis: .vertical)
             .lineLimit(8)
             .multilineTextAlignment(.leading)
             .font(.regularDynamic(style: .body))
@@ -255,7 +255,7 @@ struct ShoppingItemDetailsView: View {
     
     private var quantityField: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Quantity")
+            Text("item_quantity")
                 .font(.regularDynamic(style:.caption))
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
@@ -284,7 +284,7 @@ struct ShoppingItemDetailsView: View {
     
     private var unitField: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Unit")
+            Text("item_unit")
                 .font(.regularDynamic(style:.caption))
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
@@ -356,7 +356,7 @@ struct ShoppingItemDetailsView: View {
     
     private var priceField: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Price per unit")
+            Text("item_price_per_unit")
                 .font(.regularDynamic(style:.caption))
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
@@ -385,7 +385,7 @@ struct ShoppingItemDetailsView: View {
     
     private var totalPriceField: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Total price")
+            Text("item_total_price")
                 .font(.regularDynamic(style:.caption))
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
