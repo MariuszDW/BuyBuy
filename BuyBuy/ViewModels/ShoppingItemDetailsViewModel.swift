@@ -79,7 +79,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     var totalPriceString: String {
-        shoppingItem.totalPrice?.priceFormat ?? "N/A"
+        shoppingItem.totalPrice?.priceFormat ?? String(localized: "none")
     }
     
     var quantityPlaceholder: String {
