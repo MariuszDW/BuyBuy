@@ -85,18 +85,18 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     var quantityPlaceholder: String {
         let formatter = NumberFormatter.quantity()
         let valueString = formatter.string(from: 1.5) ?? "1.5"
-        return "e.g. \(valueString)"
+        return String(localized: "for_example_short") + " \(valueString)"
     }
     
     var unitPlaceholder: String {
         let unitExampleString = Locale.current.measurementSystem == "Metric" ? MeasuredUnit.kilogram.symbol : MeasuredUnit.pound.symbol
-        return "e.g. \(unitExampleString)"
+        return String(localized: "for_example_short") + " \(unitExampleString)"
     }
     
     var pricePerUnitPlaceholder: String {
         let formatter = NumberFormatter.price()
         let valueString = formatter.string(from: 10.99) ?? "10.99"
-        return "e.g. \(valueString)"
+        return String(localized: "for_example_short") + " \(valueString)"
     }
     
     init(item: ShoppingItem, isNew: Bool = false, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {

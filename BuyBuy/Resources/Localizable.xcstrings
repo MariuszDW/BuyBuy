@@ -502,6 +502,23 @@
         }
       }
     },
+    "for_example_short" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "np."
+          }
+        }
+      }
+    },
     "item_inactive" : {
       "extractionState" : "manual",
       "localizations" : {
