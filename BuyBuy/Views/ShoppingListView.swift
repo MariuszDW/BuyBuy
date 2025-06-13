@@ -251,7 +251,7 @@ struct ShoppingListView: View {
     
     @ViewBuilder
     private func sectionHeader(section: ShoppingListSection, sectionItemCount: Int) -> some View {
-        let title: String = section.isCollapsed ? section.title + " (\(sectionItemCount))" : section.title
+        let title: String = section.isCollapsed ? section.localizedTitle + " (\(sectionItemCount))" : section.localizedTitle
         
         HStack(spacing: 8) {
             section.image

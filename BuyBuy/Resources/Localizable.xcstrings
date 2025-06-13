@@ -502,6 +502,23 @@
         }
       }
     },
+    "item_inactive" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inactive"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieaktywny"
+          }
+        }
+      }
+    },
     "item_list" : {
       "localizations" : {
         "en" : {
@@ -550,6 +567,23 @@
         }
       }
     },
+    "item_pending" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pending"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do kupienia"
+          }
+        }
+      }
+    },
     "item_price_per_unit" : {
       "localizations" : {
         "en" : {
@@ -562,6 +596,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cena jednostkowa"
+          }
+        }
+      }
+    },
+    "item_purchased" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchased"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kupiony"
           }
         }
       }
@@ -626,6 +677,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jednostka"
+          }
+        }
+      }
+    },
+    "items_inactive" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inactive"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieaktywne"
+          }
+        }
+      }
+    },
+    "items_pending" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pending"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do kupienia"
+          }
+        }
+      }
+    },
+    "items_purchased" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchased"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kupione"
           }
         }
       }

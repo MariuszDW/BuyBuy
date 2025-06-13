@@ -13,11 +13,10 @@ enum ShoppingItemStatus: String, CaseIterable, Hashable {
     case inactive   // Item is currently not relevant or temporarily inactive.
     
     var localizedName: String {
-        // TODO: localized strings...
         switch self {
-        case .pending: return "Pending"
-        case .purchased: return "Purchased"
-        case .inactive: return "Inactive"
+        case .pending: return String(localized: "item_pending")
+        case .purchased: return String(localized: "item_purchased")
+        case .inactive: return String(localized: "item_inactive")
         }
     }
     

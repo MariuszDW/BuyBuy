@@ -16,11 +16,11 @@ struct ShoppingListSection: Hashable  {
         self.status = status
     }
     
-    var title: String {
+    var localizedTitle: String {
         switch status {
-        case .pending: "Pending"
-        case .purchased: "Purchased"
-        case .inactive: "Inactive"
+        case .pending: String(localized: "items_pending")
+        case .purchased: String(localized: "items_purchased")
+        case .inactive: String(localized: "items_inactive")
         }
     }
     
