@@ -24,6 +24,23 @@
         }
       }
     },
+    "add_card" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add card"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj kartę"
+          }
+        }
+      }
+    },
     "add_card_image" : {
       "localizations" : {
         "en" : {
@@ -31,11 +48,58 @@
             "state" : "translated",
             "value" : "Add card image"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj obraz karty"
+          }
+        }
+      }
+    },
+    "add_item" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add item"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj przedmiot"
+          }
+        }
+      }
+    },
+    "add_list" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add list"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj listę"
+          }
         }
       }
     },
     "Application Settings Placeholder" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Application settings placeholder"
+          }
+        }
+      }
     },
     "are_you_sure" : {
       "localizations" : {
@@ -43,6 +107,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Are you sure?"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Czy na pewno?"
           }
         }
       }
@@ -53,6 +123,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Camera"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aparat"
           }
         }
       }
@@ -81,6 +157,12 @@
             "state" : "translated",
             "value" : "Use the \"Add card\" button to add your first loyalty card."
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Użyj przycisku „Dodaj kartę”, aby dodać swoją pierwszą kartę lojalnościową."
+          }
         }
       }
     },
@@ -90,6 +172,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No loyalty cards yet."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak kart lojalnościowych."
           }
         }
       }
@@ -101,6 +189,12 @@
             "state" : "translated",
             "value" : "Card image"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zdjęcie karty"
+          }
         }
       }
     },
@@ -111,6 +205,12 @@
             "state" : "translated",
             "value" : "Name"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nazwa"
+          }
         }
       }
     },
@@ -119,7 +219,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This will permanently delete the image from the loyalty card."
+            "value" : "This will permanently delete the image from the loyalty card. Are you sure?"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spowoduje to trwałe usunięcie obrazka z karty lojalnościowej. Czy na pewno?"
           }
         }
       }
@@ -129,7 +235,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove card image?"
+            "value" : "Remove card image"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń zdjęcie karty"
           }
         }
       }
@@ -141,12 +253,24 @@
             "state" : "translated",
             "value" : "Copy mocks to database"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skopiuj mocki do bazy danych"
+          }
         }
       }
     },
     "copyright_year" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "© 2025"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "© 2025"
@@ -161,6 +285,12 @@
             "state" : "translated",
             "value" : "Mariusz Włodarczyk"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mariusz Włodarczyk"
+          }
         }
       }
     },
@@ -171,12 +301,24 @@
             "state" : "translated",
             "value" : "programming & design"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "programowanie i projektowanie"
+          }
         }
       }
     },
     "debug" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DEBUG"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "DEBUG"
@@ -191,6 +333,12 @@
             "state" : "translated",
             "value" : "Delete"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skasuj"
+          }
         }
       }
     },
@@ -200,6 +348,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Are you sure you want to delete it?"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Czy na pewno chcesz to usunąć?"
           }
         }
       }
@@ -211,6 +365,12 @@
             "state" : "translated",
             "value" : "Delete loyalty card \"%@\""
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skasuj kartę lojalnościową ”%@”"
+          }
         }
       }
     },
@@ -219,7 +379,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This list contains items. Are you sure you want to delete it?"
+            "value" : "This shopping list contains items. Are you sure you want to delete it?"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta lista zakupów zawiera przedmioty. Czy na pewno chcesz ją usunąć?"
           }
         }
       }
@@ -229,7 +395,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete list ”%@”"
+            "value" : "Delete shopping list ”%@”"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skasuj listę zakupów ”%@”"
           }
         }
       }
@@ -241,6 +413,12 @@
             "state" : "translated",
             "value" : "Delete purchased items"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń zakupione przedmioty"
+          }
         }
       }
     },
@@ -251,6 +429,12 @@
             "state" : "translated",
             "value" : "Are you sure you want to delete ALL purchased items?"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Czy na pewno chcesz usunąć WSZYSTKIE zakupione przedmioty?"
+          }
         }
       }
     },
@@ -259,7 +443,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Confirm deletion of purchased items"
+            "value" : "Delete purchased items"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skasuj zakupione przedmioty"
           }
         }
       }
@@ -271,6 +461,12 @@
             "state" : "translated",
             "value" : "Edit"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edytuj"
+          }
         }
       }
     },
@@ -280,6 +476,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit list"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edytuj listę"
           }
         }
       }
@@ -291,6 +493,12 @@
             "state" : "translated",
             "value" : "Export list"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksportuj listę"
+          }
         }
       }
     },
@@ -300,6 +508,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "List"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista"
           }
         }
       }
@@ -311,6 +525,12 @@
             "state" : "translated",
             "value" : "Name"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nazwa"
+          }
         }
       }
     },
@@ -320,6 +540,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Note"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notatka"
           }
         }
       }
@@ -331,6 +557,12 @@
             "state" : "translated",
             "value" : "Price per unit"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cena jednostkowa"
+          }
         }
       }
     },
@@ -341,12 +573,24 @@
             "state" : "translated",
             "value" : "Quantity"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilość"
+          }
         }
       }
     },
     "item_status" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Status"
@@ -361,6 +605,12 @@
             "state" : "translated",
             "value" : "Total price"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cena całkowita"
+          }
         }
       }
     },
@@ -370,6 +620,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unit"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jednostka"
           }
         }
       }
@@ -381,6 +637,12 @@
             "state" : "translated",
             "value" : "Use the \"Add item\" button to add your first shopping item."
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Użyj przycisku „Dodaj przedmiot”, aby dodać pierwszy przedmiot do listy zakupów."
+          }
         }
       }
     },
@@ -390,6 +652,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "This shopping list is empty."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta lista zakupów jest pusta."
           }
         }
       }
@@ -401,6 +669,12 @@
             "state" : "translated",
             "value" : "List name"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nazwa listy"
+          }
         }
       }
     },
@@ -411,6 +685,12 @@
             "state" : "translated",
             "value" : "List settings"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ustawienia listy"
+          }
         }
       }
     },
@@ -419,7 +699,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tap the \"Add list\" button to create a new list."
+            "value" : "Tap the \"Add list\" button to create a new shopping list."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Użyj przycisku „Dodaj listę”, aby stworzyć nową listę zakupów."
           }
         }
       }
@@ -431,6 +717,12 @@
             "state" : "translated",
             "value" : "No shopping lists available."
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak dostępnych list zakupów."
+          }
         }
       }
     },
@@ -440,6 +732,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Loyalty card"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karta lojalnościowa"
           }
         }
       }
@@ -451,6 +749,12 @@
             "state" : "translated",
             "value" : "Loyalty cards"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karty lojalnościowe"
+          }
         }
       }
     },
@@ -460,6 +764,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No image found"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie znaleziono obrazka"
           }
         }
       }
@@ -486,7 +796,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Photo library"
+            "value" : "Library"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biblioteka"
           }
         }
       }
@@ -498,6 +814,12 @@
             "state" : "translated",
             "value" : "Settings"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ustawienia"
+          }
         }
       }
     },
@@ -507,6 +829,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shopping item"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przedmiot"
           }
         }
       }
@@ -518,6 +846,12 @@
             "state" : "translated",
             "value" : "Shopping list"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista zakupów"
+          }
         }
       }
     },
@@ -527,6 +861,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shopping lists"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listy zakupów"
           }
         }
       }
@@ -554,6 +894,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podgląd"
           }
         }
       }
