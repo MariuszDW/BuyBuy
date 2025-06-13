@@ -33,7 +33,6 @@ struct AboutView: View {
                         infoContext(isPortrait: true)
                             .frame(maxWidth: .infinity)
                     }
-                    .background(Color.cyan)
                 }
                 .frame(maxWidth: .infinity)
             }
