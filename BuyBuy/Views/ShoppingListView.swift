@@ -27,7 +27,7 @@ struct ShoppingListView: View {
             
             Spacer(minLength: 0)
             
-            BottomPanelView(title: "Add item",
+            BottomPanelView(title: String(localized: "add_item"),
                             systemImage: "plus.circle",
                             isButtonDisabled: isEditMode.isEditing,
                             trailingView: { summaryView() },

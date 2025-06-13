@@ -28,7 +28,7 @@ struct LoyaltyCardsView: View {
             
             Spacer(minLength: 0)
 
-            BottomPanelView(title: "Add card",
+            BottomPanelView(title: String(localized: "add_card"),
                             systemImage: "plus.circle",
                             isButtonDisabled: isEditMode.isEditing,
                             trailingView: { EmptyView() },
