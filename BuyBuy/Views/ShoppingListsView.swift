@@ -99,7 +99,7 @@ struct ShoppingListsView: View {
                                     Button {
                                         viewModel.openListSettings(for: list)
                                     } label: {
-                                        Label("edit", systemImage: "square.and.pencil")
+                                        Label("list_settings", systemImage: "square.and.pencil")
                                     }
                                     
                                     Button(role: .destructive) {
@@ -124,7 +124,7 @@ struct ShoppingListsView: View {
                             Button {
                                 viewModel.openListSettings(for: list)
                             } label: {
-                                Label("edit", systemImage: "square.and.pencil")
+                                Label("list_settings", systemImage: "square.and.pencil")
                             }
                             .tint(.blue)
                         }
@@ -238,7 +238,7 @@ struct ShoppingListsView: View {
                             isEditMode = .inactive
                             viewModel.openSettings()
                         } label: {
-                            Label("list_settings", systemImage: "gearshape")
+                            Label("settings", systemImage: "gearshape")
                         }
                         // .accessibilityLabel("Settings")
                     } label: {
