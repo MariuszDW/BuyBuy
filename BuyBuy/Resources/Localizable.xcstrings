@@ -2,10 +2,10 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "shouldTranslate" : false
     },
     "%lld" : {
-
+      "shouldTranslate" : false
     },
     "about" : {
       "extractionState" : "manual",
@@ -116,6 +116,9 @@
           }
         }
       }
+    },
+    "Bluesky" : {
+      "shouldTranslate" : false
     },
     "camera" : {
       "localizations" : {
@@ -242,6 +245,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usuń zdjęcie karty"
+          }
+        }
+      }
+    },
+    "contact" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contact"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontakt"
+          }
+        }
+      }
+    },
+    "contact_subject" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BuyBuy Support"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wsparcie BuyBuy"
           }
         }
       }
@@ -454,6 +490,22 @@
         }
       }
     },
+    "e-mail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e-mail"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e-mail"
+          }
+        }
+      }
+    },
     "edit" : {
       "localizations" : {
         "en" : {
@@ -486,6 +538,41 @@
         }
       }
     },
+    "email_alert_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your device is not configured to send email."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twoje urządzenie nie jest skonfigurowane do wysyłania wiadomości e-mail."
+          }
+        }
+      }
+    },
+    "email_alert_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email Unavailable"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak klienta e-mail"
+          }
+        }
+      }
+    },
+    "encore_contact@icloud.com" : {
+      "shouldTranslate" : false
+    },
     "export_list" : {
       "localizations" : {
         "en" : {
@@ -515,6 +602,25 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "np."
+          }
+        }
+      }
+    },
+    "https://encore-games.bsky.social" : {
+      "shouldTranslate" : false
+    },
+    "issue_report_subject" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BuyBuy - issue report"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BuyBuy - zgłoszenie problemu"
           }
         }
       }
@@ -894,7 +1000,6 @@
       }
     },
     "none" : {
-      "comment" : "brak",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -940,6 +1045,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Biblioteka"
+          }
+        }
+      }
+    },
+    "report_issue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Report Issue"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zgłoś problem"
           }
         }
       }

@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 import Combine
 
+@MainActor
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
     let eventPublisher = PassthroughSubject<AppEvent, Never>()
     private let dependencies: AppDependencies
         
-    @MainActor
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
     }
@@ -24,7 +24,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         eventPublisher.send(event)
     }
     
-    @MainActor
     func performStartupTasks() async {
         try? await dependencies.dataManager.cleanOrphanedItems()
         try? await dependencies.dataManager.cleanOrphanedItemImages()
@@ -67,6 +66,25 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         sheetPresenter.present(.about)
     }
     
+    func openEmail(to: String, subject: String, body: String) -> Bool {
+        let subjectEncoded = subject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let bodyEncoded = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        guard let url = URL(string: "mailto:\(to)?subject=\(subjectEncoded)&body=\(bodyEncoded)"),
+              UIApplication.shared.canOpenURL(url) else {
+            return false
+        }
+        UIApplication.shared.open(url)
+        return true
+    }
+    
+    func openWebPage(address: String) -> Bool {
+        guard let url = URL(string: address), UIApplication.shared.canOpenURL(url) else {
+                return false
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        return true
+    }
+    
     func closeTopSheet() {
         sheetPresenter.dismissTop()
     }
@@ -89,7 +107,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         }
     }
 
-    @MainActor
     @ViewBuilder
     func view(for route: AppRoute) -> some View {
         switch route {
@@ -123,7 +140,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         }
     }
 
-    @MainActor
     @ViewBuilder
     func sheetView(for sheet: SheetRoute) -> some View {
         switch sheet {

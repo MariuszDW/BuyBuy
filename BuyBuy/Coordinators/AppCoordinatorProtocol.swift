@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 protocol AppCoordinatorProtocol: ObservableObject {
     var eventPublisher: PassthroughSubject<AppEvent, Never> { get }
     func sendEvent(_ event: AppEvent)
@@ -21,6 +22,8 @@ protocol AppCoordinatorProtocol: ObservableObject {
     func openLoyaltyCardPreview(with imageID: String?, onDismiss: ((SheetRoute) -> Void)?)
     func openLoyaltyCardDetails(_ card: LoyaltyCard, isNew: Bool, onDismiss: ((SheetRoute) -> Void)?)
     func openAbout()
+    func openEmail(to: String, subject: String, body: String) -> Bool
+    func openWebPage(address: String) -> Bool
     func closeTopSheet()
     func closeAllSheets()
     func back()
