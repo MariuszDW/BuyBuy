@@ -232,6 +232,7 @@ struct ShoppingListsView: View {
                         } label: {
                             Label("edit_list", systemImage: "pencil")
                         }
+                        .disabled(viewModel.shoppingLists.isEmpty)
                         // .accessibilityLabel("Edit")
                         
                         Button {
@@ -244,7 +245,6 @@ struct ShoppingListsView: View {
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
-                    .disabled(viewModel.shoppingLists.isEmpty)
                     // .accessibilityLabel("More options")
                 }
             }
