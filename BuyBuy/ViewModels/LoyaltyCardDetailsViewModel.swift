@@ -40,7 +40,7 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
             finalizeInput()
             try? await dataManager.addOrUpdateLoyaltyCard(loyaltyCard)
         } else if isNew == true {
-            try? await dataManager.deleteLoyaltyCard(loyaltyCard)
+            try? await dataManager.deleteLoyaltyCard(with: loyaltyCard.id)
         }
         coordinator.sendEvent(.loyaltyCardEdited)
     }

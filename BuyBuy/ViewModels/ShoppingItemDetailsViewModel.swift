@@ -163,7 +163,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
             finalizeInput()
             try? await dataManager.addOrUpdateItem(shoppingItem)
         } else if isNew == true {
-            try? await dataManager.deleteItem(shoppingItem)
+            try? await dataManager.deleteItem(with: shoppingItem.id)
         }
         coordinator.sendEvent(.shoppingItemEdited)
     }

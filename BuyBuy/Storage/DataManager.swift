@@ -52,16 +52,6 @@ final class DataManager: DataManagerProtocol {
         }
     }
     
-    func deleteList(_ list: ShoppingList) async throws {
-        let allImageIDs = list.items.flatMap { $0.imageIDs }
-        
-        try await repository.deleteList(with: list.id)
-        
-        for imageID in allImageIDs {
-            try await imageStorage.deleteImage(baseFileName: imageID, types: [.itemImage, .itemThumbnail])
-        }
-    }
-    
     func deleteLists(with ids: [UUID]) async throws {
         for id in ids {
             let items = try await repository.fetchItemsOfList(with: id)
@@ -154,18 +144,6 @@ final class DataManager: DataManagerProtocol {
         }
     }
     
-    func deleteItem(_ item: ShoppingItem) async throws {
-        let oldImageIDs = item.imageIDs
-
-        try await repository.deleteItem(with: item.id)
-
-        let usedImageIDs = try await repository.fetchAllItemImageIDs()
-        let orphanedImageIDs = oldImageIDs.filter { !usedImageIDs.contains($0) }
-        for id in orphanedImageIDs {
-            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
-        }
-    }
-    
     func deleteItems(with ids: [UUID]) async throws {
         let itemsToDelete = try await repository.fetchItems(with: ids)
         let oldImageIDs = itemsToDelete.flatMap { $0.imageIDs }
@@ -212,16 +190,6 @@ final class DataManager: DataManagerProtocol {
         let cardImageID = card.imageID
         
         try await repository.deleteLoyaltyCard(with: id)
-        
-        if let cardImageID = cardImageID {
-            try await imageStorage.deleteImage(baseFileName: cardImageID, types: [.cardImage, .cardThumbnail])
-        }
-    }
-    
-    func deleteLoyaltyCard(_ card: LoyaltyCard) async throws {
-        let cardImageID = card.imageID
-        
-        try await repository.deleteLoyaltyCard(with: card.id)
         
         if let cardImageID = cardImageID {
             try await imageStorage.deleteImage(baseFileName: cardImageID, types: [.cardImage, .cardThumbnail])
