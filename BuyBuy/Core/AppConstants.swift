@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum AppConstants {
+struct AppConstants {
     static let autoDeleteAfterDays: Int = 30
     
     // TODO: przeniesc tutaj adresy e-mail, bluesky
