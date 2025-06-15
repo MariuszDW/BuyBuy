@@ -208,6 +208,7 @@ struct LoyaltyCardDetailsView: View {
                         .foregroundColor(.bb.accent)
                         .padding(6)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .contentShape(Rectangle())
                         .cornerRadius(8)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
