@@ -22,7 +22,8 @@ struct AppRootView: View {
                 .navigationDestination(for: AppRoute.self) { route in
                     coordinator.view(for: route)
                 }
-                .fullScreenCover(
+                .applyPresentationStyle(
+                    style: sheetPresenter.stack.first?.displayStyle ?? .fullScreen,
                     isPresented: Binding(
                         get: { !sheetPresenter.stack.isEmpty },
                         set: { isPresented in
@@ -30,25 +31,27 @@ struct AppRootView: View {
                                 sheetPresenter.dismiss(at: 0)
                             }
                         }
-                    )
-                ) {
-                    nestedSheet(at: 0)
-                }
+                    ),
+                    content: {
+                        nestedSheet(at: 0)
+                    }
+                )
         }
     }
-    
+
     private func nestedSheet(at index: Int) -> AnyView {
         guard sheetPresenter.hasSheet(at: index) else {
             return AnyView(EmptyView())
         }
-        
+
         let presentedSheet = sheetPresenter.stack[index]
         let view = coordinator.sheetView(for: presentedSheet.route)
-        
+
         return AnyView(
             NavigationStack {
                 view
-                    .fullScreenCover(
+                    .applyPresentationStyle(
+                        style: presentedSheet.displayStyle,
                         isPresented: Binding(
                             get: { sheetPresenter.hasSheet(after: index) },
                             set: { isPresented in
@@ -56,12 +59,28 @@ struct AppRootView: View {
                                     sheetPresenter.dismiss(after: index)
                                 }
                             }
-                        )
-                    ) {
-                        nestedSheet(at: index + 1)
-                    }
+                        ),
+                        content: {
+                            nestedSheet(at: index + 1)
+                        }
+                    )
             }
         )
+    }
+}
+
+extension View {
+    func applyPresentationStyle<Content: View>(
+        style: SheetDisplayStyle,
+        isPresented: Binding<Bool>,
+        content: @escaping () -> Content
+    ) -> some View {
+        switch style {
+        case .sheet:
+            return AnyView(self.sheet(isPresented: isPresented, content: content))
+        case .fullScreen:
+            return AnyView(self.fullScreenCover(isPresented: isPresented, content: content))
+        }
     }
 }
 

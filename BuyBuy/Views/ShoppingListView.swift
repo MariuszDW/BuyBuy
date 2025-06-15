@@ -101,7 +101,7 @@ struct ShoppingListView: View {
         return ShoppingItemRow(
             item: item,
             thumbnail: viewModel.thumbnail(for: item.imageIDs.first),
-            disabled: isEditMode == .active,
+            state: isEditMode == .inactive,
             onToggleStatus: { toggledItemID in
                 viewModel.toggleStatus(for: toggledItemID)
             },
@@ -348,7 +348,7 @@ struct ShoppingListView: View {
     // MARK: - Private
     
     private func handleDeleteTapped(for item: ShoppingItem) async {
-        await viewModel.deleteItem(with: item.id)
+        await viewModel.moveItemToDeleted(with: item.id)
     }
 }
 

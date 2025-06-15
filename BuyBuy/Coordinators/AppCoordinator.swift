@@ -25,13 +25,19 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func performStartupTasks() async {
+        // TODO: To powinno byc wywolywane przy kazdym wyjsciu aplikacji z tla ale nie czesciej niz co 12 godzin (zdefiniowac to w AppConstants).
         try? await dependencies.dataManager.cleanOrphanedItems()
         try? await dependencies.dataManager.cleanOrphanedItemImages()
         try? await dependencies.dataManager.cleanOrphanedCardImages()
+        try? await dependencies.dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
     }
     
     func openShoppingList(_ id: UUID) {
         navigationPath.append(AppRoute.shoppingList(id))
+    }
+    
+    func openDeletedItems() {
+        navigationPath.append(AppRoute.deletedItems)
     }
     
     func openAppSettings() {
@@ -64,6 +70,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     
     func openAbout() {
         sheetPresenter.present(.about)
+    }
+    
+    func openShoppingListSelector(forDeletedItemID itemID: UUID, onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.shoppingListSelector(itemIDToRestore: itemID), displayStyle: .sheet, onDismiss: onDismiss)
     }
     
     func openEmail(to: String, subject: String, body: String) -> Bool {
@@ -113,8 +123,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         case .shoppingLists:
             ShoppingListsView(
                 viewModel: ShoppingListsViewModel(
-                    coordinator: self,
-                    dataManager: dependencies.dataManager
+                    dataManager: self.dependencies.dataManager,
+                    coordinator: self
                 )
             )
             
@@ -122,6 +132,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
                     listID: id,
+                    dataManager: self.dependencies.dataManager,
+                    coordinator: self
+                )
+            )
+            
+        case .deletedItems:
+            DeletedItemsView(
+                viewModel: DeletedItemsViewModel(
                     dataManager: self.dependencies.dataManager,
                     coordinator: self
                 )
@@ -192,6 +210,15 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: LoyaltyCardDetailsViewModel(
                     card: card,
                     isNew: isNew,
+                    dataManager: self.dependencies.dataManager,
+                    coordinator: self
+                )
+            )
+            
+        case let .shoppingListSelector(itemIDToRestore):
+            ShoppingListSelectorView(
+                viewModel: ShoppingListSelectorViewModel(
+                    itemIDToRestore: itemIDToRestore,
                     dataManager: self.dependencies.dataManager,
                     coordinator: self
                 )

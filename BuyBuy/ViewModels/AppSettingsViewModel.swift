@@ -29,6 +29,11 @@ class AppSettingsViewModel: ObservableObject {
                 try? await dataManager.addOrUpdateLoyaltyCard(card)
             }
         }
+        MockDataRepository.deletedItems.forEach { item in
+            Task {
+                try? await dataManager.addOrUpdateItem(item)
+            }
+        }
     }
 #endif
 }

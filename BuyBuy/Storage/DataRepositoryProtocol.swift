@@ -20,6 +20,8 @@ protocol DataRepositoryProtocol: Sendable {
     func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem]
     func fetchItem(with id: UUID) async throws -> ShoppingItem?
     func fetchItems(with ids: [UUID]) async throws -> [ShoppingItem]
+    func fetchDeletedItems() async throws -> [ShoppingItem]
+    func fetchMaxOrderOfItems(inList listID: UUID) async throws -> Int
     func addOrUpdateItem(_ item: ShoppingItem) async throws
     func deleteItem(with id: UUID) async throws
     func deleteItems(with ids: [UUID]) async throws

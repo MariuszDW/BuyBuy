@@ -15,7 +15,7 @@ class ShoppingListsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
     let coordinator: any AppCoordinatorProtocol
 
-    init(coordinator: any AppCoordinatorProtocol, dataManager: DataManagerProtocol) {
+    init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.coordinator = coordinator
         self.dataManager = dataManager
     }

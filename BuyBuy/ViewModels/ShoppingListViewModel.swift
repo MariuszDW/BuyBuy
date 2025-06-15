@@ -39,8 +39,8 @@ final class ShoppingListViewModel: ObservableObject {
         await loadList()
     }
     
-    func deleteItem(with id: UUID) async {
-        try? await dataManager.deleteItem(with: id)
+    func moveItemToDeleted(with id: UUID) async {
+        try? await dataManager.moveItemToDeleted(with: id)
         await loadList()
     }
     

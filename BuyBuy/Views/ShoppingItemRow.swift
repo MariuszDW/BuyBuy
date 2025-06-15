@@ -10,7 +10,7 @@ import SwiftUI
 struct ShoppingItemRow: View {
     let item: ShoppingItem
     let thumbnail: UIImage?
-    let disabled: Bool
+    let state: Bool?
     let onToggleStatus: (UUID) -> Void
     let onRowTap: (UUID) -> Void
     let onThumbnailTap: (UUID, Int) -> Void
@@ -20,8 +20,8 @@ struct ShoppingItemRow: View {
     
     var body: some View {
         HStack(alignment: .top) {
-            if !disabled {
-                statusCheckBox
+            if let state = state {
+                statusCheckBox(state: state)
                     .padding(.trailing, 8)
                     .padding(.bottom, 4)
             }
@@ -70,14 +70,15 @@ struct ShoppingItemRow: View {
         }
     }
     
-    private var statusCheckBox: some View {
+    private func statusCheckBox(state: Bool) -> some View {
         Button {
             onToggleStatus(item.id)
         } label: {
             item.status.checkBoxImage
-                .foregroundColor(.bb.selection)
+                .foregroundColor(state == true ? .bb.selection : .bb.text.quaternary)
                 .font(.regularDynamic(style: .headline))
                 .scaleEffect(1.5)
+                .disabled(state == false)
         }
         .buttonStyle(.plain)
     }
@@ -143,7 +144,7 @@ struct ShoppingItemRow: View {
     
     List {
         ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
-                        disabled: false, onToggleStatus: {_ in },
+                        state: true, onToggleStatus: {_ in },
                         onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
     .listStyle(.plain)
@@ -160,7 +161,7 @@ struct ShoppingItemRow: View {
     
     List {
         ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
-                        disabled: false, onToggleStatus: {_ in },
+                        state: true, onToggleStatus: {_ in },
                         onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
     .listStyle(.plain)
@@ -175,7 +176,7 @@ struct ShoppingItemRow: View {
     
     List {
         ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
-                        disabled: false, onToggleStatus: {_ in },
+                        state: true, onToggleStatus: {_ in },
                         onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
     .listStyle(.plain)
@@ -190,7 +191,7 @@ struct ShoppingItemRow: View {
     
     List {
         ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
-                        disabled: false, onToggleStatus: {_ in },
+                        state: true, onToggleStatus: {_ in },
                         onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
     .listStyle(.plain)

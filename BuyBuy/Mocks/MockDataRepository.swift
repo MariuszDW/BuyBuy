@@ -10,11 +10,14 @@ import Foundation
 final class MockDataRepository: DataRepositoryProtocol {
     let shoppingLists: [ShoppingList]
     let loyaltyCards: [LoyaltyCard]
+    let deletedItems: [ShoppingItem]
 
     init(lists: [ShoppingList] = MockDataRepository.allLists,
-         cards: [LoyaltyCard] = MockDataRepository.allCards) {
+         cards: [LoyaltyCard] = MockDataRepository.allCards,
+         deletedItems: [ShoppingItem] = MockDataRepository.deletedItems) {
         self.shoppingLists = lists
         self.loyaltyCards = cards
+        self.deletedItems = deletedItems
     }
 
     // MARK: - Lists
@@ -25,6 +28,14 @@ final class MockDataRepository: DataRepositoryProtocol {
 
     func fetchList(with id: UUID) async throws -> ShoppingList? {
         return shoppingLists.first(where: { $0.id == id })
+    }
+    
+    func fetchMaxOrderOfItems(inList listID: UUID) async throws -> Int {
+        guard let list = shoppingLists.first(where: { $0.id == listID }) else {
+            return 0
+        }
+        let maxOrder = list.items.map { $0.order }.max() ?? 0
+        return maxOrder
     }
 
     func addOrUpdateList(_ list: ShoppingList) async throws {}
@@ -56,6 +67,10 @@ final class MockDataRepository: DataRepositoryProtocol {
         return shoppingLists
             .flatMap { $0.items }
             .filter { ids.contains($0.id) }
+    }
+    
+    func fetchDeletedItems() async throws -> [ShoppingItem] {
+        return deletedItems
     }
 
     func addOrUpdateItem(_ item: ShoppingItem) async throws {}
@@ -148,6 +163,14 @@ extension MockDataRepository {
     static let list5 = ShoppingList(id: listUUID5, name: "Empty", items: [], order: 4, icon: .questionmark, color: .cyan)
     
     static let allLists: [ShoppingList] = [list1, list2, list3, list4, list5]
+    
+    static let deletedItems: [ShoppingItem] = [
+        ShoppingItem(order: 0, listID: nil, name: "Apple", note: "red, sweet", status: .purchased, price: 3.99, quantity: 3, unit: ShoppingItemUnit(.kilogram), deletedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Banana", note: "ripe", status: .purchased, price: 9.45, quantity: 5, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -3, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Carrot", note: "organic", status: .pending, quantity: 2, unit: ShoppingItemUnit(.kilogram), deletedAt: Calendar.current.date(byAdding: .day, value: -5, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Milk", note: "2 liters", status: .purchased, price: 3.79, quantity: 2, unit: ShoppingItemUnit(.liter), deletedAt: Calendar.current.date(byAdding: .day, value: -10, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Eggs", note: "free-range", status: .inactive, quantity: 12, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -15, to: Date()))
+    ]
 }
 
 // MARK: Mock loyalty cards

@@ -378,6 +378,54 @@
         }
       }
     },
+    "delete_all" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń wszystkie"
+          }
+        }
+      }
+    },
+    "delete_all_items_in_trash_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to permanently delete all items in Recently Deleted? This action cannot be undone."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Czy na pewno chcesz trwale usunąć wszystkie itemy z sekcji Ostatnio Usunięte? Tej operacji nie można cofnąć."
+          }
+        }
+      }
+    },
+    "delete_all_items_in_trash_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete All"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń wszystkie"
+          }
+        }
+      }
+    },
     "delete_card_message" : {
       "localizations" : {
         "en" : {
@@ -486,6 +534,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skasuj zakupione przedmioty"
+          }
+        }
+      }
+    },
+    "deleted_items_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Items in this list are kept for 30 days and will be permanently deleted afterwards."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementy na tej liście są przechowywane przez 30 dni, po czym zostaną trwale usunięte."
           }
         }
       }
@@ -983,6 +1047,22 @@
         }
       }
     },
+    "no_deleted_items" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No recently deleted items."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak ostatnio usuniętych itemów."
+          }
+        }
+      }
+    },
     "no_image_found" : {
       "localizations" : {
         "en" : {
@@ -1049,6 +1129,22 @@
         }
       }
     },
+    "recently_deleted" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recently deleted"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostatnio usunięte"
+          }
+        }
+      }
+    },
     "report_issue" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1062,6 +1158,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zgłoś problem"
+          }
+        }
+      }
+    },
+    "restore" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przywróć"
+          }
+        }
+      }
+    },
+    "restore_item_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select the shopping list where you want to restore the deleted item."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz listę zakupów, do której chcesz przywrócić usunięty przedmiot."
           }
         }
       }

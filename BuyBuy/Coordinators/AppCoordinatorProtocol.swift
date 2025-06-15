@@ -22,6 +22,7 @@ protocol AppCoordinatorProtocol: ObservableObject {
     func openLoyaltyCardPreview(with imageID: String?, onDismiss: ((SheetRoute) -> Void)?)
     func openLoyaltyCardDetails(_ card: LoyaltyCard, isNew: Bool, onDismiss: ((SheetRoute) -> Void)?)
     func openAbout()
+    func openShoppingListSelector(forDeletedItemID itemID: UUID, onDismiss: ((SheetRoute) -> Void)?)
     func openEmail(to: String, subject: String, body: String) -> Bool
     func openWebPage(address: String) -> Bool
     func closeTopSheet()

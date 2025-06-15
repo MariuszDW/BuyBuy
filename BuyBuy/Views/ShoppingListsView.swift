@@ -88,58 +88,72 @@ struct ShoppingListsView: View {
     
     private var shoppingListsView: some View {
         List {
-            ForEach(viewModel.shoppingLists.filter { $0.id != listPendingDeletion?.id }) { list in
-                Group {
-                    if isEditMode.isEditing {
-                        listRow(for: list)
-                    } else {
-                        NavigationLink(value: AppRoute.shoppingList(list.id)) {
+            Section() {
+                ForEach(viewModel.shoppingLists.filter { $0.id != listPendingDeletion?.id }) { list in
+                    Group {
+                        if isEditMode.isEditing {
                             listRow(for: list)
-                                .contextMenu {
-                                    Button {
-                                        viewModel.openListSettings(for: list)
-                                    } label: {
-                                        Label("list_settings", systemImage: "square.and.pencil")
-                                    }
-                                    
-                                    Button(role: .destructive) {
-                                        Task {
-                                            await handleDeleteTapped(for: list)
+                        } else {
+                            NavigationLink(value: AppRoute.shoppingList(list.id)) {
+                                listRow(for: list)
+                                    .contextMenu {
+                                        Button {
+                                            viewModel.openListSettings(for: list)
+                                        } label: {
+                                            Label("list_settings", systemImage: "square.and.pencil")
                                         }
-                                    } label: {
-                                        Label("delete", systemImage: "trash.fill")
+                                        
+                                        Button(role: .destructive) {
+                                            Task {
+                                                await handleDeleteTapped(for: list)
+                                            }
+                                        } label: {
+                                            Label("delete", systemImage: "trash.fill")
+                                        }
                                     }
-                                }
-                        }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                Task {
-                                    await handleDeleteTapped(for: list)
-                                }
-                            } label: {
-                                Label("delete", systemImage: "trash.fill")
                             }
-                        }
-                        .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                            Button {
-                                viewModel.openListSettings(for: list)
-                            } label: {
-                                Label("list_settings", systemImage: "square.and.pencil")
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    Task {
+                                        await handleDeleteTapped(for: list)
+                                    }
+                                } label: {
+                                    Label("delete", systemImage: "trash.fill")
+                                }
                             }
-                            .tint(.blue)
+                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                Button {
+                                    viewModel.openListSettings(for: list)
+                                } label: {
+                                    Label("list_settings", systemImage: "square.and.pencil")
+                                }
+                                .tint(.blue)
+                            }
                         }
                     }
+                    .listRowInsets(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 16))
                 }
-                .listRowInsets(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 16))
-            }
-            .onDelete { offsets in
-                Task {
-                    await viewModel.deleteLists(atOffsets: offsets)
+                .onDelete { offsets in
+                    Task {
+                        await viewModel.deleteLists(atOffsets: offsets)
+                    }
+                }
+                .onMove { indices, newOffset in
+                    Task {
+                        await viewModel.moveLists(fromOffsets: indices, toOffset: newOffset)
+                    }
                 }
             }
-            .onMove { indices, newOffset in
-                Task {
-                    await viewModel.moveLists(fromOffsets: indices, toOffset: newOffset)
+            
+            if !isEditMode.isEditing {
+                Section(header: Color.clear
+                    .frame(height: 8)) {
+                    Group {
+                        NavigationLink(value: AppRoute.deletedItems) {
+                            deletedItemsRow
+                        }
+                    }
+                    .listRowInsets(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 16))
                 }
             }
         }
@@ -189,6 +203,25 @@ struct ShoppingListsView: View {
                 }
             }
             .padding(.leading, 4)
+        }
+        .padding(.vertical, 4)
+    }
+    
+    private var deletedItemsRow: some View {
+        HStack {
+            Image(systemName: "trash.circle.fill")
+                .foregroundStyle(.white, Color.bb.text.tertiary)
+                .font(.regularDynamic(style: .largeTitle))
+                .scaleEffect(1.2)
+                .padding(.leading, 8)
+                .padding(.trailing, 2)
+            
+            Text("recently_deleted")
+                .foregroundColor(.bb.text.primary)
+                .font(.regularDynamic(style: .title3))
+                .multilineTextAlignment(.leading)
+                .lineLimit(4)
+                .padding(.leading, 4)
         }
         .padding(.vertical, 4)
     }
@@ -330,8 +363,8 @@ struct ShoppingListsView: View {
     let dataManager = DataManager(repository: MockDataRepository(),
                                   imageStorage: MockImageStorage())
     let mockViewModel = ShoppingListsViewModel(
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        dataManager: dataManager
+        dataManager: dataManager,
+        coordinator: AppCoordinator(dependencies: AppDependencies())
     )
     
     NavigationStack {
@@ -344,8 +377,8 @@ struct ShoppingListsView: View {
     let dataManager = DataManager(repository: MockDataRepository(),
                                   imageStorage: MockImageStorage())
     let mockViewModel = ShoppingListsViewModel(
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        dataManager: dataManager
+        dataManager: dataManager,
+        coordinator: AppCoordinator(dependencies: AppDependencies())
     )
     
     NavigationStack {
@@ -358,8 +391,8 @@ struct ShoppingListsView: View {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
     let mockViewModel = ShoppingListsViewModel(
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        dataManager: dataManager
+        dataManager: dataManager,
+        coordinator: AppCoordinator(dependencies: AppDependencies())
     )
     
     NavigationStack {
@@ -372,8 +405,8 @@ struct ShoppingListsView: View {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage())
     let mockViewModel = ShoppingListsViewModel(
-        coordinator: AppCoordinator(dependencies: AppDependencies()),
-        dataManager: dataManager
+        dataManager: dataManager,
+        coordinator: AppCoordinator(dependencies: AppDependencies())
     )
     
     NavigationStack {

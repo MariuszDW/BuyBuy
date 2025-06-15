@@ -146,6 +146,33 @@ final actor DataRepository: DataRepositoryProtocol {
         }
     }
     
+    func fetchDeletedItems() async throws -> [ShoppingItem] {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                NSPredicate(format: "deletedAt != nil"),
+                NSPredicate(format: "list == nil")
+            ])
+            request.sortDescriptors = [NSSortDescriptor(key: "deletedAt", ascending: false)]
+            let entities = try context.fetch(request)
+            return entities.map(ShoppingItem.init)
+        }
+    }
+    
+    func fetchMaxOrderOfItems(inList listID: UUID) async throws -> Int {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "list.id == %@ AND deletedAt == nil", listID as CVarArg)
+            request.sortDescriptors = [NSSortDescriptor(key: "order", ascending: false)]
+            request.fetchLimit = 1
+
+            let result = try context.fetch(request).first
+            return Int(result?.order ?? 0)
+        }
+    }
+    
     func addOrUpdateItem(_ item: ShoppingItem) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -153,24 +180,32 @@ final actor DataRepository: DataRepositoryProtocol {
             
             if let entity = try context.fetch(request).first {
                 if entity.list?.id != item.listID {
-                    let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-                    listRequest.predicate = NSPredicate(format: "id == %@", item.listID.uuidString)
-                    guard let newList = try context.fetch(listRequest).first else {
-                        throw NSError(domain: "ShoppingRepository", code: 4, userInfo: [NSLocalizedDescriptionKey: "New list not found"])
+                    if let listID = item.listID {
+                        let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
+                        listRequest.predicate = NSPredicate(format: "id == %@", listID.uuidString)
+                        guard let newList = try context.fetch(listRequest).first else {
+                            throw NSError(domain: "ShoppingRepository", code: 4, userInfo: [NSLocalizedDescriptionKey: "New list not found"])
+                        }
+                        entity.list = newList
+                    } else {
+                        entity.list = nil
                     }
-                    entity.list = newList
                 }
                 entity.update(from: item, context: context)
             } else {
-                let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-                listRequest.predicate = NSPredicate(format: "id == %@", item.listID.uuidString)
-                guard let listEntity = try context.fetch(listRequest).first else {
-                    throw NSError(domain: "ShoppingRepository", code: 2, userInfo: [NSLocalizedDescriptionKey: "List not found"])
-                }
-                
                 let newEntity = ShoppingItemEntity(context: context)
                 newEntity.update(from: item, context: context)
-                newEntity.list = listEntity
+                
+                if let listID = item.listID {
+                    let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
+                    listRequest.predicate = NSPredicate(format: "id == %@", listID.uuidString)
+                    guard let listEntity = try context.fetch(listRequest).first else {
+                        throw NSError(domain: "ShoppingRepository", code: 2, userInfo: [NSLocalizedDescriptionKey: "List not found"])
+                    }
+                    newEntity.list = listEntity
+                } else {
+                    newEntity.list = nil
+                }
             }
         }
     }
@@ -199,8 +234,10 @@ final actor DataRepository: DataRepositoryProtocol {
     func cleanOrphanedItems() async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "list == nil")
-            
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                NSPredicate(format: "list == nil"),
+                NSPredicate(format: "deletedAt == nil")
+            ])
             let orphanedItems = try context.fetch(request)
             for item in orphanedItems {
                 context.delete(item)

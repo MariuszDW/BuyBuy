@@ -83,6 +83,10 @@ final class DataManager: DataManagerProtocol {
         return try await repository.fetchItem(with: id)
     }
     
+    func fetchDeletedItems() async throws -> [ShoppingItem] {
+        return try await repository.fetchDeletedItems()
+    }
+    
     func addOrUpdateItem(_ item: ShoppingItem) async throws {
         let oldItem = try await repository.fetchItem(with: item.id)
         let oldImageIDs = oldItem?.imageIDs ?? []
@@ -94,6 +98,45 @@ final class DataManager: DataManagerProtocol {
         for id in orphanedImageIDs {
             try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
         }
+    }
+    
+    func moveItemToDeleted(with id: UUID) async throws {
+        guard var item = try await repository.fetchItem(with: id) else {
+            return
+        }
+        item.listID = nil
+        item.deletedAt = Date()
+        item.order = 0
+        try await repository.addOrUpdateItem(item)
+    }
+    
+    func restoreItem(with id: UUID, toList listID: UUID) async throws {
+        guard let _ = try await repository.fetchList(with: listID) else {
+            throw NSError(domain: "Repository", code: 404, userInfo: [NSLocalizedDescriptionKey: "List not found"])
+        }
+        guard var item = try await repository.fetchItem(with: id) else {
+            return
+        }
+        let maxOrder = try await repository.fetchMaxOrderOfItems(inList: listID)
+        item.deletedAt = nil
+        item.listID = listID
+        item.order = maxOrder + 1
+        try await repository.addOrUpdateItem(item)
+    }
+    
+    func deleteOldTrashedItems(olderThan days: Int) async throws {
+        let cutoffDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        
+        let trashedItems = try await repository.fetchDeletedItems()
+        let oldItems = trashedItems.filter { item in
+            if let deletedAt = item.deletedAt {
+                return deletedAt < cutoffDate
+            }
+            return false
+        }
+        
+        let idsToDelete = oldItems.map { $0.id }
+        try await deleteItems(with: idsToDelete)
     }
     
     func deleteItem(with id: UUID) async throws {

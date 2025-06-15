@@ -10,7 +10,7 @@ import CoreData
 extension ShoppingItem {
     init(entity: ShoppingItemEntity) {
         self.id = entity.id ?? UUID()
-        self.listID = entity.list?.id ?? UUID()
+        self.listID = entity.list?.id
         self.name = entity.name ?? ""
         self.note = entity.note ?? ""
         self.status = ShoppingItemStatus(rawValue: entity.status ?? "") ?? .pending
@@ -19,6 +19,7 @@ extension ShoppingItem {
         self.quantity = entity.quantity?.doubleValue
         self.unit = ShoppingItemUnit(string: entity.unit)
         self.imageIDs = entity.imageIDs
+        self.deletedAt = entity.deletedAt
     }
 }
 
@@ -58,5 +59,6 @@ extension ShoppingItemEntity {
         self.quantity = model.quantity as NSNumber?
         self.unit = model.unit?.symbol
         self.imageIDs = model.imageIDs
+        self.deletedAt = model.deletedAt
     }
 }

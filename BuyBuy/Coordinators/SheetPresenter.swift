@@ -7,10 +7,16 @@
 
 import Foundation
 
+enum SheetDisplayStyle {
+    case fullScreen
+    case sheet
+}
+
 final class SheetPresenter: ObservableObject {
     struct PresentedSheet: Identifiable, Equatable {
         let route: SheetRoute
-        let onDismiss: ((SheetRoute) -> Void)? // TODO: It is not used. Remove?
+        let displayStyle: SheetDisplayStyle
+        let onDismiss: ((SheetRoute) -> Void)? // TODO: Is it necessary?
         let id = UUID()
 
         static func == (lhs: PresentedSheet, rhs: PresentedSheet) -> Bool {
@@ -24,8 +30,12 @@ final class SheetPresenter: ObservableObject {
         stack.last
     }
 
-    func present(_ sheet: SheetRoute, onDismiss: ((SheetRoute) -> Void)? = nil) {
-        let presented = PresentedSheet(route: sheet, onDismiss: onDismiss)
+    func present(
+        _ sheet: SheetRoute,
+        displayStyle: SheetDisplayStyle = .fullScreen,
+        onDismiss: ((SheetRoute) -> Void)? = nil
+    ) {
+        let presented = PresentedSheet(route: sheet, displayStyle: displayStyle, onDismiss: onDismiss)
         stack.append(presented)
     }
 
@@ -34,13 +44,13 @@ final class SheetPresenter: ObservableObject {
         let dismissed = stack.remove(at: index)
         dismissed.onDismiss?(dismissed.route)
     }
-    
+
     func dismiss(after index: Int) {
         let nextIndex = index + 1
         guard nextIndex < stack.count else { return }
         dismiss(at: nextIndex)
     }
-    
+
     func dismissTop() {
         guard let top = stack.popLast() else { return }
         top.onDismiss?(top.route)

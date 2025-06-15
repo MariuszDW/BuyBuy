@@ -21,7 +21,11 @@ protocol DataManagerProtocol {
     // Shopping items
     func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem]
     func fetchItem(with id: UUID) async throws -> ShoppingItem?
+    func fetchDeletedItems() async throws -> [ShoppingItem]
     func addOrUpdateItem(_ item: ShoppingItem) async throws
+    func moveItemToDeleted(with id: UUID) async throws
+    func restoreItem(with id: UUID, toList listID: UUID) async throws
+    func deleteOldTrashedItems(olderThan days: Int) async throws
     func deleteItem(with id: UUID) async throws
     func deleteItem(_ item: ShoppingItem) async throws
     func deleteItems(with ids: [UUID]) async throws

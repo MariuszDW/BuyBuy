@@ -44,7 +44,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         set { shoppingItem.status = newValue }
     }
     
-    var listID: UUID {
+    var listID: UUID? {
         get { shoppingItem.listID }
         set { shoppingItem.listID = newValue }
     }
