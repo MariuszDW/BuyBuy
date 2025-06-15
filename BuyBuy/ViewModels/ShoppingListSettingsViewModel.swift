@@ -40,7 +40,7 @@ final class ShoppingListSettingsViewModel: ObservableObject {
             finalizeInput()
             try? await dataManager.addOrUpdateList(shoppingList)
         } else if isNew == true {
-            try? await dataManager.deleteList(with: shoppingList.id)
+            try? await dataManager.deleteList(with: shoppingList.id, moveItemsToDeleted: false)
         }
         coordinator.sendEvent(.shoppingListEdited)
     }

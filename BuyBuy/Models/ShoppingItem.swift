@@ -52,8 +52,20 @@ struct ShoppingItem: Identifiable, Hashable {
         self.imageIDs = imageIDs
     }
     
-    var isInTrash: Bool {
+    var isInDeleted: Bool {
         deletedAt != nil
+    }
+    
+    mutating func moveToDeleted() {
+        listID = nil
+        deletedAt = Date()
+        order = 0
+    }
+    
+    mutating func moveToShoppingList(with listID: UUID, order: Int) {
+        self.listID = listID
+        self.deletedAt = nil
+        self.order = order
     }
     
     mutating func prepareToSave() {

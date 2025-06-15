@@ -14,8 +14,8 @@ protocol DataManagerProtocol {
     func fetchAllLists() async throws -> [ShoppingList]
     func fetchList(with id: UUID) async throws -> ShoppingList?
     func addOrUpdateList(_ list: ShoppingList) async throws
-    func deleteList(with id: UUID) async throws
-    func deleteLists(with ids: [UUID]) async throws
+    func deleteList(with id: UUID, moveItemsToDeleted: Bool) async throws
+    func deleteLists(with ids: [UUID], moveItemsToDeleted: Bool) async throws
 
     // Shopping items
     func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem]

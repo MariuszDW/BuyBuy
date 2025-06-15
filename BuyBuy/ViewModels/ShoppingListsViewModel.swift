@@ -28,13 +28,13 @@ class ShoppingListsViewModel: ObservableObject {
     func deleteLists(atOffsets offsets: IndexSet) async {
         let idsToDelete = offsets.map { shoppingLists[$0].id }
         shoppingLists.removeAll { idsToDelete.contains($0.id) }
-        try? await dataManager.deleteLists(with: idsToDelete)
+        try? await dataManager.deleteLists(with: idsToDelete, moveItemsToDeleted: true)
         await loadLists()
     }
 
     func deleteList(id: UUID) async {
         shoppingLists.removeAll { $0.id == id }
-        try? await dataManager.deleteList(with: id)
+        try? await dataManager.deleteList(with: id, moveItemsToDeleted: true)
         await loadLists()
     }
 

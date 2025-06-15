@@ -41,27 +41,51 @@ final class DataManager: DataManagerProtocol {
         try await repository.addOrUpdateList(list)
     }
     
-    func deleteList(with id: UUID) async throws {
+    func deleteList(with id: UUID, moveItemsToDeleted: Bool) async throws {
         let items = try await repository.fetchItemsOfList(with: id)
         let allImageIDs = items.flatMap { $0.imageIDs }
-        
-        try await repository.deleteList(with: id)
-        
-        for imageID in allImageIDs {
-            try await imageStorage.deleteImage(baseFileName: imageID, types: [.itemImage, .itemThumbnail])
+
+        if moveItemsToDeleted {
+            for var item in items {
+                item.moveToDeleted()
+                try await repository.addOrUpdateItem(item)
+            }
         }
-    }
-    
-    func deleteLists(with ids: [UUID]) async throws {
-        for id in ids {
-            let items = try await repository.fetchItemsOfList(with: id)
-            let allImageIDs = items.flatMap { $0.imageIDs }
+
+        try await repository.deleteList(with: id)
+
+        if !moveItemsToDeleted {
             for imageID in allImageIDs {
                 try await imageStorage.deleteImage(baseFileName: imageID, types: [.itemImage, .itemThumbnail])
             }
         }
-        try await repository.deleteLists(with: ids)
     }
+
+    func deleteLists(with ids: [UUID], moveItemsToDeleted: Bool) async throws {
+        var allImageIDs = [String]()
+
+        for id in ids {
+            let items = try await repository.fetchItemsOfList(with: id)
+
+            if moveItemsToDeleted {
+                for var item in items {
+                    item.moveToDeleted()
+                    try await repository.addOrUpdateItem(item)
+                }
+            } else {
+                allImageIDs.append(contentsOf: items.flatMap { $0.imageIDs })
+            }
+        }
+
+        try await repository.deleteLists(with: ids)
+
+        if !moveItemsToDeleted {
+            for imageID in allImageIDs {
+                try await imageStorage.deleteImage(baseFileName: imageID, types: [.itemImage, .itemThumbnail])
+            }
+        }
+    }
+
 
     // MARK: - Shopping items
     
@@ -94,9 +118,7 @@ final class DataManager: DataManagerProtocol {
         guard var item = try await repository.fetchItem(with: id) else {
             return
         }
-        item.listID = nil
-        item.deletedAt = Date()
-        item.order = 0
+        item.moveToDeleted()
         try await repository.addOrUpdateItem(item)
     }
     
@@ -108,9 +130,7 @@ final class DataManager: DataManagerProtocol {
             return
         }
         let maxOrder = try await repository.fetchMaxOrderOfItems(inList: listID)
-        item.deletedAt = nil
-        item.listID = listID
-        item.order = maxOrder + 1
+        item.moveToShoppingList(with: listID, order: maxOrder + 1)
         try await repository.addOrUpdateItem(item)
     }
     
