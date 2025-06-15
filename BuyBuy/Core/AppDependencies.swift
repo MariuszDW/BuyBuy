@@ -13,11 +13,13 @@ final class AppDependencies: ObservableObject {
     private let repository: DataRepositoryProtocol
     private let imageStorage: ImageStorageProtocol
     let dataManager: DataManager
+    let preferences: AppPreferences
 
     init() {
         self.coreDataStack = CoreDataStack()
         self.repository = DataRepository(coreDataStack: coreDataStack)
         self.imageStorage = ImageStorage()
         self.dataManager = DataManager(repository: repository, imageStorage: imageStorage)
+        self.preferences = AppPreferences()
     }
 }

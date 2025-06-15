@@ -24,12 +24,28 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         eventPublisher.send(event)
     }
     
-    func performStartupTasks() async {
-        // TODO: To powinno byc wywolywane przy kazdym wyjsciu aplikacji z tla ale nie czesciej niz co 12 godzin (zdefiniowac to w AppConstants).
+    private func performStartupTasks() async {
         try? await dependencies.dataManager.cleanOrphanedItems()
         try? await dependencies.dataManager.cleanOrphanedItemImages()
         try? await dependencies.dataManager.cleanOrphanedCardImages()
         try? await dependencies.dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
+    }
+    
+    func performStartupTasksIfNeeded() async {
+        let now = Date()
+        let lastCleanupDate = dependencies.preferences.lastCleanupDate
+
+        if let lastCleanupDate {
+            let hoursSince = now.timeIntervalSince(lastCleanupDate) / 3600
+            if hoursSince < AppConstants.cleanupIntervalHours {
+                print("Skipping cleanup. Last run: \(lastCleanupDate), \(Int(hoursSince))h ago.")
+                return
+            }
+        }
+        
+        print("Performing cleanup tasks – last run was: \(lastCleanupDate?.description ?? "never")")
+        await performStartupTasks()
+        dependencies.preferences.lastCleanupDate = now
     }
     
     func openShoppingList(_ id: UUID) {

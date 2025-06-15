@@ -9,6 +9,7 @@ import Foundation
 
 struct AppConstants {
     static let autoDeleteAfterDays: Int = 30
+    static let cleanupIntervalHours: Double = 12
     
     // TODO: przeniesc tutaj adresy e-mail, bluesky
 }

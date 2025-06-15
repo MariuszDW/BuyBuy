@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AppRootView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @ObservedObject var coordinator: AppCoordinator
     @ObservedObject var sheetPresenter: SheetPresenter
     
@@ -36,6 +37,13 @@ struct AppRootView: View {
                         nestedSheet(at: 0)
                     }
                 )
+        }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                Task {
+                    await coordinator.performStartupTasksIfNeeded()
+                }
+            }
         }
     }
 

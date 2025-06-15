@@ -30,9 +30,6 @@ struct BuyBuyApp: App {
         WindowGroup {
             AppRootView(coordinator: coordinator)
                 .environmentObject(dependencies)
-                .task {
-                    await coordinator.performStartupTasks()
-                }
         }
     }
 }
