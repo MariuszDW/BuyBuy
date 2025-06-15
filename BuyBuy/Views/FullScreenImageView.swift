@@ -76,7 +76,7 @@ struct FullScreenImageView: View {
                     .foregroundColor(.gray.opacity(0.5))
 
                 Text("no_image_found")
-                    .font(.title2.bold())
+                    .font(.boldDynamic(style: .title2))
                     .foregroundColor(.gray.opacity(0.6))
                     .multilineTextAlignment(.center)
             }
