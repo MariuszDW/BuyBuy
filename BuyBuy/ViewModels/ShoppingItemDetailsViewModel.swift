@@ -33,6 +33,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     private(set) var isNew: Bool
     
     let dataManager: DataManagerProtocol
+    var preferences: any AppPreferencesProtocol
     var coordinator: any AppCoordinatorProtocol
     
     var canConfirm: Bool {
@@ -99,15 +100,16 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         return String(localized: "for_example_short") + " \(valueString)"
     }
     
-    init(item: ShoppingItem, isNew: Bool = false, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
+    init(item: ShoppingItem, isNew: Bool = false, dataManager: DataManagerProtocol, preferences: any AppPreferencesProtocol, coordinator: any AppCoordinatorProtocol) {
         self.shoppingItem = item
         self.isNew = isNew
         self.coordinator = coordinator
         self.dataManager = dataManager
+        self.preferences = preferences
     }
     
     lazy var unitList: [(name: String, units: [MeasuredUnit])] = {
-        MeasuredUnit.buildUnitList(for: [.metric, .imperial]) // TODO: lista systemow jednostem powinna byc wyciagnieta z preferencji
+        MeasuredUnit.buildUnitList(for: preferences.unitSystems)
     }()
     
     var itemList: ShoppingList? {

@@ -411,6 +411,7 @@ struct ShoppingItemDetailsView: View {
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,
         dataManager: dataManager,
+        preferences: AppPreferences(),
         coordinator: AppCoordinator(dependencies: AppDependencies()))
     
     ShoppingItemDetailsView(viewModel: viewModel)
@@ -423,6 +424,7 @@ struct ShoppingItemDetailsView: View {
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,
         dataManager: dataManager,
+        preferences: AppPreferences(),
         coordinator: AppCoordinator(dependencies: AppDependencies()))
     
     ShoppingItemDetailsView(viewModel: viewModel)

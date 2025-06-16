@@ -91,16 +91,6 @@
         }
       }
     },
-    "Application Settings Placeholder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Application settings placeholder"
-          }
-        }
-      }
-    },
     "are_you_sure" : {
       "localizations" : {
         "en" : {
@@ -404,7 +394,7 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Czy na pewno chcesz trwale usunąć wszystkie itemy z sekcji Ostatnio Usunięte? Tej operacji nie można cofnąć."
           }
         }
@@ -1732,13 +1722,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "imperial"
+            "value" : "Imperial"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "imperialny"
+            "value" : "Imperialny"
           }
         }
       }
@@ -1749,13 +1739,29 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "metric"
+            "value" : "Metric"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "metryczny"
+            "value" : "Metryczny"
+          }
+        }
+      }
+    },
+    "unit_systems" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unit systems"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemy jednostek"
           }
         }
       }

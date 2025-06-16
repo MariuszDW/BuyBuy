@@ -20,8 +20,16 @@ struct AppSettingsView: View {
     
     var body: some View {
         Form {
-            Section {
-                Text("Application Settings Placeholder")
+            Section(header: Text("unit_systems")) {
+                Toggle(MeasureUnitSystem.metric.name, isOn: $viewModel.isMetricUnitsEnabled)
+                    .onChange(of: viewModel.isMetricUnitsEnabled) { newValue in
+                        viewModel.setMetricUnitsEnabled(newValue)
+                    }
+                
+                Toggle(MeasureUnitSystem.imperial.name, isOn: $viewModel.isImperialUnitsEnabled)
+                    .onChange(of: viewModel.isImperialUnitsEnabled) { newValue in
+                        viewModel.setImperialUnitsEnabled(newValue)
+                    }
             }
             
 #if DEBUG
@@ -57,6 +65,7 @@ struct AppSettingsView: View {
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     NavigationStack {
         AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
+                                                        preferences: AppPreferences(),
                                                         coordinator: coordinator))
     }
     .preferredColorScheme(.light)
@@ -68,6 +77,7 @@ struct AppSettingsView: View {
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     NavigationStack {
         AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
+                                                        preferences: AppPreferences(),
                                                         coordinator: coordinator))
     }
     .preferredColorScheme(.dark)

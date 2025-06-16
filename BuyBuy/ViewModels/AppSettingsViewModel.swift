@@ -10,11 +10,29 @@ import Foundation
 @MainActor
 class AppSettingsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
-    var coordinator: any AppCoordinatorProtocol
+    private var coordinator: any AppCoordinatorProtocol
+    private var preferences: AppPreferencesProtocol
     
-    init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
+    @Published var isMetricUnitsEnabled: Bool
+    @Published var isImperialUnitsEnabled: Bool
+    
+    init(dataManager: DataManagerProtocol, preferences: AppPreferencesProtocol, coordinator: any AppCoordinatorProtocol) {
         self.dataManager = dataManager
         self.coordinator = coordinator
+        self.preferences = preferences
+        
+        self.isMetricUnitsEnabled = preferences.isMetricUnitsEnabled
+        self.isImperialUnitsEnabled = preferences.isImperialUnitsEnabled
+    }
+    
+    func setMetricUnitsEnabled(_ enabled: Bool) {
+        isMetricUnitsEnabled = enabled
+        preferences.isMetricUnitsEnabled = enabled
+    }
+    
+    func setImperialUnitsEnabled(_ enabled: Bool) {
+        isImperialUnitsEnabled = enabled
+        preferences.isImperialUnitsEnabled = enabled
     }
     
 #if DEBUG

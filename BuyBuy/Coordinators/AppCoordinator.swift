@@ -164,6 +164,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         case .appSettings:
             AppSettingsView(
                 viewModel: AppSettingsViewModel(dataManager: self.dependencies.dataManager,
+                                                preferences: self.dependencies.preferences,
                                                 coordinator: self)
             )
             
@@ -193,6 +194,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     item: item,
                     isNew: isNew,
                     dataManager: self.dependencies.dataManager,
+                    preferences: self.dependencies.preferences,
                     coordinator: self
                 )
             )

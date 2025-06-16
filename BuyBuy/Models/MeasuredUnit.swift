@@ -42,7 +42,7 @@ enum MeasuredUnitCategory: String, CaseIterable {
         if self == .quantity {
             return self.name
         } else {
-            return "\(self.name) (\(unitSystem.name))"
+            return "\(self.name) (\(unitSystem.name.lowercased()))"
         }
     }
     
