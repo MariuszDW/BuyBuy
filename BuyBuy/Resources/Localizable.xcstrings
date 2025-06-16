@@ -541,22 +541,6 @@
         }
       }
     },
-    "e-mail" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "e-mail"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "e-mail"
-          }
-        }
-      }
-    },
     "edit" : {
       "localizations" : {
         "en" : {

@@ -65,20 +65,24 @@ struct AboutView: View {
     func infoContext(isPortrait: Bool) -> some View {
         VStack() {
             Text(Bundle.main.appVersion(prefix: String(localized: "version") + " ", date: true))
-                .font(.regularMonospaced(style: .headline))
+                .font(.regularMonospaced(style: .subheadline))
                 .foregroundColor(.bb.text.primary)
+                .multilineTextAlignment(.center)
             
             // ---- credits ----
             Text("credits_role")
                 .padding(.top, 16)
                 .font(.regularDynamic(style: .callout))
+                .multilineTextAlignment(.center)
             Text("credits_name")
+                .multilineTextAlignment(.center)
                 .font(.boldDynamic(style: .title3))
             
             // ---- contact ----
-            Text("e-mail")
+            Text("contact")
                 .padding(.top, 16)
                 .font(.regularDynamic(style: .callout))
+                .multilineTextAlignment(.center)
             
             Button {
                 if !viewModel.contactSupport() {
@@ -87,6 +91,7 @@ struct AboutView: View {
             } label: {
                 Text(AppConstants.encoreContactEMail)
                     .font(.boldDynamic(style: .body))
+                    .multilineTextAlignment(.center)
                     .foregroundColor(.blue)
                     .allowsHitTesting(false)
             }
@@ -94,6 +99,7 @@ struct AboutView: View {
             // ---- bluesky ----
             Text(AppConstants.blueSkyName)
                 .padding(.top, 16)
+                .multilineTextAlignment(.center)
                 .font(.regularDynamic(style: .callout))
             
             Button {
@@ -101,6 +107,7 @@ struct AboutView: View {
             } label: {
                 Text(AppConstants.blueSkyAddress)
                     .font(.boldDynamic(style: .body))
+                    .multilineTextAlignment(.center)
                     .foregroundColor(.blue)
                     .allowsHitTesting(false)
             }
@@ -113,6 +120,7 @@ struct AboutView: View {
             } label: {
                 Text("report_issue")
                     .font(.boldDynamic(style: .body))
+                    .multilineTextAlignment(.center)
                     .foregroundColor(.blue)
             }
             .padding(.top, 16)
