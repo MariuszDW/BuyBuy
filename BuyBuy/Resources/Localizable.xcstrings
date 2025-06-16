@@ -1258,6 +1258,72 @@
         }
       }
     },
+    "unit_category_length" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Length"
+          }
+        }
+      }
+    },
+    "unit_category_mass" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mass"
+          }
+        }
+      }
+    },
+    "unit_category_quantity" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quantity"
+          }
+        }
+      }
+    },
+    "unit_category_volume" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume"
+          }
+        }
+      }
+    },
+    "unit_system_imperial" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "imperial"
+          }
+        }
+      }
+    },
+    "unit_system_metric" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "metric"
+          }
+        }
+      }
+    },
     "version" : {
       "extractionState" : "manual",
       "localizations" : {

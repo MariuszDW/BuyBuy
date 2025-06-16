@@ -106,6 +106,10 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         self.dataManager = dataManager
     }
     
+    lazy var unitList: [(name: String, units: [MeasuredUnit])] = {
+        MeasuredUnit.buildUnitList(for: [.metric, .imperial]) // TODO: lista systemow jednostem powinna byc wyciagnieta z preferencji
+    }()
+    
     var itemList: ShoppingList? {
         return shoppingLists.first(where: { $0.id == shoppingItem.listID })
     }

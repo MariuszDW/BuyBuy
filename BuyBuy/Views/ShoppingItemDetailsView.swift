@@ -303,8 +303,8 @@ struct ShoppingItemDetailsView: View {
                     }
                 
                 Menu {
-                    ForEach(MeasuredUnitCategory.allCases, id: \.self) { category in
-                        unitMenuSection(for: category)
+                    ForEach(viewModel.unitList, id: \.name) { section in
+                        unitMenuSection(name: section.name, units: section.units)
                     }
                 } label: {
                     Image(systemName: "chevron.up.chevron.down")
@@ -336,11 +336,11 @@ struct ShoppingItemDetailsView: View {
         .listRowBackground(Color.bb.sheet.section.background)
     }
     
-    private func unitMenuSection(for category: MeasuredUnitCategory) -> some View {
-        return Section(header: Text(category.name)
+    private func unitMenuSection(name sectionName: String, units: [MeasuredUnit]) -> some View {
+        return Section(header: Text(sectionName)
             .font(.regularDynamic(style:.caption))
             .foregroundColor(.bb.sheet.section.secondaryText)) {
-                ForEach(category.units, id: \.self) { unit in
+                ForEach(units, id: \.self) { unit in
                     Button {
                         focusedField = nil
                         viewModel.unit = unit.symbol

@@ -7,43 +7,55 @@
 
 import Foundation
 
-enum MeasuredUnitCategory: String, CaseIterable {
-    case quantity
-    case massMetric
-    case massImperial
-    case volumeMetric
-    case volumeImperial
-    case lengthMetric
-    case lengthImperial
+enum MeasureUnitSystem: String, CaseIterable {
+    case metric
+    case imperial
     
     var name: String {
         switch self {
-        case .quantity: return "Quantity"
-        case .massMetric: return "Mass (Metric)"
-        case .massImperial: return "Mass (Imperial)"
-        case .volumeMetric: return "Volume (Metric)"
-        case .volumeImperial: return "Volume (Imperial)"
-        case .lengthMetric: return "Length (Metric)"
-        case .lengthImperial: return "Length (Imperial)"
+        case .metric: return String(localized: "unit_system_metric")
+        case .imperial: return String(localized: "unit_system_imperial")
+        }
+    }
+}
+
+enum MeasuredUnitCategory: String, CaseIterable {
+    case quantity
+    case mass
+    case volume
+    case length
+    
+    var name: String {
+        switch self {
+        case .quantity: return String(localized: "unit_category_quantity")
+        case .mass: return String(localized: "unit_category_mass")
+        case .volume: return String(localized: "unit_category_volume")
+        case .length: return String(localized: "unit_category_length")
         }
     }
     
-    var units: [MeasuredUnit] {
+    var unitSystems: [MeasureUnitSystem] {
+        return self == .quantity ? [] : [.metric, .imperial]
+    }
+    
+    func nameWithUnitSystem(_ unitSystem: MeasureUnitSystem) -> String {
+        if self == .quantity {
+            return self.name
+        } else {
+            return "\(self.name) (\(unitSystem.name))"
+        }
+    }
+    
+    func units(for unitSystem: MeasureUnitSystem = .metric) -> [MeasuredUnit] {
         switch self {
         case .quantity:
             return [.piece]
-        case .massMetric:
-            return [.microgram, .milligram, .gram, .kilogram]
-        case .massImperial:
-            return [.ounce, .pound, .stone]
-        case .volumeMetric:
-            return [.milliliter, .liter]
-        case .volumeImperial:
-            return [.teaspoon, .tablespoon, .fluidOunce, .cup, .pint, .quart, .gallon]
-        case .lengthMetric:
-            return [.millimeter, .centimeter, .meter, .kilometer]
-        case .lengthImperial:
-            return [.inch, .foot, .yard, .mile]
+        case .mass:
+            return unitSystem == .metric ? [.microgram, .milligram, .gram, .kilogram] : [.ounce, .pound, .stone]
+        case .volume:
+            return unitSystem == .metric ? [.milliliter, .liter] : [.teaspoon, .tablespoon, .fluidOunce, .cup, .pint, .quart, .gallon]
+        case .length:
+            return unitSystem == .metric ? [.millimeter, .centimeter, .meter, .kilometer] : [.inch, .foot, .yard, .mile]
         }
     }
 }
@@ -200,5 +212,25 @@ enum MeasuredUnit: String, Codable, CaseIterable {
             }
         }
         return nil
+    }
+    
+    static func buildUnitList(for unitSystems: [MeasureUnitSystem]) -> [(name: String, units: [MeasuredUnit])] {
+        var unitList: [(name: String, units: [MeasuredUnit])] = []
+        
+        for category in MeasuredUnitCategory.allCases {
+            if category.unitSystems.isEmpty {
+                unitList.append((name: category.name, units: category.units()))
+            } else {
+                for unitSystem in unitSystems {
+                    let units = category.units(for: unitSystem)
+                    if !units.isEmpty {
+                        let name = unitSystems.count > 1 ? category.nameWithUnitSystem(unitSystem) : category.name
+                        unitList.append((name: name, units: units))
+                    }
+                }
+            }
+        }
+
+        return unitList
     }
 }
