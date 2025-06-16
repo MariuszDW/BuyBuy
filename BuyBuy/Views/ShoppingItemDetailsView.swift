@@ -348,7 +348,7 @@ struct ShoppingItemDetailsView: View {
                             viewModel.finalizeInput()
                         }
                     } label: {
-                        Text(unit.symbol)
+                        Text(unit.symbol + " - " + unit.name)
                     }
                 }
             }

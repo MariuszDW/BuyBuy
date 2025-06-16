@@ -171,6 +171,67 @@ enum MeasuredUnit: String, Codable, CaseIterable {
         return dimension?.symbol ?? ""
     }
     
+    var name: String {
+        switch self {
+        case .piece:
+            return String(localized: "unit_name_piece")
+            
+        case .microgram:
+            return String(localized: "unit_name_microgram")
+        case .milligram:
+            return String(localized: "unit_name_milligram")
+        case .gram:
+            return String(localized: "unit_name_gram")
+        case .kilogram:
+            return String(localized: "unit_name_kilogram")
+        
+        case .ounce:
+            return String(localized: "unit_name_ounce")
+        case .pound:
+            return String(localized: "unit_name_pound")
+        case .stone:
+            return String(localized: "unit_name_stone")
+            
+        case .milliliter:
+            return String(localized: "unit_name_milliliter")
+        case .liter:
+            return String(localized: "unit_name_liter")
+            
+        case .teaspoon:
+            return String(localized: "unit_name_teaspoon")
+        case .tablespoon:
+            return String(localized: "unit_name_tablespoon")
+        case .fluidOunce:
+            return String(localized: "unit_name_fluid_ounce")
+        case .cup:
+            return String(localized: "unit_name_cup")
+        case .pint:
+            return String(localized: "unit_name_pint")
+        case .quart:
+            return String(localized: "unit_name_quart")
+        case .gallon:
+            return String(localized: "unit_name_gallon")
+            
+        case .millimeter:
+            return String(localized: "unit_name_millimeter")
+        case .centimeter:
+            return String(localized: "unit_name_centimeter")
+        case .meter:
+            return String(localized: "unit_name_meter")
+        case .kilometer:
+            return String(localized: "unit_name_kilometer")
+            
+        case .inch:
+            return String(localized: "unit_name_inch")
+        case .foot:
+            return String(localized: "unit_name_foot")
+        case .yard:
+            return String(localized: "unit_name_yard")
+        case .mile:
+            return String(localized: "unit_name_mile")
+        }
+    }
+    
     @MainActor
     func format(value: Double, fractionDigits: Int = 2, withUnit: Bool = true) -> String {
         if self == .piece {

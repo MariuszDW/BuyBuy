@@ -815,7 +815,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ilość"
+            "value" : "Ilość / Liczba"
           }
         }
       }
@@ -1264,7 +1264,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Length"
+            "value" : "length"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "długość"
           }
         }
       }
@@ -1275,7 +1281,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mass"
+            "value" : "mass"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "masa"
           }
         }
       }
@@ -1286,7 +1298,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quantity"
+            "value" : "quantity"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ilość / liczba"
           }
         }
       }
@@ -1297,7 +1315,413 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Volume"
+            "value" : "volume"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "objętość"
+          }
+        }
+      }
+    },
+    "unit_name_centimeter" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "centimeter"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "centymetr"
+          }
+        }
+      }
+    },
+    "unit_name_cup" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cup"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "filiżanka / kubek"
+          }
+        }
+      }
+    },
+    "unit_name_fluid_ounce" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fluid ounce"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "uncja płynna"
+          }
+        }
+      }
+    },
+    "unit_name_foot" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "foot"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "stopa"
+          }
+        }
+      }
+    },
+    "unit_name_gallon" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gallon"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "galon"
+          }
+        }
+      }
+    },
+    "unit_name_gram" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gram"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gram"
+          }
+        }
+      }
+    },
+    "unit_name_inch" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "inch"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cal"
+          }
+        }
+      }
+    },
+    "unit_name_kilogram" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kilogram"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kilogram"
+          }
+        }
+      }
+    },
+    "unit_name_kilometer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kilometer"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kilometr"
+          }
+        }
+      }
+    },
+    "unit_name_liter" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "liter"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "litr"
+          }
+        }
+      }
+    },
+    "unit_name_meter" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "meter"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "metr"
+          }
+        }
+      }
+    },
+    "unit_name_microgram" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "microgram"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mikrogram"
+          }
+        }
+      }
+    },
+    "unit_name_mile" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mile"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mila"
+          }
+        }
+      }
+    },
+    "unit_name_milligram" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "milligram"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "miligram"
+          }
+        }
+      }
+    },
+    "unit_name_milliliter" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "milliliter"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mililitr"
+          }
+        }
+      }
+    },
+    "unit_name_millimeter" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "millimeter"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "milimetr"
+          }
+        }
+      }
+    },
+    "unit_name_ounce" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ounce"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "uncja"
+          }
+        }
+      }
+    },
+    "unit_name_piece" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "piece"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sztuka"
+          }
+        }
+      }
+    },
+    "unit_name_pint" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pint"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pinta"
+          }
+        }
+      }
+    },
+    "unit_name_pound" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pound"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "funt"
+          }
+        }
+      }
+    },
+    "unit_name_quart" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "quart"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kwarta"
+          }
+        }
+      }
+    },
+    "unit_name_stone" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "stone"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kamień"
+          }
+        }
+      }
+    },
+    "unit_name_tablespoon" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tablespoon"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "łyżka"
+          }
+        }
+      }
+    },
+    "unit_name_teaspoon" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "teaspoon"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "łyżeczka"
+          }
+        }
+      }
+    },
+    "unit_name_yard" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yard"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "jard"
           }
         }
       }
@@ -1310,6 +1734,12 @@
             "state" : "translated",
             "value" : "imperial"
           }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "imperialny"
+          }
         }
       }
     },
@@ -1320,6 +1750,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "metric"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "metryczny"
           }
         }
       }
