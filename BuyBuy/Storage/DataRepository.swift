@@ -59,7 +59,7 @@ final actor DataRepository: DataRepositoryProtocol {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             return try context.fetch(request).first.map(ShoppingList.init)
         }
     }
@@ -67,7 +67,7 @@ final actor DataRepository: DataRepositoryProtocol {
     func addOrUpdateList(_ list: ShoppingList) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", list.id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", list.id as CVarArg)
             
             if let entity = try context.fetch(request).first {
                 entity.update(from: list, context: context)
@@ -81,7 +81,7 @@ final actor DataRepository: DataRepositoryProtocol {
     func deleteList(with id: UUID) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             
             if let entity = try context.fetch(request).first {
                 context.delete(entity)
@@ -117,7 +117,7 @@ final actor DataRepository: DataRepositoryProtocol {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "list.id == %@", listID.uuidString)
+            request.predicate = NSPredicate(format: "list.id == %@", listID as CVarArg)
             request.sortDescriptors = [NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: true)]
             let entities = try context.fetch(request)
             return entities.map(ShoppingItem.init)
@@ -128,7 +128,7 @@ final actor DataRepository: DataRepositoryProtocol {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             request.fetchLimit = 1
             let results = try context.fetch(request)
             return results.first.map(ShoppingItem.init)
@@ -139,8 +139,8 @@ final actor DataRepository: DataRepositoryProtocol {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            let uuidStrings = ids.map { $0.uuidString }
-            request.predicate = NSPredicate(format: "id IN %@", uuidStrings)
+            let uuidArgs = ids.map { $0 as CVarArg }
+            request.predicate = NSPredicate(format: "id IN %@", uuidArgs)
             let results = try context.fetch(request)
             return results.map(ShoppingItem.init)
         }
@@ -176,13 +176,13 @@ final actor DataRepository: DataRepositoryProtocol {
     func addOrUpdateItem(_ item: ShoppingItem) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", item.id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", item.id as CVarArg)
             
             if let entity = try context.fetch(request).first {
                 if entity.list?.id != item.listID {
                     if let listID = item.listID {
                         let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-                        listRequest.predicate = NSPredicate(format: "id == %@", listID.uuidString)
+                        listRequest.predicate = NSPredicate(format: "id == %@", listID as CVarArg)
                         guard let newList = try context.fetch(listRequest).first else {
                             throw NSError(domain: "ShoppingRepository", code: 4, userInfo: [NSLocalizedDescriptionKey: "New list not found"])
                         }
@@ -198,7 +198,7 @@ final actor DataRepository: DataRepositoryProtocol {
                 
                 if let listID = item.listID {
                     let listRequest: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-                    listRequest.predicate = NSPredicate(format: "id == %@", listID.uuidString)
+                    listRequest.predicate = NSPredicate(format: "id == %@", listID as CVarArg)
                     guard let listEntity = try context.fetch(listRequest).first else {
                         throw NSError(domain: "ShoppingRepository", code: 2, userInfo: [NSLocalizedDescriptionKey: "List not found"])
                     }
@@ -213,7 +213,7 @@ final actor DataRepository: DataRepositoryProtocol {
     func deleteItem(with id: UUID) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             if let entity = try context.fetch(request).first {
                 context.delete(entity)
             }
@@ -278,7 +278,7 @@ final actor DataRepository: DataRepositoryProtocol {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             return try context.fetch(request).first.map(LoyaltyCard.init)
         }
     }
@@ -286,7 +286,7 @@ final actor DataRepository: DataRepositoryProtocol {
     func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", card.id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", card.id as CVarArg)
             
             let entity = try context.fetch(request).first ?? LoyaltyCardEntity(context: context)
             entity.update(from: card)
@@ -296,7 +296,7 @@ final actor DataRepository: DataRepositoryProtocol {
     func deleteLoyaltyCard(with id: UUID) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             if let entity = try context.fetch(request).first {
                 context.delete(entity)
             }
