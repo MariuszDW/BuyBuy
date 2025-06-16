@@ -107,9 +107,6 @@
         }
       }
     },
-    "Bluesky" : {
-      "shouldTranslate" : false
-    },
     "camera" : {
       "localizations" : {
         "en" : {
@@ -624,9 +621,6 @@
         }
       }
     },
-    "encore_contact@icloud.com" : {
-      "shouldTranslate" : false
-    },
     "export_list" : {
       "localizations" : {
         "en" : {
@@ -659,9 +653,6 @@
           }
         }
       }
-    },
-    "https://encore-games.bsky.social" : {
-      "shouldTranslate" : false
     },
     "issue_report_subject" : {
       "localizations" : {

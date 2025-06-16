@@ -85,21 +85,21 @@ struct AboutView: View {
                     showEmailAlert = true
                 }
             } label: {
-                Text("encore_contact@icloud.com")
+                Text(AppConstants.encoreContactEMail)
                     .font(.boldDynamic(style: .body))
                     .foregroundColor(.blue)
                     .allowsHitTesting(false)
             }
             
             // ---- bluesky ----
-            Text("Bluesky")
+            Text(AppConstants.blueSkyName)
                 .padding(.top, 16)
                 .font(.regularDynamic(style: .callout))
             
             Button {
                 _ = viewModel.openBlueSkyWebPage()
             } label: {
-                Text("https://encore-games.bsky.social")
+                Text(AppConstants.blueSkyAddress)
                     .font(.boldDynamic(style: .body))
                     .foregroundColor(.blue)
                     .allowsHitTesting(false)

@@ -17,7 +17,7 @@ final class AboutViewModel: ObservableObject {
     
     func contactSupport() -> Bool {
         return coordinator.openEmail(
-            to: "encore_contact@icloud.com",
+            to: AppConstants.encoreContactEMail,
             subject: String(localized: "contact_subject"),
             body: ""
         )
@@ -27,7 +27,7 @@ final class AboutViewModel: ObservableObject {
         let reportCreator = ReportCreator()
         let body = reportCreator.buildIssueReportBody()
         return coordinator.openEmail(
-            to: "encore_contact@icloud.com",
+            to: AppConstants.encoreContactEMail,
             subject: String(localized: "issue_report_subject"),
             body: body
         )
