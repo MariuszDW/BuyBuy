@@ -26,7 +26,7 @@ struct ShoppingListSelectorView: View {
                 ForEach(viewModel.shoppingLists) { list in
                     Button {
                         Task {
-                            await viewModel.moveDeletedItem(itemID: viewModel.itemIDToRestore, toList: list)
+                            await viewModel.moveDeletedItem(itemID: viewModel.itemIDToRestore, toListID: list.id)
                             dismiss()
                         }
                     } label: {

@@ -25,10 +25,8 @@ final class ShoppingListSelectorViewModel: ObservableObject {
         shoppingLists = fetchedLists ?? []
     }
     
-    func moveDeletedItem(itemID: UUID, toList: ShoppingList) async {
-        guard var item = try? await dataManager.fetchItem(with: itemID) else { return }
-        item.listID = toList.id
-        try? await dataManager.addOrUpdateItem(item)
+    func moveDeletedItem(itemID: UUID, toListID: UUID) async {
+        try? await dataManager.restoreItem(with: itemID, toList: toListID)
         coordinator.sendEvent(.shoppingItemEdited)
     }
 }
