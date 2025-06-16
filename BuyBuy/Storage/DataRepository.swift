@@ -90,10 +90,12 @@ final actor DataRepository: DataRepositoryProtocol {
     }
     
     func deleteLists(with ids: [UUID]) async throws {
+        guard !ids.isEmpty else { return }
+        
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id IN %@", ids)
-            
+            request.predicate = NSPredicate(format: "id IN %@", ids as CVarArg)
+
             let entities = try context.fetch(request)
             for entity in entities {
                 context.delete(entity)
@@ -136,11 +138,12 @@ final actor DataRepository: DataRepositoryProtocol {
     }
     
     func fetchItems(with ids: [UUID]) async throws -> [ShoppingItem] {
+        guard !ids.isEmpty else { return [] }
+        
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            let uuidArgs = ids.map { $0 as CVarArg }
-            request.predicate = NSPredicate(format: "id IN %@", uuidArgs)
+            request.predicate = NSPredicate(format: "id IN %@", ids as CVarArg)
             let results = try context.fetch(request)
             return results.map(ShoppingItem.init)
         }
@@ -221,9 +224,11 @@ final actor DataRepository: DataRepositoryProtocol {
     }
     
     func deleteItems(with ids: [UUID]) async throws {
+        guard !ids.isEmpty else { return }
+        
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id IN %@", ids)
+            request.predicate = NSPredicate(format: "id IN %@", ids as CVarArg)
             let entities = try context.fetch(request)
             for entity in entities {
                 context.delete(entity)
