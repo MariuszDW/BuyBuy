@@ -11,6 +11,10 @@ struct DeletedItemsView: View {
     @StateObject var viewModel: DeletedItemsViewModel
     @State private var showDeleteAllItemsAlert = false
     
+    init(viewModel: DeletedItemsViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             if let items = viewModel.items, items.count > 0 {

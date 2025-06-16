@@ -16,6 +16,10 @@ struct FullScreenImageView: View {
     @StateObject var viewModel: FullScreenImageViewModel
     @State private var isZoomedOut = true
     @State private var dragOffset: CGFloat = 0
+    
+    init(viewModel: FullScreenImageViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         GeometryReader { geometry in

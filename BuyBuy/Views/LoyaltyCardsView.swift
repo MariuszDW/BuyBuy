@@ -15,6 +15,10 @@ struct LoyaltyCardsView: View {
     @State private var showingListView: Bool = false
     
     private static let tileSize: CGFloat = 150
+    
+    init(viewModel: LoyaltyCardsViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         VStack(spacing: 0) {

@@ -19,6 +19,10 @@ struct ShoppingItemDetailsView: View {
     @State private var priceFieldString: String = ""
     @State private var quantityFieldString: String = ""
     
+    init(viewModel: ShoppingItemDetailsViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     var body: some View {
         NavigationStack {
             content

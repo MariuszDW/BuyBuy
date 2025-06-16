@@ -20,6 +20,10 @@ struct LoyaltyCardDetailsView: View {
     @State private var showImageSourceSheet: Bool = false
     @State private var deleteImageConfirmation = false
     
+    init(viewModel: LoyaltyCardDetailsViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     var body: some View {
         NavigationStack {
             List {

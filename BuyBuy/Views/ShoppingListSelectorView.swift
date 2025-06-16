@@ -10,6 +10,10 @@ import SwiftUI
 struct ShoppingListSelectorView: View {
     @StateObject var viewModel: ShoppingListSelectorViewModel
     @Environment(\.dismiss) private var dismiss
+    
+    init(viewModel: ShoppingListSelectorViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         NavigationStack {

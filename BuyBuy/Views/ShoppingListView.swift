@@ -12,6 +12,10 @@ struct ShoppingListView: View {
     @State private var isEditMode: EditMode = .inactive
     @State private var showDeletePurchasedAlert = false
     
+    init(viewModel: ShoppingListViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             if let list = viewModel.list, !list.items.isEmpty {

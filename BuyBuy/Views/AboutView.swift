@@ -12,6 +12,10 @@ struct AboutView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showEmailAlert = false
     
+    init(viewModel: AboutViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     var body: some View {
         GeometryReader { geometry in
             if geometry.size.height > geometry.size.width {
