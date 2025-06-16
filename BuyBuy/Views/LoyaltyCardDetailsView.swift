@@ -236,7 +236,8 @@ struct LoyaltyCardDetailsView: View {
 
 #Preview("Light") {
     let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let viewModel = LoyaltyCardDetailsViewModel(
         card: MockDataRepository.card1,
         dataManager: dataManager,
@@ -248,7 +249,8 @@ struct LoyaltyCardDetailsView: View {
 
 #Preview("Dark") {
     let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let viewModel = LoyaltyCardDetailsViewModel(
         card: MockDataRepository.card1,
         dataManager: dataManager,

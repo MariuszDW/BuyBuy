@@ -165,7 +165,8 @@ struct DeletedItemsView: View {
 
 #Preview("Light/items") {
     let dataManager = DataManager(repository: MockDataRepository(),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
@@ -178,7 +179,8 @@ struct DeletedItemsView: View {
 
 #Preview("Dark/items") {
     let dataManager = DataManager(repository: MockDataRepository(),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
@@ -191,7 +193,8 @@ struct DeletedItemsView: View {
 
 #Preview("Light/empty") {
     let dataManager = DataManager(repository: MockDataRepository(deletedItems: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
@@ -204,7 +207,8 @@ struct DeletedItemsView: View {
 
 #Preview("Dark/empty") {
     let dataManager = DataManager(repository: MockDataRepository(deletedItems: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)

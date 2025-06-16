@@ -46,4 +46,10 @@ protocol DataManagerProtocol {
     func cleanImageCache() async
     func cleanOrphanedItemImages() async throws
     func cleanOrphanedCardImages() async throws
+    
+    // Files
+    func saveFile(data: Data, fileName: String) async throws
+    func readFile(fileName: String) async throws -> Data
+    func deleteFile(fileName: String) async throws
+    func listFiles() async throws -> [String]
 }

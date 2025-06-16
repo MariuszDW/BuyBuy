@@ -15,4 +15,6 @@ enum SheetRoute {
     case loyaltyCardPreview(String?)
     case loyaltyCardDetails(LoyaltyCard, Bool)
     case shoppingListSelector(itemIDToRestore: UUID)
+    case shoppingListExport(ShoppingList)
+    case documentExporter(ExportedData)
 }

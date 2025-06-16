@@ -25,6 +25,8 @@ protocol AppCoordinatorProtocol: ObservableObject {
     func openShoppingListSelector(forDeletedItemID itemID: UUID, onDismiss: ((SheetRoute) -> Void)?)
     func openEmail(to: String, subject: String, body: String) -> Bool
     func openWebPage(address: String) -> Bool
+    func openShoppingListExport(_ list: ShoppingList, onDismiss: ((SheetRoute) -> Void)?)
+    func openDocumentExporter(with exportData: ExportedData, onDismiss: ((SheetRoute) -> Void)?)
     func closeTopSheet()
     func closeAllSheets()
     func back()

@@ -605,6 +605,22 @@
         }
       }
     },
+    "export" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksport"
+          }
+        }
+      }
+    },
     "export_list" : {
       "localizations" : {
         "en" : {
@@ -617,6 +633,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eksportuj listę"
+          }
+        }
+      }
+    },
+    "file_format" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File format"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format pliku"
           }
         }
       }
@@ -634,6 +666,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "np."
+          }
+        }
+      }
+    },
+    "format" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format"
           }
         }
       }
@@ -912,6 +960,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ta lista zakupów jest pusta."
+          }
+        }
+      }
+    },
+    "list_export" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List export"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksport listy"
           }
         }
       }

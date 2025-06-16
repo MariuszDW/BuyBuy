@@ -153,9 +153,8 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func openExportListOptions() {
-        // TODO: implement...
-        print("openExportListOptions")
-        // coordinator.openExportListSettings()
+        guard let list = list else { return }
+        coordinator.openShoppingListExport(list, onDismiss: {_ in })
     }
     
     var hasPurchasedItems: Bool {

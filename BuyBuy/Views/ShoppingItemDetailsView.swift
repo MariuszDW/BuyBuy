@@ -411,7 +411,8 @@ struct ShoppingItemDetailsView: View {
 
 #Preview("Light") {
     let dataManager = DataManager(repository: MockDataRepository(cards: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,
         dataManager: dataManager,
@@ -424,7 +425,8 @@ struct ShoppingItemDetailsView: View {
 
 #Preview("Dark") {
     let dataManager = DataManager(repository: MockDataRepository(cards: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,
         dataManager: dataManager,

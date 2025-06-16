@@ -61,7 +61,8 @@ struct AppSettingsView: View {
 
 #Preview("Light") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     NavigationStack {
         AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
@@ -73,7 +74,8 @@ struct AppSettingsView: View {
 
 #Preview("Dark") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     NavigationStack {
         AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,

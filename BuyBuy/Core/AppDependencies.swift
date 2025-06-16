@@ -12,6 +12,7 @@ final class AppDependencies: ObservableObject {
     private let coreDataStack: CoreDataStack
     private let repository: DataRepositoryProtocol
     private let imageStorage: ImageStorageProtocol
+    private let fileStorage: FileStorageProtocol
     let dataManager: DataManager
     let preferences: AppPreferences
 
@@ -19,7 +20,8 @@ final class AppDependencies: ObservableObject {
         self.coreDataStack = CoreDataStack()
         self.repository = DataRepository(coreDataStack: coreDataStack)
         self.imageStorage = ImageStorage()
-        self.dataManager = DataManager(repository: repository, imageStorage: imageStorage)
+        self.fileStorage = FileStorage()
+        self.dataManager = DataManager(repository: repository, imageStorage: imageStorage, fileStorage: fileStorage)
         self.preferences = AppPreferences()
     }
 }

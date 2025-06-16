@@ -359,7 +359,9 @@ struct ShoppingListView: View {
 // MARK: - Preview
 
 #Preview("Light/items") {
-    let dataManager = DataManager(repository: MockDataRepository(), imageStorage: MockImageStorage())
+    let dataManager = DataManager(repository: MockDataRepository(),
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID1,
                                           dataManager: dataManager,
@@ -372,7 +374,9 @@ struct ShoppingListView: View {
 }
 
 #Preview("Dark/items") {
-    let dataManager = DataManager(repository: MockDataRepository(), imageStorage: MockImageStorage())
+    let dataManager = DataManager(repository: MockDataRepository(),
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID1,
                                           dataManager: dataManager,
@@ -385,7 +389,9 @@ struct ShoppingListView: View {
 }
 
 #Preview("Light/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(), imageStorage: MockImageStorage())
+    let dataManager = DataManager(repository: MockDataRepository(),
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID5,
                                           dataManager: dataManager,
@@ -398,7 +404,9 @@ struct ShoppingListView: View {
 }
 
 #Preview("Dark/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(), imageStorage: MockImageStorage())
+    let dataManager = DataManager(repository: MockDataRepository(),
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID5,
                                           dataManager: dataManager,

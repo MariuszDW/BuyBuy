@@ -157,7 +157,8 @@ struct FullScreenImageView: View {
 
 #Preview("Light") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
                                              imageType: .itemImage,
                                              dataManager: dataManager)
@@ -167,7 +168,8 @@ struct FullScreenImageView: View {
 
 #Preview("Dark") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
                                              imageType: .itemImage,
                                              dataManager: dataManager)
@@ -177,7 +179,8 @@ struct FullScreenImageView: View {
 
 #Preview("Light/empty") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let viewModel = FullScreenImageViewModel(imageIDs: [],
                                              imageType: .itemImage,
                                              dataManager: dataManager)
@@ -187,7 +190,8 @@ struct FullScreenImageView: View {
 
 #Preview("Dark/empty") {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let viewModel = FullScreenImageViewModel(imageIDs: [],
                                              imageType: .itemImage,
                                              dataManager: dataManager)

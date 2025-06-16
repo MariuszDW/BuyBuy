@@ -111,6 +111,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         return true
     }
     
+    func openShoppingListExport(_ list: ShoppingList, onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.shoppingListExport(list), displayStyle: .fullScreen, onDismiss: onDismiss)
+    }
+    
+    func openDocumentExporter(with exportData: ExportedData, onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.documentExporter(exportData), displayStyle: .sheet, onDismiss: onDismiss)
+    }
+    
     func closeTopSheet() {
         sheetPresenter.dismissTop()
     }
@@ -245,6 +253,21 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         case .about:
             AboutView(
                 viewModel: AboutViewModel(coordinator: self)
+            )
+            
+        case let .shoppingListExport(list):
+            ShoppingListExportView(
+                viewModel: ShoppingListExportViewModel(
+                    list: list,
+                    coordinator: self
+                )
+            )
+            
+        case let .documentExporter(exportData):
+            DocumentExporterView(
+                data: exportData.data,
+                fileName: exportData.fileName,
+                fileExtension: exportData.fileExtension
             )
         }
     }

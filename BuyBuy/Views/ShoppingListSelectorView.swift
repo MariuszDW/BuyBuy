@@ -65,7 +65,8 @@ struct ShoppingListSelectorView: View {
 
 #Preview("Light/items") {
     let dataManager = DataManager(repository: MockDataRepository(),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = ShoppingListSelectorViewModel(itemIDToRestore: MockDataRepository.deletedItems[0].id,
                                                   dataManager: dataManager,
@@ -79,7 +80,8 @@ struct ShoppingListSelectorView: View {
 
 #Preview("Dark/items") {
     let dataManager = DataManager(repository: MockDataRepository(),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     let viewModel = ShoppingListSelectorViewModel(itemIDToRestore: MockDataRepository.deletedItems[0].id,
                                                   dataManager: dataManager,

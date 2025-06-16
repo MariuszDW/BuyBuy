@@ -262,7 +262,8 @@ struct LoyaltyCardsView: View {
 
 #Preview("Light/items") {
     let dataManager = DataManager(repository: MockDataRepository(),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let mockViewModel = LoyaltyCardsViewModel(
         dataManager: dataManager,
         coordinator: AppCoordinator(dependencies: AppDependencies())
@@ -276,7 +277,8 @@ struct LoyaltyCardsView: View {
 
 #Preview("Dark/items") {
     let dataManager = DataManager(repository: MockDataRepository(),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let mockViewModel = LoyaltyCardsViewModel(
         dataManager: dataManager,
         coordinator: AppCoordinator(dependencies: AppDependencies())
@@ -290,7 +292,8 @@ struct LoyaltyCardsView: View {
 
 #Preview("Light/empty") {
     let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let mockViewModel = LoyaltyCardsViewModel(
         dataManager: dataManager,
         coordinator: AppCoordinator(dependencies: AppDependencies())
@@ -304,7 +307,8 @@ struct LoyaltyCardsView: View {
 
 #Preview("Dark/empty") {
     let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
-                                  imageStorage: MockImageStorage())
+                                  imageStorage: MockImageStorage(),
+                                  fileStorage: MockFileStorage())
     let mockViewModel = LoyaltyCardsViewModel(
         dataManager: dataManager,
         coordinator: AppCoordinator(dependencies: AppDependencies())

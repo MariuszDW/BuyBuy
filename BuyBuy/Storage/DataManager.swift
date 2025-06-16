@@ -12,11 +12,14 @@ import SwiftUI
 final class DataManager: DataManagerProtocol {
     private let repository: DataRepositoryProtocol
     private let imageStorage: ImageStorageProtocol
+    private let fileStorage: FileStorageProtocol
 
     init(repository: DataRepositoryProtocol,
-         imageStorage: ImageStorageProtocol) {
+         imageStorage: ImageStorageProtocol,
+         fileStorage: FileStorageProtocol) {
         self.repository = repository
         self.imageStorage = imageStorage
+        self.fileStorage = fileStorage
     }
     
     // MARK: - Shopping lists
@@ -272,5 +275,23 @@ final class DataManager: DataManagerProtocol {
         for id in orphanedCardIDs {
             try await imageStorage.deleteImage(baseFileName: id, types: [.cardImage, .cardThumbnail])
         }
+    }
+    
+    // MARK: - Files
+    
+    func saveFile(data: Data, fileName: String) async throws {
+        try await fileStorage.saveFile(data: data, fileName: fileName)
+    }
+    
+    func readFile(fileName: String) async throws -> Data {
+        return try await fileStorage.readFile(fileName: fileName)
+    }
+    
+    func deleteFile(fileName: String) async throws {
+        try await fileStorage.deleteFile(fileName: fileName)
+    }
+    
+    func listFiles() async throws -> [String] {
+        return try await fileStorage.listFiles()
     }
 }
