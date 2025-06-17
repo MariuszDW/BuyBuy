@@ -19,11 +19,7 @@ extension Bundle {
         }
         
         if date {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .medium
-            formatter.timeStyle = .none
-            formatter.locale = Locale.current
-            let dateString = formatter.string(from: Date())
+            let dateString = Date().localizedString(dateStyle: .medium, timeStyle: .none)
             resultString += " (\(dateString))"
         }
         
