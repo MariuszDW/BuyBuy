@@ -19,13 +19,15 @@ struct DeletedItemsView: View {
         VStack(spacing: 0) {
             if let items = viewModel.items, items.count > 0 {
                 List {
-                    Text("deleted_items_info")
-                        .foregroundColor(Color.bb.text.tertiary)
-                        .font(.regularDynamic(style: .callout))
-                        .padding(.bottom, 12)
-                    
-                    ForEach(items) { item in
-                        itemView(item: item)
+                    Section(header:
+                        Text("deleted_items_info")
+                            .foregroundColor(Color.bb.text.tertiary)
+                            .font(.regularDynamic(style: .subheadline))
+                            .padding(.bottom, 12)
+                    ) {
+                        ForEach(items) { item in
+                            itemView(item: item)
+                        }
                     }
                 }
                 .listStyle(.plain)
