@@ -21,7 +21,7 @@ enum ShoppingListExportFormat: String, CaseIterable, Identifiable {
     func makeExporter() -> ShoppingListExporterProtocol {
         switch self {
         case .txt: return PlainTextShoppingListExporter()
-        case .markdown: return PlainTextShoppingListExporter() //  MarkdownShoppingListExporter() // TODO: temporary
+        case .markdown: return MarkdownShoppingListExporter()
         case .json: return PlainTextShoppingListExporter() // JSONShoppingListExporter() // TODO: temporary
         case .html: return PlainTextShoppingListExporter() // HTMLShoppingListExporter() // TODO: temporary
         case .amigaGuide: return PlainTextShoppingListExporter() // AmigaGuideShoppingListExporter() // TODO: temporary
