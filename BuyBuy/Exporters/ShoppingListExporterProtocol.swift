@@ -8,5 +8,6 @@
 import Foundation
 
 protocol ShoppingListExporterProtocol {
-    func export(shoppingList: ShoppingList) -> String
+    var textEncoding: TextEncoding { get set }
+    func export(shoppingList: ShoppingList) -> Data?
 }

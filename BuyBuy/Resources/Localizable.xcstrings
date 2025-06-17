@@ -621,6 +621,22 @@
         }
       }
     },
+    "export_character_loss_warning" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Some characters may be lost during export."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Niektóre znaki mogą zostać utracone podczas eksportu."
+          }
+        }
+      }
+    },
     "export_list" : {
       "localizations" : {
         "en" : {
@@ -1142,6 +1158,22 @@
         }
       }
     },
+    "options" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Options"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opcje"
+          }
+        }
+      }
+    },
     "photo_library" : {
       "localizations" : {
         "en" : {
@@ -1283,6 +1315,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listy zakupów"
+          }
+        }
+      }
+    },
+    "text_encoding" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text encoding"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kodowanie tekstu"
           }
         }
       }

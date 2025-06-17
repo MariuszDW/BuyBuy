@@ -14,8 +14,8 @@ struct DocumentExporterView: UIViewControllerRepresentable {
     let fileName: String
     let fileExtension: String
 
-    func makeCoordinator() -> DocumentExportDelegate {
-        DocumentExportDelegate(data: data, fileName: fileName, fileExtension: fileExtension)
+    func makeCoordinator() -> Coordinator {
+        Coordinator(data: data, fileName: fileName, fileExtension: fileExtension)
     }
 
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
@@ -29,7 +29,7 @@ struct DocumentExporterView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
 
-    class DocumentExportDelegate: NSObject, UIDocumentPickerDelegate {
+    class Coordinator: NSObject, UIDocumentPickerDelegate {
         let tempFileURL: URL
 
         init(data: Data, fileName: String, fileExtension: String) {

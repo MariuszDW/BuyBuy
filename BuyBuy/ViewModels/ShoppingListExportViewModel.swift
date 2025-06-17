@@ -13,7 +13,8 @@ final class ShoppingListExportViewModel: ObservableObject {
     let list: ShoppingList
     let coordinator: any AppCoordinatorProtocol
 
-    @Published var selectedFormat: ShoppingListExportFormat = .txt
+    @Published var selectedFormat: ShoppingListExportFormat = .default
+    @Published var selectedTextEncoding: TextEncoding = .default
 
     init(list: ShoppingList, coordinator: any AppCoordinatorProtocol) {
         self.list = list
@@ -26,9 +27,11 @@ final class ShoppingListExportViewModel: ObservableObject {
     }
     
     private func makeExportData() -> ExportedData? {
-        let exporter = selectedFormat.makeExporter()
-        let text = exporter.export(shoppingList: list)
-        guard let data = text.data(using: .utf8) else { return nil }
+        var exporter = selectedFormat.makeExporter()
+        exporter.textEncoding = selectedTextEncoding
+
+        guard let data = exporter.export(shoppingList: list) else { return nil }
+
         return ExportedData(data: data, fileName: list.name, fileExtension: selectedFormat.fileExtension)
     }
 }

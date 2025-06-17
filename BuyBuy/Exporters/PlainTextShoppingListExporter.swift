@@ -8,35 +8,42 @@
 import Foundation
 
 struct PlainTextShoppingListExporter: ShoppingListExporterProtocol {
-    func export(shoppingList: ShoppingList) -> String {
-        var result = "Lista zakupów: \(shoppingList.name)\n"
+    var textEncoding: TextEncoding = .default
+
+    func export(shoppingList: ShoppingList) -> Data? {
+        var result = "\(shoppingList.name)\n"
         
         if let note = shoppingList.note, !note.isEmpty {
-            result += "Notatka: \(note)\n"
+            result += "\(note)\n"
         }
-        
+
         result += "\n"
 
         for status in ShoppingItemStatus.allCases {
             let items = shoppingList.items(for: status)
             guard !items.isEmpty else { continue }
 
-            result += "== \(status.localizedName.uppercased()) ==\n"
+            result += "==== \(status.localizedName.uppercased()) ====\n\n"
             
             for item in items {
-                var line = "• \(item.name)"
-                if let qty = item.quantityWithUnit {
-                    line += " [\(qty)]"
-                }
+                var line = "- \(item.name)\n"
                 if !item.note.isEmpty {
-                    line += " — \(item.note)"
+                    line += "  \(item.note)\n"
+                }
+                if let quantity = item.quantityWithUnit {
+                    line += "  \(quantity)\n"
+                }
+                if let price = item.price {
+                    line += "  \(price.priceFormat)"
+                    if let totalPrice = item.totalPrice, totalPrice != price {
+                        line += " (\(totalPrice.priceFormat))"
+                    }
+                    line += "\n"
                 }
                 result += line + "\n"
             }
-
-            result += "\n"
         }
 
-        return result
+        return result.data(using: textEncoding.stringEncoding, allowLossyConversion: true)
     }
 }

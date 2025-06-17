@@ -13,6 +13,8 @@ enum ShoppingListExportFormat: String, CaseIterable, Identifiable {
     case json
     case html
     case amigaGuide
+    
+    static let `default`: ShoppingListExportFormat = .txt
 
     var id: String { rawValue }
 
