@@ -15,7 +15,7 @@ extension Bundle {
         var resultString = "\(prefix)\(versionString)"
         
         if build {
-            resultString = resultString + " (\(buildString))"
+            resultString += " (\(buildString))"
         }
         
         if date {
@@ -27,6 +27,6 @@ extension Bundle {
     }
     
     func appName() -> String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
+        return object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
     }
 }
