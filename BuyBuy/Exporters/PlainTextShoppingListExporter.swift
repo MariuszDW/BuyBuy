@@ -40,7 +40,7 @@ struct PlainTextShoppingListExporter: ShoppingListExporterProtocol {
                 
                 // item note
                 if itemNote, !item.note.isEmpty {
-                    line += "  \(item.note)\n"
+                    line += "  \(String(localized: "note")): \(item.note)\n"
                 }
                 
                 // item quantity
