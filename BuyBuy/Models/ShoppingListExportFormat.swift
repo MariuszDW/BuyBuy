@@ -22,7 +22,7 @@ enum ShoppingListExportFormat: String, CaseIterable, Identifiable {
         switch self {
         case .txt: return PlainTextShoppingListExporter()
         case .markdown: return MarkdownShoppingListExporter()
-        case .json: return PlainTextShoppingListExporter() // JSONShoppingListExporter() // TODO: temporary
+        case .json: return JSONShoppingListExporter()
         case .html: return HTMLShoppingListExporter()
         case .amigaGuide: return PlainTextShoppingListExporter() // AmigaGuideShoppingListExporter() // TODO: temporary
         }
