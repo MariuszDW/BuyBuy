@@ -20,6 +20,7 @@ final class ShoppingListExportViewModel: ObservableObject {
     @Published var includeItemQuantity: Bool = true
     @Published var includeItemPricePerUnit: Bool = true
     @Published var includeItemTotalPrice: Bool = true
+    @Published var includeExportInfo: Bool = true
 
     init(list: ShoppingList, coordinator: any AppCoordinatorProtocol) {
         self.list = list
@@ -38,6 +39,7 @@ final class ShoppingListExportViewModel: ObservableObject {
         exporter.itemQuantity = includeItemQuantity
         exporter.itemPricePerUnit = includeItemPricePerUnit
         exporter.itemTotalPrice = includeItemTotalPrice
+        exporter.exportInfo = includeExportInfo
 
         guard let data = exporter.export(shoppingList: list) else { return nil }
 

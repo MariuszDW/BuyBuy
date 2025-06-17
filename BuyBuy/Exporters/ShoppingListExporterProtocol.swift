@@ -27,6 +27,6 @@ extension ShoppingListExporterProtocol {
                                                 timeStyle: .medium,
                                                 locale: .current,
                                                 timeZone: TimeZone(identifier: "UTC")!) + " UTC"
-        return String(format: String(localized: "exported_by_format"), appName, appVersion, dateString)
+        return String(format: String(localized: "generated_by"), appName, appVersion, dateString)
     }
 }

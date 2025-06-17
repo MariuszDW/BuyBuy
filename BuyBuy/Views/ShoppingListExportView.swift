@@ -21,6 +21,7 @@ struct ShoppingListExportView: View {
                 listNameSection
                 formatSection
                 itemDetailsSection
+                otherOptionsSection
             }
             .navigationTitle("list_export")
             .toolbar {
@@ -55,8 +56,18 @@ struct ShoppingListExportView: View {
         }
     }
     
+    private var formatSectionFooter: some View {
+        Group {
+            if viewModel.selectedTextEncoding.mayLoseInformation {
+                Text("export_character_loss_warning")
+                    .font(.regularDynamic(style: .caption))
+                    .foregroundColor(.bb.text.tertiary)
+            }
+        }
+    }
+    
     private var formatSection: some View {
-        Section("file_format") {
+        Section(header: Text("file_format"), footer: formatSectionFooter) {
             Picker("format", selection: $viewModel.selectedFormat) {
                 ForEach(ShoppingListExportFormat.allCases) { format in
                     Text(format.localizedName)
@@ -66,14 +77,10 @@ struct ShoppingListExportView: View {
             }
             Picker("text_encoding", selection: $viewModel.selectedTextEncoding) {
                 ForEach(TextEncoding.allCases) { encoding in
-                    Text(encoding.rawValue).tag(encoding)
+                    Text(encoding.rawValue)
+                        .tag(encoding)
                         .font(.regularDynamic(style: .body))
                 }
-            }
-            if viewModel.selectedTextEncoding.mayLoseInformation {
-                Text("export_character_loss_warning")
-                    .font(.regularDynamic(style: .caption))
-                    .foregroundColor(.bb.text.tertiary)
             }
         }
     }
@@ -84,6 +91,12 @@ struct ShoppingListExportView: View {
             Toggle(LocalizedStringKey("quantity"), isOn: $viewModel.includeItemQuantity)
             Toggle(LocalizedStringKey("price_per_unit"), isOn: $viewModel.includeItemPricePerUnit)
             Toggle(LocalizedStringKey("total_price"), isOn: $viewModel.includeItemTotalPrice)
+        }
+    }
+    
+    private var otherOptionsSection: some View {
+        Section(footer: Text("export_info_footer")) {
+            Toggle(LocalizedStringKey("export_info"), isOn: $viewModel.includeExportInfo)
         }
     }
 }
