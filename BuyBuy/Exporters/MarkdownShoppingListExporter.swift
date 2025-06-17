@@ -14,6 +14,7 @@ struct MarkdownShoppingListExporter: ShoppingListExporterProtocol {
     var itemQuantity: Bool = true
     var itemPricePerUnit: Bool = true
     var itemTotalPrice: Bool = true
+    var exportInfo: Bool = true
 
     func export(shoppingList: ShoppingList) -> Data? {
         // list name
@@ -57,9 +58,14 @@ struct MarkdownShoppingListExporter: ShoppingListExporterProtocol {
                 if itemTotalPrice, let totalPrice = item.totalPrice?.priceFormat {
                     line += "  - \(String(localized: "total_price")): `\(totalPrice)`\n"
                 }
-
+                
                 result += line + "\n"
             }
+        }
+        
+        if exportInfo {
+            result += "---\n\n"
+            result += "_\(Self.exportInfoText())_\n"
         }
 
         return result.data(using: textEncoding.stringEncoding, allowLossyConversion: true)

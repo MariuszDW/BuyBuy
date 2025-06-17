@@ -14,6 +14,7 @@ struct AmigaGuideShoppingListExporter: ShoppingListExporterProtocol {
     var itemQuantity: Bool = true
     var itemPricePerUnit: Bool = true
     var itemTotalPrice: Bool = true
+    var exportInfo: Bool = true
 
     func export(shoppingList: ShoppingList) -> Data? {
         let appName = Bundle.main.appName()
@@ -52,14 +53,18 @@ struct AmigaGuideShoppingListExporter: ShoppingListExporterProtocol {
             result += "@{b}\(sectionTitle)@{ub}\n\n"
 
             for item in items {
-                // item link with dash prefix
+                // item link
                 let itemLink = itemGUID(for: item)
                 result += "- @{\"\(item.name)\" link \(itemLink)}\n"
             }
 
             result += "\n"
         }
-
+        
+        if exportInfo {
+            result += "\n\n@{i}\(Self.exportInfoText())@{ui}\n"
+        }
+        
         result += "@EndNode\n\n"
 
         // item nodes
@@ -101,7 +106,7 @@ struct AmigaGuideShoppingListExporter: ShoppingListExporterProtocol {
                 result += "@EndNode\n\n"
             }
         }
-
+        
         return result.data(using: textEncoding.stringEncoding, allowLossyConversion: true)
     }
 

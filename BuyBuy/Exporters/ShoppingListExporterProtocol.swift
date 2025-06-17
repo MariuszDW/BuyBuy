@@ -14,5 +14,19 @@ protocol ShoppingListExporterProtocol {
     var itemPricePerUnit: Bool { get set }
     var itemTotalPrice: Bool { get set }
     
+    var exportInfo: Bool { get set }
+    
     func export(shoppingList: ShoppingList) -> Data?
+}
+
+extension ShoppingListExporterProtocol {
+    static func exportInfoText() -> String {
+        let appName = Bundle.main.appName()
+        let appVersion = Bundle.main.appVersion()
+        let dateString = Date().localizedString(dateStyle: .short,
+                                                timeStyle: .medium,
+                                                locale: .current,
+                                                timeZone: TimeZone(identifier: "UTC")!) + " UTC"
+        return String(format: String(localized: "exported_by_format"), appName, appVersion, dateString)
+    }
 }

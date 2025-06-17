@@ -14,6 +14,7 @@ struct PlainTextShoppingListExporter: ShoppingListExporterProtocol {
     var itemQuantity: Bool = true
     var itemPricePerUnit: Bool = true
     var itemTotalPrice: Bool = true
+    var exportInfo: Bool = true
 
     func export(shoppingList: ShoppingList) -> Data? {
         // list name
@@ -58,8 +59,13 @@ struct PlainTextShoppingListExporter: ShoppingListExporterProtocol {
                     line += "  \(String(localized: "total_price")): \(totalPrice)\n"
                 }
                 
-                result += line + "\n"
+                result += (line + "\n")
             }
+        }
+        
+        if exportInfo {
+            result += "\n----------------\n\n"
+            result += (Self.exportInfoText() + "\n")
         }
 
         return result.data(using: textEncoding.stringEncoding, allowLossyConversion: true)

@@ -9,12 +9,15 @@ import Foundation
 
 struct ShoppingListData: Codable {
     let name: String
+    let color: String?
     let note: String?
     let itemStatuses: [String: [ItemData]]
+    let info: ExportInfo?
 
     enum CodingKeys: String, CodingKey {
-        case name, note
+        case name, color, note
         case itemStatuses = "item_statuses"
+        case info
     }
 
     struct ItemData: Codable {
@@ -35,6 +38,12 @@ struct ShoppingListData: Codable {
             let unit: String?
         }
     }
+
+    struct ExportInfo: Codable {
+        let exporter: String
+        let version: String
+        let date: String
+    }
 }
 
 struct JSONShoppingListExporter: ShoppingListExporterProtocol {
@@ -44,6 +53,7 @@ struct JSONShoppingListExporter: ShoppingListExporterProtocol {
     var itemQuantity: Bool = true
     var itemPricePerUnit: Bool = true
     var itemTotalPrice: Bool = true
+    var exportInfo: Bool = true
 
     func export(shoppingList: ShoppingList) -> Data? {
         let encoding = textEncoding.stringEncoding
@@ -78,10 +88,18 @@ struct JSONShoppingListExporter: ShoppingListExporterProtocol {
             itemStatusesDict[status.rawValue] = exportedItems
         }
 
+        let info: ShoppingListData.ExportInfo? = exportInfo ? .init(
+            exporter: Bundle.main.appName(),
+            version: Bundle.main.appVersion(),
+            date: Date().iso8601UTCString()
+        ) : nil
+
         let jsonList = ShoppingListData(
             name: shoppingList.name.cleaned(toEncoding: encoding),
-            note: (shoppingList.note?.isEmpty == false) ? shoppingList.note!.cleaned(toEncoding: encoding) : nil,
-            itemStatuses: itemStatusesDict
+            color: shoppingList.color.rawValue.cleaned(toEncoding: encoding),
+            note: shoppingList.note?.isEmpty == false ? shoppingList.note?.cleaned(toEncoding: encoding) : nil,
+            itemStatuses: itemStatusesDict,
+            info: info
         )
 
         let encoder = JSONEncoder()

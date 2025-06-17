@@ -14,6 +14,7 @@ struct HTMLShoppingListExporter: ShoppingListExporterProtocol {
     var itemQuantity: Bool = true
     var itemPricePerUnit: Bool = true
     var itemTotalPrice: Bool = true
+    var exportInfo: Bool = true
 
     func export(shoppingList: ShoppingList) -> Data? {
         var html = """
@@ -75,6 +76,10 @@ struct HTMLShoppingListExporter: ShoppingListExporterProtocol {
             }
 
             html += "</ul>\n"
+        }
+        
+        if exportInfo {
+            html += "<hr><p><i>\(Self.exportInfoText())</i></p>"
         }
 
         html += "</body></html>"
