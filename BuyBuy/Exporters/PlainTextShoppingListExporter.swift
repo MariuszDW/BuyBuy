@@ -44,30 +44,17 @@ struct PlainTextShoppingListExporter: ShoppingListExporterProtocol {
                 
                 // item quantity
                 if itemQuantity, let quantity = item.quantityWithUnit {
-                    line += "  \(quantity)\n"
+                    line += "  \(String(localized: "quantity")): \(quantity)\n"
                 }
                 
-                // item price and total price
-                let price = itemPricePerUnit ? item.price : nil
-                let totalPrice = itemTotalPrice ? item.totalPrice : nil
-                
-                let priceString = price?.priceFormat
-                let totalPriceString = totalPrice?.priceFormat
-                
-                let priceLine: String
-                switch (priceString, totalPriceString) {
-                case let (p?, t?):
-                    priceLine = "\(p) (\(t))"
-                case let (p?, nil):
-                    priceLine = p
-                case let (nil, t?):
-                    priceLine = t
-                default:
-                    priceLine = ""
+                // item price per unit
+                if itemPricePerUnit, let price = item.price?.priceFormat {
+                    line += "  \(String(localized: "price_per_unit")): \(price)\n"
                 }
-                
-                if !priceLine.isEmpty {
-                    line += "  \(priceLine)\n"
+
+                // item total price
+                if itemTotalPrice, let totalPrice = item.totalPrice?.priceFormat {
+                    line += "  \(String(localized: "total_price")): \(totalPrice)\n"
                 }
                 
                 result += line + "\n"
