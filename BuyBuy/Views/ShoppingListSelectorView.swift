@@ -14,39 +14,37 @@ struct ShoppingListSelectorView: View {
     init(viewModel: ShoppingListSelectorViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-
+    
     var body: some View {
         NavigationStack {
             List {
-                Text("restore_item_info")
-                    .foregroundColor(.bb.text.tertiary)
-                    .font(.regularDynamic(style: .callout))
-                    .padding(.bottom, 12)
-                
-                ForEach(viewModel.shoppingLists) { list in
-                    Button {
-                        Task {
-                            await viewModel.moveDeletedItem(itemID: viewModel.itemIDToRestore, toListID: list.id)
-                            dismiss()
-                        }
-                    } label: {
-                        HStack {
-                            Image(systemName: list.icon.rawValue)
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(.white, list.color.color)
-                                .font(.regularDynamic(style: .largeTitle))
-                            
-                            Text(list.name)
-                                .foregroundColor(.bb.text.primary)
-                                .font(.regularDynamic(style: .title3))
-                                .multilineTextAlignment(.leading)
-                                .lineLimit(4)
+                Section(header: restoreItemInfoHeader) {
+                    ForEach(viewModel.shoppingLists) { list in
+                        Button {
+                            Task {
+                                await viewModel.moveDeletedItem(itemID: viewModel.itemIDToRestore, toListID: list.id)
+                                dismiss()
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: list.icon.rawValue)
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(.white, list.color.color)
+                                    .font(.regularDynamic(style: .largeTitle))
+                                
+                                Text(list.name)
+                                    .foregroundColor(.bb.text.primary)
+                                    .font(.regularDynamic(style: .title3))
+                                    .multilineTextAlignment(.leading)
+                                    .lineLimit(4)
+                            }
                         }
                     }
                 }
             }
+            .listStyle(.plain)
             .navigationTitle("shopping_lists")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("cancel") {
@@ -58,6 +56,14 @@ struct ShoppingListSelectorView: View {
                 await viewModel.loadLists()
             }
         }
+    }
+    
+    var restoreItemInfoHeader: some View {
+        Text("restore_item_info")
+            .foregroundColor(.bb.text.tertiary)
+            .font(.regularDynamic(style: .subheadline))
+            .padding(.bottom, 4)
+            .textCase(nil)
     }
 }
 
