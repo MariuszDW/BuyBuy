@@ -446,6 +446,7 @@
       }
     },
     "delete_card_title" : {
+      "comment" : "%1 - name of a loyalty card",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -478,6 +479,7 @@
       }
     },
     "delete_list_title" : {
+      "comment" : "%1 - name of a shopping list",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -665,6 +667,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eksportuj listę"
+          }
+        }
+      }
+    },
+    "exported_by_format" : {
+      "comment" : "%1 - app name, %2 - app version, %3 - export date",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exported by %@ %@ (%@)."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyeksportowane przez %@ %@ (%@)."
           }
         }
       }
