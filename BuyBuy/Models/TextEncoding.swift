@@ -41,4 +41,14 @@ enum TextEncoding: String, CaseIterable, Identifiable {
             return true
         }
     }
+    
+    var charsetName: String {
+        switch self {
+        case .utf8: return "UTF-8"
+        case .utf16: return "UTF-16"
+        case .ascii: return "US-ASCII"
+        case .isoLatin1: return "ISO-8859-1"
+        case .isoLatin2: return "ISO-8859-2"
+        }
+    }
 }

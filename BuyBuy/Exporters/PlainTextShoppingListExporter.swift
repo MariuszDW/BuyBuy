@@ -24,14 +24,15 @@ struct PlainTextShoppingListExporter: ShoppingListExporterProtocol {
             result += "\(note)\n"
         }
 
-        result += "\n"
+        // separator
+        result += "----------------\n\n"
 
         for status in ShoppingItemStatus.allCases {
             let items = shoppingList.items(for: status)
             guard !items.isEmpty else { continue }
 
             // category of items
-            result += "==== \(status.localizedName.uppercased()) ====\n\n"
+            result += "\n==== \(ShoppingListSection(status: status).localizedTitle.uppercased()) ====\n\n"
             
             for item in items {
                 // item name

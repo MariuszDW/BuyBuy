@@ -23,19 +23,20 @@ struct MarkdownShoppingListExporter: ShoppingListExporterProtocol {
         if let note = shoppingList.note, !note.isEmpty {
             result += "\(note)\n"
         }
-
-        result += "\n"
+        
+        // separator
+        result += "---\n\n"
 
         for status in ShoppingItemStatus.allCases {
             let items = shoppingList.items(for: status)
             guard !items.isEmpty else { continue }
 
             // category of items
-            result += "## \(status.localizedName.uppercased())\n\n"
+            result += "## \(ShoppingListSection(status: status).localizedTitle.uppercased())\n\n"
 
             for item in items {
                 // item name
-                var line = "- **\(item.name)**\n"
+                var line = "- ### \(item.name)\n"
 
                 // item note
                 if itemNote, !item.note.isEmpty {
@@ -44,17 +45,17 @@ struct MarkdownShoppingListExporter: ShoppingListExporterProtocol {
 
                 // item quantity
                 if itemQuantity, let quantity = item.quantityWithUnit {
-                    line += "  - \(String(localized: "quantity")): \(quantity)\n"
+                    line += "  - \(String(localized: "quantity")): `\(quantity)`\n"
                 }
 
                 // item price per unit
                 if itemPricePerUnit, let price = item.price?.priceFormat {
-                    line += "  - \(String(localized: "price_per_unit")): \(price)\n"
+                    line += "  - \(String(localized: "price_per_unit")): `\(price)`\n"
                 }
 
                 // item total price
                 if itemTotalPrice, let totalPrice = item.totalPrice?.priceFormat {
-                    line += "  - \(String(localized: "total_price")): \(totalPrice)\n"
+                    line += "  - \(String(localized: "total_price")): `\(totalPrice)`\n"
                 }
 
                 result += line + "\n"
