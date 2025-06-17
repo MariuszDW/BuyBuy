@@ -20,7 +20,7 @@ struct ShoppingListExportView: View {
             Form {
                 listNameSection
                 formatSection
-                optionsSection
+                itemDetailsSection
             }
             .navigationTitle("list_export")
             .toolbar {
@@ -78,9 +78,12 @@ struct ShoppingListExportView: View {
         }
     }
     
-    private var optionsSection: some View {
-        Section("options") {
-            
+    private var itemDetailsSection: some View {
+        Section("item_details") {
+            Toggle(LocalizedStringKey("note"), isOn: $viewModel.includeItemNote)
+            Toggle(LocalizedStringKey("quantity"), isOn: $viewModel.includeItemQuantity)
+            Toggle(LocalizedStringKey("price_per_unit"), isOn: $viewModel.includeItemPricePerUnit)
+            Toggle(LocalizedStringKey("total_price"), isOn: $viewModel.includeItemTotalPrice)
         }
     }
 }

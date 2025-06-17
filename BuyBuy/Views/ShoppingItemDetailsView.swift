@@ -138,7 +138,7 @@ struct ShoppingItemDetailsView: View {
     
     private var statusView: some View {
         HStack {
-            Text("item_status")
+            Text("status")
             Spacer()
             Menu {
                 ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
@@ -170,7 +170,7 @@ struct ShoppingItemDetailsView: View {
     
     private func listView(_ currentList: ShoppingList, lists: [ShoppingList]) -> some View {
         return HStack {
-            Text("item_list")
+            Text("list")
             Spacer()
             Menu {
                 ForEach(lists, id: \.id) { list in
@@ -236,7 +236,7 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var nameField: some View {
-        TextField("item_name", text: $viewModel.name, axis: .vertical)
+        TextField("name", text: $viewModel.name, axis: .vertical)
             .lineLimit(4)
             .multilineTextAlignment(.leading)
             .font(.boldDynamic(style: .title3))
@@ -247,7 +247,7 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var noteField: some View {
-        TextField("item_note", text: $viewModel.note, axis: .vertical)
+        TextField("note", text: $viewModel.note, axis: .vertical)
             .lineLimit(8)
             .multilineTextAlignment(.leading)
             .font(.regularDynamic(style: .body))
@@ -259,7 +259,7 @@ struct ShoppingItemDetailsView: View {
     
     private var quantityField: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("item_quantity")
+            Text("quantity")
                 .font(.regularDynamic(style:.caption))
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
@@ -288,7 +288,7 @@ struct ShoppingItemDetailsView: View {
     
     private var unitField: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("item_unit")
+            Text("unit")
                 .font(.regularDynamic(style:.caption))
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
@@ -360,7 +360,7 @@ struct ShoppingItemDetailsView: View {
     
     private var priceField: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("item_price_per_unit")
+            Text("price_per_unit")
                 .font(.regularDynamic(style:.caption))
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
@@ -389,7 +389,7 @@ struct ShoppingItemDetailsView: View {
     
     private var totalPriceField: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("item_total_price")
+            Text("total_price")
                 .font(.regularDynamic(style:.caption))
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)

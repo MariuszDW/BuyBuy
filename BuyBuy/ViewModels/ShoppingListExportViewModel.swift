@@ -15,6 +15,11 @@ final class ShoppingListExportViewModel: ObservableObject {
 
     @Published var selectedFormat: ShoppingListExportFormat = .default
     @Published var selectedTextEncoding: TextEncoding = .default
+    
+    @Published var includeItemNote: Bool = true
+    @Published var includeItemQuantity: Bool = true
+    @Published var includeItemPricePerUnit: Bool = true
+    @Published var includeItemTotalPrice: Bool = true
 
     init(list: ShoppingList, coordinator: any AppCoordinatorProtocol) {
         self.list = list
@@ -29,6 +34,10 @@ final class ShoppingListExportViewModel: ObservableObject {
     private func makeExportData() -> ExportedData? {
         var exporter = selectedFormat.makeExporter()
         exporter.textEncoding = selectedTextEncoding
+        exporter.itemNote = includeItemNote
+        exporter.itemQuantity = includeItemQuantity
+        exporter.itemPricePerUnit = includeItemPricePerUnit
+        exporter.itemTotalPrice = includeItemTotalPrice
 
         guard let data = exporter.export(shoppingList: list) else { return nil }
 

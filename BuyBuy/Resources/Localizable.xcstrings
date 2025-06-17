@@ -631,7 +631,7 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Niektóre znaki mogą zostać utracone podczas eksportu."
           }
         }
@@ -718,6 +718,22 @@
         }
       }
     },
+    "item_details" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item details"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dane przedmiotu"
+          }
+        }
+      }
+    },
     "item_inactive" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -731,54 +747,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nieaktywny"
-          }
-        }
-      }
-    },
-    "item_list" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "List"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lista"
-          }
-        }
-      }
-    },
-    "item_name" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Name"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nazwa"
-          }
-        }
-      }
-    },
-    "item_note" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Note"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notatka"
           }
         }
       }
@@ -800,22 +768,6 @@
         }
       }
     },
-    "item_price_per_unit" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Price per unit"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cena jednostkowa"
-          }
-        }
-      }
-    },
     "item_purchased" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -829,70 +781,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kupiony"
-          }
-        }
-      }
-    },
-    "item_quantity" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quantity"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ilość / Liczba"
-          }
-        }
-      }
-    },
-    "item_status" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Status"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Status"
-          }
-        }
-      }
-    },
-    "item_total_price" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Total price"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cena całkowita"
-          }
-        }
-      }
-    },
-    "item_unit" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unit"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jednostka"
           }
         }
       }
@@ -944,6 +832,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kupione"
+          }
+        }
+      }
+    },
+    "list" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista"
           }
         }
       }
@@ -1092,6 +996,22 @@
         }
       }
     },
+    "name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nazwa"
+          }
+        }
+      }
+    },
     "no_deleted_items" : {
       "localizations" : {
         "en" : {
@@ -1141,6 +1061,22 @@
         }
       }
     },
+    "note" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notatka"
+          }
+        }
+      }
+    },
     "ok" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1158,22 +1094,6 @@
         }
       }
     },
-    "options" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Options"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opcje"
-          }
-        }
-      }
-    },
     "photo_library" : {
       "localizations" : {
         "en" : {
@@ -1186,6 +1106,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Biblioteka"
+          }
+        }
+      }
+    },
+    "price_per_unit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Price per unit"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cena jednostkowa"
+          }
+        }
+      }
+    },
+    "quantity" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quantity"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilość / Liczba"
           }
         }
       }
@@ -1319,6 +1271,22 @@
         }
       }
     },
+    "status" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        }
+      }
+    },
     "text_encoding" : {
       "localizations" : {
         "en" : {
@@ -1331,6 +1299,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kodowanie tekstu"
+          }
+        }
+      }
+    },
+    "total_price" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total price"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cena całkowita"
+          }
+        }
+      }
+    },
+    "unit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unit"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jednostka"
           }
         }
       }
