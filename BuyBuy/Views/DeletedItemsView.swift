@@ -23,7 +23,7 @@ struct DeletedItemsView: View {
                         Text("deleted_items_info")
                             .foregroundColor(Color.bb.text.tertiary)
                             .font(.regularDynamic(style: .subheadline))
-                            .padding(.bottom, 12)
+                            .padding(.bottom, 4)
                     ) {
                         ForEach(items) { item in
                             itemView(item: item)
