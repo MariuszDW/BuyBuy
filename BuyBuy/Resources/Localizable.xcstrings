@@ -107,6 +107,22 @@
         }
       }
     },
+    "back" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Powrót"
+          }
+        }
+      }
+    },
     "camera" : {
       "localizations" : {
         "en" : {
