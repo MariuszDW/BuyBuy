@@ -29,4 +29,8 @@ extension Bundle {
         
         return resultString
     }
+    
+    func appName() -> String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
+    }
 }
