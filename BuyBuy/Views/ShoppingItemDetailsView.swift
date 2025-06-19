@@ -183,6 +183,9 @@ struct ShoppingItemDetailsView: View {
                     } label: {
                         HStack {
                             list.icon.image
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.white, list.color.color)
+                            
                             Text(list.name)
                                 .lineLimit(1)
                                 .truncationMode(.tail)
@@ -197,11 +200,14 @@ struct ShoppingItemDetailsView: View {
             } label: {
                 HStack(spacing: 8) {
                     currentList.icon.image
-                        .foregroundColor(currentList.color.color)
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, currentList.color.color)
+                    
                     Text(currentList.name)
                         .foregroundColor(currentList.color.color)
                         .lineLimit(1)
                         .truncationMode(.tail)
+                    
                     Image(systemName: "chevron.up.chevron.down")
                         .foregroundColor(.bb.selection)
                         .padding(.leading, 4)

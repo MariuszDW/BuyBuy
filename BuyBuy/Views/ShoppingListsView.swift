@@ -162,7 +162,7 @@ struct ShoppingListsView: View {
     
     private func listRow(for list: ShoppingList) -> some View {
         HStack {
-            Image(systemName: list.icon.rawValue)
+            list.icon.image
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(.white, list.color.color)
                 .font(.regularDynamic(style: .largeTitle))
