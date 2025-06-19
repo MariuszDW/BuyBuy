@@ -7,21 +7,48 @@
 
 import Foundation
 import SwiftUI
+import Combine
+import CoreData
 
 @MainActor
 final class LoyaltyCardsViewModel: ObservableObject {
     @Published var cards: [LoyaltyCard] = []
     @Published private(set) var thumbnails: [UUID: UIImage] = [:]
     
+    let id = UUID() // TODO: temporary for test
+    
     private let dataManager: DataManagerProtocol
-    let coordinator: any AppCoordinatorProtocol
+    weak var coordinator: (any AppCoordinatorProtocol)?
+    
+    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
+        PersistentStoreChangeObserver { [weak self] in
+            guard let self = self else { return }
+            await self.loadCards()
+        }
+    }()
     
     init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
+        print("🧬 LoyaltyCardsViewModel init id=\(id)") // TODO: temp
         self.dataManager = dataManager
         self.coordinator = coordinator
     }
     
+    deinit {
+        print("💥 LoyaltyCardsViewModel deinit id=\(id)") // TODO: temp
+    }
+    
+    func startObserving() {
+        remoteChangeObserver.startObserving()
+        print("Started observing remote changes") // TODO: temp
+    }
+    
+    func stopObserving() {
+        remoteChangeObserver.stopObserving()
+        print("Stopped observing remote changes") // TODO: temp
+    }
+    
     func loadCards() async {
+        print("LoyaltyCardsViewModel.loadCards() called id=\(id)") // TODO: temp
         let fetchedCards = try? await dataManager.fetchLoyaltyCards()
         cards = fetchedCards ?? []
         await loadThumbnails()
@@ -49,12 +76,12 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }
 
     func openCardPreview(_ card: LoyaltyCard) {
-        coordinator.openLoyaltyCardPreview(with: card.imageID, onDismiss: nil)
+        coordinator?.openLoyaltyCardPreview(with: card.imageID, onDismiss: nil)
     }
     
     func openCardPreview(at index: Int) {
         if index < cards.count {
-            coordinator.openLoyaltyCardPreview(with: cards[index].imageID, onDismiss: nil)
+            coordinator?.openLoyaltyCardPreview(with: cards[index].imageID, onDismiss: nil)
         }
     }
     
@@ -74,12 +101,12 @@ final class LoyaltyCardsViewModel: ObservableObject {
     func openNewCardDetails() {
         let maxOrder = cards.map(\.order).max() ?? 0
         let newCard = LoyaltyCard(id: UUID(), name: "", imageID: nil, order: maxOrder + 1)
-        coordinator.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: nil)
+        coordinator?.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: nil)
     }
     
     func openCardDetails(at index: Int) {
         guard index < cards.count else { return }
-        coordinator.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: nil)
+        coordinator?.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: nil)
     }
     
     private func loadThumbnails() async {

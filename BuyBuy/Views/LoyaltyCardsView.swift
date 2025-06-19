@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct LoyaltyCardsView: View {
     @StateObject var viewModel: LoyaltyCardsViewModel
@@ -17,6 +18,7 @@ struct LoyaltyCardsView: View {
     private static let tileSize: CGFloat = 150
     
     init(viewModel: LoyaltyCardsViewModel) {
+        print("🖼️ LoyaltyCardsView init with viewModel id=\(viewModel.id)") // TODO: temp
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -53,12 +55,19 @@ struct LoyaltyCardsView: View {
                 }
             )
         }
-        .onReceive(viewModel.coordinator.eventPublisher) { event in
+        .onReceive(viewModel.coordinator?.eventPublisher ?? Empty().eraseToAnyPublisher()) { event in
             if case .loyaltyCardEdited = event {
-                Task {
-                    await viewModel.loadCards()
-                }
+                Task { await viewModel.loadCards() }
             }
+        }
+        .onAppear() {
+            viewModel.startObserving()
+            Task { await viewModel.loadCards() }
+            print("LoyaltyCardsView onAppear with viewModel id=\(viewModel.id)") // TODO: temp
+        }
+        .onDisappear() {
+            viewModel.stopObserving()
+            print("LoyaltyCardsView onDisappear with viewModel id=\(viewModel.id)") // TODO: temp
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

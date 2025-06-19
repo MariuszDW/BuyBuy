@@ -10,7 +10,7 @@ import Combine
 
 @MainActor
 protocol AppCoordinatorProtocol: ObservableObject {
-    var eventPublisher: PassthroughSubject<AppEvent, Never> { get }
+    var eventPublisher: AnyPublisher<AppEvent, Never> { get }
     func sendEvent(_ event: AppEvent)
     
     func openShoppingList(_ id: UUID)

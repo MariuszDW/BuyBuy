@@ -13,15 +13,19 @@ import Combine
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
-    let eventPublisher = PassthroughSubject<AppEvent, Never>()
     private let dependencies: AppDependencies
+    
+    private let eventSubject = PassthroughSubject<AppEvent, Never>()
+    var eventPublisher: AnyPublisher<AppEvent, Never> {
+        eventSubject.eraseToAnyPublisher()
+    }
         
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
     }
     
     func sendEvent(_ event: AppEvent) {
-        eventPublisher.send(event)
+        eventSubject.send(event)
     }
     
     private func performStartupTasks() async {
@@ -63,7 +67,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     func openLoyaltyCardList() {
         navigationPath.append(AppRoute.loyaltyCards)
     }
-
+    
     func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: ((SheetRoute) -> Void)? = nil) {
         sheetPresenter.present(.shoppingListSettings(list, isNew), onDismiss: onDismiss)
     }
