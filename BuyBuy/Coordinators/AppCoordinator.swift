@@ -35,7 +35,40 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         try? await dependencies.dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
     }
     
+#if DEBUG
+    private func printAppSandboxPaths() {
+        let fileManager = FileManager.default
+        
+        if let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+            print("📂 Documents: \(documents.path)")
+        }
+        
+        if let caches = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+            print("📂 Caches: \(caches.path)")
+        }
+        
+        if let preferences = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first?.appendingPathComponent("Preferences") {
+            print("📂 Preferences: \(preferences.path)")
+        }
+        
+        let tmp = NSTemporaryDirectory()
+        print("📂 tmp: \(tmp)")
+        
+        if let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
+            print("☁️ iCloud container: \(ubiquityURL.path)")
+            let documentsInCloud = ubiquityURL.appendingPathComponent("Documents").path
+            print("☁️ iCloud Documents: \(documentsInCloud)")
+        } else {
+            print("⚠️ iCloud container is not available (disabled or not yet initialized).")
+        }
+    }
+#endif
+    
     func performStartupTasksIfNeeded() async {
+#if DEBUG
+        printAppSandboxPaths() // TODO: temporary, think about better place
+#endif
+        
         let now = Date()
         let lastCleanupDate = dependencies.preferences.lastCleanupDate
 
