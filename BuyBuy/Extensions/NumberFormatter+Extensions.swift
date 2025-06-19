@@ -15,14 +15,18 @@ extension NumberFormatter {
     
     static func price(minPrecision: Int = NumberFormatter.priceMinPrecision,
                       maxPrecision: Int = NumberFormatter.priceMaxPrecision) -> NumberFormatter {
-        localizedDecimal(minFractionDigits: minPrecision,
-                         maxFractionDigits: maxPrecision)
+        let formatter = localizedDecimal(minFractionDigits: minPrecision,
+                                         maxFractionDigits: maxPrecision)
+        formatter.usesGroupingSeparator = false
+        return formatter
     }
     
     static func quantity(minPrecision: Int = NumberFormatter.quantityMinPrecision,
                          maxPrecision: Int = NumberFormatter.quantityMaxPrecision) -> NumberFormatter {
-        localizedDecimal(minFractionDigits: minPrecision,
-                         maxFractionDigits: maxPrecision)
+        let formatter = localizedDecimal(minFractionDigits: minPrecision,
+                                         maxFractionDigits: maxPrecision)
+        formatter.usesGroupingSeparator = false
+        return formatter
     }
     
     static func localizedDecimal(minFractionDigits: Int = 0, maxFractionDigits: Int = 2) -> NumberFormatter {
