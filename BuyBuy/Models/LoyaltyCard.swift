@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LoyaltyCard: Identifiable {
+struct LoyaltyCard: Identifiable, Equatable {
     let id: UUID
     var name: String
     var imageID: String?
