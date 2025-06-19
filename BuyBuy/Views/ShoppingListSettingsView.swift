@@ -48,10 +48,12 @@ struct ShoppingListSettingsView: View {
             .toolbar {
                 toolbarContent
             }
+            .onAppear {
+                viewModel.startObserving()
+            }
             .onDisappear {
-                Task {
-                    await viewModel.didFinishEditing()
-                }
+                viewModel.stopObserving()
+                Task { await viewModel.didFinishEditing() }
             }
         }
     }

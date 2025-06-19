@@ -69,9 +69,11 @@ struct ShoppingListsView: View {
             )
         }
         .onAppear {
-            Task {
-                await viewModel.loadLists()
-            }
+            viewModel.startObserving()
+            Task { await viewModel.loadLists() }
+        }
+        .onDisappear() {
+            viewModel.stopObserving()
         }
         .onReceive(viewModel.coordinator.eventPublisher) { event in
             switch event {

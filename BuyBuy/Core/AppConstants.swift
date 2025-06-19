@@ -15,4 +15,6 @@ struct AppConstants {
     
     static let blueSkyAddress: String = "https://encore-games.bsky.social"
     static let blueSkyName: String = "Bluesky"
+    
+    static let iCloudContainerIdentifier = "iCloud.com.encore.BuyBuy"
 }

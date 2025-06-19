@@ -72,10 +72,14 @@ struct ShoppingItemDetailsView: View {
         .toolbar {
             toolbarContent
         }
+        .onAppear {
+            print("ShoppingItemDetailsView onAppear") // TODO: temp
+            viewModel.startObserving()
+        }
         .onDisappear {
-            Task {
-                await viewModel.didFinishEditing()
-            }
+            print("ShoppingItemDetailsView onDisappear") // TODO: temp
+            viewModel.stopObserving()
+            Task { await viewModel.didFinishEditing() }
         }
     }
     
@@ -144,7 +148,7 @@ struct ShoppingItemDetailsView: View {
                 ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
                     Button {
                         focusedField = nil
-                        viewModel.status = status
+                        viewModel.shoppingItem.status = status
                         Task {
                             viewModel.finalizeInput()
                         }
@@ -154,7 +158,7 @@ struct ShoppingItemDetailsView: View {
                     }
                 }
             } label: {
-                let status = viewModel.status
+                let status = viewModel.shoppingItem.status
                 HStack(spacing: 8) {
                     status.image
                         .foregroundColor(status.color)
@@ -176,7 +180,7 @@ struct ShoppingItemDetailsView: View {
                 ForEach(lists, id: \.id) { list in
                     Button {
                         focusedField = nil
-                        viewModel.listID = list.id
+                        viewModel.shoppingItem.listID = list.id
                         Task {
                             viewModel.finalizeInput()
                         }
@@ -189,11 +193,6 @@ struct ShoppingItemDetailsView: View {
                             Text(list.name)
                                 .lineLimit(1)
                                 .truncationMode(.tail)
-//                            if list.id == currentList.id {
-//                                Spacer()
-//                                Image(systemName: "checkmark")
-//                                    .foregroundColor(.accentColor)
-//                            }
                         }
                     }
                 }
@@ -242,7 +241,7 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var nameField: some View {
-        TextField("name", text: $viewModel.name, axis: .vertical)
+        TextField("name", text: $viewModel.shoppingItem.name, axis: .vertical)
             .lineLimit(4)
             .multilineTextAlignment(.leading)
             .font(.boldDynamic(style: .title3))
@@ -253,7 +252,7 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var noteField: some View {
-        TextField("note", text: $viewModel.note, axis: .vertical)
+        TextField("note", text: $viewModel.shoppingItem.note, axis: .vertical)
             .lineLimit(8)
             .multilineTextAlignment(.leading)
             .font(.regularDynamic(style: .body))
@@ -279,6 +278,11 @@ struct ShoppingItemDetailsView: View {
                 .focused($focusedField, equals: .quantity)
                 .onChange(of: quantityFieldString) { newValue in
                     viewModel.quantityString = newValue
+                }
+                .onChange(of: viewModel.quantityString) { newValue in
+                    if focusedField != .quantity {
+                        quantityFieldString = newValue
+                    }
                 }
                 .onChange(of: focusedField) { newValue in
                     if newValue != .quantity {
@@ -381,9 +385,21 @@ struct ShoppingItemDetailsView: View {
                 .onChange(of: priceFieldString) { newValue in
                     viewModel.priceString = newValue
                 }
+                .onChange(of: viewModel.priceString) { newValue in
+                    if focusedField != .pricePerUnit {
+                        priceFieldString = newValue
+                    }
+                }
                 .onChange(of: focusedField) { newValue in
                     if newValue != .pricePerUnit {
                         priceFieldString = viewModel.priceString
+                    } else {
+                        if let price = viewModel.shoppingItem.price {
+                            let hasFraction = price.truncatingRemainder(dividingBy: 1) != 0
+                            priceFieldString = hasFraction ? viewModel.priceString : String(format: "%.0f", price)
+                        } else {
+                            priceFieldString = ""
+                        }
                     }
                 }
                 .onSubmit {

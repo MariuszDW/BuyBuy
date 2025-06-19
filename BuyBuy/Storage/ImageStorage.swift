@@ -151,16 +151,24 @@ actor ImageStorage: ImageStorageProtocol {
         return Set(baseFileNames)
     }
     
-    // MARK: - Private common methods
+    // MARK: - Private helpers
     
     private static func directoryURL(for type: ImageType) -> URL {
         let fileManager = FileManager.default
-        let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let folderURL = documents.appendingPathComponent(type.folderName)
-        if !fileManager.fileExists(atPath: folderURL.path) {
-            try? fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true)
+        let folderName = type.folderName
+        
+        // Try to use iCloud folder.
+        if let iCloudURL = iCloudHelper.ubiquityContainerURL(for: folderName) {
+            return iCloudURL
         }
-        return folderURL
+        
+        // If iCloud is disabled (unavailable), use local Documents folder.
+        let localDocuments = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let localURL = localDocuments.appendingPathComponent(folderName, isDirectory: true)
+        if !fileManager.fileExists(atPath: localURL.path) {
+            try? fileManager.createDirectory(at: localURL, withIntermediateDirectories: true)
+        }
+        return localURL
     }
     
     // MARK: - Private file operations

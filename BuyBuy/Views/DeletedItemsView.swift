@@ -48,6 +48,12 @@ struct DeletedItemsView: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.startObserving()
+        }
+        .onDisappear {
+            viewModel.stopObserving()
+        }
         .alert("delete_all_items_in_trash_title",
                isPresented: $showDeleteAllItemsAlert) {
             Button("delete", role: .destructive) {

@@ -17,14 +17,44 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     private(set) var isNew: Bool
     var changesConfirmed: Bool = false
     
-    let dataManager: DataManagerProtocol
+    private let dataManager: DataManagerProtocol
     var coordinator: any AppCoordinatorProtocol
+    
+    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
+        PersistentStoreChangeObserver { [weak self] in
+            guard let self = self else { return }
+            await self.loadCard()
+        }
+    }()
     
     init(card: LoyaltyCard, isNew: Bool = false, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.loyaltyCard = card
         self.isNew = isNew
         self.coordinator = coordinator
         self.dataManager = dataManager
+    }
+    
+    func startObserving() {
+        remoteChangeObserver.startObserving()
+        print("LoyaltyCardDetailsViewModel - Started observing remote changes") // TODO: temp
+    }
+    
+    func stopObserving() {
+        remoteChangeObserver.stopObserving()
+        print("LoyaltyCardDetailsViewModel - Stopped observing remote changes") // TODO: temp
+    }
+    
+    func loadCard() async {
+        print("LoyaltyCardDetailsViewModel.loadCard() called")
+        guard let newLoyaltyCard = try? await dataManager.fetchLoyaltyCard(with: loyaltyCard.id) else { return }
+
+        if newLoyaltyCard != loyaltyCard {
+            let reloadImage = loyaltyCard.imageID != newLoyaltyCard.imageID
+            loyaltyCard = newLoyaltyCard
+            if reloadImage {
+                await loadCardImage()
+            }
+        }
     }
     
     var canConfirm: Bool {

@@ -14,15 +14,35 @@ class ShoppingListsViewModel: ObservableObject {
 
     private let dataManager: DataManagerProtocol
     let coordinator: any AppCoordinatorProtocol
+    
+    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
+        PersistentStoreChangeObserver { [weak self] in
+            guard let self = self else { return }
+            await self.loadLists()
+        }
+    }()
 
     init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.coordinator = coordinator
         self.dataManager = dataManager
     }
     
+    func startObserving() {
+        remoteChangeObserver.startObserving()
+        print("ShoppingListsViewModel - Started observing remote changes") // TODO: temp
+    }
+    
+    func stopObserving() {
+        remoteChangeObserver.stopObserving()
+        print("ShoppingListsViewModel - Stopped observing remote changes") // TODO: temp
+    }
+    
     func loadLists() async {
-        let fetchedLists = try? await dataManager.fetchAllLists()
-        shoppingLists = fetchedLists ?? []
+        print("ShoppingListsViewModel - loadLists") // TODO: temp
+        guard let newShoppingLists = try? await dataManager.fetchAllLists() else { return }
+        if shoppingLists != newShoppingLists {
+            shoppingLists = newShoppingLists
+        }
     }
 
     func deleteLists(atOffsets offsets: IndexSet) async {

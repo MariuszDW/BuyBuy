@@ -18,7 +18,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
     let id = UUID() // TODO: temporary for test
     
     private let dataManager: DataManagerProtocol
-    weak var coordinator: (any AppCoordinatorProtocol)?
+    var coordinator: any AppCoordinatorProtocol
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
         PersistentStoreChangeObserver { [weak self] in
@@ -48,10 +48,13 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }
     
     func loadCards() async {
-        print("LoyaltyCardsViewModel.loadCards() called id=\(id)") // TODO: temp
-        let fetchedCards = try? await dataManager.fetchLoyaltyCards()
-        cards = fetchedCards ?? []
-        await loadThumbnails()
+        print("LoyaltyCardsViewModel.loadCards() called id=\(id)")
+        guard let newCards = try? await dataManager.fetchLoyaltyCards() else { return }
+
+        if newCards != cards {
+            cards = newCards
+            await loadThumbnails(for: newCards)
+        }
     }
 
     func thumbnail(for cardID: UUID) -> UIImage? {
@@ -76,12 +79,12 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }
 
     func openCardPreview(_ card: LoyaltyCard) {
-        coordinator?.openLoyaltyCardPreview(with: card.imageID, onDismiss: nil)
+        coordinator.openLoyaltyCardPreview(with: card.imageID, onDismiss: nil)
     }
-    
+
     func openCardPreview(at index: Int) {
         if index < cards.count {
-            coordinator?.openLoyaltyCardPreview(with: cards[index].imageID, onDismiss: nil)
+            coordinator.openLoyaltyCardPreview(with: cards[index].imageID, onDismiss: nil)
         }
     }
     
@@ -101,21 +104,22 @@ final class LoyaltyCardsViewModel: ObservableObject {
     func openNewCardDetails() {
         let maxOrder = cards.map(\.order).max() ?? 0
         let newCard = LoyaltyCard(id: UUID(), name: "", imageID: nil, order: maxOrder + 1)
-        coordinator?.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: nil)
+        coordinator.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: nil)
     }
     
     func openCardDetails(at index: Int) {
         guard index < cards.count else { return }
-        coordinator?.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: nil)
+        coordinator.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: nil)
     }
     
-    private func loadThumbnails() async {
-        thumbnails = [:]
+    private func loadThumbnails(for cards: [LoyaltyCard]) async {
+        var result: [UUID: UIImage] = [:]
         for card in cards {
             guard let imageID = card.imageID else { continue }
             if let image = try? await dataManager.loadImage(baseFileName: imageID, type: .cardThumbnail) {
-                thumbnails[card.id] = image
+                result[card.id] = image
             }
         }
+        thumbnails = result
     }
 }

@@ -20,11 +20,28 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
     let coordinator: any AppCoordinatorProtocol
     
+    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
+        PersistentStoreChangeObserver { [weak self] in
+            guard let self = self else { return }
+            await self.loadList()
+        }
+    }()
+    
     init(list: ShoppingList, isNew: Bool = false, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.shoppingList = list
         self.isNew = isNew
         self.dataManager = dataManager
         self.coordinator = coordinator
+    }
+    
+    func startObserving() {
+        remoteChangeObserver.startObserving()
+        print("ShoppingListSettingsViewModel - Started observing remote changes") // TODO: temp
+    }
+    
+    func stopObserving() {
+        remoteChangeObserver.stopObserving()
+        print("ShoppingListSettingsViewModel - Stopped observing remote changes") // TODO: temp
     }
     
     var canConfirm: Bool {
@@ -43,5 +60,13 @@ final class ShoppingListSettingsViewModel: ObservableObject {
             try? await dataManager.deleteList(with: shoppingList.id, moveItemsToDeleted: false)
         }
         coordinator.sendEvent(.shoppingListEdited)
+    }
+    
+    private func loadList() async {
+        print("ShoppingListSettingsViewModel.loadCard() called")
+        guard let newShoppingList = try? await dataManager.fetchList(with: shoppingList.id) else { return }
+        if shoppingList != newShoppingList {
+            shoppingList = newShoppingList
+        }
     }
 }

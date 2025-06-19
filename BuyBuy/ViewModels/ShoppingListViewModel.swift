@@ -13,6 +13,13 @@ final class ShoppingListViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
     var coordinator: any AppCoordinatorProtocol
     
+    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
+        PersistentStoreChangeObserver { [weak self] in
+            guard let self = self else { return }
+            await self.loadList()
+        }
+    }()
+    
     private let listID: UUID
     @Published var list: ShoppingList?
     @Published var thumbnails: [String: UIImage] = [:]
@@ -29,9 +36,22 @@ final class ShoppingListViewModel: ObservableObject {
         self.coordinator = coordinator
     }
     
+    func startObserving() {
+        remoteChangeObserver.startObserving()
+        print("ShoppingListViewModel - Started observing remote changes") // TODO: temp
+    }
+    
+    func stopObserving() {
+        remoteChangeObserver.stopObserving()
+        print("ShoppingListViewModel - Stopped observing remote changes") // TODO: temp
+    }
+    
     func loadList() async {
-        let fetchedList = try? await dataManager.fetchList(with: listID)
-        list = fetchedList
+        print("ShoppingListViewModel - loadList") // TODO: temp
+        guard let newList = try? await dataManager.fetchList(with: listID) else { return }
+        if newList != list {
+            list = newList
+        }
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async {

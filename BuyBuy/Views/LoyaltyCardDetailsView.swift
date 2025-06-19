@@ -75,6 +75,12 @@ struct LoyaltyCardDetailsView: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.startObserving()
+        }
+        .onDisappear {
+            viewModel.stopObserving()
+        }
     }
     
     private var imageActionMenu: some View {

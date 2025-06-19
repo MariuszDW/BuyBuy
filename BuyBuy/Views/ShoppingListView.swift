@@ -53,6 +53,12 @@ struct ShoppingListView: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.startObserving()
+        }
+        .onDisappear {
+            viewModel.stopObserving()
+        }
         .task {
             await viewModel.loadList()
         }

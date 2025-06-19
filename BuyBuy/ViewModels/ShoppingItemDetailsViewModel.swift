@@ -32,41 +32,25 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     /// Indicates whether the edited shopping list is a newly created one.
     private(set) var isNew: Bool
     
-    let dataManager: DataManagerProtocol
-    var preferences: any AppPreferencesProtocol
+    private let dataManager: DataManagerProtocol
+    private var preferences: any AppPreferencesProtocol
     var coordinator: any AppCoordinatorProtocol
+    
+    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
+        PersistentStoreChangeObserver { [weak self] in
+            guard let self = self else { return }
+            await self.loadShoppingItem()
+            await self.loadShoppingLists()
+        }
+    }()
     
     var canConfirm: Bool {
         !shoppingItem.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
-    var status: ShoppingItemStatus {
-        get { shoppingItem.status }
-        set { shoppingItem.status = newValue }
-    }
-    
-    var listID: UUID? {
-        get { shoppingItem.listID }
-        set { shoppingItem.listID = newValue }
-    }
-    
-    var name: String {
-        get { shoppingItem.name }
-        set { shoppingItem.name = newValue }
-    }
-    
-    var note: String {
-        get { shoppingItem.note }
-        set { shoppingItem.note = newValue }
-    }
-    
     var unit: String {
-        get {
-            shoppingItem.unit?.symbol ?? ""
-        }
-        set {
-            shoppingItem.unit = ShoppingItemUnit(string: newValue)
-        }
+        get { shoppingItem.unit?.symbol ?? "" }
+        set { shoppingItem.unit = ShoppingItemUnit(string: newValue) }
     }
     
     var quantityString: String {
@@ -108,6 +92,16 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         self.preferences = preferences
     }
     
+    func startObserving() {
+        remoteChangeObserver.startObserving()
+        print("ShoppingItemDetailsViewModel - Started observing remote changes") // TODO: temp
+    }
+    
+    func stopObserving() {
+        remoteChangeObserver.stopObserving()
+        print("ShoppingItemDetailsViewModel - Stopped observing remote changes") // TODO: temp
+    }
+    
     lazy var unitList: [(name: String, units: [MeasuredUnit])] = {
         MeasuredUnit.buildUnitList(for: preferences.unitSystems)
     }()
@@ -146,7 +140,20 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         }
     }
     
+    func loadShoppingItem() async {
+        print("ShoppingItemDetailsViewModel.loadShoppingItem() called")
+        guard let newShoppingItem = try? await dataManager.fetchItem(with: shoppingItem.id) else { return }
+        if shoppingItem != newShoppingItem {
+            let reloadImages = shoppingItem.imageIDs != newShoppingItem.imageIDs
+            shoppingItem = newShoppingItem
+            if reloadImages {
+                await loadThumbnails()
+            }
+        }
+    }
+    
     func loadThumbnails() async {
+        print("ShoppingItemDetailsViewModel.loadThumbnails() called")
         self.thumbnails = []
         for id in shoppingItem.imageIDs {
             if let image = try? await dataManager.loadImage(baseFileName: id, type: .itemThumbnail) {
@@ -156,8 +163,11 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     func loadShoppingLists() async {
-        let fetchedLists = try? await dataManager.fetchAllLists()
-        shoppingLists = fetchedLists ?? []
+        print("ShoppingItemDetailsViewModel.loadShoppingLists() called")
+        guard let newShoppingLists = try? await dataManager.fetchAllLists() else { return }
+        if shoppingLists != newShoppingLists {
+            shoppingLists = newShoppingLists
+        }
     }
     
     func finalizeInput() {
@@ -172,21 +182,5 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
             try? await dataManager.deleteItem(with: shoppingItem.id)
         }
         coordinator.sendEvent(.shoppingItemEdited)
-    }
-    
-    // MARK: - Private
-    
-    private func formatDouble(_ value: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 2
-        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
-    }
-
-    private func parseLocalizedDouble(_ string: String) -> Double? {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        return formatter.number(from: string)?.doubleValue
     }
 }

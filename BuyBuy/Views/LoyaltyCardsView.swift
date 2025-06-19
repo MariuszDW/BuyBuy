@@ -55,17 +55,18 @@ struct LoyaltyCardsView: View {
                 }
             )
         }
-        .onReceive(viewModel.coordinator?.eventPublisher ?? Empty().eraseToAnyPublisher()) { event in
+        .onReceive(viewModel.coordinator.eventPublisher) { event in
             if case .loyaltyCardEdited = event {
+                print("LoyaltyCardsView onReceive with .loyaltyCardEdited")
                 Task { await viewModel.loadCards() }
             }
         }
-        .onAppear() {
+        .onAppear {
             viewModel.startObserving()
             Task { await viewModel.loadCards() }
             print("LoyaltyCardsView onAppear with viewModel id=\(viewModel.id)") // TODO: temp
         }
-        .onDisappear() {
+        .onDisappear {
             viewModel.stopObserving()
             print("LoyaltyCardsView onDisappear with viewModel id=\(viewModel.id)") // TODO: temp
         }
