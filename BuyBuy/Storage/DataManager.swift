@@ -190,6 +190,7 @@ final class DataManager: DataManagerProtocol {
     }
     
     func cleanOrphanedItems() async throws {
+        print("DataManager.cleanOrphanedItems()")
         try await repository.cleanOrphanedItems()
     }
     
@@ -259,6 +260,7 @@ final class DataManager: DataManagerProtocol {
     }
     
     func cleanOrphanedItemImages() async throws {
+        print("DataManager.cleanOrphanedItemImages()")
         let itemImageBaseNames = try await imageStorage.listImageBaseNames(type: .itemImage)
         let itemThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .itemThumbnail)
         let allBaseNames: Set<String> = itemImageBaseNames.union(itemThumbnailBaseNames)
@@ -272,6 +274,7 @@ final class DataManager: DataManagerProtocol {
     }
     
     func cleanOrphanedCardImages() async throws {
+        print("DataManager.cleanOrphanedCardImages()")
         let cardImageBaseNames = try await imageStorage.listImageBaseNames(type: .cardImage)
         let cardThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .cardThumbnail)
         let allBaseNames: Set<String> = cardImageBaseNames.union(cardThumbnailBaseNames)
