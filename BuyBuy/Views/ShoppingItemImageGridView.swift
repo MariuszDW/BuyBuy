@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ShoppingItemImageGridView: View {
-    let images: [UIImage]
+    let images: [UIImage?]
     var onUserInteraction: () -> Void
     var onAddImage: (UIImage) -> Void
     var onTapImage: (Int) -> Void
@@ -29,10 +29,7 @@ struct ShoppingItemImageGridView: View {
     var body: some View {
         LazyVGrid(columns: columns, alignment: .leading, spacing: Self.itemSpacing) {
             ForEach(images.indices, id: \.self) { index in
-                Image(uiImage: images[index])
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: Self.itemSize, height: Self.itemSize)
+                imageView(with: images[index])
                     .clipShape(RoundedRectangle(cornerRadius: Self.itemCornerRadius))
                     .overlay {
                         if showingActionsForIndex == index {
@@ -88,6 +85,32 @@ struct ShoppingItemImageGridView: View {
         }
     }
     
+    @ViewBuilder
+    private func imageView(with uiImage: UIImage?) -> some View {
+        if let uiImage = uiImage {
+            Image(uiImage: uiImage)
+                .resizable()
+                .scaledToFill()
+                .frame(width: Self.itemSize, height: Self.itemSize)
+        } else {
+            let config = UIImage.SymbolConfiguration(pointSize: Self.itemSize, weight: .regular)
+            let image = UIImage(systemName: "questionmark.circle",
+                                withConfiguration: config)?.withRenderingMode(.alwaysTemplate)
+            Image(uiImage: image ?? UIImage())
+                .resizable()
+                .scaledToFit()
+                .padding(8)
+                .frame(width: Self.itemSize, height: Self.itemSize)
+                .background(Color.bb.background2)
+                .foregroundColor(.bb.text.tertiary)
+                .clipShape(RoundedRectangle(cornerRadius: Self.itemCornerRadius))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Self.itemCornerRadius)
+                        .stroke(Color.bb.text.tertiary, lineWidth: 1)
+                )
+        }
+    }
+    
     private var imageActionMenu: some View {
         VStack(alignment: .leading, spacing: 24) {
             Button {
@@ -128,18 +151,18 @@ let mockImage1 = MockImageStorage.generateMockImage(text: "TEST IMAGE 1", size: 
 let mockImage2 = MockImageStorage.generateMockImage(text: "TEST IMAGE 2", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.green, textColor: UIColor.black)
 let mockImage3 = MockImageStorage.generateMockImage(text: "TEST IMAGE 3", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.red, textColor: UIColor.white)
 
-let mockImages = [mockImage1, mockImage2, mockImage3, mockImage1, mockImage2, mockImage3, mockImage1, mockImage2, mockImage3]
+let mockImages = [mockImage1, mockImage2, mockImage3, nil, mockImage2, nil, mockImage1, mockImage2, mockImage3]
 
 #Preview("Light") {
     ShoppingItemImageGridView(images: mockImages, onUserInteraction: {},
                               onAddImage: {_ in}, onTapImage: {_ in}, onDeleteImage: {_ in})
-        .padding()
-        .preferredColorScheme(.light)
+    .padding()
+    .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
     ShoppingItemImageGridView(images: mockImages, onUserInteraction: {},
                               onAddImage: {_ in}, onTapImage: {_ in}, onDeleteImage: {_ in})
-        .padding()
-        .preferredColorScheme(.dark)
+    .padding()
+    .preferredColorScheme(.dark)
 }

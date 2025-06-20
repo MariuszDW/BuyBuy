@@ -12,7 +12,7 @@ import SwiftUI
 final class ShoppingItemDetailsViewModel: ObservableObject {
     /// The shopping item being edited.
     @Published var shoppingItem: ShoppingItem
-    @Published var thumbnails: [UIImage] = []
+    @Published var thumbnails: [UIImage?] = []
     @Published var selectedImageID: String?
     @Published var shoppingLists: [ShoppingList] = []
     
@@ -130,14 +130,9 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func deleteImage(at index: Int) async {
         guard index >= 0 && index < shoppingItem.imageIDs.count else { return }
-        let id = shoppingItem.imageIDs.remove(at: index)
-
-        do {
-            try await dataManager.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
-            await loadThumbnails()
-        } catch {
-            print("Failed to delete image: \(error)")
-        }
+        shoppingItem.imageIDs.remove(at: index)
+        // The image will be deleted by cleanOrphanedItemImages() in performStartupTasks().
+        await loadThumbnails()
     }
     
     func loadShoppingItem() async {
@@ -158,6 +153,8 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         for id in shoppingItem.imageIDs {
             if let image = try? await dataManager.loadImage(baseFileName: id, type: .itemThumbnail) {
                 self.thumbnails.append(image)
+            } else {
+                self.thumbnails.append(nil)
             }
         }
     }

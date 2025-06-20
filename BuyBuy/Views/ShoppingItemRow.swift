@@ -33,40 +33,38 @@ struct ShoppingItemRow: View {
             Spacer()
             
             thumbnailView
+                .onTapGesture { onThumbnailTap(item.id, 0) }
         }
         .listRowInsets(EdgeInsets(top: 12, leading: 18, bottom: 8, trailing: 10))
     }
     
     @ViewBuilder
     private var thumbnailView: some View {
-        Group {
-            if let image = thumbnail {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
-                    .clipShape(RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius)
-                            .stroke(Color.bb.text.tertiary, lineWidth: 1)
-                    )
-            } else if !item.imageIDs.isEmpty {
-                Image(systemName: "photo")
-                    .resizable()
-                    .scaledToFit()
-                    .padding(8)
-                    .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
-                    .background(Color.bb.background2)
-                    .foregroundColor(.bb.text.tertiary)
-                    .clipShape(RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius)
-                            .stroke(Color.bb.text.tertiary, lineWidth: 1)
-                    )
-            }
-        }
-        .onTapGesture {
-            onThumbnailTap(item.id, 0)
+        if let thumbnail = thumbnail {
+            Image(uiImage: thumbnail)
+                .resizable()
+                .scaledToFill()
+                .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
+                .clipShape(RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius)
+                        .stroke(Color.bb.text.tertiary, lineWidth: 1)
+                )
+        } else {
+            let config = UIImage.SymbolConfiguration(pointSize: Self.thumbnailSize, weight: .regular)
+            let image = UIImage(systemName: "questionmark.circle", withConfiguration: config)?.withRenderingMode(.alwaysTemplate)
+            Image(uiImage: image ?? UIImage())
+                .resizable()
+                .scaledToFit()
+                .padding(8)
+                .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
+                .background(Color.bb.background2)
+                .foregroundColor(.bb.text.tertiary)
+                .clipShape(RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Self.thumbnailCornerRadius)
+                        .stroke(Color.bb.text.tertiary, lineWidth: 1)
+                )
         }
     }
     
