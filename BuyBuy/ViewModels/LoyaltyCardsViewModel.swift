@@ -15,8 +15,6 @@ final class LoyaltyCardsViewModel: ObservableObject {
     @Published var cards: [LoyaltyCard] = []
     @Published private(set) var thumbnails: [UUID: UIImage] = [:]
     
-    let id = UUID() // TODO: temporary for test
-    
     private let dataManager: DataManagerProtocol
     var coordinator: any AppCoordinatorProtocol
     
@@ -28,13 +26,13 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }()
     
     init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
-        print("🧬 LoyaltyCardsViewModel init id=\(id)") // TODO: temp
+        print("🧬 LoyaltyCardsViewModel init") // TODO: temp
         self.dataManager = dataManager
         self.coordinator = coordinator
     }
     
     deinit {
-        print("💥 LoyaltyCardsViewModel deinit id=\(id)") // TODO: temp
+        print("💥 LoyaltyCardsViewModel deinit") // TODO: temp
     }
     
     func startObserving() {
@@ -48,7 +46,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }
     
     func loadCards() async {
-        print("LoyaltyCardsViewModel.loadCards() called id=\(id)")
+        print("LoyaltyCardsViewModel.loadCards() called")
         guard let newCards = try? await dataManager.fetchLoyaltyCards() else { return }
 
         if newCards != cards {

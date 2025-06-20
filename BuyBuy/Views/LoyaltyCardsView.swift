@@ -18,7 +18,7 @@ struct LoyaltyCardsView: View {
     private static let tileSize: CGFloat = 150
     
     init(viewModel: LoyaltyCardsViewModel) {
-        print("🖼️ LoyaltyCardsView init with viewModel id=\(viewModel.id)") // TODO: temp
+        print("🖼️ LoyaltyCardsView init") // TODO: temp
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -57,18 +57,18 @@ struct LoyaltyCardsView: View {
         }
         .onReceive(viewModel.coordinator.eventPublisher) { event in
             if case .loyaltyCardEdited = event {
-                print("LoyaltyCardsView onReceive with .loyaltyCardEdited")
+                print("LoyaltyCardsView onReceive with .loyaltyCardEdited") // TODO: temp
                 Task { await viewModel.loadCards() }
             }
         }
         .onAppear {
             viewModel.startObserving()
             Task { await viewModel.loadCards() }
-            print("LoyaltyCardsView onAppear with viewModel id=\(viewModel.id)") // TODO: temp
+            print("LoyaltyCardsView onAppear") // TODO: temp
         }
         .onDisappear {
             viewModel.stopObserving()
-            print("LoyaltyCardsView onDisappear with viewModel id=\(viewModel.id)") // TODO: temp
+            print("LoyaltyCardsView onDisappear") // TODO: temp
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
