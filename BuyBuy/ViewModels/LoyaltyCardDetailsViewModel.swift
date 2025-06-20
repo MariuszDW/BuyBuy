@@ -93,14 +93,9 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     }
     
     func deleteCardImage() async {
-        guard let imageID = loyaltyCard.imageID else { return }
-
-        do {
-            try await dataManager.deleteImage(baseFileName: imageID, types: [.cardImage, .cardThumbnail])
+        if loyaltyCard.imageID != nil {
             loyaltyCard.imageID = nil
             await loadCardImage()
-        } catch {
-            print("Failed to delete image: \(error)")
         }
     }
     
