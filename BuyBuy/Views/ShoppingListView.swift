@@ -298,18 +298,22 @@ struct ShoppingListView: View {
         
         let pendingItemsIcon = ShoppingItemStatus.pending.image
             .font(.boldDynamic(style: .body))
+            .lineLimit(1)
             .foregroundColor(ShoppingItemStatus.pending.color)
         
         let purchasedItemsIcon = ShoppingItemStatus.purchased.image
             .font(.boldDynamic(style: .body))
+            .lineLimit(1)
             .foregroundColor(ShoppingItemStatus.purchased.color)
         
         let pendingItemsText = Text("\(numPendingItems)")
             .font(.boldMonospaced(style: .body))
+            .lineLimit(1)
             .foregroundColor(ShoppingItemStatus.pending.color)
         
         let purchasedItemsText = Text("\(numPurchasedItems)")
             .font(.boldMonospaced(style: .body))
+            .lineLimit(1)
             .foregroundColor(ShoppingItemStatus.purchased.color)
         
         HStack(alignment: .center, spacing: 12) {

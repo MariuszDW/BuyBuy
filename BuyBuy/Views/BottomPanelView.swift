@@ -32,11 +32,12 @@ struct BottomPanelView<TrailingView: View>: View {
             Button(action: action) {
                 Label(title, systemImage: systemImage)
                     .font(.boldDynamic(style: .headline))
+                    .lineLimit(1)
             }
             .padding(.vertical, 16)
             .disabled(isButtonDisabled)
             
-            Spacer()
+            Spacer(minLength: 16)
             
             if let trailingView = trailingView {
                 trailingView
