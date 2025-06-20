@@ -32,8 +32,10 @@ struct ShoppingItemRow: View {
             
             Spacer()
             
-            thumbnailView
-                .onTapGesture { onThumbnailTap(item.id, 0) }
+            if !item.imageIDs.isEmpty {
+                thumbnailView
+                    .onTapGesture { onThumbnailTap(item.id, 0) }
+            }
         }
         .listRowInsets(EdgeInsets(top: 12, leading: 18, bottom: 8, trailing: 10))
     }
