@@ -13,7 +13,10 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     var openShoppingListBlock: ((UUID) -> Void)?
     var backBlock: (() -> Void)?
     
-    var eventPublisher = PassthroughSubject<BuyBuy.AppEvent, Never>()
+    var eventPublisher = Empty<BuyBuy.AppEvent, Never>().eraseToAnyPublisher()
+    
+    func sendEvent(_ event: BuyBuy.AppEvent) {
+    }
     
     func openShoppingList(_ id: UUID) {
         openShoppingListBlock?(id)
@@ -25,22 +28,39 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     func openLoyaltyCardList() {
     }
     
-    func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: ((SheetRoute) -> Void)? = nil) {
+    func openShoppingListSettings(_ list: BuyBuy.ShoppingList, isNew: Bool, onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
     }
     
-    func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: ((SheetRoute) -> Void)? = nil) {
+    func openShoppingItemDetails(_ item: BuyBuy.ShoppingItem, isNew: Bool, onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
     }
     
-    func openShoppingItemImage(with imageIDs: [String], index: Int, onDismiss: ((SheetRoute) -> Void)? = nil) {
+    func openShoppingItemImage(with imageIDs: [String], index: Int, onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
     }
     
-    func openLoyaltyCardPreview(with imageID: String?, onDismiss: ((SheetRoute) -> Void)? = nil) {
+    func openLoyaltyCardPreview(with imageID: String?, onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
     }
     
-    func openLoyaltyCardDetails(_ card: LoyaltyCard, isNew: Bool, onDismiss: ((SheetRoute) -> Void)? = nil) {
+    func openLoyaltyCardDetails(_ card: BuyBuy.LoyaltyCard, isNew: Bool, onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
     }
     
     func openAbout() {
+    }
+    
+    func openShoppingListSelector(forDeletedItemID itemID: UUID, onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
+    }
+    
+    func openEmail(to: String, subject: String, body: String) -> Bool {
+        return false
+    }
+    
+    func openWebPage(address: String) -> Bool {
+        return false
+    }
+    
+    func openShoppingListExport(_ list: BuyBuy.ShoppingList, onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
+    }
+    
+    func openDocumentExporter(with exportData: BuyBuy.ExportedData, onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
     }
     
     func closeTopSheet() {
@@ -51,8 +71,5 @@ final class TestMockAppCoordinator: AppCoordinatorProtocol {
     
     func back() {
         backBlock?()
-    }
-    
-    func sendEvent(_ event: BuyBuy.AppEvent) {
     }
 }
