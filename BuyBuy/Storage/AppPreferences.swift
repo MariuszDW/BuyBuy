@@ -19,6 +19,8 @@ final class AppPreferences: AppPreferencesProtocol {
         
         static let metricUnitsEnabled = "metric_units_enabled"
         static let imperialUnitsEnabled = "imperial_units_enabled"
+        
+        static let isStartupCleaningAllowed = "is_startup_cleaning_allowed"
     }
 
     var lastCleanupDate: Date? {
@@ -34,6 +36,11 @@ final class AppPreferences: AppPreferencesProtocol {
     var isImperialUnitsEnabled: Bool {
         get { (defaults.object(forKey: Keys.imperialUnitsEnabled) as? Bool) ?? true }
         set { defaults.set(newValue, forKey: Keys.imperialUnitsEnabled) }
+    }
+    
+    var isStartupCleaningAllowed: Bool {
+        get { (defaults.object(forKey: Keys.isStartupCleaningAllowed) as? Bool) ?? true }
+        set { defaults.set(newValue, forKey: Keys.isStartupCleaningAllowed) }
     }
     
     // MARK: - Useful getters

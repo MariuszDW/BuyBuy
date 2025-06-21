@@ -36,7 +36,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
 #if DEBUG
-    private func printAppSandboxPaths() {
+    private func printAppSandboxPaths() async {
         let fileManager = FileManager.default
         
         if let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
@@ -61,28 +61,44 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         } else {
             print("⚠️ iCloud container is not available (disabled or not yet initialized).")
         }
+        
+        let itemImages = try? await dependencies.imageStorage.listImageBaseNames(type: .itemImage)
+        print("List of item images: ")
+        if let itemImages = itemImages {
+            for img in itemImages {
+                print(img)
+            }
+        }
+        
+        let cardImages = try? await dependencies.imageStorage.listImageBaseNames(type: .cardImage)
+        print("List of card images: ")
+        if let cardImages = cardImages {
+            for img in cardImages {
+                print(img)
+            }
+        }
     }
 #endif
     
     func performStartupTasksIfNeeded() async {
 #if DEBUG
-        printAppSandboxPaths() // TODO: temporary, think about better place
+        await printAppSandboxPaths() // TODO: temporary, think about better place
 #endif
         
         let now = Date()
-        let lastCleanupDate = dependencies.preferences.lastCleanupDate
-
-        if let lastCleanupDate {
+        if dependencies.preferences.isStartupCleaningAllowed,
+           let lastCleanupDate = dependencies.preferences.lastCleanupDate {
             let hoursSince = now.timeIntervalSince(lastCleanupDate) / 3600
-            if hoursSince < AppConstants.cleanupIntervalHours {
+            if hoursSince > AppConstants.cleanupIntervalHours {
+                print("Performing cleanup tasks – last run was: \(lastCleanupDate)")
+                await performStartupTasks()
+                dependencies.preferences.lastCleanupDate = now
+            } else {
                 print("Skipping cleanup. Last run: \(lastCleanupDate), \(Int(hoursSince))h ago.")
-                return
             }
+        } else {
+            dependencies.preferences.lastCleanupDate = now
         }
-        
-        print("Performing cleanup tasks – last run was: \(lastCleanupDate?.description ?? "never")")
-        await performStartupTasks()
-        dependencies.preferences.lastCleanupDate = now
     }
     
     func openShoppingList(_ id: UUID) {

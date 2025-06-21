@@ -9,10 +9,10 @@ import SwiftUI
 
 @MainActor
 final class AppDependencies: ObservableObject {
-    private let coreDataStack: CoreDataStack
-    private let repository: DataRepositoryProtocol
-    private let imageStorage: ImageStorageProtocol
-    private let fileStorage: FileStorageProtocol
+    let coreDataStack: CoreDataStack
+    let repository: DataRepositoryProtocol
+    let imageStorage: ImageStorageProtocol
+    let fileStorage: FileStorageProtocol
     let dataManager: DataManager
     let preferences: AppPreferences
 

@@ -77,7 +77,7 @@ struct AppRootView: View {
     }
 }
 
-extension View {
+private extension View {
     func applyPresentationStyle<Content: View>(
         style: SheetDisplayStyle,
         isPresented: Binding<Bool>,
