@@ -349,6 +349,22 @@
         }
       }
     },
+    "data_storage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data storage"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Przechowywanie danych"
+          }
+        }
+      }
+    },
     "debug" : {
       "localizations" : {
         "en" : {
@@ -765,6 +781,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wygenerowane przez %@ %@ (%@)."
+          }
+        }
+      }
+    },
+    "icloud_sync" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud sync"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronizacja z iCloud"
           }
         }
       }

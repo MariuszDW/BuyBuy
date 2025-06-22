@@ -10,12 +10,15 @@ import SwiftUI
 struct AppSettingsView: View {
     @StateObject var viewModel: AppSettingsViewModel
     
+    @State private var iCloudSyncState: Bool
+    
 #if DEBUG
     @State private var showCopyMocksConfirmation = false
 #endif
     
     init(viewModel: AppSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        iCloudSyncState = viewModel.isCloudSyncEnabled
     }
     
     var body: some View {
@@ -29,6 +32,13 @@ struct AppSettingsView: View {
                 Toggle(MeasureUnitSystem.imperial.name, isOn: $viewModel.isImperialUnitsEnabled)
                     .onChange(of: viewModel.isImperialUnitsEnabled) { newValue in
                         viewModel.setImperialUnitsEnabled(newValue)
+                    }
+            }
+            
+            Section(header: Text("data_storage")) {
+                Toggle("icloud_sync", isOn: $iCloudSyncState)
+                    .onChange(of: iCloudSyncState) { newValue in
+                        viewModel.changeCloudSyncState(newValue)
                     }
             }
             
