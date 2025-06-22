@@ -10,15 +10,12 @@ import SwiftUI
 struct AppSettingsView: View {
     @StateObject var viewModel: AppSettingsViewModel
     
-    @State private var iCloudSyncState: Bool
-    
 #if DEBUG
     @State private var showCopyMocksConfirmation = false
 #endif
     
     init(viewModel: AppSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
-        iCloudSyncState = viewModel.isCloudSyncEnabled
     }
     
     var body: some View {
@@ -36,10 +33,10 @@ struct AppSettingsView: View {
             }
             
             Section(header: Text("data_storage")) {
-                Toggle("icloud_sync", isOn: $iCloudSyncState)
-                    .onChange(of: iCloudSyncState) { newValue in
-                        viewModel.changeCloudSyncState(newValue)
-                    }
+                NavigationLink(value: AppRoute.cloudSyncSettings) {
+                    Label("icloud_sync",
+                          systemImage: viewModel.isCloudSyncEnabled ? "icloud" : "icloud.slash")
+                }
             }
             
 #if DEBUG
@@ -73,10 +70,11 @@ struct AppSettingsView: View {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage(),
                                   fileStorage: MockFileStorage())
+    let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     NavigationStack {
         AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
-                                                        preferences: AppPreferences(),
+                                                        preferences: preferences,
                                                         coordinator: coordinator))
     }
     .preferredColorScheme(.light)
@@ -86,10 +84,11 @@ struct AppSettingsView: View {
     let dataManager = DataManager(repository: MockDataRepository(lists: []),
                                   imageStorage: MockImageStorage(),
                                   fileStorage: MockFileStorage())
+    let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(dependencies: AppDependencies())
     NavigationStack {
         AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
-                                                        preferences: AppPreferences(),
+                                                        preferences: preferences,
                                                         coordinator: coordinator))
     }
     .preferredColorScheme(.dark)

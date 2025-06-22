@@ -359,7 +359,7 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Przechowywanie danych"
           }
         }
@@ -575,6 +575,22 @@
         }
       }
     },
+    "disable_cloud_sync" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable iCloud synchronisation"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyłącz synchronizację iCloud"
+          }
+        }
+      }
+    },
     "edit" : {
       "localizations" : {
         "en" : {
@@ -635,6 +651,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Brak klienta e-mail"
+          }
+        }
+      }
+    },
+    "enable_cloud_sync" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable iCloud synchronisation"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Włącz synchronizację iCloud"
           }
         }
       }
@@ -790,13 +822,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud sync"
+            "value" : "iCloud synchronisation"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synchronizacja z iCloud"
+            "value" : "Synchronizacja iCloud"
           }
         }
       }

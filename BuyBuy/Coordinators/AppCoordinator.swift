@@ -227,6 +227,12 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             LoyaltyCardsView(viewModel: LoyaltyCardsViewModel(dataManager: self.dependencies.dataManager,
                                                               coordinator: self)
             )
+            
+        case .cloudSyncSettings:
+            CloudSyncSettingsView(viewModel: CloudSyncSettingsViewModel(dataManager: self.dependencies.dataManager,
+                                                                        preferences: self.dependencies.preferences,
+                                                                        coordinator: self)
+            )
         }
     }
 

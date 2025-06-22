@@ -16,7 +16,9 @@ class AppSettingsViewModel: ObservableObject {
     @Published var isMetricUnitsEnabled: Bool
     @Published var isImperialUnitsEnabled: Bool
     
-    @Published var isCloudSyncEnabled: Bool
+    var isCloudSyncEnabled: Bool {
+        preferences.isCloudSyncEnabled
+    }
     
     init(dataManager: DataManagerProtocol, preferences: AppPreferencesProtocol, coordinator: any AppCoordinatorProtocol) {
         self.dataManager = dataManager
@@ -25,7 +27,6 @@ class AppSettingsViewModel: ObservableObject {
         
         self.isMetricUnitsEnabled = preferences.isMetricUnitsEnabled
         self.isImperialUnitsEnabled = preferences.isImperialUnitsEnabled
-        self.isCloudSyncEnabled = preferences.isCloudSyncEnabled
     }
     
     func setMetricUnitsEnabled(_ enabled: Bool) {
@@ -36,12 +37,6 @@ class AppSettingsViewModel: ObservableObject {
     func setImperialUnitsEnabled(_ enabled: Bool) {
         isImperialUnitsEnabled = enabled
         preferences.isImperialUnitsEnabled = enabled
-    }
-    
-    func changeCloudSyncState(_ enabled: Bool) {
-        // TODO: implement migration between local and cloud
-//        isCloudSyncEnabled = enabled
-//        preferences.isCloudSyncEnabled = enabled
     }
     
 #if DEBUG
