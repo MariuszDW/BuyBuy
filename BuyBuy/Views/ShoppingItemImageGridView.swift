@@ -147,21 +147,44 @@ struct ShoppingItemImageGridView: View {
 
 // MARK: - Preview
 
-let mockImage1 = MockImageStorage.generateMockImage(text: "TEST IMAGE 1", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.yellow, textColor: UIColor.gray)
-let mockImage2 = MockImageStorage.generateMockImage(text: "TEST IMAGE 2", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.green, textColor: UIColor.black)
-let mockImage3 = MockImageStorage.generateMockImage(text: "TEST IMAGE 3", size: CGSize(width: 100, height: 100), backgroundColor: UIColor.red, textColor: UIColor.white)
+@MainActor
+final class ShoppingItemImageGridViewMocks {
+    static let mockImage1 = MockImageStorage.generateMockImage(
+        text: "TEST IMAGE 1",
+        size: CGSize(width: 100, height: 100),
+        backgroundColor: UIColor.yellow,
+        textColor: UIColor.gray
+    )
+    
+    static let mockImage2 = MockImageStorage.generateMockImage(
+        text: "TEST IMAGE 2",
+        size: CGSize(width: 100, height: 100),
+        backgroundColor: UIColor.green,
+        textColor: UIColor.black
+    )
+    
+    static let mockImage3 = MockImageStorage.generateMockImage(
+        text: "TEST IMAGE 3",
+        size: CGSize(width: 100, height: 100),
+        backgroundColor: UIColor.red,
+        textColor: UIColor.white
+    )
 
-let mockImages = [mockImage1, mockImage2, mockImage3, nil, mockImage2, nil, mockImage1, mockImage2, mockImage3]
+    static let mockImages = [
+        mockImage1, mockImage2, mockImage3, nil, mockImage2, nil, mockImage1, mockImage2, mockImage3
+    ]
+}
+
 
 #Preview("Light") {
-    ShoppingItemImageGridView(images: mockImages, onUserInteraction: {},
+    ShoppingItemImageGridView(images: ShoppingItemImageGridViewMocks.mockImages, onUserInteraction: {},
                               onAddImage: {_ in}, onTapImage: {_ in}, onDeleteImage: {_ in})
     .padding()
     .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
-    ShoppingItemImageGridView(images: mockImages, onUserInteraction: {},
+    ShoppingItemImageGridView(images: ShoppingItemImageGridViewMocks.mockImages, onUserInteraction: {},
                               onAddImage: {_ in}, onTapImage: {_ in}, onDeleteImage: {_ in})
     .padding()
     .preferredColorScheme(.dark)

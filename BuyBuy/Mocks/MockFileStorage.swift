@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MockFileStorage: FileStorageProtocol {
+actor MockFileStorage: FileStorageProtocol {
     func saveFile(data: Data, fileName: String) async throws {
     }
     

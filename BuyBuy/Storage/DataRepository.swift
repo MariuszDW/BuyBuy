@@ -34,7 +34,7 @@ actor SaveQueue {
     }
 }
 
-final actor DataRepository: DataRepositoryProtocol {
+actor DataRepository: DataRepositoryProtocol {
     private let coreDataStack: CoreDataStack
     private let saveQueue: SaveQueue
     

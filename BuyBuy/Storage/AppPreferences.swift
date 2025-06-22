@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class AppPreferences: AppPreferencesProtocol {
     private let defaults: UserDefaults
 
@@ -16,35 +17,37 @@ final class AppPreferences: AppPreferencesProtocol {
 
     private enum Keys {
         static let lastCleanupDate = "last_cleanup_date"
-        
         static let metricUnitsEnabled = "metric_units_enabled"
         static let imperialUnitsEnabled = "imperial_units_enabled"
-        
         static let isStartupCleaningAllowed = "is_startup_cleaning_allowed"
+        static let isCloudSyncEnabled = "is_cloud_sync_enabled"
     }
 
     var lastCleanupDate: Date? {
         get { defaults.object(forKey: Keys.lastCleanupDate) as? Date }
         set { defaults.set(newValue, forKey: Keys.lastCleanupDate) }
     }
-    
+
     var isMetricUnitsEnabled: Bool {
         get { (defaults.object(forKey: Keys.metricUnitsEnabled) as? Bool) ?? true }
         set { defaults.set(newValue, forKey: Keys.metricUnitsEnabled) }
     }
-    
+
     var isImperialUnitsEnabled: Bool {
         get { (defaults.object(forKey: Keys.imperialUnitsEnabled) as? Bool) ?? true }
         set { defaults.set(newValue, forKey: Keys.imperialUnitsEnabled) }
     }
-    
+
     var isStartupCleaningAllowed: Bool {
         get { (defaults.object(forKey: Keys.isStartupCleaningAllowed) as? Bool) ?? true }
         set { defaults.set(newValue, forKey: Keys.isStartupCleaningAllowed) }
     }
-    
-    // MARK: - Useful getters
-    
+
+    var isCloudSyncEnabled: Bool {
+        get { (defaults.object(forKey: Keys.isCloudSyncEnabled) as? Bool) ?? false }
+        set { defaults.set(newValue, forKey: Keys.isCloudSyncEnabled) }
+    }
+
     var unitSystems: [MeasureUnitSystem] {
         MeasureUnitSystem.allCases.filter {
             switch $0 {

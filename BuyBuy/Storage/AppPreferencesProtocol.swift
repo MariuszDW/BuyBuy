@@ -7,10 +7,15 @@
 
 import Foundation
 
+@MainActor
 protocol AppPreferencesProtocol {
     var isMetricUnitsEnabled: Bool { get set }
     var isImperialUnitsEnabled: Bool { get set }
     var lastCleanupDate: Date? { get set }
+    
+    var isStartupCleaningAllowed: Bool { get set }
+    
+    var isCloudSyncEnabled: Bool { get set }
     
     var unitSystems: [MeasureUnitSystem] { get }
 }

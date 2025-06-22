@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MockDataRepository: DataRepositoryProtocol {
+actor MockDataRepository: DataRepositoryProtocol {
     let shoppingLists: [ShoppingList]
     let loyaltyCards: [LoyaltyCard]
     let deletedItems: [ShoppingItem]

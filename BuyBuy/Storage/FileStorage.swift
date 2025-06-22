@@ -7,8 +7,7 @@
 
 import Foundation
 
-@MainActor
-final class FileStorage: FileStorageProtocol {
+actor FileStorage: FileStorageProtocol {
     private let fileManager: FileManager
     private let documentsURL: URL
     

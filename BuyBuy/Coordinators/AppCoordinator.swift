@@ -47,7 +47,11 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             print("📂 Caches: \(caches.path)")
         }
         
-        if let preferences = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first?.appendingPathComponent("Preferences") {
+        if let preferences = fileManager
+            .urls(for: .libraryDirectory, in: .userDomainMask)
+            .first?
+            .appendingPathComponent("Preferences")
+        {
             print("📂 Preferences: \(preferences.path)")
         }
         
@@ -56,27 +60,17 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         
         if let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
             print("☁️ iCloud container: \(ubiquityURL.path)")
-            let documentsInCloud = ubiquityURL.appendingPathComponent("Documents").path
-            print("☁️ iCloud Documents: \(documentsInCloud)")
+            print("☁️ iCloud Documents: \(ubiquityURL.appendingPathComponent("Documents").path)")
         } else {
-            print("⚠️ iCloud container is not available (disabled or not yet initialized).")
+            print("⚠️ iCloud container is not available.")
         }
         
         let itemImages = try? await dependencies.imageStorage.listImageBaseNames(type: .itemImage)
-        print("List of item images: ")
-        if let itemImages = itemImages {
-            for img in itemImages {
-                print(img)
-            }
-        }
-        
         let cardImages = try? await dependencies.imageStorage.listImageBaseNames(type: .cardImage)
-        print("List of card images: ")
-        if let cardImages = cardImages {
-            for img in cardImages {
-                print(img)
-            }
-        }
+        print("List of item images:")
+        itemImages?.forEach { print(" •", $0) }
+        print("List of card images:")
+        cardImages?.forEach { print(" •", $0) }
     }
 #endif
     

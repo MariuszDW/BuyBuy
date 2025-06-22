@@ -7,21 +7,21 @@
 
 import SwiftUI
 
-@MainActor
 final class AppDependencies: ObservableObject {
+    let preferences: AppPreferences
+    let imageStorage: ImageStorage
+    let fileStorage: FileStorage
     let coreDataStack: CoreDataStack
     let repository: DataRepositoryProtocol
-    let imageStorage: ImageStorageProtocol
-    let fileStorage: FileStorageProtocol
     let dataManager: DataManager
-    let preferences: AppPreferences
-
+    
+    @MainActor
     init() {
-        self.coreDataStack = CoreDataStack()
-        self.repository = DataRepository(coreDataStack: coreDataStack)
-        self.imageStorage = ImageStorage()
-        self.fileStorage = FileStorage()
-        self.dataManager = DataManager(repository: repository, imageStorage: imageStorage, fileStorage: fileStorage)
         self.preferences = AppPreferences()
+        self.imageStorage = ImageStorage( useCloudSync: preferences.isCloudSyncEnabled)
+        self.fileStorage = FileStorage()
+        self.coreDataStack = CoreDataStack(useCloudSync: preferences.isCloudSyncEnabled)
+        self.repository = DataRepository(coreDataStack: coreDataStack)
+        self.dataManager = DataManager(repository: repository, imageStorage: imageStorage, fileStorage: fileStorage)
     }
 }

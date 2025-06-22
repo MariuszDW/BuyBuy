@@ -73,6 +73,11 @@ enum ImageType: CaseIterable {
 
 actor ImageStorage: ImageStorageProtocol {
     private let cache = NSCache<NSString, UIImage>()
+    private let useCloudSync: Bool
+    
+    init(useCloudSync: Bool) {
+        self.useCloudSync = useCloudSync
+    }
     
     func cleanCache() async {
         print("Clean image cache.")
@@ -132,7 +137,7 @@ actor ImageStorage: ImageStorageProtocol {
     
     func listImageBaseNames(type: ImageType) async throws -> Set<String> {
         let fileManager = FileManager.default
-        let directoryPath = Self.directoryURL(for: type).path
+        let directoryPath = self.directoryURL(for: type).path
         let fileNames = try fileManager.contentsOfDirectory(atPath: directoryPath)
         
         let uniqueSuffixes = Set(ImageType.allCases.map { $0.fileNameSuffix }).filter { !$0.isEmpty }
@@ -153,16 +158,14 @@ actor ImageStorage: ImageStorageProtocol {
     
     // MARK: - Private helpers
     
-    private static func directoryURL(for type: ImageType) -> URL {
+    private func directoryURL(for type: ImageType) -> URL {
         let fileManager = FileManager.default
         let folderName = type.folderName
-        
-        // Try to use iCloud folder.
-        if let iCloudURL = iCloudHelper.ubiquityContainerURL(for: folderName) {
+
+        if useCloudSync, let iCloudURL = iCloudHelper.ubiquityContainerURL(for: folderName) {
             return iCloudURL
         }
-        
-        // If iCloud is disabled (unavailable), use local Documents folder.
+
         let localDocuments = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let localURL = localDocuments.appendingPathComponent(folderName, isDirectory: true)
         if !fileManager.fileExists(atPath: localURL.path) {
@@ -174,15 +177,19 @@ actor ImageStorage: ImageStorageProtocol {
     // MARK: - Private file operations
     
     private func writeData(_ data: Data, to fileName: String, in type: ImageType) async throws {
+        let dir = directoryURL(for: type)
+        let fileURL = dir.appendingPathComponent(fileName)
+        
         try await Task.detached {
-            let fileURL = Self.directoryURL(for: type).appendingPathComponent(fileName)
             try data.write(to: fileURL)
         }.value
     }
     
     private func readData(from fileName: String, in type: ImageType) async throws -> Data {
-        try await Task.detached {
-            let fileURL = Self.directoryURL(for: type).appendingPathComponent(fileName)
+        let dir = directoryURL(for: type)
+        let fileURL = dir.appendingPathComponent(fileName)
+        
+        return try await Task.detached {
             guard FileManager.default.fileExists(atPath: fileURL.path) else {
                 throw ImageStorageError.imageNotFound
             }
@@ -191,8 +198,10 @@ actor ImageStorage: ImageStorageProtocol {
     }
     
     private func deleteData(fileName: String, in type: ImageType) async throws {
+        let dir = directoryURL(for: type)
+        let fileURL = dir.appendingPathComponent(fileName)
+        
         try await Task.detached {
-            let fileURL = Self.directoryURL(for: type).appendingPathComponent(fileName)
             if FileManager.default.fileExists(atPath: fileURL.path) {
                 try FileManager.default.removeItem(at: fileURL)
             }

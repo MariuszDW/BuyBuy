@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @MainActor
-final class DataManager: DataManagerProtocol {
+class DataManager: DataManagerProtocol {
     private let repository: DataRepositoryProtocol
     private let imageStorage: ImageStorageProtocol
     private let fileStorage: FileStorageProtocol
@@ -205,7 +205,7 @@ final class DataManager: DataManagerProtocol {
     }
     
     func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws {
-        let oldCard = try await repository.fetchLoyaltyCard(with: card.id)
+//        let oldCard = try await repository.fetchLoyaltyCard(with: card.id)
         //let oldImageID = oldCard?.imageID
         try await repository.addOrUpdateLoyaltyCard(card)
         // Image of the card will be deleted by cleanOrphanedCardImages() in performStartupTasks().
@@ -218,7 +218,7 @@ final class DataManager: DataManagerProtocol {
     }
     
     func deleteLoyaltyCard(with id: UUID) async throws {
-        guard let card = try await repository.fetchLoyaltyCard(with: id) else { return }
+//        guard let card = try await repository.fetchLoyaltyCard(with: id) else { return }
 //        let cardImageID = card.imageID
         try await repository.deleteLoyaltyCard(with: id)
         // Image of the card will be deleted by cleanOrphanedCardImages() in performStartupTasks().
