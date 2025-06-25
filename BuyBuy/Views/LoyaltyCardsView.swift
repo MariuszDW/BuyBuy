@@ -18,7 +18,6 @@ struct LoyaltyCardsView: View {
     private static let tileSize: CGFloat = 150
     
     init(viewModel: LoyaltyCardsViewModel) {
-        print("🖼️ LoyaltyCardsView init") // TODO: temp
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -56,9 +55,12 @@ struct LoyaltyCardsView: View {
             )
         }
         .onReceive(viewModel.coordinator.eventPublisher) { event in
-            if case .loyaltyCardEdited = event {
-                print("LoyaltyCardsView onReceive with .loyaltyCardEdited") // TODO: temp
+            switch event {
+            case .loyaltyCardImageChanged:
+                Task { await viewModel.loadThumbnails() }
+            case .loyaltyCardEdited:
                 Task { await viewModel.loadCards() }
+            default: break
             }
         }
         .onAppear {
@@ -271,12 +273,16 @@ struct LoyaltyCardsView: View {
 // MARK: - Preview
 
 #Preview("Light/items") {
-    let dataManager = DataManager(repository: MockDataRepository(),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository())
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = LoyaltyCardsViewModel(
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: coordinator
     )
     
     NavigationStack {
@@ -286,12 +292,16 @@ struct LoyaltyCardsView: View {
 }
 
 #Preview("Dark/items") {
-    let dataManager = DataManager(repository: MockDataRepository(),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository())
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = LoyaltyCardsViewModel(
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: coordinator
     )
     
     NavigationStack {
@@ -301,12 +311,16 @@ struct LoyaltyCardsView: View {
 }
 
 #Preview("Light/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: [], cards: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = LoyaltyCardsViewModel(
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: coordinator
     )
     
     NavigationStack {
@@ -316,12 +330,16 @@ struct LoyaltyCardsView: View {
 }
 
 #Preview("Dark/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: [], cards: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: [], cards: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = LoyaltyCardsViewModel(
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: coordinator
     )
     
     NavigationStack {

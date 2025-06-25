@@ -15,6 +15,7 @@ class AppSettingsViewModel: ObservableObject {
     
     @Published var isMetricUnitsEnabled: Bool
     @Published var isImperialUnitsEnabled: Bool
+    @Published var progressIndicator: Bool
     
     var isCloudSyncEnabled: Bool {
         preferences.isCloudSyncEnabled
@@ -27,6 +28,7 @@ class AppSettingsViewModel: ObservableObject {
         
         self.isMetricUnitsEnabled = preferences.isMetricUnitsEnabled
         self.isImperialUnitsEnabled = preferences.isImperialUnitsEnabled
+        self.progressIndicator = false
     }
     
     func setMetricUnitsEnabled(_ enabled: Bool) {
@@ -37,6 +39,16 @@ class AppSettingsViewModel: ObservableObject {
     func setImperialUnitsEnabled(_ enabled: Bool) {
         isImperialUnitsEnabled = enabled
         preferences.isImperialUnitsEnabled = enabled
+    }
+    
+    func setCloudStorage(enabled: Bool) {
+        guard enabled != preferences.isCloudSyncEnabled else { return }
+        progressIndicator = true
+        Task {
+            await coordinator.setupDataManager(useCloud: enabled)
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            progressIndicator = false
+        }
     }
     
 #if DEBUG

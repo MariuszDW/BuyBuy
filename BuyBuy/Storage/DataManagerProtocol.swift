@@ -10,14 +10,18 @@ import SwiftUI
 
 @MainActor
 protocol DataManagerProtocol {
+    func setup(useCloud: Bool) async
+    
     // Shopping lists
     func fetchAllLists() async throws -> [ShoppingList]
     func fetchList(with id: UUID) async throws -> ShoppingList?
     func addOrUpdateList(_ list: ShoppingList) async throws
     func deleteList(with id: UUID, moveItemsToDeleted: Bool) async throws
     func deleteLists(with ids: [UUID], moveItemsToDeleted: Bool) async throws
+    func deleteAllLists() async throws
 
     // Shopping items
+    func fetchAllItems() async throws -> [ShoppingItem]
     func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem]
     func fetchItem(with id: UUID) async throws -> ShoppingItem?
     func fetchDeletedItems() async throws -> [ShoppingItem]
@@ -27,6 +31,7 @@ protocol DataManagerProtocol {
     func deleteOldTrashedItems(olderThan days: Int) async throws
     func deleteItem(with id: UUID) async throws
     func deleteItems(with ids: [UUID]) async throws
+    func deleteAllItems() async throws
     func cleanOrphanedItems() async throws
     
     // Loyalty cards
@@ -34,11 +39,12 @@ protocol DataManagerProtocol {
     func fetchLoyaltyCard(with id: UUID) async throws -> LoyaltyCard?
     func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws
     func deleteLoyaltyCard(with id: UUID) async throws
+    func deleteAllLoyaltyCards() async throws
     
     // Images
     func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws
     func saveImage(_ image: UIImage, baseFileName: String, types: [ImageType]) async throws
-    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage
+    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage?
     func deleteImage(baseFileName: String, type: ImageType) async throws
     func deleteImage(baseFileName: String, types: [ImageType]) async throws
     

@@ -134,7 +134,8 @@ struct AboutView: View {
 
 #Preview("Light") {
     NavigationStack {
-        let coordinator = AppCoordinator(dependencies: AppDependencies())
+        let preferences = MockAppPreferences()
+        let coordinator = AppCoordinator(preferences: preferences)
         let viewModel = AboutViewModel(coordinator: coordinator)
         AboutView(viewModel: viewModel)
     }
@@ -143,7 +144,8 @@ struct AboutView: View {
 
 #Preview("Dark") {
     NavigationStack {
-        let coordinator = AppCoordinator(dependencies: AppDependencies())
+        let preferences = MockAppPreferences()
+        let coordinator = AppCoordinator(preferences: preferences)
         let viewModel = AboutViewModel(coordinator: coordinator)
         AboutView(viewModel: viewModel)
     }

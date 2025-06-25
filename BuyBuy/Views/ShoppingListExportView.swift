@@ -104,7 +104,8 @@ struct ShoppingListExportView: View {
 // MARK: - Preview
 
 #Preview("Light") {
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = ShoppingListExportViewModel(list: MockDataRepository.list1,
                                                 coordinator: coordinator)
     
@@ -115,7 +116,8 @@ struct ShoppingListExportView: View {
 }
 
 #Preview("Dark") {
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = ShoppingListExportViewModel(list: MockDataRepository.list1,
                                                 coordinator: coordinator)
     

@@ -8,7 +8,10 @@
 import Foundation
 
 enum AppEvent {
-    case loyaltyCardEdited
-    case shoppingItemEdited
     case shoppingListEdited
+    case shoppingItemEdited
+    case loyaltyCardEdited
+    case shoppingItemImageChanged
+    case loyaltyCardImageChanged
+    case dataStorateChanged
 }

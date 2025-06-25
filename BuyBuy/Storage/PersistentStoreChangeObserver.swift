@@ -67,19 +67,19 @@ final class PersistentStoreChangeObserver {
                         self.processedTokens.removeFirst()
                     }
 
-                    print("🔄 New historyToken, reloading...")
+                    print("New historyToken, reloading...")
                     Task { @MainActor in await onChange() }
 
                 } else {
                     let now = Date()
                     if let last = self.lastAnonymousReloadDate,
                        now.timeIntervalSince(last) < self.anonymousReloadThrottleInterval {
-                        print("⏳ Skipping anonymous reload — throttled")
+                        print("Skipping anonymous reload — throttled")
                         return
                     }
 
                     self.lastAnonymousReloadDate = now
-                    print("⚠️ Reloading on anonymous change")
+                    print("Reloading on anonymous change")
                     Task { @MainActor in await onChange() }
                 }
             }

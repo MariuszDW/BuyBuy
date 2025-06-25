@@ -131,7 +131,6 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     func deleteImage(at index: Int) async {
         guard index >= 0 && index < shoppingItem.imageIDs.count else { return }
         shoppingItem.imageIDs.remove(at: index)
-        // The image will be deleted by cleanOrphanedItemImages() in performStartupTasks().
         await loadThumbnails()
     }
     
@@ -149,14 +148,15 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func loadThumbnails() async {
         print("ShoppingItemDetailsViewModel.loadThumbnails() called")
-        self.thumbnails = []
+        var newThumbnails: [UIImage?] = []
         for id in shoppingItem.imageIDs {
             if let image = try? await dataManager.loadImage(baseFileName: id, type: .itemThumbnail) {
-                self.thumbnails.append(image)
+                newThumbnails.append(image)
             } else {
-                self.thumbnails.append(nil)
+                newThumbnails.append(nil)
             }
         }
+        self.thumbnails = newThumbnails
     }
     
     func loadShoppingLists() async {

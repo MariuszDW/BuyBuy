@@ -43,6 +43,8 @@ actor MockDataRepository: DataRepositoryProtocol {
     func deleteList(with id: UUID) async throws {}
 
     func deleteLists(with ids: [UUID]) async throws {}
+    
+    func deleteAllLists() async throws {}
 
     // MARK: - Items
 
@@ -78,7 +80,9 @@ actor MockDataRepository: DataRepositoryProtocol {
     func deleteItem(with id: UUID) async throws {}
 
     func deleteItems(with ids: [UUID]) async throws {}
-
+    
+    func deleteAllItems() async throws {}
+    
     func cleanOrphanedItems() async throws {}
 
     // MARK: - Item images
@@ -100,6 +104,8 @@ actor MockDataRepository: DataRepositoryProtocol {
     func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws {}
 
     func deleteLoyaltyCard(with id: UUID) async throws {}
+    
+    func deleteAllLoyaltyCards() async throws {}
 
     // MARK: - Loyalty card images
 

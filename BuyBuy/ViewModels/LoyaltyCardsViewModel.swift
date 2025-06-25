@@ -51,7 +51,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
 
         if newCards != cards {
             cards = newCards
-            await loadThumbnails(for: newCards)
+            await loadThumbnails()
         }
     }
 
@@ -110,14 +110,14 @@ final class LoyaltyCardsViewModel: ObservableObject {
         coordinator.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: nil)
     }
     
-    private func loadThumbnails(for cards: [LoyaltyCard]) async {
-        var result: [UUID: UIImage] = [:]
+    func loadThumbnails() async {
+        var newThumbnails: [UUID: UIImage] = [:]
         for card in cards {
             guard let imageID = card.imageID else { continue }
             if let image = try? await dataManager.loadImage(baseFileName: imageID, type: .cardThumbnail) {
-                result[card.id] = image
+                newThumbnails[card.id] = image
             }
         }
-        thumbnails = result
+        thumbnails = newThumbnails
     }
 }

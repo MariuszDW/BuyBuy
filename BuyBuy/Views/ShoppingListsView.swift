@@ -77,10 +77,8 @@ struct ShoppingListsView: View {
         }
         .onReceive(viewModel.coordinator.eventPublisher) { event in
             switch event {
-            case .shoppingListEdited, .shoppingItemEdited:
-                Task {
-                    await viewModel.loadLists()
-                }
+            case .dataStorateChanged, .shoppingItemEdited, .shoppingListEdited:
+                Task { await viewModel.loadLists() }
             default: break
             }
         }
@@ -362,12 +360,16 @@ struct ShoppingListsView: View {
 // MARK: - Preview
 
 #Preview("Light/items") {
-    let dataManager = DataManager(repository: MockDataRepository(),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository())
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: coordinator
     )
     
     NavigationStack {
@@ -377,12 +379,16 @@ struct ShoppingListsView: View {
 }
 
 #Preview("Dark/items") {
-    let dataManager = DataManager(repository: MockDataRepository(),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository())
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: coordinator
     )
     
     NavigationStack {
@@ -392,12 +398,16 @@ struct ShoppingListsView: View {
 }
 
 #Preview("Light/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: coordinator
     )
     
     NavigationStack {
@@ -407,12 +417,16 @@ struct ShoppingListsView: View {
 }
 
 #Preview("Dark/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies())
+        coordinator: coordinator
     )
     
     NavigationStack {

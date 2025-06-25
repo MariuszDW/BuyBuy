@@ -42,10 +42,10 @@ struct DeletedItemsView: View {
         .navigationTitle("recently_deleted")
         .navigationBarTitleDisplayMode(.large)
         .onReceive(viewModel.coordinator.eventPublisher) { event in
-            if case .shoppingItemEdited = event {
-                Task {
-                    await viewModel.loadItems()
-                }
+            switch event {
+            case .shoppingItemImageChanged:
+                Task { await viewModel.loadItems() }
+            default: break
             }
         }
         .onAppear {
@@ -172,10 +172,13 @@ struct DeletedItemsView: View {
 // MARK: - Preview
 
 #Preview("Light/items") {
-    let dataManager = DataManager(repository: MockDataRepository(),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository())
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
     
@@ -186,10 +189,13 @@ struct DeletedItemsView: View {
 }
 
 #Preview("Dark/items") {
-    let dataManager = DataManager(repository: MockDataRepository(),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository())
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
     
@@ -200,10 +206,13 @@ struct DeletedItemsView: View {
 }
 
 #Preview("Light/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(deletedItems: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(deletedItems: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
     
@@ -214,10 +223,13 @@ struct DeletedItemsView: View {
 }
 
 #Preview("Dark/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(deletedItems: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(deletedItems: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
     

@@ -72,6 +72,13 @@ struct ShoppingItemDetailsView: View {
         .toolbar {
             toolbarContent
         }
+        .onReceive(viewModel.coordinator.eventPublisher) { event in
+            switch event {
+            case .shoppingItemImageChanged:
+                Task { await viewModel.loadThumbnails() }
+            default: break
+            }
+        }
         .onAppear {
             print("ShoppingItemDetailsView onAppear") // TODO: temp
             viewModel.startObserving()
@@ -432,28 +439,36 @@ struct ShoppingItemDetailsView: View {
 // MARK: - Preview
 
 #Preview("Light") {
-    let dataManager = DataManager(repository: MockDataRepository(cards: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(cards: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,
         dataManager: dataManager,
-        preferences: AppPreferences(),
-        coordinator: AppCoordinator(dependencies: AppDependencies()))
+        preferences: preferences,
+        coordinator: coordinator)
     
     ShoppingItemDetailsView(viewModel: viewModel)
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
-    let dataManager = DataManager(repository: MockDataRepository(cards: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(cards: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = ShoppingItemDetailsViewModel(
         item: MockDataRepository.list1.items.first!,
         dataManager: dataManager,
-        preferences: AppPreferences(),
-        coordinator: AppCoordinator(dependencies: AppDependencies()))
+        preferences: preferences,
+        coordinator: coordinator)
     
     ShoppingItemDetailsView(viewModel: viewModel)
         .preferredColorScheme(.dark)

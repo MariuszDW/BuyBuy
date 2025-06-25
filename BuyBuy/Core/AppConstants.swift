@@ -8,7 +8,7 @@
 import Foundation
 
 struct AppConstants {
-    static let autoDeleteAfterDays: Int = 30
+    static let autoDeleteAfterDays: Int = 30 // TODO: It should be set in the application settings.
     static let cleanupIntervalHours: Double = 12
     
     static let encoreContactEMail: String = "encore_contact@icloud.com"
@@ -16,5 +16,11 @@ struct AppConstants {
     static let blueSkyAddress: String = "https://encore-games.bsky.social"
     static let blueSkyName: String = "Bluesky"
     
-    static let iCloudContainerIdentifier = "iCloud.com.encore.BuyBuy"
+    static var bundleID: String? { Bundle.main.bundleIdentifier }
+    static let appGroupID = "group.com.encore.BuyBuy"
+    static let iCloudContainerID = "iCloud.com.encore.BuyBuy"
+    
+    static let coreDataModelName = "Model"
+    static let localStoreFileName = "LocalStore.sqlite"
+    static let cloudStoreFileName = "CloudStore.sqlite"
 }

@@ -11,6 +11,7 @@ enum ImageStorageError: Int, Error { // TODO: zrobic porzadek z tymi errorami, b
     case failedToSaveImage = 1
     case failedToSaveThumbnail = 2
     case imageNotFound = 3
+    case failedToResolveDirectory = 4
 }
 
 struct ImageStorageHelper {
@@ -98,18 +99,25 @@ actor ImageStorage: ImageStorageProtocol {
         print("Image \(fileName) saved.")
     }
     
-    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage {
+    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage? {
         let cacheKey: NSString = type.useCache ? type.cacheKey(for: baseFileName) : ""
         
-        if type.useCache {
-            if let cached = cache.object(forKey: cacheKey) {
-                print("Image \(baseFileName) loaded from cache.")
-                return cached
-            }
+        if type.useCache, let cached = cache.object(forKey: cacheKey) {
+            print("Image \(baseFileName) loaded from cache.")
+            return cached
         }
         
         let fileName = type.fileName(for: baseFileName)
-        let data = try await readData(from: fileName, in: type)
+        
+        guard let data = try await readData(from: fileName, in: type) else {
+            if useCloudSync {
+                print("Image \(fileName) not found. Probably is being downloaded from iCloud.")
+            } else {
+                print("Image \(fileName) not found.")
+            }
+            return nil
+        }
+        
         guard let image = UIImage(data: data) else {
             throw ImageStorageError.imageNotFound
         }
@@ -118,8 +126,7 @@ actor ImageStorage: ImageStorageProtocol {
             cache.setObject(image, forKey: cacheKey)
         }
         
-        print("Image \(baseFileName) loaded.")
-        
+        print("Image \(fileName) loaded.")
         return image
     }
     
@@ -137,7 +144,9 @@ actor ImageStorage: ImageStorageProtocol {
     
     func listImageBaseNames(type: ImageType) async throws -> Set<String> {
         let fileManager = FileManager.default
-        let directoryPath = self.directoryURL(for: type).path
+        guard let directoryPath = await directoryURL(for: type)?.path else {
+            return Set<String>()
+        }
         let fileNames = try fileManager.contentsOfDirectory(atPath: directoryPath)
         
         let uniqueSuffixes = Set(ImageType.allCases.map { $0.fileNameSuffix }).filter { !$0.isEmpty }
@@ -156,28 +165,78 @@ actor ImageStorage: ImageStorageProtocol {
         return Set(baseFileNames)
     }
     
-    // MARK: - Private helpers
-    
-    private func directoryURL(for type: ImageType) -> URL {
+    func directoryURL(for type: ImageType) async -> URL? {
+        guard let baseDirectory = await useCloudSync == true ? cloudDirectoryURL() : localDirectoryURL() else {
+            print("Failed to resolve \(useCloudSync ? "cloud" : "local") base directory")
+            return nil
+        }
         let fileManager = FileManager.default
         let folderName = type.folderName
-
-        if useCloudSync, let iCloudURL = iCloudHelper.ubiquityContainerURL(for: folderName) {
-            return iCloudURL
+        let imagesFolderURL = baseDirectory.appendingPathComponent(folderName, isDirectory: true)
+        if !fileManager.fileExists(atPath: imagesFolderURL.path) {
+            do {
+                try fileManager.createDirectory(at: imagesFolderURL, withIntermediateDirectories: true)
+                print("Created \(useCloudSync ? "cloud" : "local") folder at \(imagesFolderURL.path)")
+            } catch {
+                print("Failed to create directory at \(imagesFolderURL.path): \(error.localizedDescription)")
+                return nil
+            }
         }
-
-        let localDocuments = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let localURL = localDocuments.appendingPathComponent(folderName, isDirectory: true)
-        if !fileManager.fileExists(atPath: localURL.path) {
-            try? fileManager.createDirectory(at: localURL, withIntermediateDirectories: true)
+        return imagesFolderURL
+    }
+    
+    func forceDownloadImages(type: ImageType) async throws {
+        guard useCloudSync == true else { return }
+        let fileManager = FileManager.default
+        guard let directoryURL = await directoryURL(for: type) else { return }
+        
+        let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: [.ubiquitousItemDownloadingStatusKey], options: [])
+        
+        for fileURL in fileURLs {
+            let fileName = fileURL.lastPathComponent
+            
+            if fileName.hasPrefix(".") {
+                let resourceValues = try fileURL.resourceValues(forKeys: [.ubiquitousItemDownloadingStatusKey])
+                
+                if let status = resourceValues.ubiquitousItemDownloadingStatus {
+                    if status == URLUbiquitousItemDownloadingStatus.notDownloaded {
+                        try fileManager.startDownloadingUbiquitousItem(at: fileURL)
+                        print("Started downloading file: \(fileName)")
+                    } else {
+                        print("File \(fileName) is already downloaded or currently downloading")
+                    }
+                } else {
+                    print("Failed to read download status for file: \(fileName)")
+                }
+            }
         }
-        return localURL
+    }
+    
+    // MARK: - Private
+    
+    private func fileURL(for fileName: String, in type: ImageType) async -> URL? {
+        guard let directory = await directoryURL(for: type) else { return nil }
+        return directory.appendingPathComponent(fileName)
+    }
+    
+    private func localDirectoryURL() async -> URL {
+        let localDocumentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        return localDocumentsURL
+    }
+    
+    private func cloudDirectoryURL() async -> URL? {
+        guard let containerURL = FileManager.default.url(forUbiquityContainerIdentifier: AppConstants.iCloudContainerID) else {
+            print("iCloud container \(AppConstants.iCloudContainerID) not available")
+            return nil
+        }
+        let cloudDocumentsURL = containerURL.appendingPathComponent("Documents", isDirectory: true)
+        return cloudDocumentsURL
     }
     
     // MARK: - Private file operations
     
     private func writeData(_ data: Data, to fileName: String, in type: ImageType) async throws {
-        let dir = directoryURL(for: type)
+        guard let dir = await directoryURL(for: type) else { return }
         let fileURL = dir.appendingPathComponent(fileName)
         
         try await Task.detached {
@@ -185,20 +244,37 @@ actor ImageStorage: ImageStorageProtocol {
         }.value
     }
     
-    private func readData(from fileName: String, in type: ImageType) async throws -> Data {
-        let dir = directoryURL(for: type)
+    private func readData(from fileName: String, in type: ImageType) async throws -> Data? {
+        guard let dir = await directoryURL(for: type) else { return nil }
         let fileURL = dir.appendingPathComponent(fileName)
-        
+
         return try await Task.detached {
+            if self.useCloudSync {
+                let resourceValues = try? fileURL.resourceValues(forKeys: [
+                    .isUbiquitousItemKey,
+                    .ubiquitousItemDownloadingStatusKey
+                ])
+
+                if let isUbiquitous = resourceValues?.isUbiquitousItem, isUbiquitous {
+                    if let status = resourceValues?.ubiquitousItemDownloadingStatus,
+                       status != URLUbiquitousItemDownloadingStatus.current {
+                        print("Requesting download of \(fileName) from iCloud...")
+                        try FileManager.default.startDownloadingUbiquitousItem(at: fileURL)
+                        return nil
+                    }
+                }
+            }
+
             guard FileManager.default.fileExists(atPath: fileURL.path) else {
                 throw ImageStorageError.imageNotFound
             }
+
             return try Data(contentsOf: fileURL)
         }.value
     }
     
     private func deleteData(fileName: String, in type: ImageType) async throws {
-        let dir = directoryURL(for: type)
+        guard let dir = await directoryURL(for: type) else { return }
         let fileURL = dir.appendingPathComponent(fileName)
         
         try await Task.detached {

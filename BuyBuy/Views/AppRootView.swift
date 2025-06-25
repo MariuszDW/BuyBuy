@@ -38,10 +38,13 @@ struct AppRootView: View {
                     }
                 )
         }
+        .task {
+            await coordinator.performOnStartTasks()
+        }
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .active {
                 Task {
-                    await coordinator.performStartupTasksIfNeeded()
+                    await coordinator.performOnForegroundTasks()
                 }
             }
         }
@@ -95,11 +98,15 @@ private extension View {
 // MARK: - Preview
 
 #Preview("Light") {
-    AppRootView(coordinator: AppCoordinator(dependencies: AppDependencies()))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
+    AppRootView(coordinator: coordinator)
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
-    AppRootView(coordinator: AppCoordinator(dependencies: AppDependencies()))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
+    AppRootView(coordinator: coordinator)
         .preferredColorScheme(.dark)
 }

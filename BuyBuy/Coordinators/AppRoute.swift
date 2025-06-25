@@ -13,5 +13,4 @@ enum AppRoute: Hashable {
     case deletedItems
     case appSettings
     case loyaltyCards
-    case cloudSyncSettings
 }

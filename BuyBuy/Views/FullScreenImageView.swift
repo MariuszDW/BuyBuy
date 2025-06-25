@@ -36,6 +36,13 @@ struct FullScreenImageView: View {
             .ignoresSafeArea()
             .background(Color.black.ignoresSafeArea())
         }
+        .onReceive(viewModel.coordinator.eventPublisher) { event in
+            if case .loyaltyCardImageChanged = event, viewModel.imageType == .cardImage {
+                Task { await viewModel.reloadCurrentImageIfNeeded() }
+            } else if case .shoppingItemImageChanged = event, viewModel.imageType == .itemImage {
+                Task { await viewModel.reloadCurrentImageIfNeeded() }
+            }
+        }
     }
 
     @ViewBuilder
@@ -156,45 +163,65 @@ struct FullScreenImageView: View {
 // MARK: - Preview
 
 #Preview("Light") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
                                              imageType: .itemImage,
-                                             dataManager: dataManager)
+                                             dataManager: dataManager,
+                                             coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
                                              imageType: .itemImage,
-                                             dataManager: dataManager)
+                                             dataManager: dataManager,
+                                             coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
         .preferredColorScheme(.dark)
 }
 
 #Preview("Light/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [],
                                              imageType: .itemImage,
-                                             dataManager: dataManager)
+                                             dataManager: dataManager,
+                                             coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark/empty") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [],
                                              imageType: .itemImage,
-                                             dataManager: dataManager)
+                                             dataManager: dataManager,
+                                             coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
         .preferredColorScheme(.dark)
 }

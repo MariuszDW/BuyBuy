@@ -575,18 +575,34 @@
         }
       }
     },
-    "disable_cloud_sync" : {
+    "device" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Disable iCloud synchronisation"
+            "value" : "Device"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wyłącz synchronizację iCloud"
+            "value" : "Urządzenie"
+          }
+        }
+      }
+    },
+    "device_storage_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data is stored only on this device and is not synced across your devices."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dane są przechowywane tylko na tym urządzeniu i nie są synchronizowane z innymi."
           }
         }
       }
@@ -651,22 +667,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Brak klienta e-mail"
-          }
-        }
-      }
-    },
-    "enable_cloud_sync" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enable iCloud synchronisation"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Włącz synchronizację iCloud"
           }
         }
       }
@@ -817,18 +817,34 @@
         }
       }
     },
-    "icloud_sync" : {
+    "icloud" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud synchronisation"
+            "value" : "iCloud"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synchronizacja iCloud"
+            "value" : "iCloud"
+          }
+        }
+      }
+    },
+    "icloud_storage_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data is synced across your devices using the same iCloud account."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dane są synchronizowane między urządzeniami korzystającymi z tego samego konta iCloud."
           }
         }
       }
@@ -1414,6 +1430,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Status"
+          }
+        }
+      }
+    },
+    "storage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storage"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przechowywanie"
           }
         }
       }

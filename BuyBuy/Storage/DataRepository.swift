@@ -35,10 +35,10 @@ actor SaveQueue {
 }
 
 actor DataRepository: DataRepositoryProtocol {
-    private let coreDataStack: CoreDataStack
+    private let coreDataStack: CoreDataStackProtocol
     private let saveQueue: SaveQueue
     
-    init(coreDataStack: CoreDataStack) {
+    init(coreDataStack: CoreDataStackProtocol) {
         self.coreDataStack = coreDataStack
         self.saveQueue = SaveQueue(newContext: { coreDataStack.newBackgroundContext() })
     }
@@ -96,6 +96,16 @@ actor DataRepository: DataRepositoryProtocol {
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id IN %@", ids as CVarArg)
 
+            let entities = try context.fetch(request)
+            for entity in entities {
+                context.delete(entity)
+            }
+        }
+    }
+    
+    func deleteAllLists() async throws {
+        try await saveQueue.performSave { context in
+            let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
             let entities = try context.fetch(request)
             for entity in entities {
                 context.delete(entity)
@@ -236,6 +246,16 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
+    func deleteAllItems() async throws {
+        try await saveQueue.performSave { context in
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            let entities = try context.fetch(request)
+            for entity in entities {
+                context.delete(entity)
+            }
+        }
+    }
+    
     func cleanOrphanedItems() async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -303,6 +323,16 @@ actor DataRepository: DataRepositoryProtocol {
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             if let entity = try context.fetch(request).first {
+                context.delete(entity)
+            }
+        }
+    }
+    
+    func deleteAllLoyaltyCards() async throws {
+        try await saveQueue.performSave { context in
+            let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
+            let entities = try context.fetch(request)
+            for entity in entities {
                 context.delete(entity)
             }
         }

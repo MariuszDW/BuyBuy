@@ -13,26 +13,69 @@ import Combine
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
-    private let dependencies: AppDependencies
+    private let dataManager: DataManager
+    var preferences: AppPreferencesProtocol
+    private var folderPresenters: [DirectoryFilePresenter] = []
     
     private let eventSubject = PassthroughSubject<AppEvent, Never>()
     var eventPublisher: AnyPublisher<AppEvent, Never> {
         eventSubject.eraseToAnyPublisher()
     }
         
-    init(dependencies: AppDependencies) {
-        self.dependencies = dependencies
+    init(preferences: AppPreferencesProtocol) {
+        self.preferences = preferences
+        self.dataManager = DataManager(useCloud: preferences.isCloudSyncEnabled)
     }
     
     func sendEvent(_ event: AppEvent) {
         eventSubject.send(event)
     }
     
-    private func performStartupTasks() async {
-        try? await dependencies.dataManager.cleanOrphanedItems()
-        try? await dependencies.dataManager.cleanOrphanedItemImages()
-        try? await dependencies.dataManager.cleanOrphanedCardImages()
-        try? await dependencies.dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
+    func setupDataManager(useCloud: Bool) async {
+        await dataManager.setup(useCloud: useCloud)
+        
+        for presenter in folderPresenters {
+            NSFileCoordinator.removeFilePresenter(presenter)
+        }
+        folderPresenters.removeAll()
+        
+        if useCloud {
+            if let itemImagesURL = await dataManager.imageStorage.directoryURL(for: .itemImage) {
+                let presenter = DirectoryFilePresenter(directoryURL: itemImagesURL) {
+                    Task { @MainActor in
+                        self.sendEvent(.shoppingItemImageChanged)
+                    }
+                }
+                folderPresenters.append(presenter)
+                NSFileCoordinator.addFilePresenter(presenter)
+            }
+            
+            if let itemImagesURL = await dataManager.imageStorage.directoryURL(for: .cardImage) {
+                let presenter = DirectoryFilePresenter(directoryURL: itemImagesURL) {
+                    Task { @MainActor in
+                        self.sendEvent(.loyaltyCardImageChanged)
+                    }
+                }
+                folderPresenters.append(presenter)
+                NSFileCoordinator.addFilePresenter(presenter)
+            }
+        }
+        
+        if preferences.isCloudSyncEnabled != useCloud {
+            preferences.isCloudSyncEnabled = useCloud
+            sendEvent(.dataStorateChanged)
+        }
+        
+#if DEBUG
+        await printAppSandboxPaths() // TODO: temporary, think about better place
+#endif
+    }
+    
+    private func cleanupNotNeededData() async {
+        try? await dataManager.cleanOrphanedItems()
+        try? await dataManager.cleanOrphanedItemImages()
+        try? await dataManager.cleanOrphanedCardImages()
+        try? await dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
     }
     
 #if DEBUG
@@ -40,11 +83,11 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         let fileManager = FileManager.default
         
         if let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-            print("📂 Documents: \(documents.path)")
+            print("Documents: \(documents.path)")
         }
         
         if let caches = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
-            print("📂 Caches: \(caches.path)")
+            print("Caches: \(caches.path)")
         }
         
         if let preferences = fileManager
@@ -52,21 +95,26 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             .first?
             .appendingPathComponent("Preferences")
         {
-            print("📂 Preferences: \(preferences.path)")
+            print("Preferences: \(preferences.path)")
         }
         
         let tmp = NSTemporaryDirectory()
-        print("📂 tmp: \(tmp)")
+        print("tmp: \(tmp)")
         
         if let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
-            print("☁️ iCloud container: \(ubiquityURL.path)")
-            print("☁️ iCloud Documents: \(ubiquityURL.appendingPathComponent("Documents").path)")
+            print("iCloud container: \(ubiquityURL.path)")
+            print("iCloud Documents: \(ubiquityURL.appendingPathComponent("Documents").path)")
         } else {
-            print("⚠️ iCloud container is not available.")
+            print("iCloud container is not available.")
         }
         
-        let itemImages = try? await dependencies.imageStorage.listImageBaseNames(type: .itemImage)
-        let cardImages = try? await dependencies.imageStorage.listImageBaseNames(type: .cardImage)
+        let itemImagesFolder = await dataManager.imageStorage.directoryURL(for: .itemImage)
+        let cardImagesFolder = await dataManager.imageStorage.directoryURL(for: .cardImage)
+        print("Item images folder: \(itemImagesFolder?.absoluteString ?? "error")")
+        print("Card images folder: \(cardImagesFolder?.absoluteString ?? "error")")
+        
+        let itemImages = try? await dataManager.imageStorage.listImageBaseNames(type: .itemImage)
+        let cardImages = try? await dataManager.imageStorage.listImageBaseNames(type: .cardImage)
         print("List of item images:")
         itemImages?.forEach { print(" •", $0) }
         print("List of card images:")
@@ -74,24 +122,24 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
 #endif
     
-    func performStartupTasksIfNeeded() async {
-#if DEBUG
-        await printAppSandboxPaths() // TODO: temporary, think about better place
-#endif
-        
+    func performOnStartTasks() async {
+        await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
+    }
+    
+    func performOnForegroundTasks() async {
         let now = Date()
-        if dependencies.preferences.isStartupCleaningAllowed,
-           let lastCleanupDate = dependencies.preferences.lastCleanupDate {
+        if preferences.isStartupCleaningAllowed,
+           let lastCleanupDate = preferences.lastCleanupDate {
             let hoursSince = now.timeIntervalSince(lastCleanupDate) / 3600
             if hoursSince > AppConstants.cleanupIntervalHours {
                 print("Performing cleanup tasks – last run was: \(lastCleanupDate)")
-                await performStartupTasks()
-                dependencies.preferences.lastCleanupDate = now
+                await cleanupNotNeededData()
+                preferences.lastCleanupDate = now
             } else {
                 print("Skipping cleanup. Last run: \(lastCleanupDate), \(Int(hoursSince))h ago.")
             }
         } else {
-            dependencies.preferences.lastCleanupDate = now
+            preferences.lastCleanupDate = now
         }
     }
     
@@ -182,7 +230,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     
     func handleMemoryWarning() {
         print("Received memory warning")
-        let dataManager = dependencies.dataManager
+        let dataManager = dataManager
         Task { @MainActor in
             await dataManager.cleanImageCache()
         }
@@ -194,7 +242,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         case .shoppingLists:
             ShoppingListsView(
                 viewModel: ShoppingListsViewModel(
-                    dataManager: self.dependencies.dataManager,
+                    dataManager: self.dataManager,
                     coordinator: self
                 )
             )
@@ -203,7 +251,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             ShoppingListView(
                 viewModel: ShoppingListViewModel(
                     listID: id,
-                    dataManager: self.dependencies.dataManager,
+                    dataManager: self.dataManager,
                     coordinator: self
                 )
             )
@@ -211,27 +259,21 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         case .deletedItems:
             DeletedItemsView(
                 viewModel: DeletedItemsViewModel(
-                    dataManager: self.dependencies.dataManager,
+                    dataManager: self.dataManager,
                     coordinator: self
                 )
             )
             
         case .appSettings:
             AppSettingsView(
-                viewModel: AppSettingsViewModel(dataManager: self.dependencies.dataManager,
-                                                preferences: self.dependencies.preferences,
+                viewModel: AppSettingsViewModel(dataManager: self.dataManager,
+                                                preferences: self.preferences,
                                                 coordinator: self)
             )
             
         case .loyaltyCards:
-            LoyaltyCardsView(viewModel: LoyaltyCardsViewModel(dataManager: self.dependencies.dataManager,
+            LoyaltyCardsView(viewModel: LoyaltyCardsViewModel(dataManager: self.dataManager,
                                                               coordinator: self)
-            )
-            
-        case .cloudSyncSettings:
-            CloudSyncSettingsView(viewModel: CloudSyncSettingsViewModel(dataManager: self.dependencies.dataManager,
-                                                                        preferences: self.dependencies.preferences,
-                                                                        coordinator: self)
             )
         }
     }
@@ -244,7 +286,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: ShoppingListSettingsViewModel(
                     list: list,
                     isNew: isNew,
-                    dataManager: self.dependencies.dataManager,
+                    dataManager: self.dataManager,
                     coordinator: self
                 )
             )
@@ -254,8 +296,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: ShoppingItemDetailsViewModel(
                     item: item,
                     isNew: isNew,
-                    dataManager: self.dependencies.dataManager,
-                    preferences: self.dependencies.preferences,
+                    dataManager: self.dataManager,
+                    preferences: self.preferences,
                     coordinator: self
                 )
             )
@@ -266,7 +308,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     imageIDs: imageIDs,
                     startIndex: index,
                     imageType: .itemImage,
-                    dataManager: self.dependencies.dataManager
+                    dataManager: self.dataManager,
+                    coordinator: self
                 )
             )
             
@@ -280,7 +323,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     imageIDs: imageIDs,
                     startIndex: 0,
                     imageType: .cardImage,
-                    dataManager: self.dependencies.dataManager
+                    dataManager: self.dataManager,
+                    coordinator: self
                 )
             )
             
@@ -289,7 +333,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: LoyaltyCardDetailsViewModel(
                     card: card,
                     isNew: isNew,
-                    dataManager: self.dependencies.dataManager,
+                    dataManager: self.dataManager,
                     coordinator: self
                 )
             )
@@ -298,7 +342,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             ShoppingListSelectorView(
                 viewModel: ShoppingListSelectorViewModel(
                     itemIDToRestore: itemIDToRestore,
-                    dataManager: self.dependencies.dataManager,
+                    dataManager: self.dataManager,
                     coordinator: self
                 )
             )

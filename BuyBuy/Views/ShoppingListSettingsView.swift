@@ -230,26 +230,34 @@ struct ShoppingListSettingsView: View {
 // MARK: - Preview
 
 #Preview("Light") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = ShoppingListSettingsViewModel(
         list: MockDataRepository.list1,
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies()))
+        coordinator: coordinator)
     
     ShoppingListSettingsView(viewModel: viewModel)
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = ShoppingListSettingsViewModel(
         list: MockDataRepository.list1,
         dataManager: dataManager,
-        coordinator: AppCoordinator(dependencies: AppDependencies()))
+        coordinator: coordinator)
     
     ShoppingListSettingsView(viewModel: viewModel)
         .preferredColorScheme(.dark)

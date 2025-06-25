@@ -13,6 +13,8 @@ protocol AppCoordinatorProtocol: ObservableObject {
     var eventPublisher: AnyPublisher<AppEvent, Never> { get }
     func sendEvent(_ event: AppEvent)
     
+    func setupDataManager(useCloud: Bool) async
+    
     func openShoppingList(_ id: UUID)
     func openAppSettings()
     func openLoyaltyCardList()

@@ -14,6 +14,7 @@ protocol DataRepositoryProtocol: Sendable {
     func addOrUpdateList(_ list: ShoppingList) async throws
     func deleteList(with id: UUID) async throws
     func deleteLists(with ids: [UUID]) async throws
+    func deleteAllLists() async throws
 
     // Items
     func fetchAllItems() async throws -> [ShoppingItem]
@@ -25,6 +26,7 @@ protocol DataRepositoryProtocol: Sendable {
     func addOrUpdateItem(_ item: ShoppingItem) async throws
     func deleteItem(with id: UUID) async throws
     func deleteItems(with ids: [UUID]) async throws
+    func deleteAllItems() async throws
     func cleanOrphanedItems() async throws
     
     // Item images
@@ -35,6 +37,7 @@ protocol DataRepositoryProtocol: Sendable {
     func fetchLoyaltyCard(with id: UUID) async throws -> LoyaltyCard?
     func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws
     func deleteLoyaltyCard(with id: UUID) async throws
+    func deleteAllLoyaltyCards() async throws
     
     // Loyalty images
     func fetchAllLoyaltyCardImageIDs() async throws -> Set<String>

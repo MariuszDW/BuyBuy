@@ -12,7 +12,7 @@ actor MockImageStorage: ImageStorageProtocol {
     
     func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws {}
     
-    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage {
+    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage? {
         if type.isThumbnail {
             return Self.generateMockImage(text: "\(baseFileName)_thumb", size: ImageStorageHelper.thumbnailSize)
         } else {
@@ -27,6 +27,12 @@ actor MockImageStorage: ImageStorageProtocol {
     func listImageBaseNames(type: ImageType) async throws -> Set<String> {
         return Set<String>()
     }
+    
+    func directoryURL(for type: ImageType) async -> URL? {
+        return URL(fileURLWithPath: "")
+    }
+    
+    func forceDownloadImages(type: ImageType) async throws {}
     
     // MARK: - Helpers
     

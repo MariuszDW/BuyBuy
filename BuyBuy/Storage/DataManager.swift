@@ -10,16 +10,39 @@ import SwiftUI
 
 @MainActor
 class DataManager: DataManagerProtocol {
-    private let repository: DataRepositoryProtocol
-    private let imageStorage: ImageStorageProtocol
-    private let fileStorage: FileStorageProtocol
+    private var cloud: Bool
+    private var coreDataStack: CoreDataStackProtocol
+    var imageStorage: ImageStorageProtocol
+    private var fileStorage: FileStorageProtocol
+    private var repository: DataRepositoryProtocol
 
-    init(repository: DataRepositoryProtocol,
-         imageStorage: ImageStorageProtocol,
-         fileStorage: FileStorageProtocol) {
-        self.repository = repository
+    init(useCloud: Bool) {
+        self.cloud = useCloud
+        self.coreDataStack = CoreDataStack(useCloudSync: useCloud)
+        self.imageStorage = ImageStorage(useCloudSync: useCloud)
+        self.fileStorage = FileStorage()
+        self.repository = DataRepository(coreDataStack: coreDataStack)
+    }
+    
+    init(useCloud: Bool, coreDataStack: CoreDataStackProtocol, imageStorage: ImageStorageProtocol, fileStorage: FileStorageProtocol, repository: DataRepositoryProtocol) {
+        self.cloud = useCloud
+        self.coreDataStack = coreDataStack
         self.imageStorage = imageStorage
         self.fileStorage = fileStorage
+        self.repository = repository
+    }
+    
+    func setup(useCloud: Bool) async {
+        guard self.cloud != useCloud else { return }
+        cloud = useCloud
+        coreDataStack = CoreDataStack(useCloudSync: useCloud)
+        imageStorage = ImageStorage(useCloudSync: useCloud)
+        fileStorage = FileStorage()
+        repository = DataRepository(coreDataStack: coreDataStack)
+        if useCloud {
+            try? await imageStorage.forceDownloadImages(type: .itemImage)
+            try? await imageStorage.forceDownloadImages(type: .cardImage)
+        }
     }
     
     // MARK: - Shopping lists
@@ -33,21 +56,11 @@ class DataManager: DataManagerProtocol {
     }
     
     func addOrUpdateList(_ list: ShoppingList) async throws {
-//        if let oldList = try await repository.fetchList(with: list.id) {
-//            let oldImageIDs = Set(oldList.items.flatMap { $0.imageIDs })
-//            let newImageIDs = Set(list.items.flatMap { $0.imageIDs })
-//            let removedImageIDs = oldImageIDs.subtracting(newImageIDs)
-//            for id in removedImageIDs {
-//                try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
-//            }
-//        }
-        // Images of the list items will be deleted by cleanOrphanedItemImages() in performStartupTasks().
         try await repository.addOrUpdateList(list)
     }
     
     func deleteList(with id: UUID, moveItemsToDeleted: Bool) async throws {
         let items = try await repository.fetchItemsOfList(with: id)
-//        let allImageIDs = items.flatMap { $0.imageIDs }
         
         if moveItemsToDeleted {
             for var item in items {
@@ -56,20 +69,10 @@ class DataManager: DataManagerProtocol {
             }
         }
         
-        // The list item images will be deleted by cleanOrphanedItemImages() in performStartupTasks().
-
         try await repository.deleteList(with: id)
-        
-//        if !moveItemsToDeleted {
-//            for imageID in allImageIDs {
-//                try await imageStorage.deleteImage(baseFileName: imageID, types: [.itemImage, .itemThumbnail])
-//            }
-//        }
     }
 
     func deleteLists(with ids: [UUID], moveItemsToDeleted: Bool) async throws {
-//        var allImageIDs = [String]()
-
         for id in ids {
             let items = try await repository.fetchItemsOfList(with: id)
 
@@ -79,24 +82,20 @@ class DataManager: DataManagerProtocol {
                     try await repository.addOrUpdateItem(item)
                 }
             }
-//            else {
-//                allImageIDs.append(contentsOf: items.flatMap { $0.imageIDs })
-//            }
         }
         
-        // The lists item images will be deleted by cleanOrphanedItemImages() in performStartupTasks().
-
         try await repository.deleteLists(with: ids)
-
-//        if !moveItemsToDeleted {
-//            for imageID in allImageIDs {
-//                try await imageStorage.deleteImage(baseFileName: imageID, types: [.itemImage, .itemThumbnail])
-//            }
-//        }
     }
 
+    func deleteAllLists() async throws {
+        try await repository.deleteAllLists()
+    }
 
     // MARK: - Shopping items
+    
+    func fetchAllItems() async throws -> [ShoppingItem]  {
+        return try await repository.fetchAllItems()
+    }
     
     func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
         return try await repository.fetchItemsOfList(with: listID)
@@ -111,17 +110,7 @@ class DataManager: DataManagerProtocol {
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async throws {
-//        let oldItem = try await repository.fetchItem(with: item.id)
-//        let oldImageIDs = oldItem?.imageIDs ?? []
-        
-        // The item images will be deleted by cleanOrphanedItemImages() in performStartupTasks().
         try await repository.addOrUpdateItem(item)
-
-//        let usedImageIDs = try await repository.fetchAllItemImageIDs()
-//        let orphanedImageIDs = oldImageIDs.filter { !usedImageIDs.contains($0) }
-//        for id in orphanedImageIDs {
-//            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
-//        }
     }
     
     func moveItemToDeleted(with id: UUID) async throws {
@@ -160,33 +149,15 @@ class DataManager: DataManagerProtocol {
     }
     
     func deleteItem(with id: UUID) async throws {
-//        guard let item = try await repository.fetchItem(with: id) else {
-//            return
-//        }
-//        let oldImageIDs = item.imageIDs
-
-        // The item images will be deleted by cleanOrphanedItemImages() in performStartupTasks().
         try await repository.deleteItem(with: id)
-
-//        let usedImageIDs = try await repository.fetchAllItemImageIDs()
-//        let orphanedImageIDs = oldImageIDs.filter { !usedImageIDs.contains($0) }
-//        for id in orphanedImageIDs {
-//            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
-//        }
     }
     
     func deleteItems(with ids: [UUID]) async throws {
-//        let itemsToDelete = try await repository.fetchItems(with: ids)
-//        let oldImageIDs = itemsToDelete.flatMap { $0.imageIDs }
-
-        // Images of these items will be deleted by cleanOrphanedItemImages() in performStartupTasks().
         try await repository.deleteItems(with: ids)
-
-//        let usedImageIDs = try await repository.fetchAllItemImageIDs()
-//        let orphanedImageIDs = Set(oldImageIDs).subtracting(usedImageIDs)
-//        for id in orphanedImageIDs {
-//            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
-//        }
+    }
+    
+    func deleteAllItems() async throws {
+        try await repository.deleteAllItems()
     }
     
     func cleanOrphanedItems() async throws {
@@ -205,26 +176,15 @@ class DataManager: DataManagerProtocol {
     }
     
     func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws {
-//        let oldCard = try await repository.fetchLoyaltyCard(with: card.id)
-        //let oldImageID = oldCard?.imageID
         try await repository.addOrUpdateLoyaltyCard(card)
-        // Image of the card will be deleted by cleanOrphanedCardImages() in performStartupTasks().
-//        if let oldImageID = oldImageID {
-//            let usedImageIDs = try await repository.fetchAllLoyaltyCardImageIDs()
-//            if !usedImageIDs.contains(where: { $0 == oldImageID }) {
-//                try await imageStorage.deleteImage(baseFileName: oldImageID, types: [.cardImage, .cardThumbnail])
-//            }
-//        }
     }
     
     func deleteLoyaltyCard(with id: UUID) async throws {
-//        guard let card = try await repository.fetchLoyaltyCard(with: id) else { return }
-//        let cardImageID = card.imageID
         try await repository.deleteLoyaltyCard(with: id)
-        // Image of the card will be deleted by cleanOrphanedCardImages() in performStartupTasks().
-//        if let cardImageID = cardImageID {
-//            try await imageStorage.deleteImage(baseFileName: cardImageID, types: [.cardImage, .cardThumbnail])
-//        }
+    }
+    
+    func deleteAllLoyaltyCards() async throws {
+        try await repository.deleteAllLoyaltyCards()
     }
     
     // MARK: - Images
@@ -239,7 +199,7 @@ class DataManager: DataManagerProtocol {
         }
     }
     
-    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage {
+    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage? {
         return try await imageStorage.loadImage(baseFileName: baseFileName, type: type)
     }
     

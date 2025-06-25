@@ -7,6 +7,27 @@
 
 import SwiftUI
 
+enum DataStorageOption: String, CaseIterable, Identifiable {
+    case device
+    case cloud
+
+    var id: String { rawValue }
+
+    var iconName: String {
+        switch self {
+        case .device: return "icloud.slash"
+        case .cloud: return "icloud"
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .device: String(localized: "device")
+        case .cloud: String(localized: "icloud")
+        }
+    }
+}
+
 struct AppSettingsView: View {
     @StateObject var viewModel: AppSettingsViewModel
     
@@ -19,33 +40,45 @@ struct AppSettingsView: View {
     }
     
     var body: some View {
-        Form {
-            Section(header: Text("unit_systems")) {
-                Toggle(MeasureUnitSystem.metric.name, isOn: $viewModel.isMetricUnitsEnabled)
-                    .onChange(of: viewModel.isMetricUnitsEnabled) { newValue in
-                        viewModel.setMetricUnitsEnabled(newValue)
-                    }
+        ZStack {
+            Form {
+                Section(header: Text("data_storage"),
+                        footer: Text(viewModel.isCloudSyncEnabled ? "icloud_storage_info" : "device_storage_info")) {
+                    dataStorageView
+                }
                 
-                Toggle(MeasureUnitSystem.imperial.name, isOn: $viewModel.isImperialUnitsEnabled)
-                    .onChange(of: viewModel.isImperialUnitsEnabled) { newValue in
-                        viewModel.setImperialUnitsEnabled(newValue)
-                    }
-            }
-            
-            Section(header: Text("data_storage")) {
-                NavigationLink(value: AppRoute.cloudSyncSettings) {
-                    Label("icloud_sync",
-                          systemImage: viewModel.isCloudSyncEnabled ? "icloud" : "icloud.slash")
+                Section(header: Text("unit_systems")) {
+                    Toggle(MeasureUnitSystem.metric.name, isOn: $viewModel.isMetricUnitsEnabled)
+                        .onChange(of: viewModel.isMetricUnitsEnabled) { newValue in
+                            viewModel.setMetricUnitsEnabled(newValue)
+                        }
+                    
+                    Toggle(MeasureUnitSystem.imperial.name, isOn: $viewModel.isImperialUnitsEnabled)
+                        .onChange(of: viewModel.isImperialUnitsEnabled) { newValue in
+                            viewModel.setImperialUnitsEnabled(newValue)
+                        }
                 }
-            }
-            
+                
 #if DEBUG
-            Section(header: Text("debug")) {
-                Button("copy_mocks_to_database") {
-                    showCopyMocksConfirmation = true
+                Section(header: Text("debug")) {
+                    Button("copy_mocks_to_database") {
+                        showCopyMocksConfirmation = true
+                    }
                 }
-            }
 #endif
+            }
+            .disabled(viewModel.progressIndicator)
+            .blur(radius: viewModel.progressIndicator ? 3 : 0)
+            
+            if viewModel.progressIndicator {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
+                    .padding(8)
+            }
         }
         .navigationTitle("settings")
         .navigationBarTitleDisplayMode(.large)
@@ -62,16 +95,40 @@ struct AppSettingsView: View {
         }
 #endif
     }
+    
+    private var dataStorageView: some View {
+        HStack {
+            Text("storage")
+            Spacer()
+            Menu {
+                ForEach(DataStorageOption.allCases) { option in
+                    Button {
+                        viewModel.setCloudStorage(enabled: option == .cloud)
+                    } label: {
+                        Label(option.title, systemImage: option.iconName)
+                    }
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    Text(viewModel.isCloudSyncEnabled ? DataStorageOption.cloud.title : DataStorageOption.device.title)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .padding(.leading, 4)
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Preview
 
 #Preview("Light") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let coordinator = AppCoordinator(preferences: preferences)
     NavigationStack {
         AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
                                                         preferences: preferences,
@@ -81,11 +138,13 @@ struct AppSettingsView: View {
 }
 
 #Preview("Dark") {
-    let dataManager = DataManager(repository: MockDataRepository(lists: []),
+    let dataManager = DataManager(useCloud: false,
+                                  coreDataStack: MockCoreDataStack(),
                                   imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage())
+                                  fileStorage: MockFileStorage(),
+                                  repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
-    let coordinator = AppCoordinator(dependencies: AppDependencies())
+    let coordinator = AppCoordinator(preferences: preferences)
     NavigationStack {
         AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
                                                         preferences: preferences,
