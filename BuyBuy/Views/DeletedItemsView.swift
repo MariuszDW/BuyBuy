@@ -43,7 +43,7 @@ struct DeletedItemsView: View {
         .navigationBarTitleDisplayMode(.large)
         .onReceive(viewModel.coordinator.eventPublisher) { event in
             switch event {
-            case .shoppingItemImageChanged:
+            case .shoppingItemImageChanged, .shoppingItemEdited:
                 Task { await viewModel.loadItems() }
             default: break
             }
