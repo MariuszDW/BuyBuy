@@ -121,6 +121,15 @@ class DataManager: DataManagerProtocol {
         try await repository.addOrUpdateItem(item)
     }
     
+    func moveItemsToDeleted(with ids: [UUID]) async throws {
+        var items = try await repository.fetchItems(with: ids)
+        guard !items.isEmpty else { return }
+        for i in items.indices {
+            items[i].moveToDeleted()
+            try await repository.addOrUpdateItem(items[i])
+        }
+    }
+    
     func restoreItem(with id: UUID, toList listID: UUID) async throws {
         guard let _ = try await repository.fetchList(with: listID) else {
             throw NSError(domain: "Repository", code: 404, userInfo: [NSLocalizedDescriptionKey: "List not found"])

@@ -187,7 +187,7 @@ final class ShoppingListViewModel: ObservableObject {
             .map { $0.id } ?? []
         
         if !purchasedItemIDs.isEmpty {
-            try? await dataManager.deleteItems(with: purchasedItemIDs)
+            try? await dataManager.moveItemsToDeleted(with: purchasedItemIDs)
             await loadList()
         }
     }
