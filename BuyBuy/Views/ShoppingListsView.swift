@@ -144,18 +144,6 @@ struct ShoppingListsView: View {
                     }
                 }
             }
-            
-            if !isEditMode.isEditing {
-                Section(header: Color.clear
-                    .frame(height: 8)) {
-                    Group {
-                        NavigationLink(value: AppRoute.deletedItems) {
-                            deletedItemsRow
-                        }
-                    }
-                    .listRowInsets(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 16))
-                }
-            }
         }
         .listStyle(.plain)
     }
@@ -207,25 +195,6 @@ struct ShoppingListsView: View {
         .padding(.vertical, 4)
     }
     
-    private var deletedItemsRow: some View {
-        HStack {
-            Image(systemName: "trash.circle.fill")
-                .foregroundStyle(.white, Color.bb.text.tertiary)
-                .font(.regularDynamic(style: .largeTitle))
-                .scaleEffect(1.2)
-                .padding(.leading, 8)
-                .padding(.trailing, 2)
-            
-            Text("recently_deleted")
-                .foregroundColor(.bb.text.primary)
-                .font(.regularDynamic(style: .title3))
-                .multilineTextAlignment(.leading)
-                .lineLimit(4)
-                .padding(.leading, 4)
-        }
-        .padding(.vertical, 4)
-    }
-    
     private var toolbarContent: some ToolbarContent {
         Group {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -264,15 +233,25 @@ struct ShoppingListsView: View {
                             }
                         } label: {
                             Label("edit_list", systemImage: "pencil")
+                                .lineLimit(1)
                         }
                         .disabled(viewModel.shoppingLists.isEmpty)
                         // .accessibilityLabel("Edit")
+                        
+                        Button {
+                            viewModel.openDeletedItems()
+                        } label: {
+                            Label("recently_deleted", systemImage: "trash")
+                                .lineLimit(1)
+                        }
+                        .disabled(isEditMode.isEditing)
                         
                         Button {
                             isEditMode = .inactive
                             viewModel.openSettings()
                         } label: {
                             Label("settings", systemImage: "gearshape")
+                                .lineLimit(1)
                         }
                         // .accessibilityLabel("Settings")
                     } label: {

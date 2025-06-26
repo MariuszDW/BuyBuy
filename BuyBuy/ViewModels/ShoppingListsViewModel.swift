@@ -88,4 +88,8 @@ class ShoppingListsViewModel: ObservableObject {
     func openLoyaltyCards() {
         coordinator.openLoyaltyCardList()
     }
+    
+    func openDeletedItems() {
+        coordinator.openDeletedItems()
+    }
 }

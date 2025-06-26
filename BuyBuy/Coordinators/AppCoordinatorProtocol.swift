@@ -17,6 +17,7 @@ protocol AppCoordinatorProtocol: ObservableObject {
     
     func openShoppingList(_ id: UUID)
     func openAppSettings()
+    func openDeletedItems()
     func openLoyaltyCardList()
     func openShoppingListSettings(_ list: ShoppingList, isNew: Bool, onDismiss: ((SheetRoute) -> Void)?)
     func openShoppingItemDetails(_ item: ShoppingItem, isNew: Bool, onDismiss: ((SheetRoute) -> Void)?)
