@@ -15,6 +15,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     let sheetPresenter = SheetPresenter()
     private let dataManager: DataManager
     var preferences: AppPreferencesProtocol
+    private(set) var appInitialized = false
     private var folderPresenters: [DirectoryFilePresenter] = []
     
     private let eventSubject = PassthroughSubject<AppEvent, Never>()
@@ -72,10 +73,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     private func cleanupNotNeededData() async {
-        try? await dataManager.cleanOrphanedItems()
-        try? await dataManager.cleanOrphanedItemImages()
-        try? await dataManager.cleanOrphanedCardImages()
-        try? await dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
+        if preferences.isCloudSyncEnabled {
+            // TODO: implement...
+        } else {
+            try? await dataManager.cleanOrphanedItems()
+            try? await dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
+            try? await dataManager.cleanOrphanedItemImages()
+            try? await dataManager.cleanOrphanedCardImages()
+        }
     }
     
 #if DEBUG
@@ -123,20 +128,26 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
 #endif
     
     func performOnStartTasks() async {
+        print("AppCoordinator.performOnStartTasks()")
         await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
+        appInitialized = true
     }
     
     func performOnForegroundTasks() async {
+        while !appInitialized {
+            await Task.yield()
+        }
+        print("AppCoordinator.performOnForegroundTasks()")
         let now = Date()
-        if preferences.isStartupCleaningAllowed,
-           let lastCleanupDate = preferences.lastCleanupDate {
+        
+        if let lastCleanupDate = preferences.lastCleanupDate {
             let hoursSince = now.timeIntervalSince(lastCleanupDate) / 3600
             if hoursSince > AppConstants.cleanupIntervalHours {
                 print("Performing cleanup tasks – last run was: \(lastCleanupDate)")
-                await cleanupNotNeededData()
+                Task(priority: .background) {
+                    await cleanupNotNeededData()
+                }
                 preferences.lastCleanupDate = now
-            } else {
-                print("Skipping cleanup. Last run: \(lastCleanupDate), \(Int(hoursSince))h ago.")
             }
         } else {
             preferences.lastCleanupDate = now
