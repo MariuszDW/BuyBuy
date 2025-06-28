@@ -15,5 +15,5 @@ protocol ImageStorageProtocol: Sendable {
     func deleteImage(baseFileName: String, types: [ImageType]) async throws
     func listImageBaseNames(type: ImageType) async throws -> Set<String>
     func directoryURL(for type: ImageType) async -> URL?
-    func forceDownloadImages(type: ImageType) async throws
+    func forceDownloadImages(type: ImageType, onlyHiddenFiles: Bool) async throws
 }

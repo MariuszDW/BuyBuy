@@ -185,29 +185,35 @@ actor ImageStorage: ImageStorageProtocol {
         return imagesFolderURL
     }
     
-    func forceDownloadImages(type: ImageType) async throws {
+    func forceDownloadImages(type: ImageType, onlyHiddenFiles: Bool) async throws {
+        print("ImageStorage.forceDownloadImages(\(type), onlyHiddenFiles: \(onlyHiddenFiles))")
         guard useCloudSync == true else { return }
         let fileManager = FileManager.default
         guard let directoryURL = await directoryURL(for: type) else { return }
         
-        let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: [.ubiquitousItemDownloadingStatusKey], options: [])
+        let resourceKeys: Set<URLResourceKey> = [.ubiquitousItemDownloadingStatusKey, .isUbiquitousItemKey]
+        let fileURLs = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: Array(resourceKeys), options: [])
         
         for fileURL in fileURLs {
             let fileName = fileURL.lastPathComponent
             
-            if fileName.hasPrefix(".") {
-                let resourceValues = try fileURL.resourceValues(forKeys: [.ubiquitousItemDownloadingStatusKey])
-                
-                if let status = resourceValues.ubiquitousItemDownloadingStatus {
-                    if status == URLUbiquitousItemDownloadingStatus.notDownloaded {
-                        try fileManager.startDownloadingUbiquitousItem(at: fileURL)
-                        print("Started downloading file: \(fileName)")
-                    } else {
-                        print("File \(fileName) is already downloaded or currently downloading")
-                    }
-                } else {
-                    print("Failed to read download status for file: \(fileName)")
+            if onlyHiddenFiles && !fileName.hasPrefix(".") {
+                continue
+            }
+            
+            let resourceValues = try fileURL.resourceValues(forKeys: resourceKeys)
+            
+            guard resourceValues.isUbiquitousItem == true else {
+                continue
+            }
+            
+            if let status = resourceValues.ubiquitousItemDownloadingStatus {
+                if status == .notDownloaded {
+                    try fileManager.startDownloadingUbiquitousItem(at: fileURL)
+                    print("Started downloading file: \(fileName)")
                 }
+            } else {
+                print("Failed to read download status for file: \(fileName)")
             }
         }
     }

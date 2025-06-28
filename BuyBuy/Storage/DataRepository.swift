@@ -368,4 +368,11 @@ actor DataRepository: DataRepositoryProtocol {
             return Set(allIDs)
         }
     }
+    
+    // MARK: - Force refresh database from iCloud
+    
+    nonisolated func fetchRemoteChangesFromCloudKit() {
+        print("DataRepository.fetchRemoteChangesFromCloudKit()")
+        NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+    }
 }

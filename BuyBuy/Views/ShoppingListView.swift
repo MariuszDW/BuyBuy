@@ -86,6 +86,9 @@ struct ShoppingListView: View {
             }
         }
         .animation(.default, value: list.items)
+        .refreshable {
+            await viewModel.loadList(fullRefresh: true)
+        }
     }
     
     @ViewBuilder

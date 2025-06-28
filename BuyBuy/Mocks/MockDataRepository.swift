@@ -8,6 +8,8 @@
 import Foundation
 
 actor MockDataRepository: DataRepositoryProtocol {
+    nonisolated func fetchRemoteChangesFromCloudKit() {}
+    
     let shoppingLists: [ShoppingList]
     let loyaltyCards: [LoyaltyCard]
     let deletedItems: [ShoppingItem]

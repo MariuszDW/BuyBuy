@@ -23,6 +23,7 @@ final class ShoppingListViewModel: ObservableObject {
     private let listID: UUID
     @Published var list: ShoppingList?
     @Published var thumbnails: [String: UIImage] = [:]
+    @Published var isRefreshing: Bool = false
     
     @Published var sections: [ShoppingListSection] = [
         ShoppingListSection(status: .pending),
@@ -38,16 +39,23 @@ final class ShoppingListViewModel: ObservableObject {
     
     func startObserving() {
         remoteChangeObserver.startObserving()
-        print("ShoppingListViewModel - Started observing remote changes") // TODO: temp
+        print("ShoppingListViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         remoteChangeObserver.stopObserving()
-        print("ShoppingListViewModel - Stopped observing remote changes") // TODO: temp
+        print("ShoppingListViewModel - Stopped observing remote changes")
     }
     
-    func loadList() async {
-        print("ShoppingListViewModel - loadList") // TODO: temp
+    func loadList(fullRefresh: Bool = false) async {
+        print("ShoppingListViewModel.loadList(fullRefresh: \(fullRefresh))")
+        isRefreshing = true
+        defer { isRefreshing = false }
+        
+        if fullRefresh {
+            await dataManager.refreshAllCloudData()
+        }
+        
         guard let newList = try? await dataManager.fetchList(with: listID) else { return }
         if newList != list {
             list = newList

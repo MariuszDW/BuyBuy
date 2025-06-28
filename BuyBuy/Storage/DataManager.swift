@@ -40,8 +40,8 @@ class DataManager: DataManagerProtocol {
         fileStorage = FileStorage()
         repository = DataRepository(coreDataStack: coreDataStack)
         if useCloud {
-            try? await imageStorage.forceDownloadImages(type: .itemImage)
-            try? await imageStorage.forceDownloadImages(type: .cardImage)
+            try? await imageStorage.forceDownloadImages(type: .itemImage, onlyHiddenFiles: true)
+            try? await imageStorage.forceDownloadImages(type: .cardImage, onlyHiddenFiles: true)
         }
     }
     
@@ -273,6 +273,15 @@ class DataManager: DataManagerProtocol {
     
     func listFiles() async throws -> [String] {
         return try await fileStorage.listFiles()
+    }
+    
+    // MARK: - Refresh cloud data
+    
+    func refreshAllCloudData() async {
+        guard cloud == true else { return }
+        repository.fetchRemoteChangesFromCloudKit()
+        try? await imageStorage.forceDownloadImages(type: .itemImage, onlyHiddenFiles: false)
+        try? await imageStorage.forceDownloadImages(type: .cardImage, onlyHiddenFiles: false)
     }
     
     // MARK: - Debug

@@ -60,8 +60,10 @@ protocol DataManagerProtocol {
     func deleteFile(fileName: String) async throws
     func listFiles() async throws -> [String]
     
-    // MARK: - Debug
+    // Refresh cloud data
+    func refreshAllCloudData() async
     
+    // Debug
 #if DEBUG
     func printEnvironmentPaths() async
     func printListOfImages() async

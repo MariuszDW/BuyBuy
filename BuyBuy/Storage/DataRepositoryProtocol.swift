@@ -41,4 +41,6 @@ protocol DataRepositoryProtocol: Sendable {
     
     // Loyalty images
     func fetchAllLoyaltyCardImageIDs() async throws -> Set<String>
+    
+    func fetchRemoteChangesFromCloudKit()
 }

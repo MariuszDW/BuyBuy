@@ -32,7 +32,7 @@ actor MockImageStorage: ImageStorageProtocol {
         return URL(fileURLWithPath: "")
     }
     
-    func forceDownloadImages(type: ImageType) async throws {}
+    func forceDownloadImages(type: ImageType, onlyHiddenFiles: Bool = false) async throws {}
     
     // MARK: - Helpers
     
