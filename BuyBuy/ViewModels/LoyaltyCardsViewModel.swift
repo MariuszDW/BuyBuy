@@ -26,29 +26,27 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }()
     
     init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
-        print("🧬 LoyaltyCardsViewModel init") // TODO: temp
+        print("LoyaltyCardsViewModel init")
         self.dataManager = dataManager
         self.coordinator = coordinator
     }
     
-    deinit {
-        print("💥 LoyaltyCardsViewModel deinit") // TODO: temp
-    }
-    
     func startObserving() {
         remoteChangeObserver.startObserving()
-        print("Started observing remote changes") // TODO: temp
+        print("Started observing remote changes")
     }
     
     func stopObserving() {
         remoteChangeObserver.stopObserving()
-        print("Stopped observing remote changes") // TODO: temp
+        print("Stopped observing remote changes")
     }
     
-    func loadCards() async {
-        print("LoyaltyCardsViewModel.loadCards() called")
+    func loadCards(fullRefresh: Bool = false) async {
+        print("LoyaltyCardsViewModel.loadCards(fullRefresh: \(fullRefresh))")
+        if fullRefresh {
+            await dataManager.refreshAllCloudData()
+        }
         guard let newCards = try? await dataManager.fetchLoyaltyCards() else { return }
-
         if newCards != cards {
             cards = newCards
             await loadThumbnails()

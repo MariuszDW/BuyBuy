@@ -14,6 +14,7 @@ struct LoyaltyCardsView: View {
     @State private var cardPendingDeletion: LoyaltyCard?
     @State private var isEditMode: EditMode = .inactive
     @State private var showingListView: Bool = false
+    @State private var forceRefreshDiabled = false
     
     private static let tileSize: CGFloat = 150
     
@@ -27,8 +28,16 @@ struct LoyaltyCardsView: View {
                 listView
             } else if !viewModel.cards.isEmpty {
                 cardGrids
+                    .refreshable {
+                        await forceRefresh()
+                    }
             } else {
                 emptyView
+                    .onTapGesture {
+                        Task {
+                            await forceRefresh()
+                        }
+                    }
             }
             
             Spacer(minLength: 0)
@@ -267,6 +276,14 @@ struct LoyaltyCardsView: View {
             }
         }
         .padding()
+    }
+    
+    private func forceRefresh() async {
+        guard forceRefreshDiabled == false else { return }
+        forceRefreshDiabled = true
+        await viewModel.loadCards(fullRefresh: true)
+        try? await Task.sleep(for: .seconds(1))
+        forceRefreshDiabled = false
     }
 }
 
