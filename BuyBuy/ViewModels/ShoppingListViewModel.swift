@@ -23,7 +23,6 @@ final class ShoppingListViewModel: ObservableObject {
     private let listID: UUID
     @Published var list: ShoppingList?
     @Published var thumbnails: [String: UIImage] = [:]
-    @Published var isRefreshing: Bool = false
     
     @Published var sections: [ShoppingListSection] = [
         ShoppingListSection(status: .pending),
@@ -48,16 +47,10 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func loadList(fullRefresh: Bool = false) async {
-        guard !isRefreshing else { return }
         print("ShoppingListViewModel.loadList(fullRefresh: \(fullRefresh))")
-        
-        isRefreshing = true
-        defer { isRefreshing = false }
-        
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
-        
         guard let newList = try? await dataManager.fetchList(with: listID) else { return }
         if newList != list {
             list = newList
