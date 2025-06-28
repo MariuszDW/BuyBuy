@@ -32,7 +32,7 @@ struct LoyaltyCardsView: View {
                         await forceRefresh()
                     }
             } else {
-                emptyView
+                noContentView
                     .onTapGesture {
                         Task {
                             await forceRefresh()
@@ -201,7 +201,7 @@ struct LoyaltyCardsView: View {
         }
     }
     
-    private var emptyView: some View {
+    private var noContentView: some View {
         GeometryReader { geometry in
             let baseSize = min(geometry.size.width, geometry.size.height)
             

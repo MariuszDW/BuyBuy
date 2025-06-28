@@ -36,7 +36,7 @@ struct DeletedItemsView: View {
                     await forceRefresh()
                 }
             } else {
-                emptyView()
+                noContnetView
                     .onTapGesture {
                         Task {
                             await forceRefresh()
@@ -141,7 +141,7 @@ struct DeletedItemsView: View {
     }
     
     @ViewBuilder
-    private func emptyView() -> some View {
+    private var noContnetView: some View {
         if viewModel.items != nil {
             GeometryReader { geometry in
                 let baseSize = min(geometry.size.width, geometry.size.height)

@@ -24,7 +24,7 @@ struct ShoppingListView: View {
                     .environment(\.editMode, $isEditMode)
                     .listStyle(.grouped)
             } else {
-                emptyView()
+                noContentView
                     .onAppear {
                         isEditMode = .inactive
                     }
@@ -233,7 +233,7 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func emptyView() -> some View {
+    private var noContentView: some View {
         if let list = viewModel.list {
             GeometryReader { geometry in
                 let baseSize = min(geometry.size.width, geometry.size.height)

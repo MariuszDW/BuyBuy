@@ -26,7 +26,7 @@ struct ShoppingListsView: View {
                 shoppingListsView
                     .environment(\.editMode, $isEditMode)
             } else {
-                emptyView(angle: basketAngle)
+                noContentView(angle: basketAngle)
                     .onAppear {
                         isEditMode = .inactive
                         startBasketAnimation()
@@ -273,7 +273,7 @@ struct ShoppingListsView: View {
     }
     
     @ViewBuilder
-    private func emptyView(angle: Double) -> some View {
+    private func noContentView(angle: Double) -> some View {
         GeometryReader { geometry in
             let baseSize = min(geometry.size.width, geometry.size.height)
             let listImageSize = baseSize * 0.8

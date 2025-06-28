@@ -62,7 +62,7 @@ struct FullScreenImageView: View {
             .animation(.easeOut(duration: 0.25), value: dragOffset)
 
         case .failure:
-            emptyView
+            noContnetView
         }
     }
 
@@ -75,7 +75,7 @@ struct FullScreenImageView: View {
         }
     }
 
-    private var emptyView: some View {
+    private var noContnetView: some View {
         GeometryReader { geometry in
             let baseSize = min(geometry.size.width, geometry.size.height)
 
