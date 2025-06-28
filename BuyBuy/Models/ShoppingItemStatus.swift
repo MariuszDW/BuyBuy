@@ -27,7 +27,7 @@ enum ShoppingItemStatus: String, CaseIterable, Hashable {
     var checkBoxImageName: String {
         switch self {
         case .pending: return "circle"
-        case .purchased: return "inset.filled.circle"
+        case .purchased: return "checkmark.circle.fill"
         case .inactive: return "pause.circle"
         }
     }
