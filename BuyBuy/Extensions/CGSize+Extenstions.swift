@@ -15,4 +15,12 @@ extension CGSize {
     var isPortrait: Bool {
         height >= width
     }
+    
+    var shorterSide: CGFloat {
+        min(width, height)
+    }
+    
+    var longerSide: CGFloat {
+        max(width, height)
+    }
 }

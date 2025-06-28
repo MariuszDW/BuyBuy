@@ -275,53 +275,76 @@ struct ShoppingListsView: View {
     @ViewBuilder
     private func noContentView(angle: Double) -> some View {
         GeometryReader { geometry in
-            let baseSize = min(geometry.size.width, geometry.size.height)
-            let listImageSize = baseSize * 0.8
-            let basketImageSize = baseSize * 0.4
-            
-            VStack() {
-                Spacer()
-                
-                ZStack {
-                    Image(systemName: "list.bullet.clipboard.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: listImageSize, height: listImageSize)
-                        .foregroundColor(.bb.text.quaternary)
-                    
-                    Image(systemName: "basket.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: basketImageSize, height: basketImageSize)
-                        .foregroundColor(.bb.text.quaternary)
-                        .offset(x: -basketImageSize * 0.5, y: 0)
-                        .rotationEffect(Angle(degrees: angle), anchor: .topLeading)
-                        .offset(x: basketImageSize * 0.5, y: 0)
-                        .offset(x: listImageSize * 0.2, y: listImageSize * 0.36)
-                        .shadow(color: .black.opacity(0.4), radius: 6)
+            Group {
+                if geometry.size.isPortrait {
+                    VStack() {
+                        Spacer()
+                        Spacer()
+                        noContnetImageView(angle: angle, containerSize: geometry.size)
+                        Spacer(minLength: 64)
+                        VStack(spacing: 24) {
+                            noContnetTitleView()
+                            noContnetMessageView()
+                        }
+                        Spacer()
+                        Spacer()
+                    }
+                } else {
+                    HStack {
+                        Spacer(minLength: 32)
+                        noContnetImageView(angle: angle, containerSize: geometry.size)
+                        Spacer(minLength: 24)
+                        VStack(alignment: .leading, spacing: 24) {
+                            noContnetTitleView(landscape: true)
+                            noContnetMessageView(landscape: true)
+                        }
+                        Spacer(minLength: 32)
+                    }
                 }
-                
-                Spacer()
-                
-                Text("lists_empty_view_title")
-                    .font(.boldDynamic(style: .title2))
-                    .foregroundColor(.bb.text.tertiary)
-                    .multilineTextAlignment(.center)
-                
-                Spacer()
-                
-                Text("lists_empty_view_message")
-                    .font(.boldDynamic(style: .headline))
-                    .foregroundColor(.bb.text.tertiary)
-                    .multilineTextAlignment(.center)
-                
-                Spacer()
             }
             .frame(maxWidth: .infinity)
             .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 32)
         .padding(.vertical, 40)
+    }
+    
+    func noContnetImageView(angle: Double, containerSize: CGSize) -> some View {
+        let listImageSize = min(containerSize.shorterSide * 0.7, containerSize.longerSide * 0.4)
+        let basketImageSize = listImageSize * 0.5
+        
+        return ZStack {
+            Image(systemName: "list.bullet.clipboard.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: listImageSize, height: listImageSize)
+                .foregroundColor(.bb.text.quaternary)
+            
+            Image(systemName: "basket.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: basketImageSize, height: basketImageSize)
+                .foregroundColor(.bb.text.quaternary)
+                .offset(x: -basketImageSize * 0.5, y: 0)
+                .rotationEffect(Angle(degrees: angle), anchor: .topLeading)
+                .offset(x: basketImageSize * 0.5, y: 0)
+                .offset(x: listImageSize * 0.2, y: listImageSize * 0.36)
+                .shadow(color: .black.opacity(0.4), radius: 5)
+        }
+    }
+    
+    func noContnetTitleView(landscape: Bool = false) -> some View {
+        Text("lists_empty_view_title")
+            .font(.boldDynamic(style: .title2))
+            .foregroundColor(.bb.text.tertiary)
+            .multilineTextAlignment(landscape ? .leading : .center)
+    }
+    
+    func noContnetMessageView(landscape: Bool = false) -> some View {
+        Text("lists_empty_view_message")
+            .font(.boldDynamic(style: .headline))
+            .foregroundColor(.bb.text.tertiary)
+            .multilineTextAlignment(landscape ? .leading : .center)
     }
     
     // MARK: - Private
