@@ -11,6 +11,7 @@ struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
     @State private var isEditMode: EditMode = .inactive
     @State private var showDeletePurchasedAlert = false
+    @State private var forceRefreshDiabled = false
     
     init(viewModel: ShoppingListViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -26,6 +27,11 @@ struct ShoppingListView: View {
                 emptyView()
                     .onAppear {
                         isEditMode = .inactive
+                    }
+                    .onTapGesture {
+                        Task {
+                            await forceRefresh()
+                        }
                     }
             }
             
@@ -87,7 +93,7 @@ struct ShoppingListView: View {
         }
         .animation(.default, value: list.items)
         .refreshable {
-            await viewModel.loadList(fullRefresh: true)
+            await forceRefresh()
         }
     }
     
@@ -366,6 +372,14 @@ struct ShoppingListView: View {
     
     private func handleDeleteTapped(for item: ShoppingItem) async {
         await viewModel.moveItemToDeleted(with: item.id)
+    }
+    
+    private func forceRefresh() async {
+        guard forceRefreshDiabled == false else { return }
+        forceRefreshDiabled = true
+        await viewModel.loadList(fullRefresh: true)
+        try? await Task.sleep(for: .seconds(1))
+        forceRefreshDiabled = false
     }
 }
 
