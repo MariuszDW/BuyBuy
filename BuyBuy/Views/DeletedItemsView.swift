@@ -10,6 +10,7 @@ import SwiftUI
 struct DeletedItemsView: View {
     @StateObject var viewModel: DeletedItemsViewModel
     @State private var showDeleteAllItemsAlert = false
+    @State private var forceRefreshDiabled = false
     
     init(viewModel: DeletedItemsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -19,11 +20,10 @@ struct DeletedItemsView: View {
         VStack(spacing: 0) {
             if let items = viewModel.items, items.count > 0 {
                 List {
-                    Section(header:
-                        Text("deleted_items_info")
-                            .foregroundColor(Color.bb.text.tertiary)
-                            .font(.regularDynamic(style: .subheadline))
-                            .padding(.bottom, 4)
+                    Section(header: Text("deleted_items_info")
+                        .foregroundColor(Color.bb.text.tertiary)
+                        .font(.regularDynamic(style: .subheadline))
+                        .padding(.bottom, 4)
                     ) {
                         ForEach(items) { item in
                             itemView(item: item)
@@ -32,8 +32,16 @@ struct DeletedItemsView: View {
                 }
                 .listStyle(.plain)
                 .animation(.default, value: items)
+                .refreshable {
+                    await forceRefresh()
+                }
             } else {
                 emptyView()
+                    .onTapGesture {
+                        Task {
+                            await forceRefresh()
+                        }
+                    }
             }
         }
         .toolbar {
@@ -166,6 +174,14 @@ struct DeletedItemsView: View {
             ProgressView()
                 .padding()
         }
+    }
+    
+    private func forceRefresh() async {
+        guard forceRefreshDiabled == false else { return }
+        forceRefreshDiabled = true
+        await viewModel.loadItems(fullRefresh: true)
+        try? await Task.sleep(for: .seconds(1))
+        forceRefreshDiabled = false
     }
 }
 

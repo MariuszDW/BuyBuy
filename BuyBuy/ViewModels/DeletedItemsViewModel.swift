@@ -38,8 +38,11 @@ final class DeletedItemsViewModel: ObservableObject {
         print("DeletedItemsViewModel - Stopped observing remote changes") // TODO: temp
     }
     
-    func loadItems() async {
-        print("DeletedItemsViewModel - loadItems") // TODO: temp
+    func loadItems(fullRefresh: Bool = false) async {
+        print("DeletedItemsViewModel.loadItems(fullRefresh: \(fullRefresh))")
+        if fullRefresh {
+            await dataManager.refreshAllCloudData()
+        }
         guard let newItems = try? await dataManager.fetchDeletedItems() else { return }
         if newItems != items {
             items = newItems
