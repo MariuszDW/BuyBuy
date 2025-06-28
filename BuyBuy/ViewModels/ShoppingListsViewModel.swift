@@ -29,16 +29,19 @@ class ShoppingListsViewModel: ObservableObject {
     
     func startObserving() {
         remoteChangeObserver.startObserving()
-        print("ShoppingListsViewModel - Started observing remote changes") // TODO: temp
+        print("ShoppingListsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         remoteChangeObserver.stopObserving()
-        print("ShoppingListsViewModel - Stopped observing remote changes") // TODO: temp
+        print("ShoppingListsViewModel - Stopped observing remote changes")
     }
     
-    func loadLists() async {
-        print("ShoppingListsViewModel - loadLists") // TODO: temp
+    func loadLists(fullRefresh: Bool = false) async {
+        print("ShoppingListsViewModel.loadLists(fullRefresh: \(fullRefresh))")
+        if fullRefresh {
+            await dataManager.refreshAllCloudData()
+        }
         guard let newShoppingLists = try? await dataManager.fetchAllLists() else { return }
         if shoppingLists != newShoppingLists {
             shoppingLists = newShoppingLists

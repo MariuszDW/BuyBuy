@@ -14,6 +14,7 @@ struct ShoppingListsView: View {
     @State private var listPendingDeletion: ShoppingList?
     @State private var basketAngle: Double = 0
     @State private var animationTimer: Timer? = nil
+    @State private var forceRefreshDiabled = false
     
     init(viewModel: ShoppingListsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -32,6 +33,11 @@ struct ShoppingListsView: View {
                     }
                     .onDisappear {
                         stopBasketAnimation()
+                    }
+                    .onTapGesture {
+                        Task {
+                            await forceRefresh()
+                        }
                     }
             }
             
@@ -146,6 +152,9 @@ struct ShoppingListsView: View {
             }
         }
         .listStyle(.plain)
+        .refreshable {
+            await forceRefresh()
+        }
     }
     
     private func listRow(for list: ShoppingList) -> some View {
@@ -308,6 +317,14 @@ struct ShoppingListsView: View {
     }
     
     // MARK: - Private
+    
+    private func forceRefresh() async {
+        guard forceRefreshDiabled == false else { return }
+        forceRefreshDiabled = true
+        await viewModel.loadLists(fullRefresh: true)
+        try? await Task.sleep(for: .seconds(1))
+        forceRefreshDiabled = false
+    }
     
     private func startBasketAnimation() {
         animationTimer?.invalidate()
