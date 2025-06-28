@@ -143,33 +143,10 @@ struct DeletedItemsView: View {
     @ViewBuilder
     private var noContnetView: some View {
         if viewModel.items != nil {
-            GeometryReader { geometry in
-                let baseSize = min(geometry.size.width, geometry.size.height)
-                
-                VStack(spacing: 50) {
-                    AnimatedIconView(
-                        image: Image(systemName: "trash.fill"),
-                        color: Color.bb.text.tertiary.opacity(0.5),
-                        size: baseSize * 0.5,
-                        response: 0.8,
-                        dampingFraction: 0.3
-                    )
-                    
-                    Text("no_deleted_items")
-                        .font(.boldDynamic(style: .title2))
-                        .foregroundColor(.bb.text.tertiary)
-                        .multilineTextAlignment(.center)
-                    
-                    Text("deleted_items_info")
-                        .font(.boldDynamic(style: .headline))
-                        .foregroundColor(.bb.text.tertiary)
-                        .multilineTextAlignment(.center)
-                }
-                .frame(maxWidth: .infinity)
-                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 40)
+            NoContnetView(title: String(localized: "no_deleted_items"),
+                          message: String(localized: "deleted_items_info"),
+                          image: Image(systemName: "trash.fill"),
+                          color: Color.bb.text.tertiary)
         } else {
             ProgressView()
                 .padding()
