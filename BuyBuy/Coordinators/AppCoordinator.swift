@@ -13,9 +13,9 @@ import Combine
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
+    private var preferences: AppPreferencesProtocol
     private let dataManager: DataManager
-    var preferences: AppPreferencesProtocol
-    private(set) var appInitialized = false
+    private var appInitialized = false
     private var folderPresenters: [DirectoryFilePresenter] = []
     
     private let eventSubject = PassthroughSubject<AppEvent, Never>()
@@ -68,91 +68,13 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         }
         
 #if DEBUG
-        await printAppSandboxPaths() // TODO: temporary, think about better place
+        // TODO: temporary, think about better place
+        await dataManager.printEnvironmentPaths()
+        await dataManager.printListOfImages()
 #endif
     }
     
-    private func cleanupNotNeededData() async {
-        if preferences.isCloudSyncEnabled {
-            // TODO: implement...
-        } else {
-            try? await dataManager.cleanOrphanedItems()
-            try? await dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
-            try? await dataManager.cleanOrphanedItemImages()
-            try? await dataManager.cleanOrphanedCardImages()
-        }
-    }
-    
-#if DEBUG
-    private func printAppSandboxPaths() async {
-        let fileManager = FileManager.default
-        
-        if let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-            print("Documents: \(documents.path)")
-        }
-        
-        if let caches = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
-            print("Caches: \(caches.path)")
-        }
-        
-        if let preferences = fileManager
-            .urls(for: .libraryDirectory, in: .userDomainMask)
-            .first?
-            .appendingPathComponent("Preferences")
-        {
-            print("Preferences: \(preferences.path)")
-        }
-        
-        let tmp = NSTemporaryDirectory()
-        print("tmp: \(tmp)")
-        
-        if let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
-            print("iCloud container: \(ubiquityURL.path)")
-            print("iCloud Documents: \(ubiquityURL.appendingPathComponent("Documents").path)")
-        } else {
-            print("iCloud container is not available.")
-        }
-        
-        let itemImagesFolder = await dataManager.imageStorage.directoryURL(for: .itemImage)
-        let cardImagesFolder = await dataManager.imageStorage.directoryURL(for: .cardImage)
-        print("Item images folder: \(itemImagesFolder?.absoluteString ?? "error")")
-        print("Card images folder: \(cardImagesFolder?.absoluteString ?? "error")")
-        
-        let itemImages = try? await dataManager.imageStorage.listImageBaseNames(type: .itemImage)
-        let cardImages = try? await dataManager.imageStorage.listImageBaseNames(type: .cardImage)
-        print("List of item images:")
-        itemImages?.forEach { print(" •", $0) }
-        print("List of card images:")
-        cardImages?.forEach { print(" •", $0) }
-    }
-#endif
-    
-    func performOnStartTasks() async {
-        print("AppCoordinator.performOnStartTasks()")
-        await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
-        appInitialized = true
-    }
-    
-    func performOnForegroundTasks() async {
-        while !appInitialized {
-            await Task.yield()
-        }
-        print("AppCoordinator.performOnForegroundTasks()")
-        let now = Date()
-        
-        if let lastCleanupDate = preferences.lastCleanupDate {
-            let hoursSince = now.timeIntervalSince(lastCleanupDate) / 3600
-            if hoursSince > AppConstants.cleanupIntervalHours {
-                print("Performing cleanup tasks – last run was: \(lastCleanupDate)")
-                Task(priority: .background) {
-                    await cleanupNotNeededData()
-                }
-                preferences.lastCleanupDate = now
-            }
-        } else {
-            preferences.lastCleanupDate = now
-        }
-    }
+    // MARK: - Navigation and Sheet Management
     
     func openShoppingList(_ id: UUID) {
         navigationPath.append(AppRoute.shoppingList(id))
@@ -239,14 +161,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         }
     }
     
-    func handleMemoryWarning() {
-        print("Received memory warning")
-        let dataManager = dataManager
-        Task { @MainActor in
-            await dataManager.cleanImageCache()
-        }
-    }
-
+    // MARK: - View builders
+    
     @ViewBuilder
     func view(for route: AppRoute) -> some View {
         switch route {
@@ -377,6 +293,71 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 fileName: exportData.fileName,
                 fileExtension: exportData.fileExtension
             )
+        }
+    }
+    
+    // MARK: - App launch
+    
+    func performOnStartTasks() async {
+        await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
+        appInitialized = true
+    }
+    
+    // MARK: - App entering foreground
+    
+    func performOnForegroundTasks() async {
+        while !appInitialized {
+            await Task.yield()
+        }
+
+        let now = Date()
+
+        if let lastCleanupDate = preferences.lastCleanupDate {
+            let secondsSince = now.timeIntervalSince(lastCleanupDate)
+            let minutesSince = secondsSince / 60
+            print("Last cleanup was: \(secondsSince.formattedDuration) ago (\(lastCleanupDate)).")
+            if minutesSince > AppConstants.cleanupIntervalMinutes {
+                print("Performing cleanup tasks.")
+                Task(priority: .background) {
+                    await cleanupNotNeededData()
+                }
+                preferences.lastCleanupDate = now
+            } else {
+                print("Cleanup tasks not needed yet.")
+            }
+        } else {
+            preferences.lastCleanupDate = now
+        }
+    }
+    
+    private func cleanupNotNeededData() async {
+        if preferences.isCloudSyncEnabled {
+            let success = await RemoteChangeObserver().waitForRemoteChange(timeout: AppConstants.remoteChangeTimeoutSeconds)
+            if success {
+                try? await Task.sleep(for: .seconds(4))
+            } else {
+                print("Timeout – no remote change received, skipping cleanup.")
+                return
+            }
+        }
+
+        do {
+            try await dataManager.cleanOrphanedItems()
+            try await dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
+            try await dataManager.cleanOrphanedItemImages()
+            try await dataManager.cleanOrphanedCardImages()
+        } catch {
+            print("Error during unnecessary data cleaning: \(error.localizedDescription)")
+        }
+    }
+    
+    // MARK: - Handle memory warning
+    
+    func handleMemoryWarning() {
+        print("Received memory warning")
+        let dataManager = dataManager
+        Task { @MainActor in
+            await dataManager.cleanImageCache()
         }
     }
 }

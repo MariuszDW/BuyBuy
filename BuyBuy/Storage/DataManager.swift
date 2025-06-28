@@ -274,4 +274,52 @@ class DataManager: DataManagerProtocol {
     func listFiles() async throws -> [String] {
         return try await fileStorage.listFiles()
     }
+    
+    // MARK: - Debug
+    
+#if DEBUG
+    func printEnvironmentPaths() async {
+        let fileManager = FileManager.default
+        
+        if let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+            print("Documents: \(documents.path)")
+        }
+        
+        if let caches = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+            print("Caches: \(caches.path)")
+        }
+        
+        if let preferences = fileManager
+            .urls(for: .libraryDirectory, in: .userDomainMask)
+            .first?
+            .appendingPathComponent("Preferences")
+        {
+            print("Preferences: \(preferences.path)")
+        }
+        
+        let tmp = NSTemporaryDirectory()
+        print("tmp: \(tmp)")
+        
+        if let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
+            print("iCloud container: \(ubiquityURL.path)")
+            print("iCloud Documents: \(ubiquityURL.appendingPathComponent("Documents").path)")
+        } else {
+            print("iCloud container is not available.")
+        }
+        
+        let itemImagesFolder = await imageStorage.directoryURL(for: .itemImage)
+        let cardImagesFolder = await imageStorage.directoryURL(for: .cardImage)
+        print("Item images folder: \(itemImagesFolder?.absoluteString ?? "error")")
+        print("Card images folder: \(cardImagesFolder?.absoluteString ?? "error")")
+    }
+    
+    func printListOfImages() async {
+        let itemImages = try? await imageStorage.listImageBaseNames(type: .itemImage)
+        let cardImages = try? await imageStorage.listImageBaseNames(type: .cardImage)
+        print("List of item images:")
+        itemImages?.forEach { print(" •", $0) }
+        print("List of card images:")
+        cardImages?.forEach { print(" •", $0) }
+    }
+#endif
 }
