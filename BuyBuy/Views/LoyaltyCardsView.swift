@@ -10,7 +10,7 @@ import Combine
 
 struct LoyaltyCardsView: View {
     @StateObject var viewModel: LoyaltyCardsViewModel
-    @State private var showActionsForIndex: Int? = nil
+    @State private var showActionsForCardAtIndex: Int? = nil
     @State private var cardPendingDeletion: LoyaltyCard?
     @State private var isEditMode: EditMode = .inactive
     @State private var showingListView: Bool = false
@@ -75,11 +75,11 @@ struct LoyaltyCardsView: View {
         .onAppear {
             viewModel.startObserving()
             Task { await viewModel.loadCards() }
-            print("LoyaltyCardsView onAppear") // TODO: temp
+            print("LoyaltyCardsView onAppear")
         }
         .onDisappear {
             viewModel.stopObserving()
-            print("LoyaltyCardsView onDisappear") // TODO: temp
+            print("LoyaltyCardsView onDisappear")
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -177,22 +177,22 @@ struct LoyaltyCardsView: View {
             name: card.name,
             thumbnail: viewModel.thumbnail(for: card.id),
             tileWidth: Self.tileSize,
-            selected: showActionsForIndex == index
+            selected: showActionsForCardAtIndex == index
         )
         .frame(width: Self.tileSize, alignment: .top)
         .onTapGesture {
             viewModel.openCardPreview(card)
         }
         .onLongPressGesture {
-            showActionsForIndex = index
+            showActionsForCardAtIndex = index
         }
         .popover(isPresented: Binding(
             get: {
-                showActionsForIndex == index
+                showActionsForCardAtIndex == index
             },
             set: { newValue in
                 if !newValue {
-                    showActionsForIndex = nil
+                    showActionsForCardAtIndex = nil
                 }
             })
         ) {
@@ -234,9 +234,9 @@ struct LoyaltyCardsView: View {
     private var cardActionMenu: some View {
         VStack(alignment: .leading, spacing: 24) {
             Button {
-                if let index = showActionsForIndex {
+                if let index = showActionsForCardAtIndex {
+                    showActionsForCardAtIndex = nil
                     viewModel.openCardPreview(at: index)
-                    showActionsForIndex = nil
                 }
             } label: {
                 HStack {
@@ -248,9 +248,9 @@ struct LoyaltyCardsView: View {
             }
             
             Button {
-                if let index = showActionsForIndex {
+                if let index = showActionsForCardAtIndex {
+                    showActionsForCardAtIndex = nil
                     viewModel.openCardDetails(at: index)
-                    showActionsForIndex = nil
                 }
             } label: {
                 HStack {
@@ -262,9 +262,12 @@ struct LoyaltyCardsView: View {
             }
             
             Button {
-                if let index = showActionsForIndex, index < viewModel.cards.count {
-                    cardPendingDeletion = viewModel.cards[index]
-                    showActionsForIndex = nil
+                if let index = showActionsForCardAtIndex, index < viewModel.cards.count {
+                    showActionsForCardAtIndex = nil
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .microseconds(500))
+                        cardPendingDeletion = viewModel.cards[index]
+                    }
                 }
             } label: {
                 HStack {
