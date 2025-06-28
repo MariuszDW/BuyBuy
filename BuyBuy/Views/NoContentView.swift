@@ -33,7 +33,7 @@ struct NoContnetView: View {
                     HStack {
                         Spacer(minLength: 32)
                         noContnetImageView(containerSize: geometry.size)
-                        Spacer(minLength: 32)
+                        Spacer(minLength: 56)
                         VStack(alignment: .leading, spacing: 24) {
                             noContnetTitleView(landscape: true)
                             noContnetMessageView(landscape: true)
@@ -50,7 +50,7 @@ struct NoContnetView: View {
     }
     
     func noContnetImageView(containerSize: CGSize) -> some View {
-        let imageSize = min(containerSize.shorterSide * 0.55, containerSize.longerSide * 0.4)
+        let imageSize = min(containerSize.shorterSide * 0.6, containerSize.longerSide * 0.3)
         return AnimatedIconView(
             image: image,
             color: color.opacity(0.5),
