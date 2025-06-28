@@ -50,7 +50,7 @@ struct NoContnetView: View {
     }
     
     func noContnetImageView(containerSize: CGSize) -> some View {
-        let imageSize = min(containerSize.shorterSide * 0.6, containerSize.longerSide * 0.3)
+        let imageSize = min(containerSize.shorterSide * 0.6, containerSize.longerSide * 0.4)
         return AnimatedIconView(
             image: image,
             color: color.opacity(0.5),
