@@ -36,12 +36,12 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     
     func startObserving() {
         remoteChangeObserver.startObserving()
-        print("ShoppingListSettingsViewModel - Started observing remote changes") // TODO: temp
+        print("ShoppingListSettingsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         remoteChangeObserver.stopObserving()
-        print("ShoppingListSettingsViewModel - Stopped observing remote changes") // TODO: temp
+        print("ShoppingListSettingsViewModel - Stopped observing remote changes")
     }
     
     var canConfirm: Bool {

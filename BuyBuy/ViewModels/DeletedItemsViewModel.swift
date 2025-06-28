@@ -30,12 +30,12 @@ final class DeletedItemsViewModel: ObservableObject {
     
     func startObserving() {
         remoteChangeObserver.startObserving()
-        print("DeletedItemsViewModel - Started observing remote changes") // TODO: temp
+        print("DeletedItemsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         remoteChangeObserver.stopObserving()
-        print("DeletedItemsViewModel - Stopped observing remote changes") // TODO: temp
+        print("DeletedItemsViewModel - Stopped observing remote changes")
     }
     
     func loadItems(fullRefresh: Bool = false) async {

@@ -94,12 +94,12 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func startObserving() {
         remoteChangeObserver.startObserving()
-        print("ShoppingItemDetailsViewModel - Started observing remote changes") // TODO: temp
+        print("ShoppingItemDetailsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         remoteChangeObserver.stopObserving()
-        print("ShoppingItemDetailsViewModel - Stopped observing remote changes") // TODO: temp
+        print("ShoppingItemDetailsViewModel - Stopped observing remote changes")
     }
     
     lazy var unitList: [(name: String, units: [MeasuredUnit])] = {

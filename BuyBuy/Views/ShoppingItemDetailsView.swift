@@ -80,11 +80,11 @@ struct ShoppingItemDetailsView: View {
             }
         }
         .onAppear {
-            print("ShoppingItemDetailsView onAppear") // TODO: temp
+            print("ShoppingItemDetailsView onAppear")
             viewModel.startObserving()
         }
         .onDisappear {
-            print("ShoppingItemDetailsView onDisappear") // TODO: temp
+            print("ShoppingItemDetailsView onDisappear")
             viewModel.stopObserving()
             Task { await viewModel.didFinishEditing() }
         }

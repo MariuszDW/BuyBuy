@@ -36,12 +36,12 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     
     func startObserving() {
         remoteChangeObserver.startObserving()
-        print("LoyaltyCardDetailsViewModel - Started observing remote changes") // TODO: temp
+        print("LoyaltyCardDetailsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         remoteChangeObserver.stopObserving()
-        print("LoyaltyCardDetailsViewModel - Stopped observing remote changes") // TODO: temp
+        print("LoyaltyCardDetailsViewModel - Stopped observing remote changes")
     }
     
     func loadCard() async {

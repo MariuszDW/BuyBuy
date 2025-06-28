@@ -26,19 +26,18 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }()
     
     init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
-        print("LoyaltyCardsViewModel init")
         self.dataManager = dataManager
         self.coordinator = coordinator
     }
     
     func startObserving() {
         remoteChangeObserver.startObserving()
-        print("Started observing remote changes")
+        print("LoyaltyCardsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         remoteChangeObserver.stopObserving()
-        print("Stopped observing remote changes")
+        print("LoyaltyCardsViewModel - Stopped observing remote changes")
     }
     
     func loadCards(fullRefresh: Bool = false) async {
