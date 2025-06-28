@@ -44,32 +44,32 @@ final class PersistentStoreChangeObserver {
     }
     
     private func observeRemoteChanges() {
-        print("👁️ observeRemoteChanges called")
-
+        print("PersistentStoreChangeObserver.observeRemoteChanges() called")
+        
         cancellable = NotificationCenter.default
             .publisher(for: .NSPersistentStoreRemoteChange)
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] notification in
                 guard let self = self else { return }
-
+                
                 let onChange = self.onChange
-
+                
                 if let userInfo = notification.userInfo,
                    let newToken = userInfo["historyToken"] as? NSPersistentHistoryToken {
-
+                    
                     if self.processedTokens.contains(where: { $0.isEqual(newToken) }) {
-                        print("🔇 Ignoring duplicate historyToken")
+                        print("Ignoring duplicate historyToken")
                         return
                     }
-
+                    
                     self.processedTokens.append(newToken)
                     if self.processedTokens.count > self.maxTokenHistory {
                         self.processedTokens.removeFirst()
                     }
-
+                    
                     print("New historyToken, reloading...")
                     Task { @MainActor in await onChange() }
-
+                    
                 } else {
                     let now = Date()
                     if let last = self.lastAnonymousReloadDate,
@@ -77,7 +77,7 @@ final class PersistentStoreChangeObserver {
                         print("Skipping anonymous reload — throttled")
                         return
                     }
-
+                    
                     self.lastAnonymousReloadDate = now
                     print("Reloading on anonymous change")
                     Task { @MainActor in await onChange() }
