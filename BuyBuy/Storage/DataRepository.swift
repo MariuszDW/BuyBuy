@@ -49,7 +49,10 @@ actor DataRepository: DataRepositoryProtocol {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-            request.sortDescriptors = [NSSortDescriptor(keyPath: \ShoppingListEntity.order, ascending: true)]
+            request.sortDescriptors = [
+                NSSortDescriptor(keyPath: \ShoppingListEntity.order, ascending: true),
+                NSSortDescriptor(keyPath: \ShoppingListEntity.id, ascending: true)
+            ]
             let entities = try context.fetch(request)
             return entities.map(ShoppingList.init)
         }
@@ -119,7 +122,10 @@ actor DataRepository: DataRepositoryProtocol {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            request.sortDescriptors = [NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: true)]
+            request.sortDescriptors = [
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: true),
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.id, ascending: true)
+            ]
             let entities = try context.fetch(request)
             return entities.map(ShoppingItem.init)
         }
@@ -130,7 +136,10 @@ actor DataRepository: DataRepositoryProtocol {
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
             request.predicate = NSPredicate(format: "list.id == %@", listID as CVarArg)
-            request.sortDescriptors = [NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: true)]
+            request.sortDescriptors = [
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: true),
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.id, ascending: true)
+            ]
             let entities = try context.fetch(request)
             return entities.map(ShoppingItem.init)
         }
@@ -167,7 +176,10 @@ actor DataRepository: DataRepositoryProtocol {
                 NSPredicate(format: "deletedAt != nil"),
                 NSPredicate(format: "list == nil")
             ])
-            request.sortDescriptors = [NSSortDescriptor(key: "deletedAt", ascending: false)]
+            request.sortDescriptors = [
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.deletedAt, ascending: false),
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.id, ascending: true)
+            ]
             let entities = try context.fetch(request)
             return entities.map(ShoppingItem.init)
         }
@@ -178,7 +190,10 @@ actor DataRepository: DataRepositoryProtocol {
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
             request.predicate = NSPredicate(format: "list.id == %@ AND deletedAt == nil", listID as CVarArg)
-            request.sortDescriptors = [NSSortDescriptor(key: "order", ascending: false)]
+            request.sortDescriptors = [
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: false),
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.id, ascending: false)
+            ]
             request.fetchLimit = 1
 
             let result = try context.fetch(request).first
@@ -293,7 +308,10 @@ actor DataRepository: DataRepositoryProtocol {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
-            request.sortDescriptors = [NSSortDescriptor(keyPath: \LoyaltyCardEntity.order, ascending: true)]
+            request.sortDescriptors = [
+                NSSortDescriptor(keyPath: \LoyaltyCardEntity.order, ascending: true),
+                NSSortDescriptor(keyPath: \LoyaltyCardEntity.id, ascending: true)
+            ]
             let entities = try context.fetch(request)
             return entities.map(LoyaltyCard.init)
         }
