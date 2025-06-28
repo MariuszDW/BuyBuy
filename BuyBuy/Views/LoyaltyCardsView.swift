@@ -202,33 +202,10 @@ struct LoyaltyCardsView: View {
     }
     
     private var noContentView: some View {
-        GeometryReader { geometry in
-            let baseSize = min(geometry.size.width, geometry.size.height)
-            
-            VStack(spacing: 50) {
-                AnimatedIconView(
-                    image: Image(systemName: "creditcard.fill"),
-                    color: .bb.text.quaternary,
-                    size: baseSize * 0.5,
-                    response: 0.8,
-                    dampingFraction: 0.3
-                )
-                
-                Text("card_empty_view_title")
-                    .font(.boldDynamic(style: .title2))
-                    .foregroundColor(.bb.text.tertiary)
-                    .multilineTextAlignment(.center)
-                
-                Text("card_empty_view_message")
-                    .font(.boldDynamic(style: .headline))
-                    .foregroundColor(.bb.text.tertiary)
-                    .multilineTextAlignment(.center)
-            }
-            .frame(maxWidth: .infinity)
-            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
-        }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 40)
+        NoContnetView(title: String(localized: "card_empty_view_title"),
+                      message: String(localized: "card_empty_view_message"),
+                      image: Image(systemName: "creditcard.fill"),
+                      color: .bb.text.quaternary)
     }
 
     private var cardActionMenu: some View {
