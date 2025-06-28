@@ -9,7 +9,7 @@ import Foundation
 
 struct AppConstants {
     static let autoDeleteAfterDays: Int = 30 // TODO: It should be set in the application settings.
-    static let cleanupIntervalMinutes: Double =  60 * 12
+    static let cleanupIntervalMinutes: Double = 60 * 12
     static let remoteChangeTimeoutSeconds: TimeInterval = 120
     
     static let encoreContactEMail: String = "encore_contact@icloud.com"

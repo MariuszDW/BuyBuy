@@ -143,7 +143,7 @@ class DataManager: DataManagerProtocol {
     }
     
     func deleteOldTrashedItems(olderThan days: Int) async throws {
-        print("DataManager.deleteOldTrashedItems(olderThan: \(days)")
+        print("DataManager.deleteOldTrashedItems(olderThan: \(days))")
         let cutoffDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
         
         let trashedItems = try await repository.fetchDeletedItems()
