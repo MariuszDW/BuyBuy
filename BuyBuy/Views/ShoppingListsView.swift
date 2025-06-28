@@ -293,7 +293,7 @@ struct ShoppingListsView: View {
                     HStack {
                         Spacer(minLength: 32)
                         noContnetImageView(angle: angle, containerSize: geometry.size)
-                        Spacer(minLength: 24)
+                        Spacer(minLength: 56)
                         VStack(alignment: .leading, spacing: 24) {
                             noContnetTitleView(landscape: true)
                             noContnetMessageView(landscape: true)
@@ -310,7 +310,7 @@ struct ShoppingListsView: View {
     }
     
     func noContnetImageView(angle: Double, containerSize: CGSize) -> some View {
-        let listImageSize = min(containerSize.shorterSide * 0.7, containerSize.longerSide * 0.4)
+        let listImageSize = min(containerSize.shorterSide * 0.6, containerSize.longerSide * 0.4)
         let basketImageSize = listImageSize * 0.5
         
         return ZStack {
@@ -328,7 +328,7 @@ struct ShoppingListsView: View {
                 .offset(x: -basketImageSize * 0.5, y: 0)
                 .rotationEffect(Angle(degrees: angle), anchor: .topLeading)
                 .offset(x: basketImageSize * 0.5, y: 0)
-                .offset(x: listImageSize * 0.2, y: listImageSize * 0.36)
+                .offset(x: listImageSize * 0.2, y: listImageSize * 0.38)
                 .shadow(color: .black.opacity(0.4), radius: 5)
         }
     }
