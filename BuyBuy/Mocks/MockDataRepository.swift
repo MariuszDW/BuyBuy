@@ -164,7 +164,7 @@ extension MockDataRepository {
         ShoppingItem(order: 4, listID: listUUID4, name: "Dog Treats", status: .pending),
         ShoppingItem(order: 5, listID: listUUID4, name: "Cat Litter", status: .inactive),
         ShoppingItem(order: 6, listID: listUUID4, name: "Fish Tank Filter", status: .purchased)
-    ], order: 3, icon: .cat, color: .orange)
+    ], order: 3, icon: .car, color: .orange)
     
     static let list5 = ShoppingList(id: listUUID5, name: "Empty", items: [], order: 4, icon: .questionmark, color: .cyan)
     
