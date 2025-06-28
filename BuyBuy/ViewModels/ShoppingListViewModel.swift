@@ -48,7 +48,9 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func loadList(fullRefresh: Bool = false) async {
+        guard !isRefreshing else { return }
         print("ShoppingListViewModel.loadList(fullRefresh: \(fullRefresh))")
+        
         isRefreshing = true
         defer { isRefreshing = false }
         
