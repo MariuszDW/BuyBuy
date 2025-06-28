@@ -235,33 +235,10 @@ struct ShoppingListView: View {
     @ViewBuilder
     private var noContentView: some View {
         if let list = viewModel.list {
-            GeometryReader { geometry in
-                let baseSize = min(geometry.size.width, geometry.size.height)
-                
-                VStack(spacing: 50) {
-                    AnimatedIconView(
-                        image: list.icon.image,
-                        color: list.color.color.opacity(0.5),
-                        size: baseSize * 0.5,
-                        response: 0.8,
-                        dampingFraction: 0.3
-                    )
-                    
-                    Text("list_empty_view_title")
-                        .font(.boldDynamic(style: .title2))
-                        .foregroundColor(.bb.text.tertiary)
-                        .multilineTextAlignment(.center)
-                    
-                    Text("list_empty_view_message")
-                        .font(.boldDynamic(style: .headline))
-                        .foregroundColor(.bb.text.tertiary)
-                        .multilineTextAlignment(.center)
-                }
-                .frame(maxWidth: .infinity)
-                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 40)
+            NoContnetView(title: String(localized: "list_empty_view_title"),
+                          message: String(localized: "list_empty_view_message"),
+                          image: list.icon.image,
+                          color: list.color.color)
         } else {
             ProgressView()
                 .padding()
