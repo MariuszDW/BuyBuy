@@ -205,7 +205,7 @@ struct LoyaltyCardsView: View {
         NoContnetView(title: String(localized: "card_empty_view_title"),
                       message: String(localized: "card_empty_view_message"),
                       image: Image(systemName: "creditcard.fill"),
-                      color: .bb.text.quaternary)
+                      color: .bb.text.tertiary)
     }
 
     private var cardActionMenu: some View {
