@@ -279,7 +279,9 @@ struct ShoppingListsView: View {
             let listImageSize = baseSize * 0.8
             let basketImageSize = baseSize * 0.4
             
-            VStack(spacing: 50) {
+            VStack() {
+                Spacer()
+                
                 ZStack {
                     Image(systemName: "list.bullet.clipboard.fill")
                         .resizable()
@@ -299,15 +301,21 @@ struct ShoppingListsView: View {
                         .shadow(color: .black.opacity(0.4), radius: 6)
                 }
                 
+                Spacer()
+                
                 Text("lists_empty_view_title")
                     .font(.boldDynamic(style: .title2))
                     .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
                 
+                Spacer()
+                
                 Text("lists_empty_view_message")
                     .font(.boldDynamic(style: .headline))
                     .foregroundColor(.bb.text.tertiary)
                     .multilineTextAlignment(.center)
+                
+                Spacer()
             }
             .frame(maxWidth: .infinity)
             .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
