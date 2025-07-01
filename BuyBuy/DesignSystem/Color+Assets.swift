@@ -18,6 +18,11 @@ struct BBColor {
     static let grey85 = Color("Grey85")
     static let grey90 = Color("Grey90")
     
+    enum button {
+        static let background = Color("ButtonBackground")
+        static let text = Color("ButtonText")
+    }
+    
     enum sheet {
         static let background = Color("SheetBackground")
         enum section {
