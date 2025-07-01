@@ -16,7 +16,7 @@ extension Font {
         .system(style, design: .default).weight(.bold)
     }
 
-    static func titleDynamic(style: Font.TextStyle) -> Font {
+    static func semiboldDynamic(style: Font.TextStyle) -> Font {
         .system(style, design: .rounded).weight(.semibold)
     }
     
@@ -28,7 +28,7 @@ extension Font {
         .system(style, design: .monospaced).weight(.bold)
     }
     
-    static func titleMonospaced(style: Font.TextStyle) -> Font {
+    static func semiboldMonospaced(style: Font.TextStyle) -> Font {
         .system(style, design: .monospaced).weight(.semibold)
     }
 }
