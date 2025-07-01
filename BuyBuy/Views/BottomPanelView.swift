@@ -31,7 +31,7 @@ struct BottomPanelView<TrailingView: View>: View {
         HStack {
             Button(action: action) {
                 Label(title, systemImage: systemImage)
-                    .font(.boldDynamic(style: .headline))
+                    .font(.semiboldDynamic(style: .headline))
                     .lineLimit(1)
             }
             .padding(.vertical, 16)
