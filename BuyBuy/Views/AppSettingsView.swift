@@ -59,6 +59,14 @@ struct AppSettingsView: View {
                         }
                 }
                 
+                Section() {
+                    Button {
+                        viewModel.openTipJar()
+                    } label: {
+                        Label("support_developer", systemImage: "cup.and.saucer.fill")
+                    }
+                }
+                
 #if DEBUG
                 Section(header: Text("debug")) {
                     Button("copy_mocks_to_database") {

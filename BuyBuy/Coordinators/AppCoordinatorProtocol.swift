@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import StoreKit
 
 @MainActor
 protocol AppCoordinatorProtocol: ObservableObject {
@@ -30,6 +31,8 @@ protocol AppCoordinatorProtocol: ObservableObject {
     func openWebPage(address: String) -> Bool
     func openShoppingListExport(_ list: ShoppingList, onDismiss: ((SheetRoute) -> Void)?)
     func openDocumentExporter(with exportData: ExportedData, onDismiss: ((SheetRoute) -> Void)?)
+    func openTipJar(onDismiss: ((SheetRoute) -> Void)?)
+    func showThankYou(for transaction: StoreKit.Transaction, onDismiss: ((SheetRoute) -> Void)?)
     func closeTopSheet()
     func closeAllSheets()
     func back()

@@ -18,7 +18,7 @@ struct AboutView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            if geometry.size.height > geometry.size.width {
+            if geometry.size.isPortrait {
                 let logoMaxWidth = min(geometry.size.width, geometry.size.height * 0.45)
                 ScrollView {
                     VStack(alignment: .center, spacing: 32) {
@@ -29,6 +29,10 @@ struct AboutView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .gesture(
+                    DragGesture(minimumDistance: 4),
+                    including: .gesture
+                )
             } else {
                 let logoMaxWidth = min(geometry.size.width * 0.45, geometry.size.height)
                 HStack(alignment: .center, spacing: 32) {
@@ -38,6 +42,10 @@ struct AboutView: View {
                         infoContext(isPortrait: true)
                             .frame(maxWidth: .infinity)
                     }
+                    .gesture(
+                        DragGesture(minimumDistance: 4),
+                        including: .gesture
+                    )
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -51,7 +59,6 @@ struct AboutView: View {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark.circle")
-                        // .accessibilityLabel("Close")
                 }
             }
         }
@@ -77,55 +84,62 @@ struct AboutView: View {
             Text("credits_name")
                 .multilineTextAlignment(.center)
                 .font(.boldDynamic(style: .title3))
+                .padding(.bottom, 32)
             
-            // ---- contact ----
-            Text("contact")
-                .padding(.top, 16)
-                .font(.regularDynamic(style: .callout))
-                .multilineTextAlignment(.center)
-            
-            Button {
-                if !viewModel.contactSupport() {
-                    showEmailAlert = true
+            VStack(spacing: 16) {
+                // ---- contact ----
+                Button {
+                    if !viewModel.contactSupport() {
+                        showEmailAlert = true
+                    }
+                } label: {
+                    VStack(spacing: 2) {
+                        Label("contact", systemImage: "envelope.fill")
+                        Text(AppConstants.encoreContactEMail)
+                            .font(.regularDynamic(style: .caption))
+                            .opacity(0.85)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-            } label: {
-                Text(AppConstants.encoreContactEMail)
-                    .font(.boldDynamic(style: .body))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.blue)
-                    .allowsHitTesting(false)
-            }
-            
-            // ---- bluesky ----
-            Text(AppConstants.blueSkyName)
-                .padding(.top, 16)
-                .multilineTextAlignment(.center)
-                .font(.regularDynamic(style: .callout))
-            
-            Button {
-                _ = viewModel.openBlueSkyWebPage()
-            } label: {
-                Text(AppConstants.blueSkyAddress)
-                    .font(.boldDynamic(style: .body))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.blue)
-                    .allowsHitTesting(false)
-            }
-            
-            // ---- report issue ----
-            Button {
-                if !viewModel.reportIssue() {
-                    showEmailAlert = true
+                .buttonStyle(BBPlainButtonStyle())
+                
+                // ---- report issue ----
+                Button {
+                    if !viewModel.reportIssue() {
+                        showEmailAlert = true
+                    }
+                } label: {
+                    Label("report_issue", systemImage: "exclamationmark.bubble.fill")
+                        .frame(maxWidth: .infinity)
                 }
-            } label: {
-                Text("report_issue")
-                    .font(.boldDynamic(style: .body))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.blue)
+                .buttonStyle(BBPlainButtonStyle())
+                
+                // ---- support developer ----
+                Button {
+                    viewModel.openTipJar()
+                } label: {
+                    Label("support_developer", systemImage: "cup.and.saucer.fill")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(BBPlainButtonStyle())
+                
+                // ---- bluesky ----
+                Button {
+                    _ = viewModel.openBlueSkyWebPage()
+                } label: {
+                    VStack(spacing: 2) {
+                        Label(AppConstants.blueSkyName, systemImage: "globe")
+                        Text(AppConstants.blueSkyAddress)
+                            .font(.regularDynamic(style: .caption))
+                            .opacity(0.85)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(BBPlainButtonStyle())
             }
-            .padding(.top, 16)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 32)
         }
-        .frame(maxWidth: .infinity)
         .padding(.horizontal, isPortrait ? 16 : 4)
     }
 }

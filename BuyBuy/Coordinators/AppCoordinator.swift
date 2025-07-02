@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import StoreKit
 
 @MainActor
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
@@ -113,7 +114,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openAbout() {
-        sheetPresenter.present(.about)
+        sheetPresenter.present(.about, displayStyle: .sheet)
     }
     
     func openShoppingListSelector(forDeletedItemID itemID: UUID, onDismiss: ((SheetRoute) -> Void)? = nil) {
@@ -140,11 +141,19 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openShoppingListExport(_ list: ShoppingList, onDismiss: ((SheetRoute) -> Void)? = nil) {
-        sheetPresenter.present(.shoppingListExport(list), displayStyle: .fullScreen, onDismiss: onDismiss)
+        sheetPresenter.present(.shoppingListExport(list), displayStyle: .sheet, onDismiss: onDismiss)
     }
     
     func openDocumentExporter(with exportData: ExportedData, onDismiss: ((SheetRoute) -> Void)? = nil) {
         sheetPresenter.present(.documentExporter(exportData), displayStyle: .sheet, onDismiss: onDismiss)
+    }
+    
+    func openTipJar(onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.tipJar, displayStyle: .sheet, onDismiss: onDismiss)
+    }
+    
+    func showThankYou(for transaction: StoreKit.Transaction, onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.thankYou(transaction: transaction), displayStyle: .sheet, onDismiss: onDismiss)
     }
     
     func closeTopSheet() {
@@ -293,14 +302,44 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 fileName: exportData.fileName,
                 fileExtension: exportData.fileExtension
             )
+            
+        case .tipJar:
+            TipJarView(
+                viewModel: TipJarViewModel(coordinator: self)
+            )
+            
+        case .thankYou(let transaction):
+            ThankYouView(
+                viewModel: ThankYouViewModel(
+                    transaction: transaction,
+                    coordinator: self
+                )
+            )
         }
     }
     
     // MARK: - App launch
     
     func performOnStartTasks() async {
+        startTransactionListener()
         await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
         appInitialized = true
+    }
+    
+    // MARK: - In-App Purchase
+    
+    func startTransactionListener() {
+        Task.detached {
+            for await result in Transaction.updates {
+                switch result {
+                case .verified(let transaction):
+                    print("Verified transaction for: \(transaction.productID)")
+                    await self.showThankYou(for: transaction)
+                case .unverified(let transaction, let error):
+                    print("Unverified transaction for \(transaction.productID): \(error)")
+                }
+            }
+        }
     }
     
     // MARK: - App entering foreground

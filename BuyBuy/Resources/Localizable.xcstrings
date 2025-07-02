@@ -252,6 +252,22 @@
         }
       }
     },
+    "close" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zamknij"
+          }
+        }
+      }
+    },
     "contact" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -274,13 +290,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "BuyBuy Support"
+            "value" : "BuyBuy - contact"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wsparcie BuyBuy"
+            "value" : "BuyBuy - kontakt"
           }
         }
       }
@@ -1418,6 +1434,22 @@
         }
       }
     },
+    "something_went_wrong" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coś poszło nie tak."
+          }
+        }
+      }
+    },
     "status" : {
       "localizations" : {
         "en" : {
@@ -1450,6 +1482,22 @@
         }
       }
     },
+    "support_developer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support the Developer"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wesprzyj twórcę"
+          }
+        }
+      }
+    },
     "text_encoding" : {
       "localizations" : {
         "en" : {
@@ -1462,6 +1510,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kodowanie tekstu"
+          }
+        }
+      }
+    },
+    "thank_you_for_support" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you for your support!"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dziękuję za wsparcie!"
+          }
+        }
+      }
+    },
+    "tip" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tip"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Napiwek"
           }
         }
       }
@@ -2012,6 +2092,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Systemy jednostek"
+          }
+        }
+      }
+    },
+    "unknown_error" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown error."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieznany błąd."
           }
         }
       }

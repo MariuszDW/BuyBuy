@@ -24,4 +24,6 @@ struct AppConstants {
     static let coreDataModelName = "Model"
     static let localStoreFileName = "LocalStore.sqlite"
     static let cloudStoreFileName = "CloudStore.sqlite"
+    
+    static let tipIDs = ["small_tip", "medium_tip", "large_tip"]
 }

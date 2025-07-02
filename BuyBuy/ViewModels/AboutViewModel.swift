@@ -36,4 +36,8 @@ final class AboutViewModel: ObservableObject {
     func openBlueSkyWebPage() -> Bool {
         return coordinator.openWebPage(address: "https://encore-games.bsky.social")
     }
+    
+    func openTipJar() {
+        return coordinator.openTipJar(onDismiss: { _ in })
+    }
 }

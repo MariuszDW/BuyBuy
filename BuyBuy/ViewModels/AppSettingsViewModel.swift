@@ -51,6 +51,10 @@ class AppSettingsViewModel: ObservableObject {
         }
     }
     
+    func openTipJar() {
+        coordinator.openTipJar(onDismiss: {_ in })
+    }
+    
 #if DEBUG
     func copyMockToData() async {
         MockDataRepository.allLists.forEach { list in

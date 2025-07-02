@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 enum SheetRoute {
     case shoppingListSettings(ShoppingList, Bool)
@@ -17,4 +18,6 @@ enum SheetRoute {
     case shoppingListSelector(itemIDToRestore: UUID)
     case shoppingListExport(ShoppingList)
     case documentExporter(ExportedData)
+    case tipJar
+    case thankYou(transaction: StoreKit.Transaction)
 }
