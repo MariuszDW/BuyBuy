@@ -9,7 +9,6 @@ import SwiftUI
 
 struct AboutView: View {
     @StateObject var viewModel: AboutViewModel
-    @Environment(\.dismiss) private var dismiss
     @State private var showEmailAlert = false
     
     init(viewModel: AboutViewModel) {
@@ -53,15 +52,6 @@ struct AboutView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle("about")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark.circle")
-                }
-            }
-        }
         .alert("email_alert_title", isPresented: $showEmailAlert) {
             Button("ok", role: .cancel) { }
         } message: {

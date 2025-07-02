@@ -114,7 +114,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openAbout() {
-        sheetPresenter.present(.about, displayStyle: .sheet)
+        navigationPath.append(AppRoute.about)
     }
     
     func openShoppingListSelector(forDeletedItemID itemID: UUID, onDismiss: ((SheetRoute) -> Void)? = nil) {
@@ -211,6 +211,11 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             LoyaltyCardsView(viewModel: LoyaltyCardsViewModel(dataManager: self.dataManager,
                                                               coordinator: self)
             )
+            
+        case .about:
+            AboutView(
+                viewModel: AboutViewModel(coordinator: self)
+            )
         }
     }
 
@@ -281,11 +286,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     dataManager: self.dataManager,
                     coordinator: self
                 )
-            )
-            
-        case .about:
-            AboutView(
-                viewModel: AboutViewModel(coordinator: self)
             )
             
         case let .shoppingListExport(list):
