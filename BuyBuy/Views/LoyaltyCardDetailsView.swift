@@ -25,63 +25,65 @@ struct LoyaltyCardDetailsView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            List {
-                Section("card_name") {
-                    nameSectionContent
+        GeometryReader { geo in
+            NavigationStack {
+                List {
+                    Section("card_name") {
+                        nameSectionContent
+                    }
+                    .listRowBackground(Color.bb.sheet.section.background)
+                    
+                    Section(
+                        header: Text("card_image"),
+                        footer: cardImageFooter
+                    ) {
+                        imageSectionContent(availableHeight: geo.size.height)
+                    }
+                    .listRowBackground(Color.bb.sheet.section.background)
                 }
-                .listRowBackground(Color.bb.sheet.section.background)
-                
-                Section(
-                    header: Text("card_image"),
-                    footer: cardImageFooter
-                ) {
-                    imageSectionContent()
-                }
-                .listRowBackground(Color.bb.sheet.section.background)
-            }
-            .scrollContentBackground(.hidden)
-            .background(Color.bb.sheet.background)
-            .safeAreaInset(edge: .bottom) {
-                if focusedField != nil {
-                    keyboardDismissButton
-                }
-            }
-            .task {
-                focusedField = viewModel.isNew ? .name : nil
-                await viewModel.loadCardImage()
-            }
-            .listStyle(.insetGrouped)
-            .navigationTitle("loyalty_card")
-            .navigationBarTitleDisplayMode(.inline)
-            .onChange(of: focusedField) { newValue in
-                Task {
-                    viewModel.finalizeInput()
-                }
-            }
-            .toolbar {
-                toolbarContent
-            }
-            .onReceive(viewModel.coordinator.eventPublisher) { event in
-                switch event {
-                case .loyaltyCardImageChanged:
-                    Task { await viewModel.loadCardImage() }
-                default: break
-                }
-            }
-            .alert("card_remove_image_title", isPresented: $deleteImageConfirmation) {
-                Button("cancel", role: .cancel) {}
-                Button("delete", role: .destructive) {
-                    Task {
-                        await viewModel.deleteCardImage()
+                .scrollContentBackground(.hidden)
+                .background(Color.bb.sheet.background)
+                .safeAreaInset(edge: .bottom) {
+                    if focusedField != nil {
+                        keyboardDismissButton
                     }
                 }
-            } message: {
-                Text("card_remove_image_message")
-            }
-            .onDisappear {
-                Task {
-                    await viewModel.onFinishEditing()
+                .task {
+                    focusedField = viewModel.isNew ? .name : nil
+                    await viewModel.loadCardImage()
+                }
+                .listStyle(.insetGrouped)
+                .navigationTitle("loyalty_card")
+                .navigationBarTitleDisplayMode(.inline)
+                .onChange(of: focusedField) { newValue in
+                    Task {
+                        viewModel.finalizeInput()
+                    }
+                }
+                .toolbar {
+                    toolbarContent
+                }
+                .onReceive(viewModel.coordinator.eventPublisher) { event in
+                    switch event {
+                    case .loyaltyCardImageChanged:
+                        Task { await viewModel.loadCardImage() }
+                    default: break
+                    }
+                }
+                .alert("card_remove_image_title", isPresented: $deleteImageConfirmation) {
+                    Button("cancel", role: .cancel) {}
+                    Button("delete", role: .destructive) {
+                        Task {
+                            await viewModel.deleteCardImage()
+                        }
+                    }
+                } message: {
+                    Text("card_remove_image_message")
+                }
+                .onDisappear {
+                    Task {
+                        await viewModel.onFinishEditing()
+                    }
                 }
             }
         }
@@ -192,7 +194,7 @@ struct LoyaltyCardDetailsView: View {
     }
     
     @ViewBuilder
-    private func imageSectionContent() -> some View {
+    private func imageSectionContent(availableHeight: CGFloat) -> some View {
         Group {
             if viewModel.loadingProgress {
                 ProgressView()
@@ -203,6 +205,10 @@ struct LoyaltyCardDetailsView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
+                    .frame(maxHeight: availableHeight * 0.4)
+                    .frame(maxWidth: .infinity)
+                    .clipped()
+                    .contentShape(Rectangle())
                     .onTapGesture {
                         focusedField = nil
                         showingImageActionMenu = false
