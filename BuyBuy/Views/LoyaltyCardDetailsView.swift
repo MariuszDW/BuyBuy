@@ -32,7 +32,10 @@ struct LoyaltyCardDetailsView: View {
                 }
                 .listRowBackground(Color.bb.sheet.section.background)
                 
-                Section("card_image") {
+                Section(
+                    header: Text("card_image"),
+                    footer: cardImageFooter
+                ) {
                     imageSectionContent()
                 }
                 .listRowBackground(Color.bb.sheet.section.background)
@@ -191,7 +194,12 @@ struct LoyaltyCardDetailsView: View {
     @ViewBuilder
     private func imageSectionContent() -> some View {
         Group {
-            if let image = viewModel.cardImage {
+            if viewModel.loadingProgress {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .controlSize(.large)
+                    .padding(6)
+            } else if let image = viewModel.cardImage {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
@@ -209,11 +217,6 @@ struct LoyaltyCardDetailsView: View {
                         imageActionMenu
                             .presentationCompactAdaptation(.popover)
                     }
-            } else if viewModel.loadingProgress {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-                    .controlSize(.large)
-                    .padding(6)
             } else {
                 Button {
                     focusedField = nil
@@ -241,6 +244,13 @@ struct LoyaltyCardDetailsView: View {
                 }
             }
             .presentationCompactAdaptation(.popover)
+        }
+    }
+    
+    @ViewBuilder
+    private var cardImageFooter: some View {
+        if viewModel.cardImage != nil || viewModel.loadingProgress == true {
+            Text("loyalty_card_image_info")
         }
     }
 }

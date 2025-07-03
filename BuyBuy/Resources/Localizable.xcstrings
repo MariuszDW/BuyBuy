@@ -1143,6 +1143,22 @@
         }
       }
     },
+    "loyalty_card_image_info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touch and hold the image to open the options menu."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dotknij i przytrzymaj obrazek, aby otworzyć menu opcji."
+          }
+        }
+      }
+    },
     "loyalty_cards" : {
       "localizations" : {
         "en" : {
