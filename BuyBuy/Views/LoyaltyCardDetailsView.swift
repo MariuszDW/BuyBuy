@@ -45,7 +45,9 @@ struct LoyaltyCardDetailsView: View {
                 .background(Color.bb.sheet.background)
                 .safeAreaInset(edge: .bottom) {
                     if focusedField != nil {
-                        keyboardDismissButton
+                        KeyboardDismissButton {
+                            focusedField = nil
+                        }
                     }
                 }
                 .task {
@@ -158,25 +160,6 @@ struct LoyaltyCardDetailsView: View {
                     }
                     .disabled(!viewModel.canConfirm)
                 }
-            }
-        }
-    }
-    
-    private var keyboardDismissButton: some View {
-        HStack {
-            Spacer()
-            Button {
-                focusedField = nil
-            } label: {
-                Image(systemName: "keyboard.chevron.compact.down")
-                    .font(.regularDynamic(style: .title2))
-                    .foregroundColor(.bb.selection)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(Color.bb.background.opacity(0.5))
-                    )
             }
         }
     }
