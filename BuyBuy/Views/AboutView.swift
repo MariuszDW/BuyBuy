@@ -118,7 +118,17 @@ struct AboutView: View {
                     _ = viewModel.openBlueSkyWebPage()
                 } label: {
                     VStack(spacing: 2) {
-                        Label(AppConstants.blueSkyName, systemImage: "globe")
+                        HStack(spacing: 8) {
+                            Image.bbBlueskyLogo
+                                .renderingMode(.template)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: UIFont.preferredFont(forTextStyle: .callout).pointSize)
+                                .accessibilityHidden(true)
+                            
+                            Text(AppConstants.blueSkyName)
+                        }
+                        
                         Text(AppConstants.blueSkyAddress)
                             .font(.regularDynamic(style: .caption))
                             .opacity(0.85)

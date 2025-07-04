@@ -14,4 +14,5 @@ internal extension Image {
     static let bbEncoreLogoC = Image("encore_logo_c")
     static let bbEncoreLogoO = Image("encore_logo_o")
     static let bbEncoreLogoR = Image("encore_logo_r")
+    static let bbBlueskyLogo = Image("bluesky_logo")
 }
