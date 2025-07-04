@@ -132,7 +132,7 @@ struct DeletedItemsView: View {
                     }
                     .disabled(viewModel.items == nil || viewModel.items?.count == 0)
                 } label: {
-                    Image(systemName: "ellipsis.circle")
+                    CircleIconView(systemName: "ellipsis")
                 }
                 .disabled(viewModel.items == nil)
                 // .accessibilityLabel("More options")

@@ -155,7 +155,7 @@ struct LoyaltyCardDetailsView: View {
                             dismiss()
                         }
                     } label: {
-                        Image(systemName: "xmark.circle")
+                        CircleIconView(systemName: "xmark")
                             // .accessibilityLabel("Close")
                     }
                     .disabled(!viewModel.canConfirm)

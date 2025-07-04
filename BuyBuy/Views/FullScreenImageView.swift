@@ -30,7 +30,7 @@ struct FullScreenImageView: View {
                 
                 closeButton
                     .padding(.top, geometry.safeAreaInsets.top + 4)
-                    .padding(.trailing, geometry.safeAreaInsets.trailing + 4)
+                    .padding(.trailing, geometry.safeAreaInsets.trailing + 8)
             }
             .gesture(dragGesture(width: geometry.size.width))
             .ignoresSafeArea()
@@ -67,9 +67,10 @@ struct FullScreenImageView: View {
     }
 
     private var closeButton: some View {
-        Button(action: { dismiss() }) {
-            Image(systemName: "xmark.circle")
-                .font(.system(size: 30))
+        Button {
+            dismiss()
+        } label: {
+            CircleIconView(systemName: "xmark", color: .white)
                 .foregroundColor(.white)
                 .shadow(color: .black, radius: 3)
         }

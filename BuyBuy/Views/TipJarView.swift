@@ -30,7 +30,7 @@ struct TipJarView: View {
                 Button {
                     dismiss()
                 } label: {
-                    Image(systemName: "xmark.circle")
+                    CircleIconView(systemName: "xmark")
                 }
             }
         }

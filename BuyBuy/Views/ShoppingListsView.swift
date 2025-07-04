@@ -211,7 +211,7 @@ struct ShoppingListsView: View {
                     Button {
                         viewModel.openAbout()
                     } label: {
-                        Image(systemName: "questionmark.circle")
+                        CircleIconView(systemName: "questionmark")
                     }
                     // .accessibilityLabel("about")
                 }
@@ -232,14 +232,14 @@ struct ShoppingListsView: View {
                         Button {
                             viewModel.openTipJar()
                         } label: {
-                            Image(systemName: "cup.and.saucer.fill")
+                            CircleIconView(systemName: "cup.and.saucer.fill")
                         }
                     }
                     
                     Button {
                         viewModel.openLoyaltyCards()
                     } label: {
-                        Image(systemName: "creditcard.circle")
+                        CircleIconView(systemName: "creditcard.fill")
                     }
                     // .accessibilityLabel("Loyalty cards")
                     
@@ -272,7 +272,7 @@ struct ShoppingListsView: View {
                         }
                         // .accessibilityLabel("Settings")
                     } label: {
-                        Image(systemName: "ellipsis.circle")
+                        CircleIconView(systemName: "ellipsis")
                     }
                     // .accessibilityLabel("More options")
                 }

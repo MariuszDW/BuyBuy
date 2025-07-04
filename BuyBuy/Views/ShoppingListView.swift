@@ -185,7 +185,7 @@ struct ShoppingListView: View {
                     Button {
                         viewModel.openLoyaltyCards()
                     } label: {
-                        Image(systemName: "creditcard.circle")
+                        CircleIconView(systemName: "creditcard.fill")
                     }
                     // .accessibilityLabel("Loyalty cards")
                 }
@@ -223,7 +223,7 @@ struct ShoppingListView: View {
                         }
                         .disabled(!viewModel.hasPurchasedItems)
                     } label: {
-                        Image(systemName: "ellipsis.circle")
+                        CircleIconView(systemName: "ellipsis")
                     }
                     .disabled(viewModel.list?.items.isEmpty ?? true)
                     // .accessibilityLabel("More options")
