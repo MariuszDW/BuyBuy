@@ -15,4 +15,5 @@ protocol UserActivityTrackerProtocol: AnyObject {
     var totalTipsCount: Int { get }
     func incrementTipCount(for tipID: String)
     var lastTipJarShownDate: Date { set get }
+    var shouldShowTipReminder: Bool { get }
 }

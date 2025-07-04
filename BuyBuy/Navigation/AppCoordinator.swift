@@ -355,6 +355,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         while !appInitialized {
             await Task.yield()
         }
+        
+        userActivityTracker.updateTipReminder()
 
         let now = Date()
 

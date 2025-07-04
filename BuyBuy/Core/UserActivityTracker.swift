@@ -11,6 +11,8 @@ import Foundation
 final class UserActivityTracker: UserActivityTrackerProtocol {
     private var preferences: AppPreferencesProtocol
     
+    var shouldShowTipReminder: Bool = false
+    
     init(preferences: AppPreferencesProtocol) {
         self.preferences = preferences
         _ = installationDate // ensure installationDate is set
@@ -50,5 +52,22 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
         set {
             preferences.lastTipJarShownDate = newValue
         }
+    }
+    
+    func updateTipReminder() {
+        let now = Date()
+        let lastShown = lastTipJarShownDate
+
+        let hasTipped = lastTipDate != nil
+        let intervalDays = hasTipped
+            ? AppConstants.tipReminderIntervalTippedDays
+            : AppConstants.tipReminderIntervalNeverTippedDays
+
+        guard let daysSinceLastShown = Calendar.current.dateComponents([.day], from: lastShown, to: now).day else {
+            shouldShowTipReminder = false
+            return
+        }
+
+        shouldShowTipReminder = daysSinceLastShown >= intervalDays
     }
 }

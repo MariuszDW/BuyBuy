@@ -39,6 +39,10 @@ class ShoppingListsViewModel: ObservableObject {
         print("ShoppingListsViewModel - Stopped observing remote changes")
     }
     
+    var shouldShowTipJarButton: Bool {
+        userActivityTracker.shouldShowTipReminder
+    }
+    
     func loadLists(fullRefresh: Bool = false) async {
         print("ShoppingListsViewModel.loadLists(fullRefresh: \(fullRefresh))")
         if fullRefresh {
@@ -96,5 +100,9 @@ class ShoppingListsViewModel: ObservableObject {
     
     func openDeletedItems() {
         coordinator.openDeletedItems()
+    }
+    
+    func openTipJar() {
+        coordinator.openTipJar(onDismiss: {_ in })
     }
 }

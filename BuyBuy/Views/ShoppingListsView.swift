@@ -228,6 +228,14 @@ struct ShoppingListsView: View {
                 }
                 
                 if !isEditMode.isEditing {
+                    if viewModel.shouldShowTipJarButton {
+                        Button {
+                            viewModel.openTipJar()
+                        } label: {
+                            Image(systemName: "cup.and.saucer.fill")
+                        }
+                    }
+                    
                     Button {
                         viewModel.openLoyaltyCards()
                     } label: {

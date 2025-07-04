@@ -27,4 +27,6 @@ final class MockUserActivityTracker: UserActivityTrackerProtocol {
     }
     
     var lastTipJarShownDate: Date = Date()
+    
+    var shouldShowTipReminder: Bool = true
 }

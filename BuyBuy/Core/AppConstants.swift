@@ -26,4 +26,10 @@ struct AppConstants {
     static let cloudStoreFileName = "CloudStore.sqlite"
     
     static let tipIDs = ["small_tip", "medium_tip", "large_tip"]
+    
+    /// How often to remind users who never tipped.
+    static let tipReminderIntervalNeverTippedDays: Int = 30
+    
+    /// How often to remind users who have tipped at least once
+    static let tipReminderIntervalTippedDays: Int = 180
 }
