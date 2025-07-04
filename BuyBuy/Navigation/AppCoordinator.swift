@@ -15,6 +15,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
     private var preferences: AppPreferencesProtocol
+    private var userActivityTracker: UserActivityTracker
     private let dataManager: DataManager
     private var appInitialized = false
     private var folderPresenters: [DirectoryFilePresenter] = []
@@ -27,6 +28,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     init(preferences: AppPreferencesProtocol) {
         self.preferences = preferences
         self.dataManager = DataManager(useCloud: preferences.isCloudSyncEnabled)
+        self.userActivityTracker = UserActivityTracker(preferences: preferences)
     }
     
     func sendEvent(_ event: AppEvent) {
@@ -179,6 +181,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             ShoppingListsView(
                 viewModel: ShoppingListsViewModel(
                     dataManager: self.dataManager,
+                    userActivityTracker: self.userActivityTracker,
                     coordinator: self
                 )
             )
@@ -305,13 +308,17 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             
         case .tipJar:
             TipJarView(
-                viewModel: TipJarViewModel(coordinator: self)
+                viewModel: TipJarViewModel(
+                    userActivityTracker: userActivityTracker,
+                    coordinator: self
+                )
             )
             
         case .thankYou(let transaction):
             ThankYouView(
                 viewModel: ThankYouViewModel(
                     transaction: transaction,
+                    userActivityTracker: userActivityTracker,
                     coordinator: self
                 )
             )

@@ -14,4 +14,14 @@ protocol AppPreferencesProtocol {
     var lastCleanupDate: Date? { get set }
     var isCloudSyncEnabled: Bool { get set }
     var unitSystems: [MeasureUnitSystem] { get }
+    
+    // User activity tracker
+    var installationDate: Date? { get set }
+    
+    var tipCounts: [String: Int] { get set }
+    func tipCount(for tipID: String) -> Int
+    func setTipCount(_ count: Int, for tipID: String)
+    
+    var lastTipDate: Date? { get set }
+    var lastTipJarShownDate: Date? { get set }
 }

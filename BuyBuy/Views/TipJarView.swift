@@ -36,6 +36,7 @@ struct TipJarView: View {
         }
         .task {
             await viewModel.loadProducts()
+            viewModel.tipJarPresenter()
         }
     }
     
@@ -164,8 +165,12 @@ struct TipJarView: View {
     ]
     
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(loading: false, products: mockProducts, coordinator: coordinator)
+    let viewModel = TipJarViewModel(loading: false,
+                                    products: mockProducts,
+                                    userActivityTracker: tracker,
+                                    coordinator: coordinator)
     
     TipJarView(viewModel: viewModel)
         .preferredColorScheme(.light)
@@ -179,8 +184,12 @@ struct TipJarView: View {
     ]
     
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(loading: false, products: mockProducts, coordinator: coordinator)
+    let viewModel = TipJarViewModel(loading: false,
+                                    products: mockProducts,
+                                    userActivityTracker: tracker,
+                                    coordinator: coordinator)
     
     TipJarView(viewModel: viewModel)
         .preferredColorScheme(.dark)
@@ -189,8 +198,12 @@ struct TipJarView: View {
 #Preview("Light/loading") {
     let mockProducts: [TipProduct] = [TipProduct(id: "x", name: "x", price: "x", description: "x")]
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(loading: true, products: mockProducts, coordinator: coordinator)
+    let viewModel = TipJarViewModel(loading: true,
+                                    products: mockProducts,
+                                    userActivityTracker: tracker,
+                                    coordinator: coordinator)
     
     TipJarView(viewModel: viewModel)
         .preferredColorScheme(.light)
@@ -199,8 +212,12 @@ struct TipJarView: View {
 #Preview("Dark/loading") {
     let mockProducts: [TipProduct] = [TipProduct(id: "x", name: "x", price: "x", description: "x")]
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(loading: true, products: mockProducts, coordinator: coordinator)
+    let viewModel = TipJarViewModel(loading: true,
+                                    products: mockProducts,
+                                    userActivityTracker: tracker,
+                                    coordinator: coordinator)
     
     TipJarView(viewModel: viewModel)
         .preferredColorScheme(.dark)
@@ -209,8 +226,12 @@ struct TipJarView: View {
 #Preview("Light/error") {
     let mockProducts: [TipProduct] = [TipProduct(id: "x", name: "x", price: "x", description: "x")]
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(error: "Mock test error message.", products: mockProducts, coordinator: coordinator)
+    let viewModel = TipJarViewModel(error: "Mock test error message.",
+                                    products: mockProducts,
+                                    userActivityTracker: tracker,
+                                    coordinator: coordinator)
     
     TipJarView(viewModel: viewModel)
         .preferredColorScheme(.light)
@@ -219,9 +240,12 @@ struct TipJarView: View {
 #Preview("Dark/error") {
     let mockProducts: [TipProduct] = [TipProduct(id: "x", name: "x", price: "x", description: "x")]
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(error: "Mock test error message.", products: mockProducts, coordinator: coordinator)
-    
+    let viewModel = TipJarViewModel(error: "Mock test error message.",
+                                    products: mockProducts,
+                                    userActivityTracker: tracker,
+                                    coordinator: coordinator)
     TipJarView(viewModel: viewModel)
         .preferredColorScheme(.dark)
 }

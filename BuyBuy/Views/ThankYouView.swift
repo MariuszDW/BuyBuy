@@ -27,6 +27,7 @@ struct ThankYouView: View {
         }
         .task {
             await viewModel.loadProduct()
+            viewModel.thankYouPresenter()
         }
     }
     
@@ -157,11 +158,13 @@ struct ThankYouView: View {
 
 #Preview("Light") {
     let coordinator = AppCoordinator(preferences: MockAppPreferences())
+    let tracker = MockUserActivityTracker()
     let viewModel = ThankYouViewModel(
         productID: "large_tip",
         productName: "Large Tip",
         productDescription: "Thank you for the huge support! sdkjhg ldsjhlg js jh",
         loading: false,
+        userActivityTracker: tracker,
         coordinator: coordinator)
     
     ThankYouView(viewModel: viewModel)
@@ -170,11 +173,13 @@ struct ThankYouView: View {
 
 #Preview("Dark") {
     let coordinator = AppCoordinator(preferences: MockAppPreferences())
+    let tracker = MockUserActivityTracker()
     let viewModel = ThankYouViewModel(
         productID: "large_tip",
         productName: "Large Tip",
         productDescription: "Thank you for the huge support!",
         loading: false,
+        userActivityTracker: tracker,
         coordinator: coordinator)
     
     ThankYouView(viewModel: viewModel)
@@ -183,9 +188,11 @@ struct ThankYouView: View {
 
 #Preview("Light/loading") {
     let coordinator = AppCoordinator(preferences: MockAppPreferences())
+    let tracker = MockUserActivityTracker()
     let viewModel = ThankYouViewModel(
         productID: "large_tip",
         loading: true,
+        userActivityTracker: tracker,
         coordinator: coordinator)
     
     ThankYouView(viewModel: viewModel)
@@ -194,9 +201,11 @@ struct ThankYouView: View {
 
 #Preview("Dark/loading") {
     let coordinator = AppCoordinator(preferences: MockAppPreferences())
+    let tracker = MockUserActivityTracker()
     let viewModel = ThankYouViewModel(
         productID: "large_tip",
         loading: true,
+        userActivityTracker: tracker,
         coordinator: coordinator)
     
     ThankYouView(viewModel: viewModel)
@@ -205,10 +214,12 @@ struct ThankYouView: View {
 
 #Preview("Light/error") {
     let coordinator = AppCoordinator(preferences: MockAppPreferences())
+    let tracker = MockUserActivityTracker()
     let viewModel = ThankYouViewModel(
         productID: "large_tip",
         loading: false,
         error: "Test error message.",
+        userActivityTracker: tracker,
         coordinator: coordinator)
     
     ThankYouView(viewModel: viewModel)
@@ -217,10 +228,12 @@ struct ThankYouView: View {
 
 #Preview("Dark/error") {
     let coordinator = AppCoordinator(preferences: MockAppPreferences())
+    let tracker = MockUserActivityTracker()
     let viewModel = ThankYouViewModel(
         productID: "large_tip",
         loading: false,
         error: "Test error message.",
+        userActivityTracker: tracker,
         coordinator: coordinator)
     
     ThankYouView(viewModel: viewModel)

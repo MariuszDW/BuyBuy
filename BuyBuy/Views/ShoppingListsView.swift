@@ -393,9 +393,11 @@ struct ShoppingListsView: View {
                                   fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
+        userActivityTracker: tracker,
         coordinator: coordinator
     )
     
@@ -412,9 +414,11 @@ struct ShoppingListsView: View {
                                   fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
+        userActivityTracker: tracker,
         coordinator: coordinator
     )
     
@@ -431,9 +435,11 @@ struct ShoppingListsView: View {
                                   fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
+        userActivityTracker: tracker,
         coordinator: coordinator
     )
     
@@ -450,9 +456,11 @@ struct ShoppingListsView: View {
                                   fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
+        userActivityTracker: tracker,
         coordinator: coordinator
     )
     

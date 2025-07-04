@@ -13,6 +13,7 @@ class ShoppingListsViewModel: ObservableObject {
     @Published var shoppingLists: [ShoppingList] = []
 
     private let dataManager: DataManagerProtocol
+    private var userActivityTracker: any UserActivityTrackerProtocol
     let coordinator: any AppCoordinatorProtocol
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
@@ -22,8 +23,9 @@ class ShoppingListsViewModel: ObservableObject {
         }
     }()
 
-    init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
+    init(dataManager: DataManagerProtocol, userActivityTracker: any UserActivityTrackerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.coordinator = coordinator
+        self.userActivityTracker = userActivityTracker
         self.dataManager = dataManager
     }
     

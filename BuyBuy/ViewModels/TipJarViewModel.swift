@@ -35,21 +35,24 @@ struct TipProduct: Identifiable {
 @MainActor
 class TipJarViewModel: ObservableObject {
     var coordinator: any AppCoordinatorProtocol
+    private var userActivityTracker: any UserActivityTrackerProtocol
     
     @Published var loading: Bool = true
     @Published var error: String? = nil
     @Published var products: [TipProduct] = []
     
-    init(coordinator: any AppCoordinatorProtocol) {
+    init(userActivityTracker: any UserActivityTrackerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.coordinator = coordinator
+        self.userActivityTracker = userActivityTracker
     }
     
     convenience init(loading: Bool = false,
                      error: String? = nil,
                      products: [TipProduct] = [],
+                     userActivityTracker: any UserActivityTrackerProtocol,
                      coordinator: any AppCoordinatorProtocol
     ) {
-        self.init(coordinator: coordinator)
+        self.init(userActivityTracker: userActivityTracker, coordinator: coordinator)
         self.products = products
         self.loading = loading
         self.error = error
@@ -105,6 +108,10 @@ class TipJarViewModel: ObservableObject {
         } catch {
             print("Purchase error: \(error)")
         }
+    }
+    
+    func tipJarPresenter() {
+        userActivityTracker.lastTipJarShownDate = Date()
     }
     
     private var isMockData: Bool {

@@ -11,6 +11,7 @@ import StoreKit
 @MainActor
 final class ThankYouViewModel: ObservableObject {
     private var coordinator: any AppCoordinatorProtocol
+    private var userActivityTracker: any UserActivityTrackerProtocol
     private var transaction: StoreKit.Transaction? = nil
     private var productID: String
     
@@ -29,9 +30,12 @@ final class ThankYouViewModel: ObservableObject {
         }
     }
     
-    init(transaction: StoreKit.Transaction?, coordinator: any AppCoordinatorProtocol) {
+    init(transaction: StoreKit.Transaction?,
+         userActivityTracker: any UserActivityTrackerProtocol,
+         coordinator: any AppCoordinatorProtocol) {
         self.transaction = transaction
         self.coordinator = coordinator
+        self.userActivityTracker = userActivityTracker
         self.productID = transaction?.productID ?? AppConstants.tipIDs[0]
     }
     
@@ -40,9 +44,10 @@ final class ThankYouViewModel: ObservableObject {
                      productDescription: String? = nil,
                      loading: Bool = false,
                      error: String? = nil,
+                     userActivityTracker: any UserActivityTrackerProtocol,
                      coordinator: any AppCoordinatorProtocol
     ) {
-        self.init(transaction: nil, coordinator: coordinator)
+        self.init(transaction: nil, userActivityTracker: userActivityTracker, coordinator: coordinator)
         self.productID = productID
         self.productName = productName
         self.productDescription = productDescription
@@ -68,6 +73,10 @@ final class ThankYouViewModel: ObservableObject {
             self.error = error.localizedDescription
             print("Failed to load tip info: \(error)")
         }
+    }
+    
+    func thankYouPresenter() {
+        userActivityTracker.incrementTipCount(for: productID)
     }
     
     private var isMockData: Bool {
