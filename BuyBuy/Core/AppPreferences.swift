@@ -23,7 +23,7 @@ final class AppPreferences: AppPreferencesProtocol {
         static let isCloudSyncEnabled = "is_cloud_sync_enabled"
         
         // tips
-        static let tipCounts = "tip_counts"
+        static let tipCounts = "act_tip_counts"
         static let lastTipDate = "act_last_tip_date"
         static let lastTipJarShownDate = "act_last_tipjar_shown_date"
         
