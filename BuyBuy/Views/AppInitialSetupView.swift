@@ -70,7 +70,7 @@ struct AppInitialSetupView: View {
                 .font(.boldDynamic(style: .title))
                 .padding(.top)
             
-            HStack(spacing: 16) {
+            HStack(spacing: 12) {
                 storageOptionView(
                     imageName: "internaldrive",
                     title: "device",
@@ -121,7 +121,7 @@ struct AppInitialSetupView: View {
                 }
                 
                 Text(description)
-                    .font(.regularDynamic(style: .callout))
+                    .font(.regularDynamic(style: .footnote))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.bb.text.secondary)
                     .padding(.horizontal, 4)
