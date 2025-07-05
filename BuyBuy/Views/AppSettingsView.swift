@@ -90,6 +90,20 @@ struct AppSettingsView: View {
         }
         .navigationTitle("settings")
         .navigationBarTitleDisplayMode(.large)
+        .alert("icloud_unavailable", isPresented: Binding<Bool>(
+            get: { viewModel.iCloudErrorMessage != nil },
+            set: { newValue in
+                if !newValue {
+                    viewModel.iCloudErrorMessage = nil
+                }
+            }
+        )) {
+            Button("ok", role: .cancel) {
+                viewModel.iCloudErrorMessage = nil
+            }
+        } message: {
+            Text(viewModel.iCloudErrorMessage ?? "")
+        }
 #if DEBUG
         .alert("copy_mocks_to_database", isPresented: $showCopyMocksConfirmation) {
             Button("cancel", role: .cancel) {}

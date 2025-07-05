@@ -849,6 +849,118 @@
         }
       }
     },
+    "icloud_error_cloudkit_unavailable" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CloudKit is unavailable. Make sure the app has iCloud sync enabled."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CloudKit jest niedostępny. Upewnij się, że aplikacja ma włączoną synchronizację przez iCloud."
+          }
+        }
+      }
+    },
+    "icloud_error_could_not_determine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to determine iCloud account status."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie można ustalić statusu konta iCloud."
+          }
+        }
+      }
+    },
+    "icloud_error_drive_unavailable" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Drive is turned off or unavailable."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Drive jest wyłączony lub niedostępny."
+          }
+        }
+      }
+    },
+    "icloud_error_not_signed_in" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The user is not signed in to iCloud."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Użytkownik nie jest zalogowany do iCloud."
+          }
+        }
+      }
+    },
+    "icloud_error_other" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other error: %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inny błąd: %@"
+          }
+        }
+      }
+    },
+    "icloud_error_restricted" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access to iCloud is restricted (e.g., parental controls)."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dostęp do iCloud jest ograniczony (np. kontrola rodzicielska)."
+          }
+        }
+      }
+    },
+    "icloud_error_ubiquity_container_unavailable" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Drive container is not accessible."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak dostępu do kontenera iCloud Drive."
+          }
+        }
+      }
+    },
     "icloud_storage_info" : {
       "localizations" : {
         "en" : {
@@ -861,6 +973,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dane są synchronizowane między urządzeniami korzystającymi z tego samego konta iCloud."
+          }
+        }
+      }
+    },
+    "icloud_unavailable" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Unavailable"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud niedostępny"
           }
         }
       }
