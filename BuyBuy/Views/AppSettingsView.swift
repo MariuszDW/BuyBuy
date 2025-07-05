@@ -15,7 +15,7 @@ enum DataStorageOption: String, CaseIterable, Identifiable {
 
     var iconName: String {
         switch self {
-        case .device: return "icloud.slash"
+        case .device: return "internaldrive"
         case .cloud: return "icloud"
         }
     }
