@@ -19,4 +19,5 @@ enum SheetRoute {
     case documentExporter(ExportedData)
     case tipJar
     case thankYou(transaction: StoreKit.Transaction)
+    case appInitialSetup
 }

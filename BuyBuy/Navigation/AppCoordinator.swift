@@ -158,6 +158,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         sheetPresenter.present(.thankYou(transaction: transaction), displayStyle: .sheet, onDismiss: onDismiss)
     }
     
+    func openInitAppSetup(onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.appInitialSetup, displayStyle: .fullScreen, onDismiss: onDismiss)
+    }
+    
     func closeTopSheet() {
         sheetPresenter.dismissTop()
     }
@@ -309,7 +313,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         case .tipJar:
             TipJarView(
                 viewModel: TipJarViewModel(
-                    userActivityTracker: userActivityTracker,
+                    userActivityTracker: self.userActivityTracker,
                     coordinator: self
                 )
             )
@@ -318,7 +322,15 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             ThankYouView(
                 viewModel: ThankYouViewModel(
                     transaction: transaction,
-                    userActivityTracker: userActivityTracker,
+                    userActivityTracker: self.userActivityTracker,
+                    coordinator: self
+                )
+            )
+            
+        case .appInitialSetup:
+            AppInitialSetupView(
+                viewModel: AppInitialSetupViewModel(
+                    preferences: self.preferences,
                     coordinator: self
                 )
             )
@@ -328,8 +340,11 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     // MARK: - App launch
     
     func performOnStartTasks() async {
-        startTransactionListener()
         await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
+        if preferences.installationDate == nil {
+            openInitAppSetup()
+        }
+        startTransactionListener()
         appInitialized = true
     }
     

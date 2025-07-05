@@ -11,7 +11,7 @@ import Foundation
 final class MockUserActivityTracker: UserActivityTrackerProtocol {
     var tipCounts: [String : Int] = [:]
     
-    var installationDate: Date = Date()
+    var installationDate: Date? = Date()
     
     var lastTipDate: Date? = nil
     
@@ -26,7 +26,7 @@ final class MockUserActivityTracker: UserActivityTrackerProtocol {
         tipCounts[tipID] = tipCount + 1
     }
     
-    var lastTipJarShownDate: Date = Date()
+    var lastTipJarShownDate: Date? = Date()
     
     var shouldShowTipReminder: Bool = true
 }

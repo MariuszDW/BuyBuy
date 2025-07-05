@@ -9,11 +9,11 @@ import Foundation
 
 @MainActor
 protocol UserActivityTrackerProtocol: AnyObject {
-    var installationDate: Date { get }
+    var installationDate: Date? { get }
     var lastTipDate: Date? { get }
     func tipCount(for tipID: String) -> Int
     var totalTipsCount: Int { get }
     func incrementTipCount(for tipID: String)
-    var lastTipJarShownDate: Date { set get }
+    var lastTipJarShownDate: Date? { set get }
     var shouldShowTipReminder: Bool { get }
 }

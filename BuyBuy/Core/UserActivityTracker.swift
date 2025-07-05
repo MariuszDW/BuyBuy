@@ -15,16 +15,10 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
     
     init(preferences: AppPreferencesProtocol) {
         self.preferences = preferences
-        _ = installationDate // ensure installationDate is set
     }
 
-    var installationDate: Date {
-        guard let date = preferences.installationDate else {
-            let now = Date()
-            preferences.installationDate = now
-            return now
-        }
-        return date
+    var installationDate: Date? {
+        preferences.installationDate
     }
 
     var lastTipDate: Date? {
@@ -45,9 +39,9 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
         preferences.lastTipDate = Date()
     }
 
-    var lastTipJarShownDate: Date {
+    var lastTipJarShownDate: Date? {
         get {
-            preferences.lastTipJarShownDate ?? installationDate
+            preferences.lastTipJarShownDate
         }
         set {
             preferences.lastTipJarShownDate = newValue
@@ -56,7 +50,11 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
     
     func updateTipReminder() {
         let now = Date()
-        let lastShown = lastTipJarShownDate
+        
+        guard let lastShown = lastTipJarShownDate else {
+            preferences.lastTipJarShownDate = installationDate ?? now
+            return
+        }
 
         let hasTipped = lastTipDate != nil
         let intervalDays = hasTipped
