@@ -53,9 +53,7 @@ class AppSettingsViewModel: ObservableObject {
                 guard result.isFullyAvailable else {
                     progressIndicator = false
                     await MainActor.run {
-                        iCloudErrorMessage = result.errors
-                            .map { "• \($0.description)" }
-                            .joined(separator: "\n")
+                        iCloudErrorMessage = result.errorsMessage
                     }
                     return
                 }

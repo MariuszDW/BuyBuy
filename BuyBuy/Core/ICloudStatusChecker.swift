@@ -39,6 +39,10 @@ struct ICloudStatusResult {
     var isFullyAvailable: Bool {
         return isSignedInToiCloud && isICloudDriveAvailable && isCloudKitAvailable && errors.isEmpty
     }
+    
+    var errorsMessage: String? {
+        return errors.isEmpty ? nil : errors.map { "• \($0.description)" }.joined(separator: "\n")
+    }
 }
 
 final class ICloudStatusChecker {
