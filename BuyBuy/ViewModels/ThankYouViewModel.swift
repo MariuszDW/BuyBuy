@@ -10,7 +10,7 @@ import StoreKit
 
 @MainActor
 final class ThankYouViewModel: ObservableObject {
-    private var coordinator: any AppCoordinatorProtocol
+    private var coordinator: (any AppCoordinatorProtocol)?
     private var userActivityTracker: any UserActivityTrackerProtocol
     private var transaction: StoreKit.Transaction? = nil
     private var productID: String
