@@ -12,7 +12,7 @@ import Combine
 @MainActor
 final class DeletedItemsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
-    weak var coordinator: (any AppCoordinatorProtocol)?
+    private weak var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
         PersistentStoreChangeObserver { [weak self] in
