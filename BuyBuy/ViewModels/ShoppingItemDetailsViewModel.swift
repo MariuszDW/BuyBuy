@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 final class ShoppingItemDetailsViewModel: ObservableObject {
@@ -34,7 +35,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     private let dataManager: DataManagerProtocol
     private var preferences: any AppPreferencesProtocol
-    var coordinator: any AppCoordinatorProtocol
+    private var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
         PersistentStoreChangeObserver { [weak self] in
@@ -102,6 +103,10 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         print("ShoppingItemDetailsViewModel - Stopped observing remote changes")
     }
     
+    var eventPublisher: AnyPublisher<AppEvent, Never> {
+        coordinator?.eventPublisher ?? Empty().eraseToAnyPublisher()
+    }
+    
     lazy var unitList: [(name: String, units: [MeasuredUnit])] = {
         MeasuredUnit.buildUnitList(for: preferences.unitSystems)
     }()
@@ -112,7 +117,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func openImagePreview(at index: Int) {
         guard index >= 0 && index < shoppingItem.imageIDs.count else { return }
-        coordinator.openShoppingItemImage(with: shoppingItem.imageIDs, index: index, onDismiss: nil)
+        coordinator?.openShoppingItemImage(with: shoppingItem.imageIDs, index: index, onDismiss: nil)
     }
     
     func addImage(_ image: UIImage) async {
@@ -178,6 +183,6 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         } else if isNew == true {
             try? await dataManager.deleteItem(with: shoppingItem.id)
         }
-        coordinator.sendEvent(.shoppingItemEdited)
+        coordinator?.sendEvent(.shoppingItemEdited)
     }
 }

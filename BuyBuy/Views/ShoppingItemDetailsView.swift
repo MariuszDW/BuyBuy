@@ -74,7 +74,7 @@ struct ShoppingItemDetailsView: View {
         .toolbar {
             toolbarContent
         }
-        .onReceive(viewModel.coordinator.eventPublisher) { event in
+        .onReceive(viewModel.eventPublisher) { event in
             switch event {
             case .shoppingItemImageChanged:
                 Task { await viewModel.loadThumbnails() }
