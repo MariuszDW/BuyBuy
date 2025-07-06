@@ -41,6 +41,7 @@ class AppInitialSetupViewModel: ObservableObject {
                 }
                 
                 await coordinator.setupDataManager(useCloud: isCloudSelected)
+                preferences.installationDate = Date()
                 try? await Task.sleep(for: .milliseconds(500))
                 showProgressIndicator = false
                 canDismiss = true
