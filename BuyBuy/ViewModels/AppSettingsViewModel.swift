@@ -15,12 +15,9 @@ class AppSettingsViewModel: ObservableObject {
     
     @Published var isMetricUnitsEnabled: Bool
     @Published var isImperialUnitsEnabled: Bool
+    @Published var isCloudSyncEnabled: Bool
     @Published var progressIndicator: Bool
     @Published var iCloudErrorMessage: String?
-    
-    var isCloudSyncEnabled: Bool {
-        preferences.isCloudSyncEnabled
-    }
     
     init(dataManager: DataManagerProtocol, preferences: AppPreferencesProtocol, coordinator: any AppCoordinatorProtocol) {
         self.dataManager = dataManager
@@ -30,6 +27,7 @@ class AppSettingsViewModel: ObservableObject {
         self.isMetricUnitsEnabled = preferences.isMetricUnitsEnabled
         self.isImperialUnitsEnabled = preferences.isImperialUnitsEnabled
         self.progressIndicator = false
+        self.isCloudSyncEnabled = preferences.isCloudSyncEnabled
     }
     
     func setMetricUnitsEnabled(_ enabled: Bool) {
@@ -48,9 +46,9 @@ class AppSettingsViewModel: ObservableObject {
         
         Task {
             if enabled {
-                try? await Task.sleep(for: .milliseconds(500))
                 let result = await ICloudStatusChecker.checkStatus()
                 guard result.isFullyAvailable else {
+                    isCloudSyncEnabled = false
                     progressIndicator = false
                     await MainActor.run {
                         iCloudErrorMessage = result.errorsMessage
@@ -60,7 +58,7 @@ class AppSettingsViewModel: ObservableObject {
             }
             
             await coordinator.setupDataManager(useCloud: enabled)
-            try? await Task.sleep(for: .milliseconds(500))
+            isCloudSyncEnabled = preferences.isCloudSyncEnabled
             progressIndicator = false
         }
     }

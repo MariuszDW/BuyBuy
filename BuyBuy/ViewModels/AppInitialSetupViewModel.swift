@@ -29,7 +29,6 @@ class AppInitialSetupViewModel: ObservableObject {
             
             Task {
                 if isCloudSelected {
-                    try? await Task.sleep(for: .milliseconds(500))
                     let result = await ICloudStatusChecker.checkStatus()
                     guard result.isFullyAvailable else {
                         showProgressIndicator = false
@@ -40,11 +39,10 @@ class AppInitialSetupViewModel: ObservableObject {
                     }
                 }
                 
-                await coordinator.setupDataManager(useCloud: isCloudSelected)
                 preferences.installationDate = Date()
-                try? await Task.sleep(for: .milliseconds(500))
                 showProgressIndicator = false
                 canDismiss = true
+                await coordinator.setupDataManager(useCloud: isCloudSelected)
             }
         } else {
             preferences.installationDate = Date()
