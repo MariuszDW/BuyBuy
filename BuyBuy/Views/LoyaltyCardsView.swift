@@ -63,7 +63,7 @@ struct LoyaltyCardsView: View {
                 }
             )
         }
-        .onReceive(viewModel.coordinator.eventPublisher) { event in
+        .onReceive(viewModel.eventPublisher) { event in
             switch event {
             case .loyaltyCardImageChanged:
                 Task { await viewModel.loadThumbnails() }

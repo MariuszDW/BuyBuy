@@ -16,7 +16,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
     @Published private(set) var thumbnails: [UUID: UIImage] = [:]
     
     private let dataManager: DataManagerProtocol
-    var coordinator: any AppCoordinatorProtocol
+    private var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
         PersistentStoreChangeObserver { [weak self] in
@@ -38,6 +38,10 @@ final class LoyaltyCardsViewModel: ObservableObject {
     func stopObserving() {
         remoteChangeObserver.stopObserving()
         print("LoyaltyCardsViewModel - Stopped observing remote changes")
+    }
+    
+    var eventPublisher: AnyPublisher<AppEvent, Never> {
+        coordinator?.eventPublisher ?? Empty().eraseToAnyPublisher()
     }
     
     func loadCards(fullRefresh: Bool = false) async {
@@ -74,12 +78,12 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }
 
     func openCardPreview(_ card: LoyaltyCard) {
-        coordinator.openLoyaltyCardPreview(with: card.imageID, onDismiss: nil)
+        coordinator?.openLoyaltyCardPreview(with: card.imageID, onDismiss: nil)
     }
 
     func openCardPreview(at index: Int) {
         if index < cards.count {
-            coordinator.openLoyaltyCardPreview(with: cards[index].imageID, onDismiss: nil)
+            coordinator?.openLoyaltyCardPreview(with: cards[index].imageID, onDismiss: nil)
         }
     }
     
@@ -99,12 +103,12 @@ final class LoyaltyCardsViewModel: ObservableObject {
     func openNewCardDetails() {
         let maxOrder = cards.map(\.order).max() ?? 0
         let newCard = LoyaltyCard(id: UUID(), name: "", imageID: nil, order: maxOrder + 1)
-        coordinator.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: nil)
+        coordinator?.openLoyaltyCardDetails(newCard, isNew: true, onDismiss: nil)
     }
     
     func openCardDetails(at index: Int) {
         guard index < cards.count else { return }
-        coordinator.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: nil)
+        coordinator?.openLoyaltyCardDetails(cards[index], isNew: false, onDismiss: nil)
     }
     
     func loadThumbnails() async {
