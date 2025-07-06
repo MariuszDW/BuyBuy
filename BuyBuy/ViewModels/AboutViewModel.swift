@@ -9,35 +9,35 @@ import SwiftUI
 
 @MainActor
 final class AboutViewModel: ObservableObject {
-    var coordinator: any AppCoordinatorProtocol
+    private weak var coordinator: (any AppCoordinatorProtocol)?
     
     init(coordinator: any AppCoordinatorProtocol) {
         self.coordinator = coordinator
     }
     
     func contactSupport() -> Bool {
-        return coordinator.openEmail(
+        return coordinator?.openEmail(
             to: AppConstants.encoreContactEMail,
             subject: String(localized: "contact_subject"),
             body: ""
-        )
+        ) ?? false
     }
     
     func reportIssue() -> Bool {
         let reportCreator = ReportCreator()
         let body = reportCreator.buildIssueReportBody()
-        return coordinator.openEmail(
+        return coordinator?.openEmail(
             to: AppConstants.encoreContactEMail,
             subject: String(localized: "issue_report_subject"),
             body: body
-        )
+        ) ?? false
     }
     
     func openBlueSkyWebPage() -> Bool {
-        return coordinator.openWebPage(address: "https://encore-games.bsky.social")
+        return coordinator?.openWebPage(address: "https://encore-games.bsky.social") ?? false
     }
     
     func openTipJar() {
-        return coordinator.openTipJar(onDismiss: { _ in })
+        coordinator?.openTipJar(onDismiss: { _ in })
     }
 }
