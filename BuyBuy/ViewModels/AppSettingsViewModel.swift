@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 class AppSettingsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
-    private var coordinator: any AppCoordinatorProtocol
+    private weak var coordinator: (any AppCoordinatorProtocol)?
     private var preferences: AppPreferencesProtocol
     
     @Published var isMetricUnitsEnabled: Bool
@@ -57,14 +57,16 @@ class AppSettingsViewModel: ObservableObject {
                 }
             }
             
-            await coordinator.setupDataManager(useCloud: enabled)
-            isCloudSyncEnabled = preferences.isCloudSyncEnabled
-            progressIndicator = false
+            let strongSelf = self
+            await coordinator?.setupDataManager(useCloud: enabled) {
+                strongSelf.isCloudSyncEnabled = strongSelf.preferences.isCloudSyncEnabled
+                strongSelf.progressIndicator = false
+            }
         }
     }
     
     func openTipJar() {
-        coordinator.openTipJar(onDismiss: {_ in })
+        coordinator?.openTipJar(onDismiss: {_ in })
     }
     
 #if DEBUG

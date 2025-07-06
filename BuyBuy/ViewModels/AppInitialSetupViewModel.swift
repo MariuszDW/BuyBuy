@@ -9,7 +9,7 @@ import Foundation
 
 @MainActor
 class AppInitialSetupViewModel: ObservableObject {
-    var coordinator: any AppCoordinatorProtocol
+    private weak var coordinator: (any AppCoordinatorProtocol)?
     private var preferences: any AppPreferencesProtocol
     
     @Published var isCloudSelected: Bool
@@ -40,9 +40,11 @@ class AppInitialSetupViewModel: ObservableObject {
                 }
                 
                 preferences.installationDate = Date()
-                showProgressIndicator = false
-                canDismiss = true
-                await coordinator.setupDataManager(useCloud: isCloudSelected)
+                let strongSelf = self
+                await coordinator?.setupDataManager(useCloud: isCloudSelected) {
+                    strongSelf.showProgressIndicator = false
+                    strongSelf.canDismiss = true
+                }
             }
         } else {
             preferences.installationDate = Date()

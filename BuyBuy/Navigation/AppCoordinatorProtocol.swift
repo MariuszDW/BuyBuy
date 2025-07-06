@@ -10,11 +10,11 @@ import Combine
 import StoreKit
 
 @MainActor
-protocol AppCoordinatorProtocol: ObservableObject {
+protocol AppCoordinatorProtocol: AnyObject, ObservableObject {
     var eventPublisher: AnyPublisher<AppEvent, Never> { get }
     func sendEvent(_ event: AppEvent)
     
-    func setupDataManager(useCloud: Bool) async
+    func setupDataManager(useCloud: Bool, completion: @escaping () -> Void) async
     
     func openShoppingList(_ id: UUID)
     func openAppSettings()

@@ -35,7 +35,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         eventSubject.send(event)
     }
     
-    func setupDataManager(useCloud: Bool) async {
+    func setupDataManager(useCloud: Bool, completion: @escaping () -> Void = {}) async {
         await dataManager.setup(useCloud: useCloud)
         
         for presenter in folderPresenters {
@@ -68,6 +68,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         if preferences.isCloudSyncEnabled != useCloud {
             preferences.isCloudSyncEnabled = useCloud
             sendEvent(.dataStorateChanged)
+        }
+        
+        await MainActor.run {
+            completion()
         }
         
 #if DEBUG
