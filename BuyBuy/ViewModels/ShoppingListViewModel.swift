@@ -7,11 +7,12 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 final class ShoppingListViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
-    var coordinator: any AppCoordinatorProtocol
+    private var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
         PersistentStoreChangeObserver { [weak self] in
@@ -44,6 +45,10 @@ final class ShoppingListViewModel: ObservableObject {
     func stopObserving() {
         remoteChangeObserver.stopObserving()
         print("ShoppingListViewModel - Stopped observing remote changes")
+    }
+    
+    var eventPublisher: AnyPublisher<AppEvent, Never> {
+        coordinator?.eventPublisher ?? Empty().eraseToAnyPublisher()
     }
     
     func loadList(fullRefresh: Bool = false) async {
@@ -87,7 +92,7 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func back() {
-        coordinator.back()
+        coordinator?.back()
     }
     
     func deleteItems(atOffsets offsets: IndexSet, section: ShoppingListSection) async {
@@ -158,26 +163,26 @@ final class ShoppingListViewModel: ObservableObject {
         
         let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: newItemStatus)
         
-        coordinator.openShoppingItemDetails(newItem, isNew: true, onDismiss: nil)
+        coordinator?.openShoppingItemDetails(newItem, isNew: true, onDismiss: nil)
     }
     
     func openItemDetails(for itemID: UUID) {
         guard let item = list?.item(with: itemID) else { return }
-        coordinator.openShoppingItemDetails(item, isNew: false, onDismiss: nil)
+        coordinator?.openShoppingItemDetails(item, isNew: false, onDismiss: nil)
     }
     
     func openItemImagePreviews(for itemID: UUID, imageIndex: Int) {
         guard let item = list?.item(with: itemID), imageIndex < item.imageIDs.count else { return }
-        coordinator.openShoppingItemImage(with: item.imageIDs, index: imageIndex, onDismiss: {_ in })
+        coordinator?.openShoppingItemImage(with: item.imageIDs, index: imageIndex, onDismiss: {_ in })
     }
     
     func openLoyaltyCards() {
-        coordinator.openLoyaltyCardList()
+        coordinator?.openLoyaltyCardList()
     }
     
     func openExportListOptions() {
         guard let list = list else { return }
-        coordinator.openShoppingListExport(list, onDismiss: {_ in })
+        coordinator?.openShoppingListExport(list, onDismiss: {_ in })
     }
     
     var hasPurchasedItems: Bool {

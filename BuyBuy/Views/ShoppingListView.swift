@@ -52,7 +52,7 @@ struct ShoppingListView: View {
         }
         .navigationTitle(viewModel.list?.name ?? "")
         .navigationBarTitleDisplayMode(.large)
-        .onReceive(viewModel.coordinator.eventPublisher) { event in
+        .onReceive(viewModel.eventPublisher) { event in
             switch event {
             case .shoppingItemImageChanged, .shoppingItemEdited:
                 Task { await viewModel.loadList() }
