@@ -12,7 +12,7 @@ final class ShoppingListSelectorViewModel: ObservableObject {
     @Published var shoppingLists: [ShoppingList] = []
     let itemIDToRestore: UUID
     private let dataManager: DataManagerProtocol
-    private var coordinator: any AppCoordinatorProtocol
+    private var coordinator: (any AppCoordinatorProtocol)?
     
     init(itemIDToRestore: UUID, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.itemIDToRestore = itemIDToRestore
@@ -27,6 +27,6 @@ final class ShoppingListSelectorViewModel: ObservableObject {
     
     func moveDeletedItem(itemID: UUID, toListID: UUID) async {
         try? await dataManager.restoreItem(with: itemID, toList: toListID)
-        coordinator.sendEvent(.shoppingItemEdited)
+        coordinator?.sendEvent(.shoppingItemEdited)
     }
 }
