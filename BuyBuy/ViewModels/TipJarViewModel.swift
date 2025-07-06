@@ -34,7 +34,7 @@ struct TipProduct: Identifiable {
 
 @MainActor
 class TipJarViewModel: ObservableObject {
-    var coordinator: any AppCoordinatorProtocol
+    private var coordinator: (any AppCoordinatorProtocol)?
     private var userActivityTracker: any UserActivityTrackerProtocol
     
     @Published var loading: Bool = true
@@ -91,7 +91,7 @@ class TipJarViewModel: ObservableObject {
             switch result {
             case .success(.verified(let transaction)):
                 print("Verified transaction for: \(transaction.productID)")
-                coordinator.showThankYou(for: transaction, onDismiss: { _ in })
+                coordinator?.showThankYou(for: transaction, onDismiss: { _ in })
             case .userCancelled:
                 print("User cancelled transaction")
                 break
