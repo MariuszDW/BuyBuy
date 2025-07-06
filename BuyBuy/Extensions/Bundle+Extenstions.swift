@@ -18,6 +18,10 @@ extension Bundle {
             resultString += " (\(buildString))"
         }
         
+        #if DEBUG
+        resultString += " DEV"
+        #endif
+        
         if date {
             let dateString = Date().localizedString(dateStyle: .medium, timeStyle: .none)
             resultString += " (\(dateString))"

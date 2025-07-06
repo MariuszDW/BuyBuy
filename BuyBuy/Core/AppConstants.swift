@@ -18,8 +18,13 @@ struct AppConstants {
     static let blueSkyName: String = "Bluesky"
     
     static var bundleID: String? { Bundle.main.bundleIdentifier }
+#if DEBUG
+    static let appGroupID = "group.com.encore.BuyBuyDev"
+    static let iCloudContainerID = "iCloud.com.encore.BuyBuyDev"
+#else
     static let appGroupID = "group.com.encore.BuyBuy"
     static let iCloudContainerID = "iCloud.com.encore.BuyBuy"
+#endif
     
     static let coreDataModelName = "Model"
     static let localStoreFileName = "LocalStore.sqlite"
