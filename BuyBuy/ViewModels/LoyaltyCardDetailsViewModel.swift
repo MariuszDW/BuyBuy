@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 final class LoyaltyCardDetailsViewModel: ObservableObject {
@@ -18,7 +19,7 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     var changesConfirmed: Bool = false
     
     private let dataManager: DataManagerProtocol
-    var coordinator: any AppCoordinatorProtocol
+    private var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
         PersistentStoreChangeObserver { [weak self] in
@@ -42,6 +43,10 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     func stopObserving() {
         remoteChangeObserver.stopObserving()
         print("LoyaltyCardDetailsViewModel - Stopped observing remote changes")
+    }
+    
+    var eventPublisher: AnyPublisher<AppEvent, Never> {
+        coordinator?.eventPublisher ?? Empty().eraseToAnyPublisher()
     }
     
     func loadCard() async {
@@ -72,12 +77,12 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
         } else if isNew == true {
             try? await dataManager.deleteLoyaltyCard(with: loyaltyCard.id)
         }
-        coordinator.sendEvent(.loyaltyCardEdited)
+        coordinator?.sendEvent(.loyaltyCardEdited)
     }
     
     func openCardPreview() {
         guard let imageID = loyaltyCard.imageID else { return }
-        coordinator.openLoyaltyCardPreview(with: imageID, onDismiss: nil)
+        coordinator?.openLoyaltyCardPreview(with: imageID, onDismiss: nil)
     }
     
     func addCardImage(_ image: UIImage) async {

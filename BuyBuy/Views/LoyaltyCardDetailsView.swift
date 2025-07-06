@@ -65,7 +65,7 @@ struct LoyaltyCardDetailsView: View {
                 .toolbar {
                     toolbarContent
                 }
-                .onReceive(viewModel.coordinator.eventPublisher) { event in
+                .onReceive(viewModel.eventPublisher) { event in
                     switch event {
                     case .loyaltyCardImageChanged:
                         Task { await viewModel.loadCardImage() }
