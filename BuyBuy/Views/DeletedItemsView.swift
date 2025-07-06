@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct DeletedItemsView: View {
     @StateObject var viewModel: DeletedItemsViewModel
@@ -49,7 +50,7 @@ struct DeletedItemsView: View {
         }
         .navigationTitle("recently_deleted")
         .navigationBarTitleDisplayMode(.large)
-        .onReceive(viewModel.coordinator.eventPublisher) { event in
+        .onReceive(viewModel.eventPublisher) { event in
             switch event {
             case .shoppingItemImageChanged, .shoppingItemEdited:
                 Task { await viewModel.loadItems() }

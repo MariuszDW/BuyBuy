@@ -7,11 +7,12 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 final class DeletedItemsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
-    var coordinator: any AppCoordinatorProtocol
+    weak var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
         PersistentStoreChangeObserver { [weak self] in
@@ -69,11 +70,15 @@ final class DeletedItemsViewModel: ObservableObject {
     }
     
     func openShoppingListSelector(for itemID: UUID) {
-        coordinator.openShoppingListSelector(forDeletedItemID: itemID) { _ in }
+        coordinator?.openShoppingListSelector(forDeletedItemID: itemID) { _ in }
     }
     
     func back() {
-        coordinator.back()
+        coordinator?.back()
+    }
+    
+    var eventPublisher: AnyPublisher<AppEvent, Never> {
+        coordinator?.eventPublisher ?? Empty().eraseToAnyPublisher()
     }
     
     func thumbnail(for imageID: String?) -> UIImage? {
