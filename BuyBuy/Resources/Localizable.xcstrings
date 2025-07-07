@@ -1690,6 +1690,38 @@
         }
       }
     },
+    "tip_jar_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipping is entirely optional and does not unlock any extra features. If you enjoy using BuyBuy, I’d really appreciate a small tip. It helps keep the app ad-free, subscription-free, and motivates future development."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wsparcie jest całkowicie dobrowolne i nie odblokowuje żadnych dodatkowych funkcji. Jeżeli lubisz korzystać z BuyBuy, będzie mi bardzo miło, jeśli rozważysz symboliczne wsparcie. To dodatkowa motywacja do dalszego rozwoju aplikacji - bez reklam i subskrypcji."
+          }
+        }
+      }
+    },
+    "tip_jar_signature" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you! The Developer"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dziękuję! Autor"
+          }
+        }
+      }
+    },
     "total_price" : {
       "localizations" : {
         "en" : {

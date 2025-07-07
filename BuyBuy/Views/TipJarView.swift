@@ -57,11 +57,30 @@ struct TipJarView: View {
     
     @ViewBuilder
     private func mainIconView(iconSize: CGFloat) -> some View {
-        Image(systemName: "cup.and.saucer.fill")
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .foregroundStyle(.green)
-            .frame(maxWidth: iconSize)
+        VStack(spacing: 16) {
+            Image(systemName: "cup.and.saucer.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .foregroundStyle(.green)
+                .frame(maxWidth: iconSize)
+                .layoutPriority(0)
+
+            VStack(spacing: 8) {
+                Text("tip_jar_message")
+                    .font(.regularDynamic(style: .footnote))
+                    .foregroundColor(.bb.text.tertiary)
+                    .layoutPriority(1)
+
+                Text("tip_jar_signature")
+                    .font(.regularDynamic(style: .footnote))
+                    .foregroundColor(.bb.text.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.trailing, iconSize * 0.25)
+                    .layoutPriority(1)
+            }
+            .padding(.horizontal)
+            .layoutPriority(1)
+        }
     }
     
     @ViewBuilder
@@ -89,7 +108,7 @@ struct TipJarView: View {
                         }
                         
                         Text(product.description)
-                            .font(.regularDynamic(style: .callout))
+                            .font(.regularDynamic(style: .footnote))
                             .foregroundColor(.bb.button.text.opacity(0.8))
                             .fixedSize(horizontal: false, vertical: true)
                             .multilineTextAlignment(.leading)
