@@ -10,6 +10,7 @@ import Foundation
 @MainActor
 final class MockAppPreferences: AppPreferencesProtocol {
     var installationDate: Date?
+    var totalActiveTime: TimeInterval = 0
     
     var tipCounts: [String : Int]
     var lastTipDate: Date?
@@ -35,6 +36,7 @@ final class MockAppPreferences: AppPreferencesProtocol {
          imperialUnitsEnabled: Bool = true,
          startupCleaningAllowed: Bool = true,
          cloudSyncEnabled: Bool = false,
+         totalActiveTime: TimeInterval = 0,
          tipCounts: [String : Int] = MockAppPreferences.mockTipCounts) {
         self.lastCleanupDate = lastCleanupDate
         self.isMetricUnitsEnabled = metricUnitsEnabled
@@ -43,6 +45,8 @@ final class MockAppPreferences: AppPreferencesProtocol {
         self.isCloudSyncEnabled = cloudSyncEnabled
         
         self.installationDate = Date()
+        self.totalActiveTime = totalActiveTime
+        
         self.tipCounts = tipCounts
         self.lastTipDate = nil
         self.lastTipJarShownDate = nil

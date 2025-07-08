@@ -29,6 +29,7 @@ final class AppPreferences: AppPreferencesProtocol {
         
         // user activity tracker
         static let installationDate = "act_installation_date"
+        static let totalActiveTime = "act_total_active_time"
     }
 
     var lastCleanupDate: Date? {
@@ -84,6 +85,15 @@ final class AppPreferences: AppPreferencesProtocol {
         }
         set {
             defaults.set(newValue, forKey: Keys.installationDate)
+        }
+    }
+
+    var totalActiveTime: TimeInterval {
+        get {
+            defaults.double(forKey: Keys.totalActiveTime)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.totalActiveTime)
         }
     }
     

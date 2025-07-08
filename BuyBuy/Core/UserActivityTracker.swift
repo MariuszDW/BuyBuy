@@ -12,6 +12,7 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
     private var preferences: AppPreferencesProtocol
     
     var shouldShowTipReminder: Bool = false
+    var lastActiveStartDate: Date? = nil
     
     init(preferences: AppPreferencesProtocol) {
         self.preferences = preferences
@@ -19,6 +20,14 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
 
     var installationDate: Date? {
         preferences.installationDate
+    }
+    
+    var totalActiveTime: TimeInterval {
+        return preferences.totalActiveTime
+    }
+    
+    var totalActiveHours: Double {
+        totalActiveTime / 3600
     }
 
     var lastTipDate: Date? {
@@ -67,5 +76,16 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
         }
 
         shouldShowTipReminder = daysSinceLastShown >= intervalDays
+    }
+    
+    func appDidEnterForeground() {
+        lastActiveStartDate = Date()
+    }
+
+    func appDidEnterBackground() {
+        guard let start = lastActiveStartDate else { return }
+        let duration = Date().timeIntervalSince(start)
+        preferences.totalActiveTime += duration
+        lastActiveStartDate = nil
     }
 }

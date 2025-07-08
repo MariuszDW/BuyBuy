@@ -341,17 +341,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         }
     }
     
-    // MARK: - App launch
-    
-    func performOnStartTasks() async {
-        await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
-        if preferences.installationDate == nil {
-            openInitAppSetup()
-        }
-        startTransactionListener()
-        appInitialized = true
-    }
-    
     // MARK: - In-App Purchase
     
     func startTransactionListener() {
@@ -368,9 +357,29 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         }
     }
     
-    // MARK: - App entering foreground
+    // MARK: - App scene phases
     
-    func performOnForegroundTasks() async {
+    func onAppStart() async {
+        await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
+        if preferences.installationDate == nil {
+            openInitAppSetup()
+        }
+        startTransactionListener()
+        appInitialized = true
+    }
+    
+    func onAppForeground() async {
+        print("AppCoordinator.onAppForeground()")
+        userActivityTracker.appDidEnterForeground()
+        await performOnForegroundTasks()
+    }
+
+    func onAppBackground() {
+        print("AppCoordinator.onAppBackground()")
+        userActivityTracker.appDidEnterBackground()
+    }
+    
+    private func performOnForegroundTasks() async {
         while !appInitialized {
             await Task.yield()
         }

@@ -13,6 +13,12 @@ final class MockUserActivityTracker: UserActivityTrackerProtocol {
     
     var installationDate: Date? = Date()
     
+    var totalActiveTime: TimeInterval = 0
+    
+    var totalActiveHours: Double {
+        totalActiveTime / 3600
+    }
+    
     var lastTipDate: Date? = nil
     
     func tipCount(for tipID: String) -> Int {

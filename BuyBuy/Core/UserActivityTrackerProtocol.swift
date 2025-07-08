@@ -10,6 +10,8 @@ import Foundation
 @MainActor
 protocol UserActivityTrackerProtocol: AnyObject {
     var installationDate: Date? { get }
+    var totalActiveTime: TimeInterval { get }
+    var totalActiveHours: Double { get }
     var lastTipDate: Date? { get }
     func tipCount(for tipID: String) -> Int
     var totalTipsCount: Int { get }

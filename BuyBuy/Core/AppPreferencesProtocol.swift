@@ -17,6 +17,7 @@ protocol AppPreferencesProtocol {
     
     // User activity tracker
     var installationDate: Date? { get set }
+    var totalActiveTime: TimeInterval { get set }
     
     var tipCounts: [String: Int] { get set }
     func tipCount(for tipID: String) -> Int
