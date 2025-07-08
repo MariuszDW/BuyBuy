@@ -64,7 +64,7 @@ struct AppSettingsView: View {
                         Label {
                             Text("haptics")
                         } icon: {
-                            Image(systemName: "hand.tap")
+                            Image(systemName: "hand.tap.fill")
                         }
                     }
                     .onChange(of: viewModel.isHapticsEnabled) { newValue in
@@ -76,7 +76,7 @@ struct AppSettingsView: View {
                     Button {
                         viewModel.openTipJar()
                     } label: {
-                        Label("support_developer", systemImage: "cup.and.saucer")
+                        Label("support_developer", systemImage: "cup.and.saucer.fill")
                     }
                 }
                 
