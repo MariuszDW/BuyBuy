@@ -9,12 +9,14 @@ import SwiftUI
 
 struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
+    private let hapticEngine: HapticEngineProtocol
     @State private var isEditMode: EditMode = .inactive
     @State private var showDeletePurchasedAlert = false
     @State private var forceRefreshDiabled = false
     
-    init(viewModel: ShoppingListViewModel) {
+    init(viewModel: ShoppingListViewModel, hapticEngine: HapticEngineProtocol) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.hapticEngine = hapticEngine
     }
     
     var body: some View {
@@ -122,12 +124,14 @@ struct ShoppingListView: View {
             thumbnail: viewModel.thumbnail(for: item.imageIDs.first),
             state: isEditMode == .inactive,
             onToggleStatus: { toggledItemID in
+                hapticEngine.playItemChecked()
                 viewModel.toggleStatus(for: toggledItemID)
             },
             onRowTap: { tappedItemID in
                 viewModel.openItemDetails(for: tappedItemID)
             },
             onThumbnailTap: { selectedItemID, imageIndex in
+                hapticEngine.playSelectionChanged()
                 viewModel.openItemImagePreviews(for: selectedItemID, imageIndex: imageIndex)
             }
         )
@@ -167,6 +171,7 @@ struct ShoppingListView: View {
                 if item.status != status {
                     Button {
                         Task {
+                            hapticEngine.playItemChecked()
                             await viewModel.setStatus(status, itemID: item.id)
                         }
                     } label: {
@@ -217,6 +222,7 @@ struct ShoppingListView: View {
                         }
                         
                         Button(role: .destructive) {
+                            hapticEngine.playItemDeleted()
                             showDeletePurchasedAlert = true
                         } label: {
                             Label("delete_purchased_items", systemImage: "trash")
@@ -348,6 +354,7 @@ struct ShoppingListView: View {
     // MARK: - Private
     
     private func handleDeleteTapped(for item: ShoppingItem) async {
+        hapticEngine.playItemDeleted()
         await viewModel.moveItemToDeleted(with: item.id)
     }
     
@@ -373,9 +380,10 @@ struct ShoppingListView: View {
     let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID1,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        ShoppingListView(viewModel: viewModel)
+        ShoppingListView(viewModel: viewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.light)
 }
@@ -391,9 +399,10 @@ struct ShoppingListView: View {
     let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID1,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        ShoppingListView(viewModel: viewModel)
+        ShoppingListView(viewModel: viewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.dark)
 }
@@ -409,9 +418,10 @@ struct ShoppingListView: View {
     let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID5,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        ShoppingListView(viewModel: viewModel)
+        ShoppingListView(viewModel: viewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.light)
 }
@@ -427,9 +437,10 @@ struct ShoppingListView: View {
     let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID5,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        ShoppingListView(viewModel: viewModel)
+        ShoppingListView(viewModel: viewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.dark)
 }

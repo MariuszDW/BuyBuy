@@ -10,6 +10,7 @@ import Combine
 
 struct LoyaltyCardsView: View {
     @StateObject var viewModel: LoyaltyCardsViewModel
+    private var hapticEngine: HapticEngineProtocol
     @State private var showActionsForCardAtIndex: Int? = nil
     @State private var cardPendingDeletion: LoyaltyCard?
     @State private var isEditMode: EditMode = .inactive
@@ -18,8 +19,9 @@ struct LoyaltyCardsView: View {
     
     private static let tileSize: CGFloat = 150
     
-    init(viewModel: LoyaltyCardsViewModel) {
+    init(viewModel: LoyaltyCardsViewModel, hapticEngine: HapticEngineProtocol) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.hapticEngine = hapticEngine
     }
 
     var body: some View {
@@ -145,6 +147,7 @@ struct LoyaltyCardsView: View {
             }
             .onDelete { indexSet in
                 Task {
+                    hapticEngine.playItemDeleted()
                     await viewModel.deleteCards(at: indexSet)
                 }
             }
@@ -184,6 +187,7 @@ struct LoyaltyCardsView: View {
             viewModel.openCardPreview(card)
         }
         .onLongPressGesture {
+            hapticEngine.playSelectionChanged()
             showActionsForCardAtIndex = index
         }
         .popover(isPresented: Binding(
@@ -240,6 +244,7 @@ struct LoyaltyCardsView: View {
             
             Button {
                 if let index = showActionsForCardAtIndex, index < viewModel.cards.count {
+                    hapticEngine.playItemDeleted()
                     showActionsForCardAtIndex = nil
                     Task { @MainActor in
                         try? await Task.sleep(for: .microseconds(500))
@@ -281,9 +286,10 @@ struct LoyaltyCardsView: View {
         dataManager: dataManager,
         coordinator: coordinator
     )
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        LoyaltyCardsView(viewModel: mockViewModel)
+        LoyaltyCardsView(viewModel: mockViewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.light)
 }
@@ -300,9 +306,10 @@ struct LoyaltyCardsView: View {
         dataManager: dataManager,
         coordinator: coordinator
     )
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        LoyaltyCardsView(viewModel: mockViewModel)
+        LoyaltyCardsView(viewModel: mockViewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.dark)
 }
@@ -319,9 +326,10 @@ struct LoyaltyCardsView: View {
         dataManager: dataManager,
         coordinator: coordinator
     )
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        LoyaltyCardsView(viewModel: mockViewModel)
+        LoyaltyCardsView(viewModel: mockViewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.light)
 }
@@ -338,9 +346,10 @@ struct LoyaltyCardsView: View {
         dataManager: dataManager,
         coordinator: coordinator
     )
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        LoyaltyCardsView(viewModel: mockViewModel)
+        LoyaltyCardsView(viewModel: mockViewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.dark)
 }

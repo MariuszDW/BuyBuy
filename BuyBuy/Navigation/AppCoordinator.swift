@@ -17,6 +17,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     private var preferences: AppPreferencesProtocol
     private var userActivityTracker: UserActivityTracker
     private let dataManager: DataManager
+    private let hapticEngine: HapticEngine
     private var appInitialized = false
     private var folderPresenters: [DirectoryFilePresenter] = []
     
@@ -28,6 +29,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     init(preferences: AppPreferencesProtocol) {
         self.preferences = preferences
         self.dataManager = DataManager(useCloud: preferences.isCloudSyncEnabled)
+        self.hapticEngine = HapticEngine()
         self.userActivityTracker = UserActivityTracker(preferences: preferences)
     }
     
@@ -191,7 +193,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     dataManager: self.dataManager,
                     userActivityTracker: self.userActivityTracker,
                     coordinator: self
-                )
+                ),
+                hapticEngine: self.hapticEngine
             )
             
         case .shoppingList(let id):
@@ -200,7 +203,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     listID: id,
                     dataManager: self.dataManager,
                     coordinator: self
-                )
+                ),
+                hapticEngine: self.hapticEngine
             )
             
         case .deletedItems:
@@ -208,19 +212,26 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: DeletedItemsViewModel(
                     dataManager: self.dataManager,
                     coordinator: self
-                )
+                ),
+                hapticEngine: self.hapticEngine
             )
             
         case .appSettings:
             AppSettingsView(
-                viewModel: AppSettingsViewModel(dataManager: self.dataManager,
-                                                preferences: self.preferences,
-                                                coordinator: self)
+                viewModel: AppSettingsViewModel(
+                    dataManager: self.dataManager,
+                    preferences: self.preferences,
+                    coordinator: self
+                )
             )
             
         case .loyaltyCards:
-            LoyaltyCardsView(viewModel: LoyaltyCardsViewModel(dataManager: self.dataManager,
-                                                              coordinator: self)
+            LoyaltyCardsView(
+                viewModel: LoyaltyCardsViewModel(
+                    dataManager: self.dataManager,
+                    coordinator: self
+                ),
+                hapticEngine: self.hapticEngine
             )
             
         case .about:
@@ -287,7 +298,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     isNew: isNew,
                     dataManager: self.dataManager,
                     coordinator: self
-                )
+                ),
+                hapticEngine: self.hapticEngine
             )
             
         case let .shoppingListSelector(itemIDToRestore):

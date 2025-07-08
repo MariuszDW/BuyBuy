@@ -13,6 +13,7 @@ enum LoyaltyCardDetailsField: Hashable {
 
 struct LoyaltyCardDetailsView: View {
     @StateObject var viewModel: LoyaltyCardDetailsViewModel
+    private var hapticEngine: HapticEngineProtocol
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: LoyaltyCardDetailsField?
     
@@ -20,8 +21,9 @@ struct LoyaltyCardDetailsView: View {
     @State private var showImageSourceSheet: Bool = false
     @State private var deleteImageConfirmation = false
     
-    init(viewModel: LoyaltyCardDetailsViewModel) {
+    init(viewModel: LoyaltyCardDetailsViewModel, hapticEngine: HapticEngineProtocol) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.hapticEngine = hapticEngine
     }
     
     var body: some View {
@@ -112,6 +114,7 @@ struct LoyaltyCardDetailsView: View {
             }
             
             Button {
+                hapticEngine.playItemDeleted()
                 showingImageActionMenu = false
                 deleteImageConfirmation = true
             } label: {
@@ -198,6 +201,7 @@ struct LoyaltyCardDetailsView: View {
                         viewModel.openCardPreview()
                     }
                     .onLongPressGesture {
+                        hapticEngine.playSelectionChanged()
                         focusedField = nil
                         showImageSourceSheet = false
                         showingImageActionMenu = true
@@ -258,8 +262,9 @@ struct LoyaltyCardDetailsView: View {
         card: MockDataRepository.card1,
         dataManager: dataManager,
         coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
-    LoyaltyCardDetailsView(viewModel: viewModel)
+    LoyaltyCardDetailsView(viewModel: viewModel, hapticEngine: mockHapticEngine)
         .preferredColorScheme(.light)
 }
 
@@ -275,7 +280,8 @@ struct LoyaltyCardDetailsView: View {
         card: MockDataRepository.card1,
         dataManager: dataManager,
         coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
-    LoyaltyCardDetailsView(viewModel: viewModel)
+    LoyaltyCardDetailsView(viewModel: viewModel, hapticEngine: mockHapticEngine)
         .preferredColorScheme(.dark)
 }

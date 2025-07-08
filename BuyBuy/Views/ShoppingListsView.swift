@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShoppingListsView: View {
     @StateObject var viewModel: ShoppingListsViewModel
+    private let hapticEngine: HapticEngineProtocol
     
     @State private var isEditMode: EditMode = .inactive
     @State private var listPendingDeletion: ShoppingList?
@@ -16,8 +17,9 @@ struct ShoppingListsView: View {
     @State private var animationTimer: Timer? = nil
     @State private var forceRefreshDiabled = false
     
-    init(viewModel: ShoppingListsViewModel) {
+    init(viewModel: ShoppingListsViewModel, hapticEngine: HapticEngineProtocol) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.hapticEngine = hapticEngine
     }
     
     var body: some View {
@@ -141,6 +143,7 @@ struct ShoppingListsView: View {
                 }
                 .onDelete { offsets in
                     Task {
+                        hapticEngine.playItemDeleted()
                         await viewModel.deleteLists(atOffsets: offsets)
                     }
                 }
@@ -383,6 +386,7 @@ struct ShoppingListsView: View {
     
     private func handleDeleteTapped(for list: ShoppingList) async {
         Task {
+            hapticEngine.playItemDeleted()
             if list.items.isEmpty {
                 await viewModel.deleteList(id: list.id)
             } else {
@@ -408,9 +412,10 @@ struct ShoppingListsView: View {
         userActivityTracker: tracker,
         coordinator: coordinator
     )
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        ShoppingListsView(viewModel: mockViewModel)
+        ShoppingListsView(viewModel: mockViewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.light)
 }
@@ -429,9 +434,10 @@ struct ShoppingListsView: View {
         userActivityTracker: tracker,
         coordinator: coordinator
     )
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        ShoppingListsView(viewModel: mockViewModel)
+        ShoppingListsView(viewModel: mockViewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.dark)
 }
@@ -450,9 +456,10 @@ struct ShoppingListsView: View {
         userActivityTracker: tracker,
         coordinator: coordinator
     )
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        ShoppingListsView(viewModel: mockViewModel)
+        ShoppingListsView(viewModel: mockViewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.light)
 }
@@ -471,9 +478,10 @@ struct ShoppingListsView: View {
         userActivityTracker: tracker,
         coordinator: coordinator
     )
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        ShoppingListsView(viewModel: mockViewModel)
+        ShoppingListsView(viewModel: mockViewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.dark)
 }

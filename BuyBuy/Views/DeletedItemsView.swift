@@ -10,11 +10,13 @@ import Combine
 
 struct DeletedItemsView: View {
     @StateObject var viewModel: DeletedItemsViewModel
+    private var hapticEngine: HapticEngineProtocol
     @State private var showDeleteAllItemsAlert = false
     @State private var forceRefreshDiabled = false
     
-    init(viewModel: DeletedItemsViewModel) {
+    init(viewModel: DeletedItemsViewModel, hapticEngine: HapticEngineProtocol) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.hapticEngine = hapticEngine
     }
     
     var body: some View {
@@ -97,6 +99,7 @@ struct DeletedItemsView: View {
             
             Button(role: .destructive) {
                 Task {
+                    hapticEngine.playItemDeleted()
                     await viewModel.deleteItem(with: item.id)
                 }
             } label: {
@@ -114,6 +117,7 @@ struct DeletedItemsView: View {
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button(role: .destructive) {
                 Task {
+                    hapticEngine.playItemDeleted()
                     await viewModel.deleteItem(with: item.id)
                 }
             } label: {
@@ -127,6 +131,7 @@ struct DeletedItemsView: View {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Menu {
                     Button(role: .destructive) {
+                        hapticEngine.playItemDeleted()
                         showDeleteAllItemsAlert = true
                     } label: {
                         Label("delete_all", systemImage: "trash")
@@ -175,9 +180,10 @@ struct DeletedItemsView: View {
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        DeletedItemsView(viewModel: viewModel)
+        DeletedItemsView(viewModel: viewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.light)
 }
@@ -192,9 +198,10 @@ struct DeletedItemsView: View {
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        DeletedItemsView(viewModel: viewModel)
+        DeletedItemsView(viewModel: viewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.dark)
 }
@@ -209,9 +216,10 @@ struct DeletedItemsView: View {
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        DeletedItemsView(viewModel: viewModel)
+        DeletedItemsView(viewModel: viewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.light)
 }
@@ -226,9 +234,10 @@ struct DeletedItemsView: View {
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = DeletedItemsViewModel(dataManager: dataManager,
                                           coordinator: coordinator)
+    let mockHapticEngine = MockHapticEngine()
     
     NavigationStack {
-        DeletedItemsView(viewModel: viewModel)
+        DeletedItemsView(viewModel: viewModel, hapticEngine: mockHapticEngine)
     }
     .preferredColorScheme(.dark)
 }
