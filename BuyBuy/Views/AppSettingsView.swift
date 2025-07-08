@@ -76,7 +76,7 @@ struct AppSettingsView: View {
                     Button {
                         viewModel.openTipJar()
                     } label: {
-                        Label("support_developer", systemImage: "cup.and.saucer.fill")
+                        Label("support_developer", systemImage: "cup.and.saucer")
                     }
                 }
                 
