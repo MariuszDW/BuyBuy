@@ -833,6 +833,22 @@
         }
       }
     },
+    "haptics" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haptics"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haptyka"
+          }
+        }
+      }
+    },
     "icloud" : {
       "localizations" : {
         "en" : {

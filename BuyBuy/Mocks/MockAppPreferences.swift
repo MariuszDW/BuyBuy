@@ -21,6 +21,7 @@ final class MockAppPreferences: AppPreferencesProtocol {
     var isImperialUnitsEnabled: Bool = true
     var isStartupCleaningAllowed: Bool = true
     var isCloudSyncEnabled: Bool = false
+    var isHapticsEnabled: Bool = true
     
     var unitSystems: [MeasureUnitSystem] {
         MeasureUnitSystem.allCases.filter {
@@ -36,6 +37,7 @@ final class MockAppPreferences: AppPreferencesProtocol {
          imperialUnitsEnabled: Bool = true,
          startupCleaningAllowed: Bool = true,
          cloudSyncEnabled: Bool = false,
+         hapticsEnabled: Bool = true,
          totalActiveTime: TimeInterval = 0,
          tipCounts: [String : Int] = MockAppPreferences.mockTipCounts) {
         self.lastCleanupDate = lastCleanupDate
@@ -43,6 +45,7 @@ final class MockAppPreferences: AppPreferencesProtocol {
         self.isImperialUnitsEnabled = imperialUnitsEnabled
         self.isStartupCleaningAllowed = startupCleaningAllowed
         self.isCloudSyncEnabled = cloudSyncEnabled
+        self.isHapticsEnabled = hapticsEnabled
         
         self.installationDate = Date()
         self.totalActiveTime = totalActiveTime

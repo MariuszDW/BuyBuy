@@ -29,7 +29,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     init(preferences: AppPreferencesProtocol) {
         self.preferences = preferences
         self.dataManager = DataManager(useCloud: preferences.isCloudSyncEnabled)
-        self.hapticEngine = HapticEngine()
+        self.hapticEngine = HapticEngine(isEnabled: preferences.isHapticsEnabled)
         self.userActivityTracker = UserActivityTracker(preferences: preferences)
     }
     
@@ -220,6 +220,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             AppSettingsView(
                 viewModel: AppSettingsViewModel(
                     dataManager: self.dataManager,
+                    hapticEngine: self.hapticEngine,
                     preferences: self.preferences,
                     coordinator: self
                 )

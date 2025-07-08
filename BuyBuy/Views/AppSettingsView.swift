@@ -59,6 +59,19 @@ struct AppSettingsView: View {
                         }
                 }
                 
+                Section {
+                    Toggle(isOn: $viewModel.isHapticsEnabled) {
+                        Label {
+                            Text("haptics")
+                        } icon: {
+                            Image(systemName: "hand.tap")
+                        }
+                    }
+                    .onChange(of: viewModel.isHapticsEnabled) { newValue in
+                        viewModel.setHapticsEnabled(newValue)
+                    }
+                }
+                
                 Section() {
                     Button {
                         viewModel.openTipJar()
@@ -150,11 +163,15 @@ struct AppSettingsView: View {
                                   fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
+    let mockHapticEngine = MockHapticEngine()
     let coordinator = AppCoordinator(preferences: preferences)
     NavigationStack {
-        AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
-                                                        preferences: preferences,
-                                                        coordinator: coordinator))
+        AppSettingsView(viewModel: AppSettingsViewModel(
+            dataManager: dataManager,
+            hapticEngine: mockHapticEngine,
+            preferences: preferences,
+            coordinator: coordinator)
+        )
     }
     .preferredColorScheme(.light)
 }
@@ -166,11 +183,15 @@ struct AppSettingsView: View {
                                   fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
+    let mockHapticEngine = MockHapticEngine()
     let coordinator = AppCoordinator(preferences: preferences)
     NavigationStack {
-        AppSettingsView(viewModel: AppSettingsViewModel(dataManager: dataManager,
-                                                        preferences: preferences,
-                                                        coordinator: coordinator))
+        AppSettingsView(viewModel: AppSettingsViewModel(
+            dataManager: dataManager,
+            hapticEngine: mockHapticEngine,
+            preferences: preferences,
+            coordinator: coordinator)
+        )
     }
     .preferredColorScheme(.dark)
 }

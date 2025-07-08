@@ -11,16 +11,19 @@ import Foundation
 class AppSettingsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
     private weak var coordinator: (any AppCoordinatorProtocol)?
+    private var hapticEngine: any HapticEngineProtocol
     private var preferences: AppPreferencesProtocol
     
     @Published var isMetricUnitsEnabled: Bool
     @Published var isImperialUnitsEnabled: Bool
     @Published var isCloudSyncEnabled: Bool
+    @Published var isHapticsEnabled: Bool
     @Published var progressIndicator: Bool
     @Published var iCloudErrorMessage: String?
     
-    init(dataManager: DataManagerProtocol, preferences: AppPreferencesProtocol, coordinator: any AppCoordinatorProtocol) {
+    init(dataManager: DataManagerProtocol, hapticEngine: HapticEngineProtocol, preferences: AppPreferencesProtocol, coordinator: any AppCoordinatorProtocol) {
         self.dataManager = dataManager
+        self.hapticEngine = hapticEngine
         self.coordinator = coordinator
         self.preferences = preferences
         
@@ -28,6 +31,7 @@ class AppSettingsViewModel: ObservableObject {
         self.isImperialUnitsEnabled = preferences.isImperialUnitsEnabled
         self.progressIndicator = false
         self.isCloudSyncEnabled = preferences.isCloudSyncEnabled
+        self.isHapticsEnabled = preferences.isHapticsEnabled
     }
     
     func setMetricUnitsEnabled(_ enabled: Bool) {
@@ -63,6 +67,12 @@ class AppSettingsViewModel: ObservableObject {
                 strongSelf.progressIndicator = false
             }
         }
+    }
+    
+    func setHapticsEnabled(_ enabled: Bool) {
+        isHapticsEnabled = enabled
+        preferences.isHapticsEnabled = enabled
+        hapticEngine.isEnabled = enabled
     }
     
     func openTipJar() {

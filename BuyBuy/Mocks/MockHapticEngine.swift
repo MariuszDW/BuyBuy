@@ -9,6 +9,8 @@ import Foundation
 
 @MainActor
 final class MockHapticEngine: HapticEngineProtocol {
+    var isEnabled: Bool = true
+    
     func play(_ type: HapticType) {}
     
     func playItemChecked() {

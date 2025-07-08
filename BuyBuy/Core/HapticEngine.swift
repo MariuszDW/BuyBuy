@@ -10,6 +10,8 @@ import UIKit
 
 @MainActor
 final class HapticEngine: HapticEngineProtocol {
+    var isEnabled: Bool = true
+    
     private lazy var impactGenerators: [UIImpactFeedbackGenerator.FeedbackStyle: UIImpactFeedbackGenerator] = [:]
     
     private lazy var notificationGenerator: UINotificationFeedbackGenerator = {
@@ -22,7 +24,13 @@ final class HapticEngine: HapticEngineProtocol {
         return generator
     }()
     
+    init(isEnabled: Bool) {
+        self.isEnabled = isEnabled
+    }
+    
     func play(_ type: HapticType) {
+        guard isEnabled else { return }
+        
         switch type {
         case .impact(let style):
             let generator = impactGenerator(for: style)

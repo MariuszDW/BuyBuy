@@ -20,7 +20,8 @@ final class AppPreferences: AppPreferencesProtocol {
         static let lastCleanupDate = "last_cleanup_date"
         static let metricUnitsEnabled = "metric_units_enabled"
         static let imperialUnitsEnabled = "imperial_units_enabled"
-        static let isCloudSyncEnabled = "is_cloud_sync_enabled"
+        static let cloudSyncEnabled = "cloud_sync_enabled"
+        static let hapticsEnabled = "haptics_enabled"
         
         // tips
         static let tipCounts = "act_tip_counts"
@@ -61,10 +62,19 @@ final class AppPreferences: AppPreferencesProtocol {
 
     var isCloudSyncEnabled: Bool {
         get {
-            (defaults.object(forKey: Keys.isCloudSyncEnabled) as? Bool) ?? false
+            (defaults.object(forKey: Keys.cloudSyncEnabled) as? Bool) ?? false
         }
         set {
-            defaults.set(newValue, forKey: Keys.isCloudSyncEnabled)
+            defaults.set(newValue, forKey: Keys.cloudSyncEnabled)
+        }
+    }
+    
+    var isHapticsEnabled: Bool {
+        get {
+            (defaults.object(forKey: Keys.hapticsEnabled) as? Bool) ?? true
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.hapticsEnabled)
         }
     }
 

@@ -13,6 +13,7 @@ protocol AppPreferencesProtocol {
     var isImperialUnitsEnabled: Bool { get set }
     var lastCleanupDate: Date? { get set }
     var isCloudSyncEnabled: Bool { get set }
+    var isHapticsEnabled: Bool { get set }
     var unitSystems: [MeasureUnitSystem] { get }
     
     // User activity tracker

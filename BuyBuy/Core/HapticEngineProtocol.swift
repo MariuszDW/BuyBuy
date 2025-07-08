@@ -16,6 +16,8 @@ enum HapticType {
 
 @MainActor
 protocol HapticEngineProtocol {
+    var isEnabled: Bool { get set }
+    
     func play(_ type: HapticType)
     
     func playItemChecked()
