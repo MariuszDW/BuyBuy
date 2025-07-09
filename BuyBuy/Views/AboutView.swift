@@ -28,10 +28,10 @@ struct AboutView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .gesture(
-                    DragGesture(minimumDistance: 4),
-                    including: .gesture
-                )
+//                .gesture(
+//                    DragGesture(minimumDistance: 4),
+//                    including: .gesture
+//                )
             } else {
                 let logoMaxWidth = min(geometry.size.width * 0.45, geometry.size.height)
                 HStack(alignment: .center, spacing: 32) {
