@@ -125,59 +125,79 @@ extension MockDataRepository {
     static let listUUID4 = UUID(uuidString: "11111111-1111-1111-1111-111111111114")!
     static let listUUID5 = UUID(uuidString: "11111111-1111-1111-1111-111111111115")!
     
-    static let list1 = ShoppingList(id: listUUID1, name: "Grocery Store", items: [
-        ShoppingItem(order: 0, listID: listUUID1, name: "Milk", note: "Pilos 3.2%, 1 L", status: .pending, price: 3.79, quantity: 2, unit: ShoppingItemUnit(.liter)),
-        ShoppingItem(order: 1, listID: listUUID1, name: "Bread", status: .pending, price: 4.79, quantity: 2, unit: ShoppingItemUnit(.piece)),
-        ShoppingItem(order: 2, listID: listUUID1, name: "Eggs", note: "Box 12x", status: .inactive, quantity: 1),
-        ShoppingItem(order: 3, listID: listUUID1, name: "Apples", note: "2 kg (in promotion)", status: .purchased, quantity: 2.5, unit: ShoppingItemUnit(.kilogram)),
-        ShoppingItem(order: 4, listID: listUUID1, name: "Chicken", status: .purchased),
-        ShoppingItem(order: 5, listID: listUUID1, name: "Butter", note: "As cheap as possible.", status: .purchased, price: 4.79, quantity: 1),
-        ShoppingItem(order: 6, listID: listUUID1, name: "Yogurt", note: "Natural, 500 g", status: .inactive, price: 1.79, quantity: 3)
-    ], order: 0, icon: .cart, color: .magenta)
+    static let list1 = ShoppingList(id: listUUID1, name: "Office", items: [
+        ShoppingItem(order: 0, listID: listUUID1, name: "A4 Printer Paper", note: "500 sheets, for montly reports.", status: .pending, price: 5.99, quantity: 2, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 1, listID: listUUID1, name: "Blue Ballpoint Pens", note: "Medium tip, blue ink.", status: .pending, price: 0.49, quantity: 10, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 2, listID: listUUID1, name: "Sticky Notes", note: "75x75 mm, yellow, repositionable.", status: .purchased, price: 1.20, quantity: 3, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 3, listID: listUUID1, name: "Permanent Markers", note: "Black, waterproof ink.", status: .purchased, price: 0.89, quantity: 5, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 4, listID: listUUID1, name: "Whiteboard Cleaner Spray", note: "In bottle 250 ml, for conference room use.", status: .purchased, price: 4.50, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 5, listID: listUUID1, name: "Highlighters (4 colors)", note: "Yellow, green, pink, orange.", status: .inactive, price: 3.50, quantity: 2, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 6, listID: listUUID1, name: "Envelopes (C5, self-seal)", note: "For mailing invoices.", status: .purchased, price: 0.07, quantity: 100, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 7, listID: listUUID1, name: "Correction Tape", note: "Better than fluid.", status: .pending, price: 2.30, quantity: 2, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 8, listID: listUUID1, name: "Office Scissors (21cm)", note: "Stainless steel, right-handed.", status: .pending, price: 3.80, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 9, listID: listUUID1, name: "USB Flash Drive", note: "32 GB", status: .inactive, price: 6.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 10, listID: listUUID1, name: "Binder Clips (25 mm)", note: "Black metal, medium size.", status: .pending, price: 0.15, quantity: 12, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 11, listID: listUUID1, name: "Desk Organizer", note: "Pen holder, tray, sticky note box.", status: .inactive, price: 9.99, quantity: 1, unit: ShoppingItemUnit(.piece))
+    ], order: 0, icon: .paperclip, color: .magenta)
     
-    static let list2 = ShoppingList(id: listUUID2, name: "Hardware Store", items: [
-        ShoppingItem(order: 0, listID: listUUID2, name: "Screws", status: .purchased),
-        ShoppingItem(order: 1, listID: listUUID2, name: "Hammer", note: "As big as possible", status: .pending, quantity: 1),
-        ShoppingItem(order: 2, listID: listUUID2, name: "Paint", status: .inactive),
-        ShoppingItem(order: 3, listID: listUUID2, name: "Wrench", status: .purchased),
-        ShoppingItem(order: 4, listID: listUUID2, name: "Drill", status: .pending),
-        ShoppingItem(order: 5, listID: listUUID2, name: "Tape Measure", status: .purchased),
-        ShoppingItem(order: 6, listID: listUUID2, name: "Ladder", status: .inactive),
-        ShoppingItem(order: 7, listID: listUUID2, name: "Sandpaper", status: .pending)
-    ], order: 1, icon: .house, color: .brown)
+    static let list2 = ShoppingList(id: listUUID2, name: "Fruits & Vegetables", items: [
+        ShoppingItem(order: 0, listID: listUUID2, name: "Bananas", note: "Ripe, medium size, for smoothies.", status: .pending, price: 0.35, quantity: 6, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 1, listID: listUUID2, name: "Apples (Gala)", note: "Sweet and crisp, lunch snacks.", status: .pending, price: 0.45, quantity: 5, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 2, listID: listUUID2, name: "Carrots", note: "Washed, medium size, for soup.", status: .purchased, price: 1.10, quantity: 1, unit: ShoppingItemUnit(.kilogram)),
+        ShoppingItem(order: 3, listID: listUUID2, name: "Tomatoes", note: "Ripe, vine, for sandwiches.", status: .purchased, price: 2.30, quantity: 1, unit: ShoppingItemUnit(.kilogram)),
+        ShoppingItem(order: 4, listID: listUUID2, name: "Spinach", note: "Fresh leaves, for salad.", status: .purchased, price: 1.75, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 5, listID: listUUID2, name: "Avocados", note: "Ripe, ready to eat.", status: .inactive, price: 1.20, quantity: 2, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 6, listID: listUUID2, name: "Red Bell Peppers", note: "Crisp, for stir fry.", status: .purchased, price: 0.99, quantity: 3, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 7, listID: listUUID2, name: "Lemons", note: "Juicy, for tea and dressing.", status: .pending, price: 0.55, quantity: 4, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 8, listID: listUUID2, name: "Cucumbers", note: "Long, fresh, for sandwiches.", status: .pending, price: 0.85, quantity: 2, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 9, listID: listUUID2, name: "Grapes (Green)", note: "Seedless, for snacking.", status: .inactive, price: 3.50, quantity: 1, unit: ShoppingItemUnit(.kilogram)),
+        ShoppingItem(order: 10, listID: listUUID2, name: "Onions (Yellow)", note: "For cooking, medium size.", status: .pending, price: 0.70, quantity: 1, unit: ShoppingItemUnit(.kilogram)),
+        ShoppingItem(order: 11, listID: listUUID2, name: "Parsley", note: "Fresh bunch, for garnish.", status: .inactive, price: 0.99, quantity: 1, unit: ShoppingItemUnit(.piece))
+    ], order: 1, icon: .flora, color: .green)
     
-    static let list3 = ShoppingList(id: listUUID3, name: "Sports Equipment", items: [
-        ShoppingItem(order: 0, listID: listUUID3, name: "Football", status: .pending),
-        ShoppingItem(order: 1, listID: listUUID3, name: "Tennis Racket", status: .purchased),
-        ShoppingItem(order: 2, listID: listUUID3, name: "Running Shoes", status: .purchased),
-        ShoppingItem(order: 3, listID: listUUID3, name: "Yoga Mat", status: .inactive),
-        ShoppingItem(order: 4, listID: listUUID3, name: "Water Bottle", status: .pending),
-        ShoppingItem(order: 5, listID: listUUID3, name: "Sweatband", status: .inactive),
-        ShoppingItem(order: 6, listID: listUUID3, name: "Gym Bag", status: .pending),
-        ShoppingItem(order: 7, listID: listUUID3, name: "Basketball", status: .purchased),
-        ShoppingItem(order: 8, listID: listUUID3, name: "Swim Goggles", status: .purchased)
-    ], order: 2, icon: .sport, color: .blue)
+    static let list3 = ShoppingList(id: listUUID3, name: "Groceries", items: [
+        ShoppingItem(order: 0, listID: listUUID3, name: "Whole Milk", note: "1 liter, full fat, for coffee and cereal.", status: .pending, price: 1.29, quantity: 2, unit: ShoppingItemUnit(.liter)),
+        ShoppingItem(order: 1, listID: listUUID3, name: "Eggs (Free-range)", note: "Medium size, pack of 10.", status: .pending, price: 2.49, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 2, listID: listUUID3, name: "Bread (Sourdough)", note: "Freshly baked, sliced.", status: .purchased, price: 3.10, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 3, listID: listUUID3, name: "Butter", note: "Unsalted, for baking.", status: .purchased, price: 2.20, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 4, listID: listUUID3, name: "Cheddar Cheese", note: "Mature, block, for sandwiches.", status: .purchased, price: 3.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 5, listID: listUUID3, name: "Rice (Basmati)", note: "1 kg bag, for curry.", status: .inactive, price: 2.75, quantity: 1, unit: ShoppingItemUnit(.kilogram)),
+        ShoppingItem(order: 6, listID: listUUID3, name: "Olive Oil", note: "Extra virgin, for salad dressing.", status: .purchased, price: 6.90, quantity: 1, unit: ShoppingItemUnit(.liter)),
+        ShoppingItem(order: 7, listID: listUUID3, name: "Tofu", note: "Firm, 300g, for stir fry.", status: .pending, price: 2.80, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 8, listID: listUUID3, name: "Yogurt (Natural)", note: "Plain, 400g cup.", status: .pending, price: 1.15, quantity: 2, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 9, listID: listUUID3, name: "Pasta (Penne)", note: "500g bag, for dinner.", status: .inactive, price: 1.25, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 10, listID: listUUID3, name: "Tomato Sauce", note: "Glass jar, for pasta.", status: .pending, price: 1.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 11, listID: listUUID3, name: "Canned Chickpeas", note: "400g, for hummus and salads.", status: .inactive, price: 0.89, quantity: 2, unit: ShoppingItemUnit(.piece))
+    ], order: 2, icon: .cart, color: .orange)
     
-    static let list4 = ShoppingList(id: listUUID4, name: "Pet Supplies", items: [
-        ShoppingItem(order: 0, listID: listUUID4, name: "Cat Food", note: "The best", status: .purchased, quantity: 6),
-        ShoppingItem(order: 1, listID: listUUID4, name: "Dog Leash", status: .inactive),
-        ShoppingItem(order: 2, listID: listUUID4, name: "Bird Seed", status: .pending),
-        ShoppingItem(order: 3, listID: listUUID4, name: "Pet Shampoo", status: .purchased),
-        ShoppingItem(order: 4, listID: listUUID4, name: "Dog Treats", status: .pending),
-        ShoppingItem(order: 5, listID: listUUID4, name: "Cat Litter", status: .inactive),
-        ShoppingItem(order: 6, listID: listUUID4, name: "Fish Tank Filter", status: .purchased)
-    ], order: 3, icon: .car, color: .orange)
+    static let list4 = ShoppingList(id: listUUID4, name: "Tools & Hardware", items: [
+        ShoppingItem(order: 0, listID: listUUID4, name: "Hammer", note: "500g, fiberglass handle.", status: .purchased, price: 14.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 1, listID: listUUID4, name: "Screwdriver Set", note: "Flat & Phillips, 6-piece set.", status: .pending, price: 19.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 2, listID: listUUID4, name: "Screws 4×40mm", note: "Zinc-coated wood screws, 100 pcs.", status: .pending, price: 4.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 3, listID: listUUID4, name: "Nails 2.5×60mm", note: "Steel, smooth shank, 200 pcs.", status: .purchased, price: 3.50, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 4, listID: listUUID4, name: "Washers M8", note: "Stainless steel, pack of 50.", status: .pending, price: 2.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 5, listID: listUUID4, name: "Hex Nuts M6", note: "Galvanized steel, DIN 934, 100 pcs.", status: .pending, price: 3.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 6, listID: listUUID4, name: "Drill Bit Set", note: "1–10mm, for metal and wood, 13 pcs.", status: .inactive, price: 24.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 7, listID: listUUID4, name: "Adjustable Wrench", note: "150mm, chrome finish.", status: .inactive, price: 9.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 8, listID: listUUID4, name: "Cable Ties 200mm", note: "Black nylon, 100 pcs.", status: .purchased, price: 5.49, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 9, listID: listUUID4, name: "Plastic Wall Plugs Ø8mm", note: "For concrete and brick, 50 pcs.", status: .pending, price: 3.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 10, listID: listUUID4, name: "Measuring Tape", note: "5 meters, retractable.", status: .purchased, price: 6.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 11, listID: listUUID4, name: "Sanding Paper P120", note: "230×280mm, medium grit, pack of 10.", status: .inactive, price: 3.49, quantity: 1, unit: ShoppingItemUnit(.piece))
+    ], order: 3, icon: .tool, color: .gray)
     
-    static let list5 = ShoppingList(id: listUUID5, name: "Empty", items: [], order: 4, icon: .questionmark, color: .cyan)
-    
-    static let allLists: [ShoppingList] = [list1, list2, list3, list4, list5]
+    static let allLists: [ShoppingList] = [list1, list2, list3, list4]
     
     static let deletedItems: [ShoppingItem] = [
-        ShoppingItem(order: 0, listID: nil, name: "Apple", note: "red, sweet", status: .purchased, price: 3.99, quantity: 3, unit: ShoppingItemUnit(.kilogram), deletedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date())),
-        ShoppingItem(order: 0, listID: nil, name: "Banana", note: "ripe", status: .purchased, price: 9.45, quantity: 5, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -3, to: Date())),
-        ShoppingItem(order: 0, listID: nil, name: "Carrot", note: "organic", status: .pending, quantity: 2, unit: ShoppingItemUnit(.kilogram), deletedAt: Calendar.current.date(byAdding: .day, value: -5, to: Date())),
-        ShoppingItem(order: 0, listID: nil, name: "Milk", note: "2 liters", status: .purchased, price: 3.79, quantity: 2, unit: ShoppingItemUnit(.liter), deletedAt: Calendar.current.date(byAdding: .day, value: -10, to: Date())),
-        ShoppingItem(order: 0, listID: nil, name: "Eggs", note: "free-range", status: .inactive, quantity: 12, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -15, to: Date()))
+        ShoppingItem(order: 0, listID: nil, name: "Notebook (A5)", note: "Lined, 100 pages, for meeting notes.", status: .purchased, price: 4.20, quantity: 2, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Toothpaste", note: "Whitening, 75ml tube.", status: .pending, price: 2.99, quantity: 1, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -4, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Laundry Detergent", note: "For color clothes, 2.1L.", status: .inactive, price: 12.49, quantity: 1, unit: ShoppingItemUnit(.liter), deletedAt: Calendar.current.date(byAdding: .day, value: -7, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Olive Oil (Extra Virgin)", note: "Cold pressed, 500ml bottle.", status: .purchased, price: 7.95, quantity: 1, unit: ShoppingItemUnit(.liter), deletedAt: Calendar.current.date(byAdding: .day, value: -9, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Paper Towels", note: "2 rolls, strong absorbency.", status: .purchased, price: 5.20, quantity: 2, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -11, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Hand Soap", note: "Lavender scent, 300ml pump bottle.", status: .pending, price: 3.10, quantity: 1, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -13, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "LED Bulbs (E27)", note: "Warm white, 10W, energy saving.", status: .inactive, price: 8.99, quantity: 4, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -17, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Garden Gloves", note: "Waterproof, size M.", status: .pending, price: 6.75, quantity: 1, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -21, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Oat Milk", note: "Barista edition, 1L carton.", status: .purchased, price: 3.30, quantity: 2, unit: ShoppingItemUnit(.liter), deletedAt: Calendar.current.date(byAdding: .day, value: -26, to: Date())),
+        ShoppingItem(order: 0, listID: nil, name: "Ziplock Bags", note: "Medium size, 30 pcs, freezer safe.", status: .inactive, price: 4.50, quantity: 1, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -29, to: Date()))
     ]
 }
 
