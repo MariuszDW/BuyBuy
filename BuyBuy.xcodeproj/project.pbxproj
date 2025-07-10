@@ -114,6 +114,7 @@
 			buildPhases = (
 				34742D062DD4B2DB00296094 /* Sources */,
 				34742D072DD4B2DB00296094 /* Frameworks */,
+				34ADF8572E204A2400477681 /* ShellScript */,
 				34742D082DD4B2DB00296094 /* Resources */,
 			);
 			buildRules = (
@@ -244,6 +245,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		34ADF8572E204A2400477681 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" != \"Debug\" ]; then\n  # Remove debug-only assets from the build directory\n  rm -rf \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/DebugAssets.car\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		34742D062DD4B2DB00296094 /* Sources */ = {

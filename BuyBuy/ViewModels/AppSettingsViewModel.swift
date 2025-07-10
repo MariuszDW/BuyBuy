@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 @MainActor
 class AppSettingsViewModel: ObservableObject {
@@ -86,16 +87,29 @@ class AppSettingsViewModel: ObservableObject {
                 try? await dataManager.addOrUpdateList(list)
             }
         }
-        MockDataRepository.allCards.forEach { card in
+        
+        MockDataRepository.allCards.enumerated().forEach { index, card in
             Task {
                 try? await dataManager.addOrUpdateLoyaltyCard(card)
+
+                let assetImageName = MockDataRepository.allCardImageFileNames[index]
+
+                if let image = UIImage(named: assetImageName),
+                   let imageID = card.imageID {
+                    try? await dataManager.saveImage(image, baseFileName: imageID, types: [.cardImage, .cardThumbnail])
+                } else {
+                    print("Failed to load image for card: \(card.name), assetName: \(assetImageName), imageID: \(card.imageID ?? "nil")")
+                }
             }
         }
+        
         MockDataRepository.deletedItems.forEach { item in
             Task {
                 try? await dataManager.addOrUpdateItem(item)
             }
         }
+        
+        await dataManager.cleanImageCache()
     }
 #endif
 }

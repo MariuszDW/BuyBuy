@@ -120,10 +120,10 @@ actor MockDataRepository: DataRepositoryProtocol {
 
 extension MockDataRepository {
     static let listUUID1 = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
-    static let listUUID2 = UUID(uuidString: "11111111-1111-1111-1111-111111111112")!
-    static let listUUID3 = UUID(uuidString: "11111111-1111-1111-1111-111111111113")!
-    static let listUUID4 = UUID(uuidString: "11111111-1111-1111-1111-111111111114")!
-    static let listUUID5 = UUID(uuidString: "11111111-1111-1111-1111-111111111115")!
+    static let listUUID2 = UUID(uuidString: "11111111-1111-1111-1112-111111111111")!
+    static let listUUID3 = UUID(uuidString: "11111111-1111-1111-1113-111111111111")!
+    static let listUUID4 = UUID(uuidString: "11111111-1111-1111-1114-111111111111")!
+    static let listUUID5 = UUID(uuidString: "11111111-1111-1111-1115-111111111111")!
     
     static let list1 = ShoppingList(id: listUUID1, name: "Office", items: [
         ShoppingItem(order: 0, listID: listUUID1, name: "A4 Printer Paper", note: "500 sheets, for montly reports.", status: .pending, price: 5.99, quantity: 2, unit: ShoppingItemUnit(.piece)),
@@ -215,27 +215,29 @@ extension MockDataRepository {
 // MARK: Mock loyalty cards
 
 extension MockDataRepository {
-    static let cardUUID1 = UUID(uuidString: "22222222-2222-2222-2222-222222222221")!
+    static let cardUUID1 = UUID(uuidString: "22222222-2222-2222-2221-222222222222")!
     static let cardUUID2 = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
-    static let cardUUID3 = UUID(uuidString: "22222222-2222-2222-2222-222222222223")!
-    static let cardUUID4 = UUID(uuidString: "22222222-2222-2222-2222-222222222224")!
-    static let cardUUID5 = UUID(uuidString: "22222222-2222-2222-2222-222222222225")!
-    static let cardUUID6 = UUID(uuidString: "22222222-2222-2222-2222-222222222226")!
-    static let cardUUID7 = UUID(uuidString: "22222222-2222-2222-2222-222222222227")!
+    static let cardUUID3 = UUID(uuidString: "22222222-2222-2222-2223-222222222222")!
+    static let cardUUID4 = UUID(uuidString: "22222222-2222-2222-2224-222222222222")!
+    static let cardUUID5 = UUID(uuidString: "22222222-2222-2222-2225-222222222222")!
+    static let cardUUID6 = UUID(uuidString: "22222222-2222-2222-2226-222222222222")!
+    static let cardUUID7 = UUID(uuidString: "22222222-2222-2222-2227-222222222222")!
     
-    static let card1 = LoyaltyCard(id: cardUUID1, name: "StylePoint", imageID: nil, order: 0)
+    static let card1 = LoyaltyCard(id: cardUUID1, name: "MorphStore", imageID: "22222222-2222-2222-2221-222222222221", order: 0)
     
-    static let card2 = LoyaltyCard(id: cardUUID2, name: "EcoMart", imageID: nil, order: 1)
+    static let card2 = LoyaltyCard(id: cardUUID2, name: "EcoMart", imageID: "22222222-2222-2222-2222-222222222222", order: 1)
     
-    static let card3 = LoyaltyCard(id: cardUUID3, name: "VitaPharm", imageID: nil, order: 2)
+    static let card3 = LoyaltyCard(id: cardUUID3, name: "AmiShop", imageID: "22222222-2222-2222-2223-222222222223", order: 2)
     
-    static let card4 = LoyaltyCard(id: cardUUID4, name: "UrbanWear", imageID: nil, order: 3)
+    static let card4 = LoyaltyCard(id: cardUUID4, name: "UrbanWear", imageID: "22222222-2222-2222-2224-222222222224", order: 3)
     
-    static let card5 = LoyaltyCard(id: cardUUID5, name: "Fresh Basket", imageID: nil, order: 4)
+    static let card5 = LoyaltyCard(id: cardUUID5, name: "Fresh Basket", imageID: "22222222-2222-2222-2225-222222222225", order: 4)
     
-    static let card6 = LoyaltyCard(id: cardUUID6, name: "CasaDecor", imageID: nil, order: 5)
+    static let card6 = LoyaltyCard(id: cardUUID6, name: "CasaDecor", imageID: "22222222-2222-2222-2226-222222222226", order: 5)
     
-    static let card7 = LoyaltyCard(id: cardUUID7, name: "TechNest", imageID: nil, order: 6)
+    static let card7 = LoyaltyCard(id: cardUUID7, name: "TechNest", imageID: "22222222-2222-2222-2227-222222222227", order: 6)
     
     static let allCards: [LoyaltyCard] = [card1, card2, card3, card4, card5, card6, card7]
+    
+    static let allCardImageFileNames: [String] = ["MorphStore_card", "EcoMart_card", "AmiShop_card", "UrbanWear_card", "FreshBasket_card", "CasaDecor_card", "TechNest_card"]
 }
