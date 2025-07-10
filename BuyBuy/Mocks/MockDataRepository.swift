@@ -138,7 +138,7 @@ extension MockDataRepository {
         ShoppingItem(order: 9, listID: listUUID1, name: "USB Flash Drive", note: "32 GB", status: .inactive, price: 6.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
         ShoppingItem(order: 10, listID: listUUID1, name: "Binder Clips (25 mm)", note: "Black metal, medium size.", status: .pending, price: 0.15, quantity: 12, unit: ShoppingItemUnit(.piece)),
         ShoppingItem(order: 11, listID: listUUID1, name: "Desk Organizer", note: "Pen holder, tray, sticky note box.", status: .inactive, price: 9.99, quantity: 1, unit: ShoppingItemUnit(.piece))
-    ], order: 0, icon: .paperclip, color: .magenta)
+    ], order: 0, icon: .paperclip, color: .indigo)
     
     static let list2 = ShoppingList(id: listUUID2, name: "Fruits & Vegetables", items: [
         ShoppingItem(order: 0, listID: listUUID2, name: "Bananas", note: "Ripe, medium size, for smoothies.", status: .pending, price: 0.35, quantity: 6, unit: ShoppingItemUnit(.piece)),
@@ -168,7 +168,7 @@ extension MockDataRepository {
         ShoppingItem(order: 9, listID: listUUID3, name: "Pasta (Penne)", note: "500g bag, for dinner.", status: .inactive, price: 1.25, quantity: 1, unit: ShoppingItemUnit(.piece)),
         ShoppingItem(order: 10, listID: listUUID3, name: "Tomato Sauce", note: "Glass jar, for pasta.", status: .pending, price: 1.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
         ShoppingItem(order: 11, listID: listUUID3, name: "Canned Chickpeas", note: "400g, for hummus and salads.", status: .inactive, price: 0.89, quantity: 2, unit: ShoppingItemUnit(.piece))
-    ], order: 2, icon: .cart, color: .orange)
+    ], order: 2, icon: .cart, color: .red)
     
     static let list4 = ShoppingList(id: listUUID4, name: "Tools & Hardware", items: [
         ShoppingItem(order: 0, listID: listUUID4, name: "Hammer", note: "500g, fiberglass handle.", status: .purchased, price: 14.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
@@ -185,7 +185,18 @@ extension MockDataRepository {
         ShoppingItem(order: 11, listID: listUUID4, name: "Sanding Paper P120", note: "230×280mm, medium grit, pack of 10.", status: .inactive, price: 3.49, quantity: 1, unit: ShoppingItemUnit(.piece))
     ], order: 3, icon: .tool, color: .gray)
     
-    static let allLists: [ShoppingList] = [list1, list2, list3, list4]
+    static let list5 = ShoppingList(id: listUUID5, name: "Clothing Store", items: [
+        ShoppingItem(order: 0, listID: listUUID5, name: "Basic T-Shirt", note: "White, 100% cotton, size M.", status: .pending, price: 8.99, quantity: 2, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 1, listID: listUUID5, name: "Denim Jacket", note: "Classic fit, blue, size L.", status: .purchased, price: 59.90, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 2, listID: listUUID5, name: "Chinos", note: "Beige, size 34.", status: .pending, price: 39.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 3, listID: listUUID5, name: "Casual Shoes", note: "Size 42, grey suede.", status: .inactive, price: 64.50, quantity: 1, unit: ShoppingItemUnit(string: "pair")),
+        ShoppingItem(order: 4, listID: listUUID5, name: "Sports Socks (3-pack)", note: "White cotton, breathable.", status: .purchased, price: 6.75, quantity: 1, unit: ShoppingItemUnit(string: "set")),
+        ShoppingItem(order: 5, listID: listUUID5, name: "Wool Scarf", note: "Dark green, 180 cm.", status: .pending, price: 17.00, quantity: 1, unit: ShoppingItemUnit(.piece)),
+        ShoppingItem(order: 6, listID: listUUID5, name: "Leather Gloves", note: "Black, size M.", status: .pending, price: 25.00, quantity: 1, unit: ShoppingItemUnit(string: "pair"))
+    ], order: 4, icon: .person, color: .magenta)
+
+    
+    static let allLists: [ShoppingList] = [list1, list2, list3, list4, list5]
     
     static let deletedItems: [ShoppingItem] = [
         ShoppingItem(order: 0, listID: nil, name: "Notebook (A5)", note: "Lined, 100 pages, for meeting notes.", status: .purchased, price: 4.20, quantity: 2, unit: ShoppingItemUnit(.piece), deletedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date())),
@@ -212,19 +223,19 @@ extension MockDataRepository {
     static let cardUUID6 = UUID(uuidString: "22222222-2222-2222-2222-222222222226")!
     static let cardUUID7 = UUID(uuidString: "22222222-2222-2222-2222-222222222227")!
     
-    static let card1 = LoyaltyCard(id: cardUUID1, name: "Lidl", imageID: nil, order: 0)
+    static let card1 = LoyaltyCard(id: cardUUID1, name: "StylePoint", imageID: nil, order: 0)
     
-    static let card2 = LoyaltyCard(id: cardUUID2, name: "Biedronka", imageID: nil, order: 1)
+    static let card2 = LoyaltyCard(id: cardUUID2, name: "EcoMart", imageID: nil, order: 1)
     
-    static let card3 = LoyaltyCard(id: cardUUID3, name: "Auchan", imageID: nil, order: 2)
+    static let card3 = LoyaltyCard(id: cardUUID3, name: "VitaPharm", imageID: nil, order: 2)
     
-    static let card4 = LoyaltyCard(id: cardUUID4, name: "BuyBuy Super Shop", imageID: nil, order: 3)
+    static let card4 = LoyaltyCard(id: cardUUID4, name: "UrbanWear", imageID: nil, order: 3)
     
-    static let card5 = LoyaltyCard(id: cardUUID5, name: "Carrefour", imageID: nil, order: 4)
+    static let card5 = LoyaltyCard(id: cardUUID5, name: "Fresh Basket", imageID: nil, order: 4)
     
-    static let card6 = LoyaltyCard(id: cardUUID6, name: "Kaufland", imageID: nil, order: 5)
+    static let card6 = LoyaltyCard(id: cardUUID6, name: "CasaDecor", imageID: nil, order: 5)
     
-    static let card7 = LoyaltyCard(id: cardUUID7, name: "Castorama", imageID: nil, order: 6)
+    static let card7 = LoyaltyCard(id: cardUUID7, name: "TechNest", imageID: nil, order: 6)
     
     static let allCards: [LoyaltyCard] = [card1, card2, card3, card4, card5, card6, card7]
 }
