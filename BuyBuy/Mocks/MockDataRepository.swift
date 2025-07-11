@@ -229,11 +229,11 @@ extension MockDataRepository {
     
     static let card3 = LoyaltyCard(id: cardUUID3, name: "AmiShop", imageID: "22222222-2222-2222-2223-222222222223", order: 2)
     
-    static let card4 = LoyaltyCard(id: cardUUID4, name: "UrbanWear", imageID: "22222222-2222-2222-2224-222222222224", order: 3)
+    static let card4 = LoyaltyCard(id: cardUUID4, name: "Urban Wear", imageID: "22222222-2222-2222-2224-222222222224", order: 3)
     
     static let card5 = LoyaltyCard(id: cardUUID5, name: "Fresh Basket", imageID: "22222222-2222-2222-2225-222222222225", order: 4)
     
-    static let card6 = LoyaltyCard(id: cardUUID6, name: "CasaDecor", imageID: "22222222-2222-2222-2226-222222222226", order: 5)
+    static let card6 = LoyaltyCard(id: cardUUID6, name: "Casa Decor", imageID: "22222222-2222-2222-2226-222222222226", order: 5)
     
     static let card7 = LoyaltyCard(id: cardUUID7, name: "TechNest", imageID: "22222222-2222-2222-2227-222222222227", order: 6)
     
