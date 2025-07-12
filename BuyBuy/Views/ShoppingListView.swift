@@ -377,7 +377,7 @@ struct ShoppingListView: View {
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID1,
+    let viewModel = ShoppingListViewModel(listID: MockDataRepository.list1ID,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
     let mockHapticEngine = MockHapticEngine()
@@ -396,7 +396,7 @@ struct ShoppingListView: View {
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID1,
+    let viewModel = ShoppingListViewModel(listID: MockDataRepository.list1ID,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
     let mockHapticEngine = MockHapticEngine()
@@ -415,7 +415,7 @@ struct ShoppingListView: View {
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID5,
+    let viewModel = ShoppingListViewModel(listID: MockDataRepository.list5ID,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
     let mockHapticEngine = MockHapticEngine()
@@ -434,7 +434,7 @@ struct ShoppingListView: View {
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = ShoppingListViewModel(listID: MockDataRepository.listUUID5,
+    let viewModel = ShoppingListViewModel(listID: MockDataRepository.list5ID,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
     let mockHapticEngine = MockHapticEngine()

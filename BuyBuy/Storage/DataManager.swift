@@ -175,6 +175,10 @@ class DataManager: DataManagerProtocol {
         try await repository.cleanOrphanedItems()
     }
     
+    func fetchAllItemImageIDs() async throws -> Set<String> {
+        return try await repository.fetchAllItemImageIDs()
+    }
+    
     // MARK: - Loyalty Cards
     
     func fetchLoyaltyCards() async throws -> [LoyaltyCard] {
@@ -195,6 +199,10 @@ class DataManager: DataManagerProtocol {
     
     func deleteAllLoyaltyCards() async throws {
         try await repository.deleteAllLoyaltyCards()
+    }
+    
+    func fetchAllLoyaltyCardImageIDs() async throws -> Set<String> {
+        return try await repository.fetchAllLoyaltyCardImageIDs()
     }
     
     // MARK: - Images

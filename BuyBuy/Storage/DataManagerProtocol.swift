@@ -34,6 +34,7 @@ protocol DataManagerProtocol {
     func deleteItems(with ids: [UUID]) async throws
     func deleteAllItems() async throws
     func cleanOrphanedItems() async throws
+    func fetchAllItemImageIDs() async throws -> Set<String>
     
     // Loyalty cards
     func fetchLoyaltyCards() async throws -> [LoyaltyCard]
@@ -41,6 +42,7 @@ protocol DataManagerProtocol {
     func addOrUpdateLoyaltyCard(_ card: LoyaltyCard) async throws
     func deleteLoyaltyCard(with id: UUID) async throws
     func deleteAllLoyaltyCards() async throws
+    func fetchAllLoyaltyCardImageIDs() async throws -> Set<String>
     
     // Images
     func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws

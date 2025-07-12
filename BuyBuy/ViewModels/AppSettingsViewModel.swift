@@ -82,33 +82,34 @@ class AppSettingsViewModel: ObservableObject {
     
 #if DEBUG
     func copyMockToData() async {
-        MockDataRepository.allLists.forEach { list in
-            Task {
-                try? await dataManager.addOrUpdateList(list)
-            }
+        for list in MockDataRepository.allLists {
+            try? await dataManager.addOrUpdateList(list)
         }
-        
-        MockDataRepository.allCards.enumerated().forEach { index, card in
-            Task {
-                try? await dataManager.addOrUpdateLoyaltyCard(card)
 
-                let assetImageName = MockDataRepository.allCardImageFileNames[index]
+        for item in MockDataRepository.deletedItems {
+            try? await dataManager.addOrUpdateItem(item)
+        }
 
-                if let image = UIImage(named: assetImageName),
-                   let imageID = card.imageID {
-                    try? await dataManager.saveImage(image, baseFileName: imageID, types: [.cardImage, .cardThumbnail])
-                } else {
-                    print("Failed to load image for card: \(card.name), assetName: \(assetImageName), imageID: \(card.imageID ?? "nil")")
+        if let itemImageIDs = try? await dataManager.fetchAllItemImageIDs() {
+            for imageID in itemImageIDs {
+                if let image = UIImage(named: imageID) {
+                    try? await dataManager.saveImage(image, baseFileName: imageID, types: [.itemImage, .itemThumbnail])
                 }
             }
         }
         
-        MockDataRepository.deletedItems.forEach { item in
-            Task {
-                try? await dataManager.addOrUpdateItem(item)
+        for card in MockDataRepository.allCards {
+            try? await dataManager.addOrUpdateLoyaltyCard(card)
+        }
+
+        if let cardImageIDs = try? await dataManager.fetchAllLoyaltyCardImageIDs() {
+            for imageID in cardImageIDs {
+                if let image = UIImage(named: imageID) {
+                    try? await dataManager.saveImage(image, baseFileName: imageID, types: [.cardImage, .cardThumbnail])
+                }
             }
         }
-        
+
         await dataManager.cleanImageCache()
     }
 #endif
