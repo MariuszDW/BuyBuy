@@ -129,11 +129,12 @@ extension MockDataRepository {
         ShoppingItem(
             id: UUID(uuidString: "00000000-0001-0001-0000-000000000000")!, order: 0, listID: list1ID,
             name: "A4 Printer Paper", note: "500 sheets, for montly reports.",
-            status: .pending, price: 5.99, quantity: 2, unit: ShoppingItemUnit(.piece)),
+            status: .inactive, price: 5.99, quantity: 2, unit: ShoppingItemUnit(.piece)),
         ShoppingItem(
             id: UUID(uuidString: "00000000-0001-0002-0000-000000000000")!, order: 1, listID: list1ID,
             name: "Blue Ballpoint Pens", note: "Medium tip, blue ink.",
-            status: .pending, price: 0.49, quantity: 10, unit: ShoppingItemUnit(.piece)),
+            status: .pending, price: 0.49, quantity: 10, unit: ShoppingItemUnit(.piece),
+            imageIDs: ["00000000-0001-0002-0001-000000000000"]),
         ShoppingItem(
             id: UUID(uuidString: "00000000-0001-0003-0000-000000000000")!, order: 2, listID: list1ID,
             name: "Sticky Notes", note: "75x75 mm, yellow, repositionable.",
@@ -164,8 +165,9 @@ extension MockDataRepository {
             status: .pending, price: 3.80, quantity: 1, unit: ShoppingItemUnit(.piece)),
         ShoppingItem(
             id: UUID(uuidString: "00000000-0001-0010-0000-000000000000")!, order: 9, listID: list1ID,
-            name: "USB Flash Drive", note: "32 GB",
-            status: .inactive, price: 6.99, quantity: 1, unit: ShoppingItemUnit(.piece)),
+            name: "USB Flash Drive", note: "128 GB, USB-A type",
+            status: .inactive, price: 6.99, quantity: 1, unit: ShoppingItemUnit(.piece),
+            imageIDs: ["00000000-0001-0010-0001-000000000000"]),
         ShoppingItem(
             id: UUID(uuidString: "00000000-0001-0011-0000-000000000000")!, order: 10, listID: list1ID,
             name: "Binder Clips (25 mm)", note: "Black metal, medium size.",
@@ -174,7 +176,8 @@ extension MockDataRepository {
         ShoppingItem(
             id: UUID(uuidString: "00000000-0001-0012-0000-000000000000")!, order: 11, listID: list1ID,
             name: "Desk Organizer", note: "Pen holder, tray, sticky note box.",
-            status: .inactive, price: 9.99, quantity: 1, unit: ShoppingItemUnit(.piece))
+            status: .pending, price: 9.99, quantity: 1, unit: ShoppingItemUnit(.piece),
+            imageIDs: ["00000000-0001-0012-0001-000000000000", "00000000-0001-0012-0002-000000000000"])
     ], order: 0, icon: .paperclip, color: .indigo)
     
     static let list2 = ShoppingList(id: list2ID, name: "Fruits & Vegetables", items: [
