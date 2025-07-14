@@ -333,7 +333,7 @@
         }
       }
     },
-    "credits_name" : {
+    "credits_name_1" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -349,7 +349,23 @@
         }
       }
     },
-    "credits_role" : {
+    "credits_name_2" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Irena Czeczot-Włodarczyk"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Irena Czeczot-Włodarczyk"
+          }
+        }
+      }
+    },
+    "credits_role_1" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -361,6 +377,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "programowanie i projektowanie"
+          }
+        }
+      }
+    },
+    "credits_role_2" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "illustrations"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ilustracje"
           }
         }
       }

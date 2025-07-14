@@ -34,7 +34,7 @@ struct ThankYouView: View {
     @ViewBuilder
     private var mainView: some View {
         GeometryReader { geometry in
-            let iconSize = min(geometry.size.width * 0.5, geometry.size.height * 0.5)
+            let iconSize = min(geometry.size.width * 0.7, geometry.size.height * 0.7)
             let coffeeImageSize = iconSize * 0.3
             
             OrientedContainerView(
@@ -49,11 +49,16 @@ struct ThankYouView: View {
     
     @ViewBuilder
     private func mainIconView(iconSize: CGFloat) -> some View {
-        Image(systemName: "face.smiling.inverse")
+        viewModel.thankYouImage
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .foregroundStyle(.green)
             .frame(maxWidth: iconSize)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .shadow(color: .black.opacity(0.7), radius: 6, y: 2)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.bb.text.secondary, lineWidth: 3)
+            )
     }
     
     @ViewBuilder

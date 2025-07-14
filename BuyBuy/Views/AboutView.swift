@@ -67,14 +67,20 @@ struct AboutView: View {
                 .multilineTextAlignment(.center)
             
             // ---- credits ----
-            Text("credits_role")
+            Text("credits_role_1")
                 .padding(.top, 16)
                 .font(.regularDynamic(style: .callout))
                 .multilineTextAlignment(.center)
-            Text("credits_name")
+            Text("credits_name_1")
                 .multilineTextAlignment(.center)
                 .font(.boldDynamic(style: .title3))
-                .padding(.bottom, 32)
+            Text("credits_role_2")
+                .padding(.top, 8)
+                .font(.regularDynamic(style: .callout))
+                .multilineTextAlignment(.center)
+            Text("credits_name_2")
+                .multilineTextAlignment(.center)
+                .font(.boldDynamic(style: .title3))
             
             VStack(spacing: 16) {
                 // ---- contact ----
@@ -139,6 +145,7 @@ struct AboutView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 32)
+            .padding(.top, 16)
         }
         .padding(.horizontal, isPortrait ? 16 : 4)
     }

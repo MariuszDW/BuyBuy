@@ -43,7 +43,7 @@ struct TipJarView: View {
     @ViewBuilder
     private var mainView: some View {
         GeometryReader { geometry in
-            let iconSize =  min(geometry.size.width * 0.5, geometry.size.height * 0.5)
+            let iconSize =  min(geometry.size.width * 0.7, geometry.size.height * 0.7)
             
             OrientedContainerView(
                 isLandscape: geometry.size.isLandscape,
@@ -58,24 +58,29 @@ struct TipJarView: View {
     @ViewBuilder
     private func mainIconView(iconSize: CGFloat) -> some View {
         VStack(spacing: 16) {
-            Image(systemName: "cup.and.saucer.fill")
+            Image.bbTipJarImage
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .foregroundStyle(.green)
                 .frame(maxWidth: iconSize)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .shadow(color: .black.opacity(0.7), radius: 6, y: 2)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.bb.text.secondary, lineWidth: 3)
+                )
                 .layoutPriority(0)
 
             VStack(spacing: 8) {
                 Text("tip_jar_message")
                     .font(.regularDynamic(style: .footnote))
-                    .foregroundColor(.bb.text.tertiary)
+                    .foregroundColor(.bb.text.secondary)
                     .layoutPriority(1)
 
                 Text("tip_jar_signature")
                     .font(.regularDynamic(style: .footnote))
-                    .foregroundColor(.bb.text.tertiary)
+                    .foregroundColor(.bb.text.secondary)
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.trailing, iconSize * 0.25)
+                    .padding(.trailing, iconSize * 0.15)
                     .layoutPriority(1)
             }
             .padding(.horizontal)

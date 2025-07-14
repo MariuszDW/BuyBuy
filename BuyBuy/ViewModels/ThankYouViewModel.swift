@@ -30,6 +30,15 @@ final class ThankYouViewModel: ObservableObject {
         }
     }
     
+    var thankYouImage: Image {
+        switch productID {
+        case AppConstants.tipIDs[0]: return Image.bbSmallTipImage
+        case AppConstants.tipIDs[1]: return Image.bbMediumTipImage
+        case AppConstants.tipIDs[2]: return Image.bbLargeTipImage
+        default: return Image.bbSmallTipImage
+        }
+    }
+    
     init(transaction: StoreKit.Transaction?,
          userActivityTracker: any UserActivityTrackerProtocol,
          coordinator: any AppCoordinatorProtocol) {

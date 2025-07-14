@@ -15,4 +15,8 @@ internal extension Image {
     static let bbEncoreLogoO = Image("encore_logo_o")
     static let bbEncoreLogoR = Image("encore_logo_r")
     static let bbBlueskyLogo = Image("bluesky_logo")
+    static let bbSmallTipImage = Image("small_tip_image")
+    static let bbMediumTipImage = Image("medium_tip_image")
+    static let bbLargeTipImage = Image("large_tip_image")
+    static let bbTipJarImage = Image("tip_jar_image")
 }
