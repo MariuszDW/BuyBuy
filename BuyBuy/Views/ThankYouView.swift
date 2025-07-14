@@ -162,7 +162,7 @@ struct ThankYouView: View {
     let viewModel = ThankYouViewModel(
         productID: "large_tip",
         productName: "Large Tip",
-        productDescription: "Thank you for the huge support! sdkjhg ldsjhlg js jh",
+        productDescription: "Thank you for the huge support!",
         loading: false,
         userActivityTracker: tracker,
         coordinator: coordinator)
