@@ -20,4 +20,23 @@ enum SheetRoute {
     case tipJar
     case thankYou(transaction: StoreKit.Transaction)
     case appInitialSetup
+    
+    func isSameKind(as other: SheetRoute) -> Bool {
+        switch (self, other) {
+        case (.shoppingListSettings, .shoppingListSettings),
+            (.shoppingItemDetails, .shoppingItemDetails),
+            (.shoppingItemImage, .shoppingItemImage),
+            (.loyaltyCardPreview, .loyaltyCardPreview),
+            (.loyaltyCardDetails, .loyaltyCardDetails),
+            (.shoppingListSelector, .shoppingListSelector),
+            (.shoppingListExport, .shoppingListExport),
+            (.documentExporter, .documentExporter),
+            (.tipJar, .tipJar),
+            (.thankYou, .thankYou),
+            (.appInitialSetup, .appInitialSetup):
+            return true
+        default:
+            return false
+        }
+    }
 }

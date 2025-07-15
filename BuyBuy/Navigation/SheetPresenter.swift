@@ -33,10 +33,14 @@ final class SheetPresenter: ObservableObject {
     func present(
         _ sheet: SheetRoute,
         displayStyle: SheetDisplayStyle = .fullScreen,
+        avoidDuplicates: Bool = true,
         onDismiss: ((SheetRoute) -> Void)? = nil
     ) {
-        let presented = PresentedSheet(route: sheet, displayStyle: displayStyle, onDismiss: onDismiss)
-        stack.append(presented)
+        if avoidDuplicates, let top = stack.last, top.route.isSameKind(as: sheet) {
+            return // Don't present duplicate sheet if already at the top
+        }
+        let newSheet = PresentedSheet(route: sheet, displayStyle: displayStyle, onDismiss: onDismiss)
+        stack.append(newSheet)
     }
 
     func dismiss(at index: Int) {
