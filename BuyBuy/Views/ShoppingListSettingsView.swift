@@ -16,46 +16,51 @@ struct ShoppingListSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: ShoppingItemDetailsField?
     
+    private let fieldCornerRadius: CGFloat = 12
+    
     init(viewModel: ShoppingListSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    nameField
-                    iconAndColorSection
-                    iconsGridSection
+        GeometryReader { geometry in
+            NavigationStack {
+                ScrollView {
+                    VStack(spacing: 16) {
+                        nameField
+                        iconAndColorSection(width: geometry.size.width)
+                        iconsGridSection(width: geometry.size.width)
+                    }
+                    .padding()
                 }
-                .padding()
-            }
-            .navigationTitle("shopping_list")
-            .navigationBarTitleDisplayMode(.inline)
-            .safeAreaInset(edge: .bottom) {
-                if focusedField != nil {
-                    KeyboardDismissButton {
-                        focusedField = nil
+                .background(Color.bb.sheet.background)
+                .navigationTitle("shopping_list")
+                .navigationBarTitleDisplayMode(.inline)
+                .safeAreaInset(edge: .bottom) {
+                    if focusedField != nil {
+                        KeyboardDismissButton {
+                            focusedField = nil
+                        }
                     }
                 }
-            }
-            .task {
-                focusedField = viewModel.isNew ? .name : nil
-            }
-            .onChange(of: focusedField) { newValue in
-                Task {
-                    viewModel.finalizeInput()
+                .task {
+                    focusedField = viewModel.isNew ? .name : nil
                 }
-            }
-            .toolbar {
-                toolbarContent
-            }
-            .onAppear {
-                viewModel.startObserving()
-            }
-            .onDisappear {
-                viewModel.stopObserving()
-                Task { await viewModel.didFinishEditing() }
+                .onChange(of: focusedField) { newValue in
+                    Task {
+                        viewModel.finalizeInput()
+                    }
+                }
+                .toolbar {
+                    toolbarContent
+                }
+                .onAppear {
+                    viewModel.startObserving()
+                }
+                .onDisappear {
+                    viewModel.stopObserving()
+                    Task { await viewModel.didFinishEditing() }
+                }
             }
         }
     }
@@ -112,16 +117,19 @@ struct ShoppingListSettingsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
+        .background(Color.bb.sheet.section.background)
+        .cornerRadius(fieldCornerRadius)
     }
     
-    private var iconAndColorSection: some View {
-        let screenSize = UIScreen.main.bounds.size
-        let shortSide = min(screenSize.width, screenSize.height)
-        let iconSize = shortSide * 0.32
+    @ViewBuilder
+    private func iconAndColorSection(width: CGFloat) -> some View {
+        let iconSize = width * 0.32
+        let smallIconSize = width * 0.066
+        let smallIconOutlineLineWidth = max(width * 0.006, 4)
+        let smallIconOutlineSize = smallIconSize + (smallIconOutlineLineWidth * 3)
+        let verticalSpacing = smallIconSize * 0.24
         
-        return VStack {
+        VStack {
             HStack(alignment: .top, spacing: 24) {
                 ZStack {
                     Image(systemName: viewModel.shoppingList.icon.rawValue)
@@ -139,20 +147,20 @@ struct ShoppingListSettingsView: View {
                 
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.flexible()), count: 4),
-                    spacing: 4
+                    spacing: verticalSpacing
                 ) {
                     ForEach(ListColor.allCases, id: \.self) { color in
                         ZStack {
                             Circle()
-                                .stroke(Color.bb.selection, lineWidth: 3)
+                                .stroke(Color.bb.selection, lineWidth: smallIconOutlineLineWidth)
                                 .opacity(viewModel.shoppingList.color == color ? 1 : 0)
-                                .frame(width: 44, height: 44)
+                                .frame(width: smallIconOutlineSize, height: smallIconOutlineSize)
                             
                             Circle()
                                 .fill(color.color)
-                                .frame(width: 32, height: 32)
+                                .frame(width: smallIconSize, height: smallIconSize)
                         }
-                        .frame(width: 42, height: 42)
+                        .frame(minWidth: smallIconOutlineSize, minHeight: smallIconOutlineSize)
                         .contentShape(Circle())
                         .onTapGesture {
                             focusedField = nil
@@ -169,31 +177,35 @@ struct ShoppingListSettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
+        .background(Color.bb.sheet.section.background)
+        .cornerRadius(fieldCornerRadius)
     }
     
-    private var iconsGridSection: some View {
+    @ViewBuilder
+    private func iconsGridSection(width: CGFloat) -> some View {
+        let smallIconSize = width * 0.09
+        let smallIconOutlineLineWidth = max(width * 0.006, 4)
+        let smallIconOutlineSize = smallIconSize + (smallIconOutlineLineWidth * 3)
+        let verticalSpacing = smallIconSize * 0.28
+        
         LazyVGrid(
-            columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: 5),
-            spacing: 16
+            columns: Array(repeating: GridItem(.flexible()), count: 5),
+            spacing: verticalSpacing
         ) {
             ForEach(ListIcon.allCases, id: \.self) { icon in
                 ZStack {
-                    if viewModel.shoppingList.icon == icon {
-                        Circle()
-                            .stroke(Color.bb.selection, lineWidth: 3)
-                            .frame(width: 48, height: 48)
-                    }
+                    Circle()
+                        .stroke(Color.bb.selection, lineWidth: smallIconOutlineLineWidth)
+                        .opacity(viewModel.shoppingList.icon == icon ? 1 : 0)
+                        .frame(width: smallIconOutlineSize, height: smallIconOutlineSize)
                     
                     icon.image
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 36, height: 36)
+                        .frame(width: smallIconSize, height: smallIconSize)
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.white, viewModel.shoppingList.color.color)
                 }
-                .frame(width: 48, height: 48)
                 .contentShape(Rectangle())
                 .onTapGesture {
                     focusedField = nil
@@ -205,8 +217,8 @@ struct ShoppingListSettingsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
+        .background(Color.bb.sheet.section.background)
+        .cornerRadius(fieldCornerRadius)
     }
 }
 
