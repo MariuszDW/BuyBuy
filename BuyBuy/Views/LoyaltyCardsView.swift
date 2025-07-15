@@ -11,6 +11,7 @@ import Combine
 struct LoyaltyCardsView: View {
     @StateObject var viewModel: LoyaltyCardsViewModel
     private var hapticEngine: HapticEngineProtocol
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var showActionsForCardAtIndex: Int? = nil
     @State private var cardPendingDeletion: LoyaltyCard?
     @State private var isEditMode: EditMode = .inactive
@@ -169,7 +170,8 @@ struct LoyaltyCardsView: View {
                     tileView(for: card, index: index)
                 }
             }
-            .padding(16)
+            .padding(.horizontal, horizontalSizeClass == .regular ? 32 : 16)
+            .padding(.vertical, 16)
         }
     }
     

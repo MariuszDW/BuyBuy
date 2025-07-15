@@ -11,6 +11,8 @@ struct ShoppingListsView: View {
     @StateObject var viewModel: ShoppingListsViewModel
     private let hapticEngine: HapticEngineProtocol
     
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
     @State private var isEditMode: EditMode = .inactive
     @State private var listPendingDeletion: ShoppingList?
     @State private var basketAngle: Double = 0
@@ -167,8 +169,8 @@ struct ShoppingListsView: View {
                 .foregroundStyle(.white, list.color.color)
                 .font(.regularDynamic(style: .largeTitle))
                 .scaleEffect(1.2)
-                .padding(.leading, 8)
-                .padding(.trailing, 2)
+                .padding(.leading, horizontalSizeClass == .regular ? 24 : 8)
+                .padding(.trailing, horizontalSizeClass == .regular ? 2 : 4)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(list.name)

@@ -15,6 +15,12 @@ struct ShoppingItemRow: View {
     let onRowTap: (UUID) -> Void
     let onThumbnailTap: (UUID, Int) -> Void
     
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    private var rowInsets: EdgeInsets {
+        horizontalSizeClass == .regular ? EdgeInsets(top: 12, leading: 24, bottom: 8, trailing: 18) : EdgeInsets(top: 12, leading: 18, bottom: 8, trailing: 10)
+    }
+    
     static private let thumbnailCornerRadius: CGFloat = 6
     static private let thumbnailSize: CGFloat = 38
     
@@ -37,7 +43,7 @@ struct ShoppingItemRow: View {
                     .onTapGesture { onThumbnailTap(item.id, 0) }
             }
         }
-        .listRowInsets(EdgeInsets(top: 12, leading: 18, bottom: 8, trailing: 10))
+        .listRowInsets(rowInsets)
     }
     
     @ViewBuilder
