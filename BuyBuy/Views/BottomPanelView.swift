@@ -56,6 +56,7 @@ struct BottomPanelView<TrailingView: View>: View {
             .frame(height: 5)
             .offset(y: -5)
             .allowsHitTesting(false)
+            .ignoresSafeArea(edges: [.leading, .trailing])
         }
     }
 }
