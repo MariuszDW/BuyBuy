@@ -157,15 +157,16 @@ struct LoyaltyCardsView: View {
     }
     
     private var cardGrids: some View {
-        let tileSpacing: CGFloat = 12
+        let tileSpacingH: CGFloat = horizontalSizeClass == .regular ? 24 : 12
+        let tileSpacingV: CGFloat = 24
         let tileWidth: CGFloat = 150
 
         let columns = [
-            GridItem(.adaptive(minimum: tileWidth), spacing: tileSpacing, alignment: .top)
+            GridItem(.adaptive(minimum: tileWidth), spacing: tileSpacingH, alignment: .top)
         ]
 
         return ScrollView {
-            LazyVGrid(columns: columns, spacing: tileSpacing * 2) {
+            LazyVGrid(columns: columns, spacing: tileSpacingV) {
                 ForEach(Array(viewModel.cards.enumerated()), id: \.element.id) { index, card in
                     tileView(for: card, index: index)
                 }
