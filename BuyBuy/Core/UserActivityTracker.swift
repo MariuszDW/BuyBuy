@@ -64,6 +64,12 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
             preferences.lastTipJarShownDate = installationDate ?? now
             return
         }
+        
+        // Proceed only if the user has used the app for more than 30 minutes in total.
+        guard preferences.totalActiveTime > 1800 else {
+            shouldShowTipReminder = false
+            return
+        }
 
         let hasTipped = lastTipDate != nil
         let intervalDays = hasTipped
