@@ -12,6 +12,7 @@ final class AboutViewModel: ObservableObject {
     private weak var coordinator: (any AppCoordinatorProtocol)?
     private var preferences: AppPreferencesProtocol
     var dynamicTypeSize: DynamicTypeSize = .large
+    var colorScheme: ColorScheme = .light
     
     init(preferences: AppPreferencesProtocol, coordinator: any AppCoordinatorProtocol) {
         self.preferences = preferences
@@ -28,7 +29,10 @@ final class AboutViewModel: ObservableObject {
     
     func reportIssue() -> Bool {
         let reportCreator = ReportCreator()
-        let body = reportCreator.buildIssueReportBody(preferences: preferences, dynamicTypeSize: dynamicTypeSize)
+        let body = reportCreator.buildIssueReportBody(
+            preferences: preferences,
+            dynamicTypeSize: dynamicTypeSize,
+            colorScheme: colorScheme)
         return coordinator?.openEmail(
             to: AppConstants.encoreContactEMail,
             subject: String(localized: "issue_report_subject"),

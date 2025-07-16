@@ -11,7 +11,7 @@ import SwiftUI
 
 @MainActor
 final class ReportCreator {
-    func buildIssueReportBody(preferences: AppPreferencesProtocol, dynamicTypeSize: DynamicTypeSize) -> String {
+    func buildIssueReportBody(preferences: AppPreferencesProtocol, dynamicTypeSize: DynamicTypeSize, colorScheme: ColorScheme) -> String {
         let device = UIDevice.current
         
         let placeholder = String(localized: "issue_description_placeholder")
@@ -30,6 +30,7 @@ final class ReportCreator {
             return ISO8601DateFormatter().string(from: date)
         }()
         let systemFontSize = dynamicTypeSize.description
+        let colorScheme = colorScheme == .dark ? "dark" : "light"
         
         let appVersion = Bundle.main.appVersion()
         let deviceName = device.name
@@ -49,6 +50,7 @@ final class ReportCreator {
         Installation date: \(installationDate)
         Last cleanup date: \(lastCleanupDate)
         System font size: \(systemFontSize)
+        Color scheme: \(colorScheme)
 
         ---- Technical Info ----
         Application version: \(appVersion)

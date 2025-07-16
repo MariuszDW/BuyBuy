@@ -11,6 +11,7 @@ struct AboutView: View {
     @StateObject var viewModel: AboutViewModel
     @State private var showEmailAlert = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.colorScheme) private var colorScheme
     
     init(viewModel: AboutViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -56,9 +57,13 @@ struct AboutView: View {
         }
         .onAppear {
             viewModel.dynamicTypeSize = dynamicTypeSize
+            viewModel.colorScheme = colorScheme
         }
         .onChange(of: dynamicTypeSize) { newSize in
             viewModel.dynamicTypeSize = newSize
+        }
+        .onChange(of: colorScheme) { newColorScheme in
+            viewModel.colorScheme = newColorScheme
         }
     }
     
