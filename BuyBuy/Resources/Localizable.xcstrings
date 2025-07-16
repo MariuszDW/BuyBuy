@@ -1057,6 +1057,22 @@
         }
       }
     },
+    "initial_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Initial Settings"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ustawienia początkowe"
+          }
+        }
+      }
+    },
     "issue_report_subject" : {
       "localizations" : {
         "en" : {

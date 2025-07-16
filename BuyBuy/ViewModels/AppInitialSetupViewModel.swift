@@ -13,6 +13,8 @@ class AppInitialSetupViewModel: ObservableObject {
     private var preferences: any AppPreferencesProtocol
     
     @Published var isCloudSelected: Bool
+    @Published var metricSystem: Bool = true
+    @Published var imperialSystem: Bool = true
     @Published var showProgressIndicator: Bool = false
     @Published var iCloudErrorMessage: String?
     @Published var canDismiss: Bool = false
@@ -21,9 +23,14 @@ class AppInitialSetupViewModel: ObservableObject {
         self.preferences = preferences
         self.coordinator = coordinator
         self.isCloudSelected = preferences.isCloudSyncEnabled
+        self.metricSystem = Locale.current.measurementSystem == .metric
+        self.imperialSystem = !self.metricSystem
     }
     
     func verifyInitSetup() {
+        preferences.isMetricUnitsEnabled = metricSystem
+        preferences.isImperialUnitsEnabled = imperialSystem
+        
         if isCloudSelected != preferences.isCloudSyncEnabled {
             showProgressIndicator = true
             
