@@ -70,6 +70,12 @@ struct AppInitialSetupView: View {
                 .font(.boldDynamic(style: .title))
                 .padding(.top)
             
+            Text("initial_choice_note")
+                        .font(.regularDynamic(style: .subheadline))
+                        .foregroundColor(.bb.text.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+            
             HStack(spacing: 12) {
                 storageOptionView(
                     imageName: "internaldrive",
@@ -105,7 +111,7 @@ struct AppInitialSetupView: View {
         isSelected: Bool,
         action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            VStack(spacing: 12) {
+            VStack(spacing: 10) {
                 Image(systemName: imageName)
                     .resizable()
                     .scaledToFit()

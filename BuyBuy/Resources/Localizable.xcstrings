@@ -1041,6 +1041,22 @@
         }
       }
     },
+    "initial_choice_note" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can change these settings later in the application."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te ustawienia można później zmienić w aplikacji."
+          }
+        }
+      }
+    },
     "issue_report_subject" : {
       "localizations" : {
         "en" : {
