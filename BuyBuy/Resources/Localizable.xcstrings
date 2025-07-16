@@ -1073,6 +1073,22 @@
         }
       }
     },
+    "issue_description_placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please describe the issue here..."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W tym miejscu proszę opisać problem…"
+          }
+        }
+      }
+    },
     "issue_report_subject" : {
       "localizations" : {
         "en" : {

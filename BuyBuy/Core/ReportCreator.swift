@@ -7,30 +7,56 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 @MainActor
 final class ReportCreator {
-    func buildIssueReportBody() -> String {
-        let appVersion = Bundle.main.appVersion()
+    func buildIssueReportBody(preferences: AppPreferencesProtocol, dynamicTypeSize: DynamicTypeSize) -> String {
         let device = UIDevice.current
         
+        let placeholder = String(localized: "issue_description_placeholder")
+        
+        let unitSystems = preferences.unitSystems.isEmpty
+            ? "none"
+            : preferences.unitSystems.map { $0.rawValue }.joined(separator: " + ")
+        let dataStorage = preferences.isCloudSyncEnabled ? "iCloud" : "device"
+        let isHapticsEnabled = preferences.isHapticsEnabled ? "enabled" : "disabled"
+        let installationDate: String = {
+            guard let date = preferences.installationDate else { return "none" }
+            return ISO8601DateFormatter().string(from: date)
+        }()
+        let lastCleanupDate: String = {
+            guard let date = preferences.lastCleanupDate else { return "none" }
+            return ISO8601DateFormatter().string(from: date)
+        }()
+        let systemFontSize = dynamicTypeSize.description
+        
+        let appVersion = Bundle.main.appVersion()
         let deviceName = device.name
         let systemName = device.systemName
         let systemVersion = device.systemVersion
         let locale = Locale.current.identifier
-        let timestamp =  ISO8601DateFormatter().string(from: Date())
         let freeDiskSpace = formattedFreeDiskSpace()
+        let reportDate = ISO8601DateFormatter().string(from: Date())
         
         return """
-        Please describe the issue here...
+        \(placeholder)
+        
+        ---- Application Settings ----
+        Unit systems: \(unitSystems)
+        Data storage: \(dataStorage)
+        Haptics: \(isHapticsEnabled)
+        Installation date: \(installationDate)
+        Last cleanup date: \(lastCleanupDate)
+        System font size: \(systemFontSize)
 
-        --- Technical Info ---
-        Application Version: \(appVersion)
-        System Version: \(systemName) \(systemVersion)
-        Device Name: \(deviceName)
+        ---- Technical Info ----
+        Application version: \(appVersion)
+        System version: \(systemName) \(systemVersion)
+        Device name: \(deviceName)
         Locale: \(locale)
-        Timestamp: \(timestamp)
-        Free Disk Space: \(freeDiskSpace)
+        Free disk space: \(freeDiskSpace)
+        Report date: \(reportDate)
         """
     }
     

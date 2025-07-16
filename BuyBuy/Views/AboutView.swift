@@ -10,6 +10,7 @@ import SwiftUI
 struct AboutView: View {
     @StateObject var viewModel: AboutViewModel
     @State private var showEmailAlert = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     
     init(viewModel: AboutViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -28,10 +29,6 @@ struct AboutView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                .gesture(
-//                    DragGesture(minimumDistance: 4),
-//                    including: .gesture
-//                )
             } else {
                 let logoMaxWidth = min(geometry.size.width * 0.45, geometry.size.height)
                 HStack(alignment: .center, spacing: 32) {
@@ -56,6 +53,12 @@ struct AboutView: View {
             Button("ok", role: .cancel) { }
         } message: {
             Text("email_alert_message")
+        }
+        .onAppear {
+            viewModel.dynamicTypeSize = dynamicTypeSize
+        }
+        .onChange(of: dynamicTypeSize) { newSize in
+            viewModel.dynamicTypeSize = newSize
         }
     }
     
@@ -157,7 +160,7 @@ struct AboutView: View {
     NavigationStack {
         let preferences = MockAppPreferences()
         let coordinator = AppCoordinator(preferences: preferences)
-        let viewModel = AboutViewModel(coordinator: coordinator)
+        let viewModel = AboutViewModel(preferences: preferences, coordinator: coordinator)
         AboutView(viewModel: viewModel)
     }
     .preferredColorScheme(.light)
@@ -167,7 +170,7 @@ struct AboutView: View {
     NavigationStack {
         let preferences = MockAppPreferences()
         let coordinator = AppCoordinator(preferences: preferences)
-        let viewModel = AboutViewModel(coordinator: coordinator)
+        let viewModel = AboutViewModel(preferences: preferences, coordinator: coordinator)
         AboutView(viewModel: viewModel)
     }
     .preferredColorScheme(.dark)

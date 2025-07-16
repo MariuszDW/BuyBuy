@@ -237,7 +237,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             
         case .about:
             AboutView(
-                viewModel: AboutViewModel(coordinator: self)
+                viewModel: AboutViewModel(preferences: self.preferences,
+                                          coordinator: self)
             )
         }
     }

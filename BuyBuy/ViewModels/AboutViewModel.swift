@@ -10,8 +10,11 @@ import SwiftUI
 @MainActor
 final class AboutViewModel: ObservableObject {
     private weak var coordinator: (any AppCoordinatorProtocol)?
+    private var preferences: AppPreferencesProtocol
+    var dynamicTypeSize: DynamicTypeSize = .large
     
-    init(coordinator: any AppCoordinatorProtocol) {
+    init(preferences: AppPreferencesProtocol, coordinator: any AppCoordinatorProtocol) {
+        self.preferences = preferences
         self.coordinator = coordinator
     }
     
@@ -25,7 +28,7 @@ final class AboutViewModel: ObservableObject {
     
     func reportIssue() -> Bool {
         let reportCreator = ReportCreator()
-        let body = reportCreator.buildIssueReportBody()
+        let body = reportCreator.buildIssueReportBody(preferences: preferences, dynamicTypeSize: dynamicTypeSize)
         return coordinator?.openEmail(
             to: AppConstants.encoreContactEMail,
             subject: String(localized: "issue_report_subject"),
