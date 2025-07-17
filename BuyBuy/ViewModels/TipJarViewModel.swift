@@ -32,21 +32,28 @@ struct TipProduct: Identifiable {
     }
 }
 
+enum TipJarStatus {
+    case ready
+    case loading
+    case processing
+}
+
 @MainActor
 class TipJarViewModel: ObservableObject {
     private var coordinator: (any AppCoordinatorProtocol)?
     private var userActivityTracker: any UserActivityTrackerProtocol
     
-    @Published var loading: Bool = true
+    @Published var status: TipJarStatus = .loading
     @Published var error: String? = nil
     @Published var products: [TipProduct] = []
+    @Published var inProgress: Bool = false
     
     init(userActivityTracker: any UserActivityTrackerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.coordinator = coordinator
         self.userActivityTracker = userActivityTracker
     }
     
-    convenience init(loading: Bool = false,
+    convenience init(status: TipJarStatus = .ready,
                      error: String? = nil,
                      products: [TipProduct] = [],
                      userActivityTracker: any UserActivityTrackerProtocol,
@@ -54,15 +61,15 @@ class TipJarViewModel: ObservableObject {
     ) {
         self.init(userActivityTracker: userActivityTracker, coordinator: coordinator)
         self.products = products
-        self.loading = loading
+        self.status = status
         self.error = error
     }
 
     func loadProducts() async {
         guard !isMockData else { return }
         
-        loading = true
-        defer { loading = false }
+        status = .loading
+        defer { status = .ready }
         
         do {
             let storeKitProducts = try await Product.products(for: AppConstants.tipIDs)
@@ -86,6 +93,7 @@ class TipJarViewModel: ObservableObject {
     }
 
     func purchase(_ product: TipProduct) async {
+        status = .processing
         do {
             let result = try await product.storeKitProduct?.purchase()
             switch result {
@@ -105,8 +113,10 @@ class TipJarViewModel: ObservableObject {
             @unknown default:
                 break
             }
+            status = .ready
         } catch {
             print("Purchase error: \(error)")
+            status = .ready
         }
     }
     

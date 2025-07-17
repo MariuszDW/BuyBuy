@@ -17,7 +17,7 @@ struct TipJarView: View {
     
     var body: some View {
         Group {
-            if viewModel.loading == true {
+            if viewModel.status == .loading {
                 loadingView
             } else if let error = viewModel.error {
                 errorView(error: error)
@@ -43,17 +43,30 @@ struct TipJarView: View {
     @ViewBuilder
     private var mainView: some View {
         GeometryReader { geometry in
-            let iconSize =  min(geometry.size.width * 0.7, geometry.size.height * 0.7)
-            
-            OrientedContainerView(
-                isLandscape: geometry.size.isLandscape,
-                view1: mainIconView(iconSize: iconSize),
-                view2: mainContentView
-            )
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding()
+            let iconSize = min(geometry.size.width * 0.7, geometry.size.height * 0.7)
+
+            ZStack {
+                OrientedContainerView(
+                    isLandscape: geometry.size.isLandscape,
+                    view1: mainIconView(iconSize: iconSize),
+                    view2: mainContentView
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding()
+                .blur(radius: viewModel.status == .processing ? 7 : 0)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.status)
+                .allowsHitTesting(viewModel.status != .processing)
+
+                if viewModel.status == .processing {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .controlSize(.large)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            }
         }
     }
+
     
     @ViewBuilder
     private func mainIconView(iconSize: CGFloat) -> some View {
@@ -173,7 +186,7 @@ struct TipJarView: View {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle())
                 .controlSize(.large)
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding()
     }
@@ -191,7 +204,7 @@ struct TipJarView: View {
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(loading: false,
+    let viewModel = TipJarViewModel(status: .ready,
                                     products: mockProducts,
                                     userActivityTracker: tracker,
                                     coordinator: coordinator)
@@ -210,7 +223,45 @@ struct TipJarView: View {
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(loading: false,
+    let viewModel = TipJarViewModel(status: .ready,
+                                    products: mockProducts,
+                                    userActivityTracker: tracker,
+                                    coordinator: coordinator)
+    
+    TipJarView(viewModel: viewModel)
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Light/processing") {
+    let mockProducts: [TipProduct] = [
+        TipProduct(id: "small_tip", name: "Coffee", price: "$1.99", description: "Coffee for the developer."),
+        TipProduct(id: "medium_tip", name: "Large Coffee", price: "$2.99", description: "Large coffee for the developer."),
+        TipProduct(id: "large_tip", name: "Coffe and Cake", price: "$4,99", description: "Coffee and cake for the developer.")
+    ]
+    
+    let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
+    let coordinator = AppCoordinator(preferences: preferences)
+    let viewModel = TipJarViewModel(status: .processing,
+                                    products: mockProducts,
+                                    userActivityTracker: tracker,
+                                    coordinator: coordinator)
+    
+    TipJarView(viewModel: viewModel)
+        .preferredColorScheme(.light)
+}
+
+#Preview("Dark/processing") {
+    let mockProducts: [TipProduct] = [
+        TipProduct(id: "small_tip", name: "Coffee", price: "$1.99", description: "Coffee for the developer."),
+        TipProduct(id: "medium_tip", name: "Large Coffee", price: "$2.99", description: "Large coffee for the developer."),
+        TipProduct(id: "large_tip", name: "Coffe and Cake", price: "$4,99", description: "Coffee and cake for the developer.")
+    ]
+    
+    let preferences = MockAppPreferences()
+    let tracker = MockUserActivityTracker()
+    let coordinator = AppCoordinator(preferences: preferences)
+    let viewModel = TipJarViewModel(status: .processing,
                                     products: mockProducts,
                                     userActivityTracker: tracker,
                                     coordinator: coordinator)
@@ -224,7 +275,7 @@ struct TipJarView: View {
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(loading: true,
+    let viewModel = TipJarViewModel(status: .loading,
                                     products: mockProducts,
                                     userActivityTracker: tracker,
                                     coordinator: coordinator)
@@ -238,7 +289,7 @@ struct TipJarView: View {
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = TipJarViewModel(loading: true,
+    let viewModel = TipJarViewModel(status: .loading,
                                     products: mockProducts,
                                     userActivityTracker: tracker,
                                     coordinator: coordinator)
