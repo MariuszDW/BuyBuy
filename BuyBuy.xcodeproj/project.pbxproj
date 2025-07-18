@@ -443,9 +443,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BuyBuy/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to take photos.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library to select photos.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This application uses the camera to take photos of products and loyalty cards added to your shopping list.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This application uses your photo library to attach photos of products and loyalty cards to your shopping list.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -478,9 +479,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BuyBuy/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to take photos.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library to select photos.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This application uses the camera to take photos of products and loyalty cards added to your shopping list.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This application uses your photo library to attach photos of products and loyalty cards to your shopping list.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
