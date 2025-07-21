@@ -12,6 +12,17 @@ import CloudKit
 final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
     let container: NSPersistentContainer
     
+    static func storeURL(useCloud: Bool) -> URL {
+        guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.appGroupID) else {
+            fatalError("Cannot find App Group directory")
+        }
+        
+        try? FileManager.default.createDirectory(at: containerURL, withIntermediateDirectories: true)
+        
+        let storeFileName = useCloud ? AppConstants.cloudStoreFileName : AppConstants.localStoreFileName
+        return containerURL.appendingPathComponent(storeFileName)
+    }
+    
     init(useCloudSync: Bool) {
         let modelName = AppConstants.coreDataModelName
         
@@ -21,13 +32,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
             container = NSPersistentContainer(name: modelName)
         }
         
-        guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.appGroupID) else {
-            fatalError("Can not find App Group directory")
-        }
-        
-        let storeFileName = useCloudSync ? AppConstants.cloudStoreFileName : AppConstants.localStoreFileName
-        try? FileManager.default.createDirectory(at: containerURL, withIntermediateDirectories: true)
-        let storeURL = containerURL.appendingPathComponent(storeFileName)
+        let storeURL = CoreDataStack.storeURL(useCloud: useCloudSync)
         
         if let description = container.persistentStoreDescriptions.first {
             description.url = storeURL

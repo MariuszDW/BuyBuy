@@ -374,11 +374,30 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     // MARK: - App scene phases
     
     func onAppStart() async {
+        let localMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: false))
+        let cloudMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: true))
+        
+        do {
+            try localMigrator.migrateIfNeeded()
+        } catch {
+            print("Local data migration failed: \(error)")
+            // TODO: handle an error
+        }
+        
+        do {
+            try cloudMigrator.migrateIfNeeded()
+        } catch {
+            print("Cloud data migration failed: \(error)")
+            // TODO: handle an error
+        }
+        
         await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
         if preferences.installationDate == nil {
             openInitAppSetup()
         }
+        
         startTransactionListener()
+        
         appInitialized = true
     }
     
