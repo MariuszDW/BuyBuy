@@ -32,6 +32,10 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
         if let description = container.persistentStoreDescriptions.first {
             description.url = storeURL
             
+            // Enable lightweight migration.
+            description.shouldMigrateStoreAutomatically = true
+            description.shouldInferMappingModelAutomatically = true
+            
             if useCloudSync {
                 description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: AppConstants.iCloudContainerID)
                 description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
