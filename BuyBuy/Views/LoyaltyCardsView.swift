@@ -250,7 +250,7 @@ struct LoyaltyCardsView: View {
                     hapticEngine.playItemDeleted()
                     showActionsForCardAtIndex = nil
                     Task { @MainActor in
-                        try? await Task.sleep(for: .microseconds(500))
+                        try? await Task.sleep(for: .milliseconds(300))
                         cardPendingDeletion = viewModel.cards[index]
                     }
                 }

@@ -116,7 +116,10 @@ struct LoyaltyCardDetailsView: View {
             Button {
                 hapticEngine.playItemDeleted()
                 showingImageActionMenu = false
-                deleteImageConfirmation = true
+                Task { @MainActor in
+                    try? await Task.sleep(for: .milliseconds(300))
+                    deleteImageConfirmation = true
+                }
             } label: {
                 HStack {
                     Text("delete")
