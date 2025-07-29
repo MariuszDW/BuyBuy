@@ -349,6 +349,7 @@ struct ShoppingListView: View {
         }
         .padding(.trailing, 8)
         .fixedSize(horizontal: false, vertical: true)
+        .layoutPriority(1)
     }
     
     // MARK: - Private
