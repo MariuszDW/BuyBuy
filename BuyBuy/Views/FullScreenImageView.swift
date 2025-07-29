@@ -28,9 +28,9 @@ struct FullScreenImageView: View {
                     .padding(.top, geometry.safeAreaInsets.top + 4)
                     .padding(.trailing, geometry.safeAreaInsets.trailing + 8)
             }
-            .gesture(dragGesture(width: geometry.size.width))
             .ignoresSafeArea()
             .background(Color.black.ignoresSafeArea())
+            .simultaneousGesture(dragGesture(width: geometry.size.width))
         }
         .onReceive(viewModel.coordinator.eventPublisher) { event in
             if case .loyaltyCardImageChanged = event, viewModel.imageType == .cardImage {
