@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-enum SlideDirection {
-    case left, right
-}
-
 struct FullScreenImageView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: FullScreenImageViewModel

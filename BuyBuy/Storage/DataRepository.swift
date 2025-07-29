@@ -314,9 +314,9 @@ actor DataRepository: DataRepositoryProtocol {
         }
 
         if thumbnail {
-            return entity.thumbnailAsset // Data?
+            return entity.thumbnailAsset
         } else {
-            return entity.imageAsset // Data?
+            return entity.imageAsset
         }
     }
     
