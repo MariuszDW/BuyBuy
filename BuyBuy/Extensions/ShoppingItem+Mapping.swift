@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import CloudKit
 
 extension ShoppingItem {
     init(entity: ShoppingItemEntity) {
@@ -60,5 +61,43 @@ extension ShoppingItemEntity {
         self.unit = model.unit?.symbol
         self.imageIDs = model.imageIDs
         self.deletedAt = model.deletedAt
+        
+        let isCloud = context.isCloud
+        
+        guard isCloud == true else {
+            self.sharedImages = nil
+            return
+        }
+        
+        var updatedSharedImages = Set<SharedImageEntity>()
+
+        for imageID in model.imageIDs {
+            let fetchRequest: NSFetchRequest<SharedImageEntity> = SharedImageEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", imageID)
+            fetchRequest.fetchLimit = 1
+
+            let entity = (try? context.fetch(fetchRequest).first) ?? SharedImageEntity(context: context)
+
+            if entity.id == nil {
+                entity.id = UUID(uuidString: imageID)
+            }
+            
+            if entity.imageAsset == nil,
+               let imageURL = ImageStorage.existingFileURL(for: imageID, type: .itemImage, cloud: isCloud),
+               let imageData = try? Data(contentsOf: imageURL) {
+                entity.imageAsset = imageData
+            }
+
+            if entity.thumbnailAsset == nil,
+               let thumbnailURL = ImageStorage.existingFileURL(for: imageID, type: .itemThumbnail, cloud: isCloud),
+               let thumbnailData = try? Data(contentsOf: thumbnailURL) {
+                entity.thumbnailAsset = thumbnailData
+            }
+
+            entity.shoppingItem = self
+            updatedSharedImages.insert(entity)
+        }
+
+        self.sharedImages = updatedSharedImages as NSSet
     }
 }

@@ -92,6 +92,10 @@ actor MockDataRepository: DataRepositoryProtocol {
     func fetchAllItemImageIDs() async throws -> Set<String> {
         return Set<String>()
     }
+    
+    func fetchSharedImageData(id: String, thumbnail: Bool) async throws -> Data? {
+        return nil
+    }
 
     // MARK: - Loyalty Cards
 

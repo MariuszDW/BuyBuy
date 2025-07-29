@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import CloudKit
 
 /// A helper actor that serializes write operations to ensure they are executed one at a time.
 actor SaveQueue {
@@ -302,6 +303,23 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
+    func fetchSharedImageData(id: String, thumbnail: Bool) async throws -> Data? {
+        let context = coreDataStack.viewContext
+        let request: NSFetchRequest<SharedImageEntity> = SharedImageEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id)
+        request.fetchLimit = 1
+
+        guard let entity = try? context.fetch(request).first else {
+            return nil
+        }
+
+        if thumbnail {
+            return entity.thumbnailAsset // Data?
+        } else {
+            return entity.imageAsset // Data?
+        }
+    }
+    
     // MARK: - Loyalty Cards
     
     func fetchLoyaltyCards() async throws -> [LoyaltyCard] {
@@ -332,7 +350,7 @@ actor DataRepository: DataRepositoryProtocol {
             request.predicate = NSPredicate(format: "id == %@", card.id as CVarArg)
             
             let entity = try context.fetch(request).first ?? LoyaltyCardEntity(context: context)
-            entity.update(from: card)
+            entity.update(from: card, context: context)
         }
     }
     

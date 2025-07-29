@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24F74" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="LoyaltyCardEntity" representedClassName="LoyaltyCardEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="imageID" optional="YES" attributeType="String"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="order" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="sharedImage" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="SharedImageEntity" inverseName="loyaltyCard" inverseEntity="SharedImageEntity"/>
+    </entity>
+    <entity name="SharedImageEntity" representedClassName="SharedImageEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="imageAsset" optional="YES" attributeType="Binary" valueTransformerName="NSSecureUnarchiveFromData" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="thumbnailAsset" optional="YES" attributeType="Binary" valueTransformerName="NSSecureUnarchiveFromData" allowsExternalBinaryDataStorage="YES"/>
+        <relationship name="loyaltyCard" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LoyaltyCardEntity" inverseName="sharedImage" inverseEntity="LoyaltyCardEntity"/>
+        <relationship name="shoppingItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShoppingItemEntity" inverseName="sharedImages" inverseEntity="ShoppingItemEntity"/>
+    </entity>
+    <entity name="ShoppingItemEntity" representedClassName="ShoppingItemEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="imageIDsData" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformerName"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="note" attributeType="String" defaultValueString=""/>
+        <attribute name="order" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="price" optional="YES" attributeType="Double" usesScalarValueType="NO"/>
+        <attribute name="quantity" optional="YES" attributeType="Double" usesScalarValueType="NO"/>
+        <attribute name="status" attributeType="String" defaultValueString="pending"/>
+        <attribute name="unit" optional="YES" attributeType="String"/>
+        <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShoppingListEntity" inverseName="items" inverseEntity="ShoppingListEntity"/>
+        <relationship name="sharedImages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SharedImageEntity" inverseName="shoppingItem" inverseEntity="SharedImageEntity"/>
+    </entity>
+    <entity name="ShoppingListEntity" representedClassName="ShoppingListEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="color" attributeType="String" defaultValueString="blue"/>
+        <attribute name="icon" attributeType="String" defaultValueString="list.bullet.circle.fill"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="order" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="ownerRecordName" optional="YES" attributeType="String"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShoppingItemEntity" inverseName="list" inverseEntity="ShoppingItemEntity"/>
+    </entity>
+</model>

@@ -10,7 +10,9 @@ import CoreData
 import CloudKit
 
 final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
+    static let isCloudKey = "isCloud"
     let container: NSPersistentContainer
+    let isCloud: Bool
     
     static func storeURL(useCloud: Bool) -> URL {
         guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppConstants.appGroupID) else {
@@ -24,6 +26,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
     }
     
     init(useCloudSync: Bool) {
+        self.isCloud = useCloudSync
         let modelName = AppConstants.coreDataModelName
         
         if useCloudSync {
@@ -60,6 +63,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
         
         container.viewContext.automaticallyMergesChangesFromParent = true
         container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        container.viewContext.userInfo[Self.isCloudKey] = useCloudSync
     }
     
     var viewContext: NSManagedObjectContext {
@@ -70,6 +74,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
         let context = container.newBackgroundContext()
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.transactionAuthor = "SaveQueue"
+        context.userInfo[Self.isCloudKey] = isCloud
         return context
     }
 }

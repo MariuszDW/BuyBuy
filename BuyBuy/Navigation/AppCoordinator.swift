@@ -46,7 +46,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         folderPresenters.removeAll()
         
         if useCloud {
-            if let itemImagesURL = await dataManager.imageStorage.directoryURL(for: .itemImage) {
+            if let itemImagesURL = ImageStorage.directoryURL(for: .itemImage, cloud: true) {
                 let presenter = DirectoryFilePresenter(directoryURL: itemImagesURL) {
                     Task { @MainActor in
                         self.sendEvent(.shoppingItemImageChanged)
@@ -56,7 +56,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 NSFileCoordinator.addFilePresenter(presenter)
             }
             
-            if let itemImagesURL = await dataManager.imageStorage.directoryURL(for: .cardImage) {
+            if let itemImagesURL = ImageStorage.directoryURL(for: .cardImage, cloud: true) {
                 let presenter = DirectoryFilePresenter(directoryURL: itemImagesURL) {
                     Task { @MainActor in
                         self.sendEvent(.loyaltyCardImageChanged)

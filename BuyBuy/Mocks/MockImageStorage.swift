@@ -10,9 +10,11 @@ import SwiftUI
 actor MockImageStorage: ImageStorageProtocol {
     func cleanCache() async {}
     
-    func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws {}
+    func save(image: UIImage, baseFileName: String, type: ImageType, cloud: Bool) async throws {}
     
-    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage? {
+    func save(data: Data, baseFileName: String, type: ImageType, cloud: Bool) async throws {}
+    
+    func loadImage(baseFileName: String, type: ImageType, cloud: Bool) async throws -> UIImage? {
         if type.isThumbnail {
             return Self.generateMockImage(text: "\(baseFileName)_thumb", size: ImageStorageHelper.thumbnailSize)
         } else {
@@ -20,19 +22,13 @@ actor MockImageStorage: ImageStorageProtocol {
         }
     }
     
-    func deleteImage(baseFileName: String, type: ImageType) async throws {}
+    func deleteImage(baseFileName: String, type: ImageType, cloud: Bool) async throws {}
     
-    func deleteImage(baseFileName: String, types: [ImageType]) async throws {}
+    func deleteImage(baseFileName: String, types: [ImageType], cloud: Bool) async throws {}
     
-    func listImageBaseNames(type: ImageType) async throws -> Set<String> {
+    func listImageBaseNames(type: ImageType, cloud: Bool) async throws -> Set<String> {
         return Set<String>()
     }
-    
-    func directoryURL(for type: ImageType) async -> URL? {
-        return URL(fileURLWithPath: "")
-    }
-    
-    func forceDownloadImages(type: ImageType, onlyHiddenFiles: Bool = false) async throws {}
     
     // MARK: - Helpers
     

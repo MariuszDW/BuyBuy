@@ -31,6 +31,7 @@ protocol DataRepositoryProtocol: Sendable {
     
     // Item images
     func fetchAllItemImageIDs() async throws -> Set<String>
+    func fetchSharedImageData(id: String, thumbnail: Bool) async throws -> Data?
     
     // Loyalty Cards
     func fetchLoyaltyCards() async throws -> [LoyaltyCard]

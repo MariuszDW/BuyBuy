@@ -19,7 +19,7 @@ class DataManager: DataManagerProtocol {
     init(useCloud: Bool) {
         self.cloud = useCloud
         self.coreDataStack = CoreDataStack(useCloudSync: useCloud)
-        self.imageStorage = ImageStorage(useCloudSync: useCloud)
+        self.imageStorage = ImageStorage()
         self.fileStorage = FileStorage()
         self.repository = DataRepository(coreDataStack: coreDataStack)
     }
@@ -36,13 +36,9 @@ class DataManager: DataManagerProtocol {
         guard self.cloud != useCloud else { return }
         cloud = useCloud
         coreDataStack = CoreDataStack(useCloudSync: useCloud)
-        imageStorage = ImageStorage(useCloudSync: useCloud)
+        imageStorage = ImageStorage()
         fileStorage = FileStorage()
         repository = DataRepository(coreDataStack: coreDataStack)
-        if useCloud {
-            try? await imageStorage.forceDownloadImages(type: .itemImage, onlyHiddenFiles: true)
-            try? await imageStorage.forceDownloadImages(type: .cardImage, onlyHiddenFiles: true)
-        }
     }
     
     // MARK: - Shopping lists
@@ -208,26 +204,40 @@ class DataManager: DataManagerProtocol {
     // MARK: - Images
     
     func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws {
-        try await imageStorage.saveImage(image, baseFileName: baseFileName, type: type)
+        try await imageStorage.save(image: image, baseFileName: baseFileName, type: type, cloud: cloud)
     }
     
     func saveImage(_ image: UIImage, baseFileName: String, types: [ImageType]) async throws {
         for type in types {
-            try await imageStorage.saveImage(image, baseFileName: baseFileName, type: type)
+            try await imageStorage.save(image: image, baseFileName: baseFileName, type: type, cloud: cloud)
         }
     }
     
     func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage? {
-        return try await imageStorage.loadImage(baseFileName: baseFileName, type: type)
+        if let image = try? await imageStorage.loadImage(baseFileName: baseFileName, type: type, cloud: cloud) {
+            return image
+        }
+        
+        guard cloud else {
+            return nil
+        }
+        
+        guard let imageData = try? await repository.fetchSharedImageData(id: baseFileName, thumbnail: type.isThumbnail) else {
+            return nil
+        }
+        
+        try await imageStorage.save(data: imageData, baseFileName: baseFileName, type: type, cloud: cloud)
+        
+        return UIImage(data: imageData)
     }
     
     func deleteImage(baseFileName: String, type: ImageType) async throws {
-        try await imageStorage.deleteImage(baseFileName: baseFileName, type: type)
+        try await imageStorage.deleteImage(baseFileName: baseFileName, type: type, cloud: cloud)
     }
     
     func deleteImage(baseFileName: String, types: [ImageType]) async throws {
         for type in types {
-            try await imageStorage.deleteImage(baseFileName: baseFileName, type: type)
+            try await imageStorage.deleteImage(baseFileName: baseFileName, type: type, cloud: cloud)
         }
     }
     
@@ -239,29 +249,29 @@ class DataManager: DataManagerProtocol {
     
     func cleanOrphanedItemImages() async throws {
         print("DataManager.cleanOrphanedItemImages()")
-        let itemImageBaseNames = try await imageStorage.listImageBaseNames(type: .itemImage)
-        let itemThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .itemThumbnail)
+        let itemImageBaseNames = try await imageStorage.listImageBaseNames(type: .itemImage, cloud: cloud)
+        let itemThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .itemThumbnail, cloud: cloud)
         let allBaseNames: Set<String> = itemImageBaseNames.union(itemThumbnailBaseNames)
         
         let usedItemImageIDs = try await repository.fetchAllItemImageIDs()
         let orphanedItemIDs = allBaseNames.subtracting(usedItemImageIDs)
         
         for id in orphanedItemIDs {
-            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
+            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail], cloud: cloud)
         }
     }
     
     func cleanOrphanedCardImages() async throws {
         print("DataManager.cleanOrphanedCardImages()")
-        let cardImageBaseNames = try await imageStorage.listImageBaseNames(type: .cardImage)
-        let cardThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .cardThumbnail)
+        let cardImageBaseNames = try await imageStorage.listImageBaseNames(type: .cardImage, cloud: cloud)
+        let cardThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .cardThumbnail, cloud: cloud)
         let allBaseNames: Set<String> = cardImageBaseNames.union(cardThumbnailBaseNames)
         
         let usedCardImageIDs = try await repository.fetchAllLoyaltyCardImageIDs()
         let orphanedCardIDs = allBaseNames.subtracting(usedCardImageIDs)
         
         for id in orphanedCardIDs {
-            try await imageStorage.deleteImage(baseFileName: id, types: [.cardImage, .cardThumbnail])
+            try await imageStorage.deleteImage(baseFileName: id, types: [.cardImage, .cardThumbnail], cloud: cloud)
         }
     }
     
@@ -288,8 +298,6 @@ class DataManager: DataManagerProtocol {
     func refreshAllCloudData() async {
         guard cloud == true else { return }
         repository.fetchRemoteChangesFromCloudKit()
-        try? await imageStorage.forceDownloadImages(type: .itemImage, onlyHiddenFiles: false)
-        try? await imageStorage.forceDownloadImages(type: .cardImage, onlyHiddenFiles: false)
     }
     
     // MARK: - Debug
@@ -324,15 +332,15 @@ class DataManager: DataManagerProtocol {
             print("iCloud container is not available.")
         }
         
-        let itemImagesFolder = await imageStorage.directoryURL(for: .itemImage)
-        let cardImagesFolder = await imageStorage.directoryURL(for: .cardImage)
+        let itemImagesFolder = ImageStorage.directoryURL(for: .itemImage, cloud: cloud)
+        let cardImagesFolder = ImageStorage.directoryURL(for: .cardImage, cloud: cloud)
         print("Item images folder: \(itemImagesFolder?.absoluteString ?? "error")")
         print("Card images folder: \(cardImagesFolder?.absoluteString ?? "error")")
     }
     
     func printListOfImages() async {
-        let itemImages = try? await imageStorage.listImageBaseNames(type: .itemImage)
-        let cardImages = try? await imageStorage.listImageBaseNames(type: .cardImage)
+        let itemImages = try? await imageStorage.listImageBaseNames(type: .itemImage, cloud: cloud)
+        let cardImages = try? await imageStorage.listImageBaseNames(type: .cardImage, cloud: cloud)
         print("List of item images:")
         itemImages?.forEach { print(" •", $0) }
         print("List of card images:")
