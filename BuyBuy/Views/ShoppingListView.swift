@@ -88,8 +88,10 @@ struct ShoppingListView: View {
         List {
             ForEach(viewModel.sections, id: \.status) { section in
                 let items = list.items(for: section.status)
-                Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
-                    shoppingItems(items, of: section)
+                if !items.isEmpty {
+                    Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
+                        shoppingItems(items, of: section)
+                    }
                 }
             }
         }
