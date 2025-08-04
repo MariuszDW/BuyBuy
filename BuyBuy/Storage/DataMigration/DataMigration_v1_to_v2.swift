@@ -8,8 +8,8 @@
 import Foundation
 import CoreData
 
-final class ExampleMigration_v1_to_v2: MigrationStepProtocol {
-    let fromVersion = "Model_v1"
+final class DataMigration_v1_to_v2: MigrationStepProtocol {
+    let fromVersion = "Model"
     let toVersion = "Model_v2"
     
     func shouldMigrate(storeURL: URL, to currentModel: NSManagedObjectModel) -> Bool { // TODO: ta funkcja moglaby byc w
@@ -26,11 +26,12 @@ final class ExampleMigration_v1_to_v2: MigrationStepProtocol {
         let oldItems = try oldContext.fetch(fetch)
         
         for oldItem in oldItems {
+            print("Migration - item.name: \(String(describing: oldItem.value(forKey: "name")))")
             // Example of a migration.
-            let newItem = NSEntityDescription.insertNewObject(forEntityName: "ShoppingItem", into: newContext)
-            newItem.setValue(oldItem.value(forKey: "name"), forKey: "name")
-            newItem.setValue(oldItem.value(forKey: "quantity"), forKey: "quantity")
-            newItem.setValue(true, forKey: "isMigrated")
+//            let newItem = NSEntityDescription.insertNewObject(forEntityName: "ShoppingItem", into: newContext)
+//            newItem.setValue(oldItem.value(forKey: "name"), forKey: "name")
+//            newItem.setValue(oldItem.value(forKey: "quantity"), forKey: "quantity")
+//            newItem.setValue(true, forKey: "isMigrated")
         }
     }
 }
