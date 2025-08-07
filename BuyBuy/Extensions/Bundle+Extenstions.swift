@@ -8,18 +8,19 @@
 import Foundation
 
 extension Bundle {
-    func appVersion(prefix: String = "", build: Bool = false, date: Bool = false) -> String {
-        let versionString = infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
-        let buildString = infoDictionary?["CFBundleVersion"] as? String ?? "?"
-        
+    func appVersion(prefix: String = "", build: Bool = false, suffix: Bool = false, date: Bool = false) -> String {
+        let versionString = infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
         var resultString = "\(prefix)\(versionString)"
         
         if build {
+            let buildString = infoDictionary?["CFBundleVersion"] as? String ?? "0"
             resultString += " (\(buildString))"
         }
         
         #if DEBUG
-        resultString += " DEV"
+        if suffix {
+            resultString += " DEV"
+        }
         #endif
         
         if date {

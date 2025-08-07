@@ -177,7 +177,7 @@ actor ImageStorage: ImageStorageProtocol {
     
     static func directoryURL(for type: ImageType, cloud: Bool) -> URL? {
         let fileManager = FileManager.default
-        let baseDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let baseDirectoryURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
             .appendingPathComponent(cloud ? "cloud" : "device", isDirectory: true)
         let imagesFolderURL = baseDirectoryURL.appendingPathComponent(type.folderName, isDirectory: true)
         if !fileManager.fileExists(atPath: imagesFolderURL.path) {
@@ -197,6 +197,7 @@ actor ImageStorage: ImageStorageProtocol {
     private func writeData(_ data: Data, to fileName: String, type: ImageType, cloud: Bool) async throws {
         guard let dir = Self.directoryURL(for: type, cloud: cloud) else { return }
         let fileURL = dir.appendingPathComponent(fileName) // TODO: deprecated
+        print("ImageStorage - write image: \"\(fileURL)\"")
         
         try await Task.detached {
             try data.write(to: fileURL)
@@ -205,7 +206,8 @@ actor ImageStorage: ImageStorageProtocol {
     
     private func readData(from fileName: String, type: ImageType, cloud: Bool) async throws -> Data? {
         guard let dir = Self.directoryURL(for: type, cloud: cloud) else { return nil }
-        let fileURL = dir.appendingPathComponent(fileName)
+        let fileURL = dir.appendingPathComponent(fileName) // TODO: deprecated
+        print("ImageStorage - read image: \"\(fileURL)\"")
 
         return try await Task.detached {
             guard FileManager.default.fileExists(atPath: fileURL.path) else {
@@ -218,7 +220,8 @@ actor ImageStorage: ImageStorageProtocol {
     
     private func deleteData(fileName: String, type: ImageType, cloud: Bool) async throws {
         guard let dir = Self.directoryURL(for: type, cloud: cloud) else { return }
-        let fileURL = dir.appendingPathComponent(fileName)
+        let fileURL = dir.appendingPathComponent(fileName) // TODO: deprecated
+        print("ImageStorage - delete image: \"\(fileURL)\"")
         
         try await Task.detached {
             if FileManager.default.fileExists(atPath: fileURL.path) {

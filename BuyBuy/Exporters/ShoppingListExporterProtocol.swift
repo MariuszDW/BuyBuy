@@ -22,7 +22,7 @@ protocol ShoppingListExporterProtocol {
 extension ShoppingListExporterProtocol {
     static func exportInfoText() -> String {
         let appName = Bundle.main.appName()
-        let appVersion = Bundle.main.appVersion()
+        let appVersion = Bundle.main.appVersion(suffix: true)
         let dateString = Date().localizedString(dateStyle: .short,
                                                 timeStyle: .medium,
                                                 locale: .current,

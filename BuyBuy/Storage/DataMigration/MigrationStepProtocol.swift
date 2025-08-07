@@ -14,6 +14,8 @@ protocol MigrationStepProtocol {
     
     func shouldMigrate(storeURL: URL, to currentModel: NSManagedObjectModel) -> Bool
     func performMigration(storeURL: URL) throws -> URL
+    
+    func migrateObjects(from oldContext: NSManagedObjectContext, to newContext: NSManagedObjectContext) throws
 }
 
 extension MigrationStepProtocol {

@@ -12,26 +12,34 @@ final class DataMigration_v1_to_v2: MigrationStepProtocol {
     let fromVersion = "Model"
     let toVersion = "Model_v2"
     
-    func shouldMigrate(storeURL: URL, to currentModel: NSManagedObjectModel) -> Bool { // TODO: ta funkcja moglaby byc w
-        // Checking whether the model in the store file requires migration to the current model.
-        guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL),
-              !currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata) else {
-            return false
-        }
-        return true
+    func shouldMigrate(storeURL: URL, to currentModel: NSManagedObjectModel) -> Bool {
+        let metadata = DataModelMigrator.metadataForStore(at: storeURL)
+
+        let compatible = currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
+
+        // Sprawdź, czy to jest wersja, z której chcemy migrować
+        let storeVersion = (metadata["NSStoreModelVersionIdentifiers"] as? [String])?.first
+
+        return !compatible || storeVersion == fromVersion
     }
     
     func migrateObjects(from oldContext: NSManagedObjectContext, to newContext: NSManagedObjectContext) throws {
-        let fetch = NSFetchRequest<NSManagedObject>(entityName: "ShoppingItem")
-        let oldItems = try oldContext.fetch(fetch)
-        
+        // let itemFetch = NSFetchRequest<NSManagedObject>(entityName: "ShoppingItem")
+        let itemFetch: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+        let oldItems = try oldContext.fetch(itemFetch)
         for oldItem in oldItems {
             print("Migration - item.name: \(String(describing: oldItem.value(forKey: "name")))")
             // Example of a migration.
-//            let newItem = NSEntityDescription.insertNewObject(forEntityName: "ShoppingItem", into: newContext)
+//            let newItem = NSEntityDescription.insertNewObject(forEntityName: "ShoppingItemEntity", into: newContext)
 //            newItem.setValue(oldItem.value(forKey: "name"), forKey: "name")
 //            newItem.setValue(oldItem.value(forKey: "quantity"), forKey: "quantity")
 //            newItem.setValue(true, forKey: "isMigrated")
+        }
+        
+        let cardFetch: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
+        let oldICards = try oldContext.fetch(cardFetch)
+        for oldICard in oldICards {
+            print("Migration - card.name: \(String(describing: oldICard.value(forKey: "name")))")
         }
     }
 }

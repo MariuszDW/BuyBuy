@@ -26,6 +26,7 @@ final class DataModelMigrator {
     
     private func registerMigrations() {
         // register(ExampleMigration_v1_to_v2())
+        register(DataMigration_v1_to_v2())
     }
     
     func register(_ migration: MigrationStepProtocol) {
@@ -41,16 +42,13 @@ final class DataModelMigrator {
         var currentStoreURL = storeURL
         
         for migration in migrations {
-            let metadata = metadataForStore(at: currentStoreURL)
-            
-            if !currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata),
-               migration.shouldMigrate(storeURL: currentStoreURL, to: currentModel) {
+            if migration.shouldMigrate(storeURL: currentStoreURL, to: currentModel) {
                 print("Migrating from \(migration.fromVersion) to \(migration.toVersion)")
                 currentStoreURL = try migration.performMigration(storeURL: currentStoreURL)
             }
         }
         
-        let finalMetadata = metadataForStore(at: currentStoreURL)
+        let finalMetadata = Self.metadataForStore(at: currentStoreURL)
         if currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: finalMetadata) {
             print("Final model is compatible, migration completed.")
         } else {
@@ -58,7 +56,7 @@ final class DataModelMigrator {
         }
     }
     
-    private func metadataForStore(at url: URL) -> [String: Any] {
+    static func metadataForStore(at url: URL) -> [String: Any] {
         guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: url) else {
             return [:]
         }

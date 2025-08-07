@@ -32,7 +32,7 @@ final class ReportCreator {
         let systemFontSize = dynamicTypeSize.description
         let colorScheme = colorScheme == .dark ? "dark" : "light"
         
-        let appVersion = Bundle.main.appVersion()
+        let appVersion = Bundle.main.appVersion(build: true, suffix: true, date: true)
         let deviceName = device.name
         let systemName = device.systemName
         let systemVersion = device.systemVersion
