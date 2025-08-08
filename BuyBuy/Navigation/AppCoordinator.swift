@@ -433,7 +433,9 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         
         print("App version increased from \(lastAppVersionString) to \(currentAppVersionString).")
         
-        // TODO: handle...
+        if lastAppVersion < Version("1.1.0") {
+            // TODO: Copy images from old to new folder.
+        }
         
         preferences.lastAppVersion = currentAppVersionString
     }
