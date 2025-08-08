@@ -374,6 +374,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     // MARK: - App scene phases
     
     func onAppStart() async {
+        // CoreData migration.
         let localMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: false))
         let cloudMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: true))
         
@@ -391,6 +392,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             // TODO: handle an error
         }
         
+        // Handling case when the app version is increased.
+        handleIncreasingAppVersion()
+        
+        // The application initialisation.
         await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
         if preferences.installationDate == nil {
             openInitAppSetup()
@@ -410,6 +415,27 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     func onAppBackground() {
         print("AppCoordinator.onAppBackground()")
         userActivityTracker.appDidEnterBackground()
+    }
+    
+    private func handleIncreasingAppVersion() {
+        let lastAppVersionString = preferences.lastAppVersion
+        let currentAppVersionString = Bundle.main.appVersion()
+        
+        let lastAppVersion = Version(lastAppVersionString)
+        let currentAppVersion = Version(currentAppVersionString)
+        
+        guard lastAppVersion < currentAppVersion else {
+            if lastAppVersion != currentAppVersion {
+                preferences.lastAppVersion = currentAppVersionString
+            }
+            return
+        }
+        
+        print("App version increased from \(lastAppVersionString) to \(currentAppVersionString).")
+        
+        // TODO: handle...
+        
+        preferences.lastAppVersion = currentAppVersionString
     }
     
     private func performOnForegroundTasks() async {
