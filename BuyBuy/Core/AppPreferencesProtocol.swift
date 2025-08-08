@@ -14,6 +14,7 @@ protocol AppPreferencesProtocol {
     var lastCleanupDate: Date? { get set }
     var isCloudSyncEnabled: Bool { get set }
     var isHapticsEnabled: Bool { get set }
+    var lastAppVersion: String { get set }
     var unitSystems: [MeasureUnitSystem] { get }
     
     // User activity tracker

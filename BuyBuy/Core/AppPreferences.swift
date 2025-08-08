@@ -22,6 +22,7 @@ final class AppPreferences: AppPreferencesProtocol {
         static let imperialUnitsEnabled = "imperial_units_enabled"
         static let cloudSyncEnabled = "cloud_sync_enabled"
         static let hapticsEnabled = "haptics_enabled"
+        static let appVersion = "app_version"
         
         // tips
         static let tipCounts = "act_tip_counts"
@@ -75,6 +76,15 @@ final class AppPreferences: AppPreferencesProtocol {
         }
         set {
             defaults.set(newValue, forKey: Keys.hapticsEnabled)
+        }
+    }
+    
+    var lastAppVersion: String {
+        get {
+            (defaults.object(forKey: Keys.appVersion) as? String) ?? "0"
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.appVersion)
         }
     }
 
