@@ -374,26 +374,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     // MARK: - App scene phases
     
     func onAppStart() async {
-        // CoreData migration.
-        let localMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: false))
-        let cloudMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: true))
-        
-        do {
-            try localMigrator.migrateIfNeeded()
-        } catch {
-            print("Local data migration failed: \(error)")
-            // TODO: handle an error
-        }
-        
-        do {
-            try cloudMigrator.migrateIfNeeded()
-        } catch {
-            print("Cloud data migration failed: \(error)")
-            // TODO: handle an error
-        }
-        
-        // Handling case when the app version is increased.
-        handleIncreasingAppVersion()
+        handleApplicationUpdate()
         
         // The application initialisation.
         await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
@@ -417,24 +398,58 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         userActivityTracker.appDidEnterBackground()
     }
     
-    private func handleIncreasingAppVersion() {
+    private func handleApplicationUpdate() {
         let lastAppVersionString = preferences.lastAppVersion
         let currentAppVersionString = Bundle.main.appVersion()
+        
+        guard preferences.installationDate != nil else {
+            preferences.lastAppVersion = currentAppVersionString
+            return
+        }
         
         let lastAppVersion = Version(lastAppVersionString)
         let currentAppVersion = Version(currentAppVersionString)
         
         guard lastAppVersion < currentAppVersion else {
-            if lastAppVersion != currentAppVersion {
-                preferences.lastAppVersion = currentAppVersionString
-            }
             return
         }
         
+        // CoreData migration.
+        let localMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: false))
+        let cloudMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: true))
+        
+        do {
+            try localMigrator.migrateIfNeeded()
+        } catch {
+            print("Local data migration failed: \(error)")
+            // TODO: handle an error
+        }
+        
+        do {
+            try cloudMigrator.migrateIfNeeded()
+        } catch {
+            print("Cloud data migration failed: \(error)")
+            // TODO: handle an error
+        }
+        
+        // Handling case when the app version is increased.
         print("App version increased from \(lastAppVersionString) to \(currentAppVersionString).")
         
         if lastAppVersion < Version("1.1.0") {
             // TODO: Copy images from old to new folder.
+            
+            let deviceItemImageDir = ImageStorage.directoryURL(for: .itemImage, cloud: false)
+            let deviceCardImageDir = ImageStorage.directoryURL(for: .cardImage, cloud: false)
+            let cloudItemImageDir = ImageStorage.directoryURL(for: .itemImage, cloud: true)
+            let cloudCardImageDir = ImageStorage.directoryURL(for: .cardImage, cloud: true)
+            
+//            let fileManager = FileManager.default
+//            var isDirectory: ObjCBool = false
+//
+//            print("deviceItemImageDir: \(fileManager.fileExists(atPath: deviceItemImageDir?.path, isDirectory: true))")
+//            print("deviceCardImageDir: \(fileManager.fileExists(atPath: deviceCardImageDir.path, isDirectory: true))")
+//            print("cloudItemImageDir: \(fileManager.fileExists(atPath: cloudItemImageDir.path, isDirectory: true))")
+//            print("cloudCardImageDir: \(fileManager.fileExists(atPath: cloudCardImageDir.path, isDirectory: true))")
         }
         
         preferences.lastAppVersion = currentAppVersionString
