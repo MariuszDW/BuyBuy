@@ -24,7 +24,7 @@ extension Bundle {
         #endif
         
         if date {
-            let dateString = Date().localizedString(dateStyle: .medium, timeStyle: .none) // TODO: Wrong date! This is bug!
+            let dateString = Date(timeIntervalSince1970: buildTimestamp).localizedString(dateStyle: .medium, timeStyle: .none)
             resultString += " (\(dateString))"
         }
         
