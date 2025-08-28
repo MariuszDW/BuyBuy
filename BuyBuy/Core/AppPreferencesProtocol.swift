@@ -27,4 +27,7 @@ protocol AppPreferencesProtocol {
     
     var lastTipDate: Date? { get set }
     var lastTipJarShownDate: Date? { get set }
+    
+    var legacyCloudImages: Bool { get set }
+    var legacyDeviceImages: Bool { get set }
 }

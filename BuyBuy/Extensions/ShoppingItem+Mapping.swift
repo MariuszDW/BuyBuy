@@ -62,42 +62,52 @@ extension ShoppingItemEntity {
         self.imageIDs = model.imageIDs
         self.deletedAt = model.deletedAt
         
-        let isCloud = context.isCloud
+        lazy var storageManager = StorageManager()
         
-        guard isCloud == true else {
-            self.sharedImages = nil
-            return
-        }
+        var updatedImages = Set<BBImageEntity>()
+        var updatedThumbnails = Set<BBThumbnailEntity>()
         
-        var updatedSharedImages = Set<SharedImageEntity>()
-
         for imageID in model.imageIDs {
-            let fetchRequest: NSFetchRequest<SharedImageEntity> = SharedImageEntity.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %@", imageID)
-            fetchRequest.fetchLimit = 1
-
-            let entity = (try? context.fetch(fetchRequest).first) ?? SharedImageEntity(context: context)
-
-            if entity.id == nil {
-                entity.id = UUID(uuidString: imageID)
-            }
+            guard let uuid = UUID(uuidString: imageID) else { continue }
             
-            if entity.imageAsset == nil,
-               let imageURL = ImageStorage.existingFileURL(for: imageID, type: .itemImage, cloud: isCloud),
+            let imageEntity = imageEntity(for: uuid) ?? BBImageEntity(context: context)
+            if imageEntity.id == nil {
+                imageEntity.id = uuid
+            }
+            if imageEntity.data == nil,
+               let imageURL = storageManager.existingFileURL(for: .temporary, fileName: imageID + ".jpg"),
                let imageData = try? Data(contentsOf: imageURL) {
-                entity.imageAsset = imageData
+                imageEntity.data = imageData
             }
-
-            if entity.thumbnailAsset == nil,
-               let thumbnailURL = ImageStorage.existingFileURL(for: imageID, type: .itemThumbnail, cloud: isCloud),
-               let thumbnailData = try? Data(contentsOf: thumbnailURL) {
-                entity.thumbnailAsset = thumbnailData
+            imageEntity.shoppingItem = self
+            updatedImages.insert(imageEntity)
+            
+            let thumbnailEntity = thumbnailEntity(for: uuid) ?? BBThumbnailEntity(context: context)
+            if thumbnailEntity.id == nil {
+                thumbnailEntity.id = uuid
             }
-
-            entity.shoppingItem = self
-            updatedSharedImages.insert(entity)
+            if thumbnailEntity.data == nil,
+               let thumbURL = storageManager.existingFileURL(for: .temporary, fileName: imageID + "_thumb.jpg"),
+               let thumbData = try? Data(contentsOf: thumbURL) {
+                thumbnailEntity.data = thumbData
+            }
+            thumbnailEntity.shoppingItem = self
+            updatedThumbnails.insert(thumbnailEntity)
         }
-
-        self.sharedImages = updatedSharedImages as NSSet
+        
+        self.images = updatedImages.isEmpty ? nil : updatedImages as NSSet
+        self.thumbnails = updatedThumbnails.isEmpty ? nil : updatedThumbnails as NSSet
+    }
+    
+    // MARK: - Helpers
+    
+    private func imageEntity(for id: UUID) -> BBImageEntity? {
+        guard let images = images as? Set<BBImageEntity> else { return nil }
+        return images.first { $0.id == id }
+    }
+    
+    private func thumbnailEntity(for id: UUID) -> BBThumbnailEntity? {
+        guard let thumbnails = thumbnails as? Set<BBThumbnailEntity> else { return nil }
+        return thumbnails.first { $0.id == id }
     }
 }

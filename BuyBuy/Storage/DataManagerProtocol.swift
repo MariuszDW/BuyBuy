@@ -10,6 +10,10 @@ import SwiftUI
 
 @MainActor
 protocol DataManagerProtocol {
+    var cloud: Bool { get }
+    var coreDataStack: CoreDataStackProtocol { get }
+    var storageManager: StorageManagerProtocol { get }
+    
     func setup(useCloud: Bool) async
     
     // Shopping lists
@@ -35,6 +39,7 @@ protocol DataManagerProtocol {
     func deleteAllItems() async throws
     func cleanOrphanedItems() async throws
     func fetchAllItemImageIDs() async throws -> Set<String>
+    func fetchItemsWithMissingImages() async throws -> [ShoppingItem]
     
     // Loyalty cards
     func fetchLoyaltyCards() async throws -> [LoyaltyCard]
@@ -43,31 +48,26 @@ protocol DataManagerProtocol {
     func deleteLoyaltyCard(with id: UUID) async throws
     func deleteAllLoyaltyCards() async throws
     func fetchAllLoyaltyCardImageIDs() async throws -> Set<String>
+    func fetchLoyaltyCardsWithMissingImages() async throws -> [LoyaltyCard]
     
     // Images
-    func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws
-    func saveImage(_ image: UIImage, baseFileName: String, types: [ImageType]) async throws
-    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage?
-    func deleteImage(baseFileName: String, type: ImageType) async throws
-    func deleteImage(baseFileName: String, types: [ImageType]) async throws
-    
-    // Image cache
+    func saveImageToTemporaryDir(_ image: UIImage, baseFileName: String) async throws
+    func loadImage(with baseFileName: String) async throws -> UIImage?
+    func loadThumbnail(with baseFileName: String) async throws -> UIImage?
     func cleanImageCache() async
-    func cleanOrphanedItemImages() async throws
-    func cleanOrphanedCardImages() async throws
+    func cleanTemporaryImages() async
     
     // Files
-    func saveFile(data: Data, fileName: String) async throws
-    func readFile(fileName: String) async throws -> Data
-    func deleteFile(fileName: String) async throws
-    func listFiles() async throws -> [String]
+    func saveFile(fileName: String, from base: StorageLocation, subfolders: [String]?, data: Data)
+    func readFile(named fileName: String, from base: StorageLocation, subfolders: [String]?) -> Data?
+    func deleteFile(named fileName: String, in base: StorageLocation, subfolders: [String]?)
+    func listFiles(in base: StorageLocation, subfolders: [String]?) /*async throws*/ -> [String]
     
     // Refresh cloud data
     func refreshAllCloudData() async
     
     // Debug
 #if DEBUG
-    func printEnvironmentPaths() async
-    func printListOfImages() async
+//    func printEnvironmentPaths() async
 #endif
 }

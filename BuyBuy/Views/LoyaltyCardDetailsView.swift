@@ -54,7 +54,7 @@ struct LoyaltyCardDetailsView: View {
                 }
                 .task {
                     focusedField = viewModel.isNew ? .name : nil
-                    await viewModel.loadCardImage()
+                    try? await viewModel.loadCardImage()
                 }
                 .listStyle(.insetGrouped)
                 .navigationTitle("loyalty_card")
@@ -66,13 +66,6 @@ struct LoyaltyCardDetailsView: View {
                 }
                 .toolbar {
                     toolbarContent
-                }
-                .onReceive(viewModel.eventPublisher) { event in
-                    switch event {
-                    case .loyaltyCardImageChanged:
-                        Task { await viewModel.loadCardImage() }
-                    default: break
-                    }
                 }
                 .alert("card_remove_image_title", isPresented: $deleteImageConfirmation) {
                     Button("cancel", role: .cancel) {}
@@ -162,7 +155,6 @@ struct LoyaltyCardDetailsView: View {
                         }
                     } label: {
                         CircleIconView(systemName: "xmark")
-                            // .accessibilityLabel("Close")
                     }
                     .disabled(!viewModel.canConfirm)
                 }
@@ -256,8 +248,6 @@ struct LoyaltyCardDetailsView: View {
 #Preview("Light") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: [], cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -274,8 +264,6 @@ struct LoyaltyCardDetailsView: View {
 #Preview("Dark") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: [], cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

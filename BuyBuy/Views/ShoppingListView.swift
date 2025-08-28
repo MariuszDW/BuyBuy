@@ -56,7 +56,7 @@ struct ShoppingListView: View {
         .navigationBarTitleDisplayMode(.large)
         .onReceive(viewModel.eventPublisher) { event in
             switch event {
-            case .shoppingItemImageChanged, .shoppingItemEdited:
+            case .shoppingItemEdited:
                 Task { await viewModel.loadList() }
             default: break
             }
@@ -194,7 +194,6 @@ struct ShoppingListView: View {
                     } label: {
                         CircleIconView(systemName: "creditcard.fill")
                     }
-                    // .accessibilityLabel("Loyalty cards")
                 }
                 
                 if isEditMode.isEditing {
@@ -203,7 +202,6 @@ struct ShoppingListView: View {
                             isEditMode = .inactive
                         }
                     }
-                    // .accessibilityLabel("Done Editing")
                 }
                 
                 if !isEditMode.isEditing {
@@ -234,7 +232,6 @@ struct ShoppingListView: View {
                         CircleIconView(systemName: "ellipsis")
                     }
                     .disabled(viewModel.list?.items.isEmpty ?? true)
-                    // .accessibilityLabel("More options")
                 }
             }
         }
@@ -375,8 +372,6 @@ struct ShoppingListView: View {
 #Preview("Light/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -394,8 +389,6 @@ struct ShoppingListView: View {
 #Preview("Dark/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -413,8 +406,6 @@ struct ShoppingListView: View {
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -432,8 +423,6 @@ struct ShoppingListView: View {
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

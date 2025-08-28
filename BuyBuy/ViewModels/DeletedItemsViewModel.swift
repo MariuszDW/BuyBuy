@@ -15,7 +15,7 @@ final class DeletedItemsViewModel: ObservableObject {
     private weak var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver { [weak self] in
+        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
             guard let self = self else { return }
             await self.loadItems()
         }
@@ -94,7 +94,7 @@ final class DeletedItemsViewModel: ObservableObject {
     private func loadThumbnail(for imageID: String) async {
         guard thumbnails[imageID] == nil else { return }
         do {
-            let image = try await dataManager.loadImage(baseFileName: imageID, type: .itemThumbnail)
+            let image = try await dataManager.loadThumbnail(with: imageID)
             thumbnails[imageID] = image
         } catch {
             print("Failed to load thumbnail for \(imageID): \(error)")

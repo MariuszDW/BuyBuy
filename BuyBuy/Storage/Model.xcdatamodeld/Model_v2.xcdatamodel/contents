@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24F74" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24G90" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="Model_v2">
+    <entity name="BBImageEntity" representedClassName="BBImageEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="data" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="loyaltyCard" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LoyaltyCardEntity" inverseName="image" inverseEntity="LoyaltyCardEntity"/>
+        <relationship name="shoppingItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShoppingItemEntity" inverseName="images" inverseEntity="ShoppingItemEntity"/>
+    </entity>
+    <entity name="BBThumbnailEntity" representedClassName="BBThumbnailEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="data" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="loyaltyCard" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LoyaltyCardEntity" inverseName="thumbnail" inverseEntity="LoyaltyCardEntity"/>
+        <relationship name="shoppingItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShoppingItemEntity" inverseName="thumbnails" inverseEntity="ShoppingItemEntity"/>
+    </entity>
     <entity name="LoyaltyCardEntity" representedClassName="LoyaltyCardEntity" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="imageID" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="order" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="sharedImage" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="SharedImageEntity" inverseName="loyaltyCard" inverseEntity="SharedImageEntity"/>
-    </entity>
-    <entity name="SharedImageEntity" representedClassName="SharedImageEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="imageAsset" optional="YES" attributeType="Binary" valueTransformerName="NSSecureUnarchiveFromData" allowsExternalBinaryDataStorage="YES"/>
-        <attribute name="thumbnailAsset" optional="YES" attributeType="Binary" valueTransformerName="NSSecureUnarchiveFromData" allowsExternalBinaryDataStorage="YES"/>
-        <relationship name="loyaltyCard" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LoyaltyCardEntity" inverseName="sharedImage" inverseEntity="LoyaltyCardEntity"/>
-        <relationship name="shoppingItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShoppingItemEntity" inverseName="sharedImages" inverseEntity="ShoppingItemEntity"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BBImageEntity" inverseName="loyaltyCard" inverseEntity="BBImageEntity"/>
+        <relationship name="thumbnail" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BBThumbnailEntity" inverseName="loyaltyCard" inverseEntity="BBThumbnailEntity"/>
     </entity>
     <entity name="ShoppingItemEntity" representedClassName="ShoppingItemEntity" syncable="YES" codeGenerationType="class">
         <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -25,8 +32,10 @@
         <attribute name="quantity" optional="YES" attributeType="Double" usesScalarValueType="NO"/>
         <attribute name="status" attributeType="String" defaultValueString="pending"/>
         <attribute name="unit" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BBImageEntity" inverseName="shoppingItem" inverseEntity="BBImageEntity"/>
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShoppingListEntity" inverseName="items" inverseEntity="ShoppingListEntity"/>
-        <relationship name="sharedImages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SharedImageEntity" inverseName="shoppingItem" inverseEntity="SharedImageEntity"/>
+        <relationship name="thumbnails" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BBThumbnailEntity" inverseName="shoppingItem" inverseEntity="BBThumbnailEntity"/>
     </entity>
     <entity name="ShoppingListEntity" representedClassName="ShoppingListEntity" syncable="YES" codeGenerationType="class">
         <attribute name="color" attributeType="String" defaultValueString="blue"/>
@@ -35,7 +44,7 @@
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="note" optional="YES" attributeType="String"/>
         <attribute name="order" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="ownerRecordName" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShoppingItemEntity" inverseName="list" inverseEntity="ShoppingItemEntity"/>
     </entity>
 </model>

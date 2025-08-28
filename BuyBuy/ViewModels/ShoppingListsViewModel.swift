@@ -17,7 +17,7 @@ class ShoppingListsViewModel: ObservableObject {
     let coordinator: any AppCoordinatorProtocol
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver { [weak self] in
+        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
             guard let self = self else { return }
             await self.loadLists()
         }

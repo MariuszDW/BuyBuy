@@ -9,42 +9,17 @@ import Foundation
 import CoreData
 import CloudKit
 
-/// A helper actor that serializes write operations to ensure they are executed one at a time.
-actor SaveQueue {
-    private let newContext: () -> NSManagedObjectContext
-    
-    init(newContext: @escaping () -> NSManagedObjectContext) {
-        self.newContext = newContext
-    }
-    
-    func performSave(_ block: @escaping (NSManagedObjectContext) throws -> Void) async throws {
-        let context = newContext()
-        return try await withCheckedThrowingContinuation { continuation in
-            context.perform {
-                do {
-                    try block(context)
-                    if context.hasChanges {
-                        try context.save()
-                    }
-                    continuation.resume()
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-}
-
 actor DataRepository: DataRepositoryProtocol {
     private let coreDataStack: CoreDataStackProtocol
-    private let saveQueue: SaveQueue
+    private var saveQueue: SaveQueue {
+        coreDataStack.saveQueue
+    }
     
     init(coreDataStack: CoreDataStackProtocol) {
         self.coreDataStack = coreDataStack
-        self.saveQueue = SaveQueue(newContext: { coreDataStack.newBackgroundContext() })
     }
     
-    // MARK: - Lists
+    // MARK: - Shopping lists
     
     func fetchAllLists() async throws -> [ShoppingList] {
         let context = coreDataStack.viewContext
@@ -117,7 +92,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    // MARK: - Items
+    // MARK: - Shopping items
     
     func fetchAllItems() async throws -> [ShoppingItem] {
         let context = coreDataStack.viewContext
@@ -286,41 +261,44 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    // MARK: - Item images
-    
-    func fetchAllItemImageIDs() async throws -> Set<String> {
+    func fetchItemsWithMissingImages() async throws -> [ShoppingItem] {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "imageIDsData != nil") // tylko te z jakimiś imageIDs
             let entities = try context.fetch(request)
-            
-            var allIDs = Set<String>()
+
+            var results: [ShoppingItem] = []
+
             for entity in entities {
-                let ids = entity.imageIDs
-                allIDs.formUnion(ids)
+                let uuids = entity.imageIDs.compactMap { UUID(uuidString: $0) }
+                var missing = false
+                
+                for id in uuids {
+                    let hasImage = (entity.images as? Set<BBImageEntity>)?.contains { image in
+                        image.id == id
+                    } ?? false
+
+                    let hasThumbnail = (entity.thumbnails as? Set<BBThumbnailEntity>)?.contains { thumbnail in
+                        thumbnail.id == id
+                    } ?? false
+                    
+                    if !hasImage || !hasThumbnail {
+                        missing = true
+                        break
+                    }
+                }
+                
+                if missing {
+                    results.append(ShoppingItem(entity: entity))
+                }
             }
-            return allIDs
+
+            return results
         }
     }
     
-    func fetchSharedImageData(id: String, thumbnail: Bool) async throws -> Data? {
-        let context = coreDataStack.viewContext
-        let request: NSFetchRequest<SharedImageEntity> = SharedImageEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id)
-        request.fetchLimit = 1
-
-        guard let entity = try? context.fetch(request).first else {
-            return nil
-        }
-
-        if thumbnail {
-            return entity.thumbnailAsset
-        } else {
-            return entity.imageAsset
-        }
-    }
-    
-    // MARK: - Loyalty Cards
+    // MARK: - Loyalty cards
     
     func fetchLoyaltyCards() async throws -> [LoyaltyCard] {
         let context = coreDataStack.viewContext
@@ -374,7 +352,75 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    // MARK: - Layalty Card images
+    func fetchLoyaltyCardsWithMissingImages() async throws -> [LoyaltyCard] {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "imageID != nil AND imageID != ''")
+            let entities = try context.fetch(request)
+            
+            var results: [LoyaltyCard] = []
+
+            for entity in entities {
+                guard let idString = entity.imageID, let uuid = UUID(uuidString: idString) else {
+                    results.append(LoyaltyCard(entity: entity))
+                    continue
+                }
+
+                let hasImage = entity.image?.id == uuid
+                let hasThumbnail = entity.thumbnail?.id == uuid
+
+                if !hasImage || !hasThumbnail {
+                    results.append(LoyaltyCard(entity: entity))
+                }
+            }
+
+            return results
+        }
+    }
+    
+    // MARK: - Images
+    
+    func fetchImageData(id: String) async throws -> Data? {
+        let context = coreDataStack.viewContext
+        let request: NSFetchRequest<BBImageEntity> = BBImageEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        request.fetchLimit = 1
+        
+        guard let entity = try? context.fetch(request).first else {
+            return nil
+        }
+        
+        return entity.data
+    }
+    
+    func fetchThumbnailData(id: String) async throws -> Data? {
+        let context = coreDataStack.viewContext
+        let request: NSFetchRequest<BBThumbnailEntity> = BBThumbnailEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        request.fetchLimit = 1
+        
+        guard let entity = try? context.fetch(request).first else {
+            return nil
+        }
+        
+        return entity.data
+    }
+    
+    func fetchAllItemImageIDs() async throws -> Set<String> {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            let entities = try context.fetch(request)
+            
+            var allIDs = Set<String>()
+            for entity in entities {
+                let ids = entity.imageIDs
+                allIDs.formUnion(ids)
+            }
+            return allIDs
+        }
+    }
     
     func fetchAllLoyaltyCardImageIDs() async throws -> Set<String> {
         let context = coreDataStack.viewContext
@@ -387,7 +433,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    // MARK: - Force refresh database from iCloud
+    // MARK: - CloudKit
     
     nonisolated func fetchRemoteChangesFromCloudKit() {
         print("DataRepository.fetchRemoteChangesFromCloudKit()")

@@ -19,7 +19,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
     private var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver { [weak self] in
+        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
             guard let self = self else { return }
             await self.loadCards()
         }
@@ -115,7 +115,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
         var newThumbnails: [UUID: UIImage] = [:]
         for card in cards {
             guard let imageID = card.imageID else { continue }
-            if let image = try? await dataManager.loadImage(baseFileName: imageID, type: .cardThumbnail) {
+            if let image = try? await dataManager.loadThumbnail(with: imageID) {
                 newThumbnails[card.id] = image
             }
         }

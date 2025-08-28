@@ -121,7 +121,7 @@ class TipJarViewModel: ObservableObject {
     }
     
     func tipJarPresenter() {
-        userActivityTracker.lastTipJarShownDate = Date()
+        userActivityTracker.lastTipJarShownDate = Date.now
     }
     
     private var isMockData: Bool {

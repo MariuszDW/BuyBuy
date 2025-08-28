@@ -74,13 +74,6 @@ struct ShoppingItemDetailsView: View {
         .toolbar {
             toolbarContent
         }
-        .onReceive(viewModel.eventPublisher) { event in
-            switch event {
-            case .shoppingItemImageChanged:
-                Task { await viewModel.loadThumbnails() }
-            default: break
-            }
-        }
         .onAppear {
             print("ShoppingItemDetailsView onAppear")
             viewModel.startObserving()
@@ -122,7 +115,6 @@ struct ShoppingItemDetailsView: View {
                         }
                     } label: {
                         CircleIconView(systemName: "xmark")
-                            // .accessibilityLabel("Close")
                     }
                     .disabled(!viewModel.canConfirm)
                 }
@@ -424,8 +416,6 @@ struct ShoppingItemDetailsView: View {
 #Preview("Light") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -442,8 +432,6 @@ struct ShoppingItemDetailsView: View {
 #Preview("Dark") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

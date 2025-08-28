@@ -82,6 +82,8 @@ class AppSettingsViewModel: ObservableObject {
     
 #if DEBUG
     func copyMockToData() async {
+        // TODO: Modify copying mock to database...
+        
         for list in MockDataRepository.allLists {
             try? await dataManager.addOrUpdateList(list)
         }
@@ -93,9 +95,17 @@ class AppSettingsViewModel: ObservableObject {
         if let itemImageIDs = try? await dataManager.fetchAllItemImageIDs() {
             for imageID in itemImageIDs {
                 if let image = UIImage(named: imageID) {
-                    try? await dataManager.saveImage(image, baseFileName: imageID, types: [.itemImage, .itemThumbnail])
+                    try? await dataManager.saveImageToTemporaryDir(image, baseFileName: imageID)
                 }
             }
+        }
+        
+        for item in MockDataRepository.deletedItems {
+            try? await dataManager.addOrUpdateItem(item)
+        }
+        
+        for list in MockDataRepository.allLists {
+            try? await dataManager.addOrUpdateList(list)
         }
         
         for card in MockDataRepository.allCards {
@@ -105,9 +115,13 @@ class AppSettingsViewModel: ObservableObject {
         if let cardImageIDs = try? await dataManager.fetchAllLoyaltyCardImageIDs() {
             for imageID in cardImageIDs {
                 if let image = UIImage(named: imageID) {
-                    try? await dataManager.saveImage(image, baseFileName: imageID, types: [.cardImage, .cardThumbnail])
+                    try? await dataManager.saveImageToTemporaryDir(image, baseFileName: imageID)
                 }
             }
+        }
+        
+        for card in MockDataRepository.allCards {
+            try? await dataManager.addOrUpdateLoyaltyCard(card)
         }
 
         await dataManager.cleanImageCache()

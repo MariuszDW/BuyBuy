@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 protocol CoreDataStackProtocol: Sendable {
+    var saveQueue: SaveQueue { get }
     var viewContext: NSManagedObjectContext { get }
     func newBackgroundContext() -> NSManagedObjectContext
 }

@@ -85,7 +85,7 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
     }
     
     func appDidEnterForeground() {
-        lastActiveStartDate = Date()
+        lastActiveStartDate = Date.now
     }
 
     func appDidEnterBackground() {

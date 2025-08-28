@@ -32,6 +32,10 @@ final class AppPreferences: AppPreferencesProtocol {
         // user activity tracker
         static let installationDate = "act_installation_date"
         static let totalActiveTime = "act_total_active_time"
+        
+        // migration of legacy data
+        static let legacyCloudImages = "legacy_cloud_images"
+        static let legacyDeviceImages = "legacy_device_images"
     }
 
     var lastCleanupDate: Date? {
@@ -151,6 +155,24 @@ final class AppPreferences: AppPreferencesProtocol {
         }
         set {
             defaults.set(newValue, forKey: Keys.lastTipJarShownDate)
+        }
+    }
+    
+    var legacyCloudImages: Bool {
+        get {
+            defaults.bool(forKey: Keys.legacyCloudImages)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.legacyCloudImages)
+        }
+    }
+    
+    var legacyDeviceImages: Bool {
+        get {
+            defaults.bool(forKey: Keys.legacyCloudImages)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.legacyCloudImages)
         }
     }
 }

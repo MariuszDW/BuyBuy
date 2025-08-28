@@ -32,13 +32,6 @@ struct FullScreenImageView: View {
             .background(Color.black.ignoresSafeArea())
             .simultaneousGesture(dragGesture(width: geometry.size.width))
         }
-        .onReceive(viewModel.coordinator.eventPublisher) { event in
-            if case .loyaltyCardImageChanged = event, viewModel.imageType == .cardImage {
-                Task { await viewModel.reloadCurrentImageIfNeeded() }
-            } else if case .shoppingItemImageChanged = event, viewModel.imageType == .itemImage {
-                Task { await viewModel.reloadCurrentImageIfNeeded() }
-            }
-        }
     }
 
     @ViewBuilder
@@ -162,13 +155,10 @@ struct FullScreenImageView: View {
 #Preview("Light") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
-                                             imageType: .itemImage,
                                              dataManager: dataManager,
                                              coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
@@ -178,13 +168,10 @@ struct FullScreenImageView: View {
 #Preview("Dark") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
-                                             imageType: .itemImage,
                                              dataManager: dataManager,
                                              coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
@@ -194,13 +181,10 @@ struct FullScreenImageView: View {
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [],
-                                             imageType: .itemImage,
                                              dataManager: dataManager,
                                              coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
@@ -210,13 +194,10 @@ struct FullScreenImageView: View {
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [],
-                                             imageType: .itemImage,
                                              dataManager: dataManager,
                                              coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)

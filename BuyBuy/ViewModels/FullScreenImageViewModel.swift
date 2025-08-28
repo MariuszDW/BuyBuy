@@ -19,13 +19,11 @@ final class FullScreenImageViewModel: ObservableObject {
     @Published private(set) var currentIndex: Int = 0
 
     let imageIDs: [String]
-    let imageType: ImageType
     private let dataManager: DataManagerProtocol
     let coordinator: any AppCoordinatorProtocol
 
-    init(imageIDs: [String], startIndex: Int = 0, imageType: ImageType, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
+    init(imageIDs: [String], startIndex: Int = 0, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.imageIDs = imageIDs
-        self.imageType = imageType
         self.dataManager = dataManager
         self.coordinator = coordinator
         self.currentIndex = startIndex
@@ -49,7 +47,7 @@ final class FullScreenImageViewModel: ObservableObject {
         }
         state = .loading
         do {
-            if let image = try await dataManager.loadImage(baseFileName: imageIDs[index], type: imageType) {
+            if let image = try await dataManager.loadImage(with: imageIDs[index]) {
                 state = .success(image)
             }
             else {

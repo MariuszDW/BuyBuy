@@ -8,27 +8,34 @@
 import Foundation
 import SwiftUI
 
+enum DataError: Error {
+    case jpegConversionFailed
+}
+
 @MainActor
 class DataManager: DataManagerProtocol {
-    private var cloud: Bool
-    private var coreDataStack: CoreDataStackProtocol
-    var imageStorage: ImageStorageProtocol
-    private var fileStorage: FileStorageProtocol
+    private(set) var cloud: Bool
+    private(set) var coreDataStack: CoreDataStackProtocol
+    private(set) var storageManager: StorageManagerProtocol
     private var repository: DataRepositoryProtocol
+    private var imageCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 100
+        cache.totalCostLimit = 50 * 1024 * 1024 // 50 MB
+        return cache
+    }()
 
     init(useCloud: Bool) {
         self.cloud = useCloud
         self.coreDataStack = CoreDataStack(useCloudSync: useCloud)
-        self.imageStorage = ImageStorage()
-        self.fileStorage = FileStorage()
+        self.storageManager = StorageManager()
         self.repository = DataRepository(coreDataStack: coreDataStack)
     }
     
-    init(useCloud: Bool, coreDataStack: CoreDataStackProtocol, imageStorage: ImageStorageProtocol, fileStorage: FileStorageProtocol, repository: DataRepositoryProtocol) {
+    init(useCloud: Bool, coreDataStack: CoreDataStackProtocol, repository: DataRepositoryProtocol) {
         self.cloud = useCloud
         self.coreDataStack = coreDataStack
-        self.imageStorage = imageStorage
-        self.fileStorage = fileStorage
+        self.storageManager = StorageManager()
         self.repository = repository
     }
     
@@ -36,9 +43,9 @@ class DataManager: DataManagerProtocol {
         guard self.cloud != useCloud else { return }
         cloud = useCloud
         coreDataStack = CoreDataStack(useCloudSync: useCloud)
-        imageStorage = ImageStorage()
-        fileStorage = FileStorage()
+        self.storageManager = StorageManager()
         repository = DataRepository(coreDataStack: coreDataStack)
+        imageCache.removeAllObjects()
     }
     
     // MARK: - Shopping lists
@@ -175,6 +182,10 @@ class DataManager: DataManagerProtocol {
         return try await repository.fetchAllItemImageIDs()
     }
     
+    func fetchItemsWithMissingImages() async throws -> [ShoppingItem] {
+        return try await repository.fetchItemsWithMissingImages()
+    }
+    
     // MARK: - Loyalty Cards
     
     func fetchLoyaltyCards() async throws -> [LoyaltyCard] {
@@ -201,96 +212,86 @@ class DataManager: DataManagerProtocol {
         return try await repository.fetchAllLoyaltyCardImageIDs()
     }
     
+    func fetchLoyaltyCardsWithMissingImages() async throws -> [LoyaltyCard] {
+        return try await repository.fetchLoyaltyCardsWithMissingImages()
+    }
+    
     // MARK: - Images
     
-    func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws {
-        try await imageStorage.save(image: image, baseFileName: baseFileName, type: type, cloud: cloud)
+    func saveImageToTemporaryDir(_ image: UIImage, baseFileName: String) async throws {
+        let thumbnail: UIImage = await image.createThumbnail() ?? UIImage()
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            throw DataError.jpegConversionFailed
+        }
+        guard let thumbnailData = thumbnail.jpegData(compressionQuality: 0.7) else {
+            throw DataError.jpegConversionFailed
+        }
+        
+        let storageManager = StorageManager()
+        
+        storageManager.saveData(imageData, named: baseFileName + ".jpg", to: .temporary)
+        storageManager.saveData(thumbnailData, named: baseFileName + "_thumb.jpg", to: .temporary)
     }
     
-    func saveImage(_ image: UIImage, baseFileName: String, types: [ImageType]) async throws {
-        for type in types {
-            try await imageStorage.save(image: image, baseFileName: baseFileName, type: type, cloud: cloud)
-        }
-    }
-    
-    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage? {
-        if let image = try? await imageStorage.loadImage(baseFileName: baseFileName, type: type, cloud: cloud) {
-            return image
-        }
-        
-        guard cloud else {
+    func loadImage(with baseFileName: String) async throws -> UIImage? {
+        guard let imageData = try await repository.fetchImageData(id: baseFileName) else {
             return nil
         }
-        
-        guard let imageData = try? await repository.fetchSharedImageData(id: baseFileName, thumbnail: type.isThumbnail) else {
-            return nil
-        }
-        
-        try await imageStorage.save(data: imageData, baseFileName: baseFileName, type: type, cloud: cloud)
-        
         return UIImage(data: imageData)
     }
     
-    func deleteImage(baseFileName: String, type: ImageType) async throws {
-        try await imageStorage.deleteImage(baseFileName: baseFileName, type: type, cloud: cloud)
-    }
-    
-    func deleteImage(baseFileName: String, types: [ImageType]) async throws {
-        for type in types {
-            try await imageStorage.deleteImage(baseFileName: baseFileName, type: type, cloud: cloud)
+    func loadThumbnail(with baseFileName: String) async throws -> UIImage? {
+        let cacheKey = baseFileName + "_thumb" as NSString
+        
+        if let cachedThumbnail = imageCache.object(forKey: cacheKey) {
+            return cachedThumbnail
         }
+        
+        guard let imageData = try await repository.fetchThumbnailData(id: baseFileName) else {
+            return nil
+        }
+        
+        guard let image = UIImage(data: imageData) else {
+            return nil
+        }
+        
+        imageCache.setObject(image, forKey: cacheKey)
+        return image
     }
-    
-    // MARK: - Image cache
     
     func cleanImageCache() async {
-        await imageStorage.cleanCache()
+        print("Clean image cache.")
+        imageCache.removeAllObjects()
     }
     
-    func cleanOrphanedItemImages() async throws {
-        print("DataManager.cleanOrphanedItemImages()")
-        let itemImageBaseNames = try await imageStorage.listImageBaseNames(type: .itemImage, cloud: cloud)
-        let itemThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .itemThumbnail, cloud: cloud)
-        let allBaseNames: Set<String> = itemImageBaseNames.union(itemThumbnailBaseNames)
+    func cleanTemporaryImages() async {
+        print("Clean temporary image files.")
+        let tempFiles = storageManager.listFiles(in: .temporary, subfolders: nil)
+            .filter { $0.pathExtension.lowercased() == "jpg" }
         
-        let usedItemImageIDs = try await repository.fetchAllItemImageIDs()
-        let orphanedItemIDs = allBaseNames.subtracting(usedItemImageIDs)
-        
-        for id in orphanedItemIDs {
-            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail], cloud: cloud)
+        for fileURL in tempFiles {
+            storageManager.deleteFile(named: fileURL.lastPathComponent, in: .temporary, subfolders: nil)
         }
-    }
-    
-    func cleanOrphanedCardImages() async throws {
-        print("DataManager.cleanOrphanedCardImages()")
-        let cardImageBaseNames = try await imageStorage.listImageBaseNames(type: .cardImage, cloud: cloud)
-        let cardThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .cardThumbnail, cloud: cloud)
-        let allBaseNames: Set<String> = cardImageBaseNames.union(cardThumbnailBaseNames)
-        
-        let usedCardImageIDs = try await repository.fetchAllLoyaltyCardImageIDs()
-        let orphanedCardIDs = allBaseNames.subtracting(usedCardImageIDs)
-        
-        for id in orphanedCardIDs {
-            try await imageStorage.deleteImage(baseFileName: id, types: [.cardImage, .cardThumbnail], cloud: cloud)
-        }
+        print("Removed \(tempFiles.count) temporary image files.")
     }
     
     // MARK: - Files
     
-    func saveFile(data: Data, fileName: String) async throws {
-        try await fileStorage.saveFile(data: data, fileName: fileName)
+    func saveFile(fileName: String, from base: StorageLocation, subfolders: [String]? = nil, data: Data) {
+        storageManager.saveData(data, named: fileName, to: base, subfolders: subfolders)
     }
     
-    func readFile(fileName: String) async throws -> Data {
-        return try await fileStorage.readFile(fileName: fileName)
+    func readFile(named fileName: String, from base: StorageLocation, subfolders: [String]? = nil) -> Data? {
+        storageManager.readData(named: fileName, from: base, subfolders: subfolders)
     }
     
-    func deleteFile(fileName: String) async throws {
-        try await fileStorage.deleteFile(fileName: fileName)
+    func deleteFile(named fileName: String, in base: StorageLocation, subfolders: [String]? = nil) {
+        storageManager.deleteFile(named: fileName, in: base, subfolders: subfolders)
     }
     
-    func listFiles() async throws -> [String] {
-        return try await fileStorage.listFiles()
+    func listFiles(in base: StorageLocation, subfolders: [String]?) /*async throws*/ -> [String] {
+        let fileURLs = storageManager.listFiles(in: base, subfolders: subfolders)
+        return fileURLs.map { $0.lastPathComponent }
     }
     
     // MARK: - Refresh cloud data
@@ -303,48 +304,39 @@ class DataManager: DataManagerProtocol {
     // MARK: - Debug
     
 #if DEBUG
-    func printEnvironmentPaths() async {
-        let fileManager = FileManager.default
-        
-        if let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-            print("Documents: \(documents.path)")
-        }
-        
-        if let caches = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
-            print("Caches: \(caches.path)")
-        }
-        
-        if let preferences = fileManager
-            .urls(for: .libraryDirectory, in: .userDomainMask)
-            .first?
-            .appendingPathComponent("Preferences")
-        {
-            print("Preferences: \(preferences.path)")
-        }
-        
-        let tmp = NSTemporaryDirectory()
-        print("tmp: \(tmp)")
-        
-        if let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
-            print("iCloud container: \(ubiquityURL.path)")
-            print("iCloud Documents: \(ubiquityURL.appendingPathComponent("Documents").path)")
-        } else {
-            print("iCloud container is not available.")
-        }
-        
-        let itemImagesFolder = ImageStorage.directoryURL(for: .itemImage, cloud: cloud)
-        let cardImagesFolder = ImageStorage.directoryURL(for: .cardImage, cloud: cloud)
-        print("Item images folder: \(itemImagesFolder?.absoluteString ?? "error")")
-        print("Card images folder: \(cardImagesFolder?.absoluteString ?? "error")")
-    }
-    
-    func printListOfImages() async {
-        let itemImages = try? await imageStorage.listImageBaseNames(type: .itemImage, cloud: cloud)
-        let cardImages = try? await imageStorage.listImageBaseNames(type: .cardImage, cloud: cloud)
-        print("List of item images:")
-        itemImages?.forEach { print(" •", $0) }
-        print("List of card images:")
-        cardImages?.forEach { print(" •", $0) }
-    }
+//    func printEnvironmentPaths() async {
+//        let fileManager = FileManager.default
+//        
+//        if let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+//            print("Documents: \(documents.path)")
+//        }
+//        
+//        if let caches = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+//            print("Caches: \(caches.path)")
+//        }
+//        
+//        if let preferences = fileManager
+//            .urls(for: .libraryDirectory, in: .userDomainMask)
+//            .first?
+//            .appendingPathComponent("Preferences")
+//        {
+//            print("Preferences: \(preferences.path)")
+//        }
+//        
+//        let tmp = NSTemporaryDirectory()
+//        print("tmp: \(tmp)")
+//        
+//        if let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
+//            print("iCloud container: \(ubiquityURL.path)")
+//            print("iCloud Documents: \(ubiquityURL.appendingPathComponent("Documents").path)")
+//        } else {
+//            print("iCloud container is not available.")
+//        }
+//        
+//        let itemImagesFolder = ImageStorage.directoryURL(for: .itemImage, cloud: cloud)
+//        let cardImagesFolder = ImageStorage.directoryURL(for: .cardImage, cloud: cloud)
+//        print("Item images folder: \(itemImagesFolder?.absoluteString ?? "error")")
+//        print("Card images folder: \(cardImagesFolder?.absoluteString ?? "error")")
+//    }
 #endif
 }

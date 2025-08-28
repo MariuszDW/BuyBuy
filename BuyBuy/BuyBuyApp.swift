@@ -16,6 +16,8 @@ struct BuyBuyApp: App {
     init() {
         preferences = AppPreferences()
         
+        AppUpdateManager(preferences: preferences).handleApplicationUpdate()
+        
         let appCoordinator = AppCoordinator(preferences: preferences)
         _coordinator = StateObject(wrappedValue: appCoordinator)
         
