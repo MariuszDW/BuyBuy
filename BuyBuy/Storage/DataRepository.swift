@@ -177,6 +177,26 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
+    func fetchMaxOrderOfItems(inList listID: UUID, status: ShoppingItemStatus) async throws -> Int {
+        let context = coreDataStack.viewContext
+        return try await context.perform {
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            request.predicate = NSPredicate(
+                format: "list.id == %@ AND deletedAt == nil AND status == %@",
+                listID as CVarArg,
+                status.rawValue
+            )
+            request.sortDescriptors = [
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: false),
+                NSSortDescriptor(keyPath: \ShoppingItemEntity.id, ascending: false)
+            ]
+            request.fetchLimit = 1
+
+            let result = try context.fetch(request).first
+            return Int(result?.order ?? 0)
+        }
+    }
+    
     func addOrUpdateItem(_ item: ShoppingItem) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()

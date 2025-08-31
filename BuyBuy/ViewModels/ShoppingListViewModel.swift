@@ -77,12 +77,8 @@ final class ShoppingListViewModel: ObservableObject {
         
         var items = list.items(for: section)
         items.move(fromOffsets: source, toOffset: destination)
-
-        let reorderedItems = items.enumerated().map { index, item -> ShoppingItem in
-            var updatedItem = item
-            updatedItem.order = index
-            return updatedItem
-        }
+        
+        let reorderedItems = reorderItems(items)
 
         for item in reorderedItems {
             try? await dataManager.addOrUpdateItem(item)
@@ -135,19 +131,8 @@ final class ShoppingListViewModel: ObservableObject {
             self.list = currentList
         }
 
-        var newSectionItems = currentList.items(for: status).sorted(by: { $0.order < $1.order })
-        newSectionItems = newSectionItems.enumerated().map { index, item in
-            var mutable = item
-            mutable.order = index
-            return mutable
-        }
-
-        var oldSectionItems = currentList.items(for: oldStatus).sorted(by: { $0.order < $1.order })
-        oldSectionItems = oldSectionItems.enumerated().map { index, item in
-            var mutable = item
-            mutable.order = index
-            return mutable
-        }
+        let newSectionItems = reorderItems(currentList.items(for: status))
+        let oldSectionItems = reorderItems(currentList.items(for: oldStatus))
 
         for item in newSectionItems + oldSectionItems {
             try? await dataManager.addOrUpdateItem(item)
@@ -159,7 +144,7 @@ final class ShoppingListViewModel: ObservableObject {
     func openNewItemDetails(listID: UUID) {
         let newItemStatus: ShoppingItemStatus = .pending
         let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
-        let maxOrder = list?.items(for: newItemStatus).map(\.order).max() ?? 0
+        let maxOrder = list?.items.map(\.order).max() ?? 0
         
         let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: newItemStatus)
         
@@ -217,6 +202,14 @@ final class ShoppingListViewModel: ObservableObject {
             thumbnails[imageID] = image
         } catch {
             print("Failed to load thumbnail for \(imageID): \(error)")
+        }
+    }
+    
+    private func reorderItems(_ items: [ShoppingItem]) -> [ShoppingItem] {
+        return items.enumerated().map { index, item -> ShoppingItem in
+            var updatedItem = item
+            updatedItem.order = index
+            return updatedItem
         }
     }
 }

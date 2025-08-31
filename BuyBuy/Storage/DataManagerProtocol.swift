@@ -40,6 +40,8 @@ protocol DataManagerProtocol {
     func cleanOrphanedItems() async throws
     func fetchAllItemImageIDs() async throws -> Set<String>
     func fetchItemsWithMissingImages() async throws -> [ShoppingItem]
+    func fetchMaxOrderOfItems(inList listID: UUID) async throws -> Int
+    func fetchMaxOrderOfItems(inList listID: UUID, status: ShoppingItemStatus) async throws -> Int
     
     // Loyalty cards
     func fetchLoyaltyCards() async throws -> [LoyaltyCard]

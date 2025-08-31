@@ -123,7 +123,6 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         let baseName = UUID().uuidString
         
         do {
-            // try await self.dataManager.saveImage(image, baseFileName: baseName, types: [.itemImage, .itemThumbnail])
             try await self.dataManager.saveImageToTemporaryDir(image, baseFileName: baseName)
             shoppingItem.imageIDs.append(baseName)
             try await dataManager.addOrUpdateItem(shoppingItem)
@@ -179,6 +178,10 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     func didFinishEditing() async {
         if changesConfirmed {
             finalizeInput()
+            if let listID = shoppingItem.listID,
+               let newOrder = try? await dataManager.fetchMaxOrderOfItems(inList: listID, status: shoppingItem.status) {
+                shoppingItem.order = newOrder + 1
+            }
             try? await dataManager.addOrUpdateItem(shoppingItem)
         } else if isNew == true {
             try? await dataManager.deleteItem(with: shoppingItem.id)

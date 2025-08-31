@@ -186,6 +186,14 @@ class DataManager: DataManagerProtocol {
         return try await repository.fetchItemsWithMissingImages()
     }
     
+    func fetchMaxOrderOfItems(inList listID: UUID) async throws -> Int {
+        return try await repository.fetchMaxOrderOfItems(inList: listID)
+    }
+    
+    func fetchMaxOrderOfItems(inList listID: UUID, status: ShoppingItemStatus) async throws -> Int {
+        return try await repository.fetchMaxOrderOfItems(inList: listID, status: status)
+    }
+    
     // MARK: - Loyalty Cards
     
     func fetchLoyaltyCards() async throws -> [LoyaltyCard] {

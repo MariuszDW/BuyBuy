@@ -74,6 +74,17 @@ actor MockDataRepository: DataRepositoryProtocol {
         let maxOrder = list.items.map { $0.order }.max() ?? 0
         return maxOrder
     }
+    
+    func fetchMaxOrderOfItems(inList listID: UUID, status: ShoppingItemStatus) async throws -> Int {
+        guard let list = shoppingLists.first(where: { $0.id == listID }) else {
+            return 0
+        }
+        let maxOrder = list.items
+            .filter { $0.status == status }
+            .map { $0.order }
+            .max() ?? 0
+        return maxOrder
+    }
 
     func addOrUpdateItem(_ item: ShoppingItem) async throws {}
 
