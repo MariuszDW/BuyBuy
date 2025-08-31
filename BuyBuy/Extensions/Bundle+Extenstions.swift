@@ -8,34 +8,22 @@
 import Foundation
 
 extension Bundle {
-    func appVersion(prefix: String = "", build: Bool = false, suffix: Bool = false, date: Bool = false) -> String {
-        let versionString = infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
-        var resultString = "\(prefix)\(versionString)"
+    func appVersion(build: Bool = false) -> String {
+        var versionString = infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
         
         if build {
             let buildString = infoDictionary?["CFBundleVersion"] as? String ?? "0"
-            resultString += " (\(buildString))"
+            versionString += " (\(buildString))"
         }
         
-        #if DEBUG
-        if suffix {
-            resultString += " DEV"
-        }
-        #endif
-        
-        if date, let releaseDate = releaseDate() {
-            let dateString = releaseDate.localizedString(dateStyle: .medium, timeStyle: .none)
-            resultString += " (\(dateString))"
-        }
-        
-        return resultString
+        return versionString
     }
     
     func appName() -> String {
-        return object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
+        return object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? ""
     }
     
-    func releaseDate() -> Date? {
+    func appReleaseDate() -> Date? {
         guard let releaseDateString = Bundle.main.infoDictionary?["APP_RELEASE_DATE"] as? String else {
             return nil
         }

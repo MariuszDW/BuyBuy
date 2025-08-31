@@ -32,7 +32,12 @@ final class ReportCreator {
         let systemFontSize = dynamicTypeSize.description
         let colorScheme = colorScheme == .dark ? "dark" : "light"
         
-        let appVersion = Bundle.main.appVersion(build: true, suffix: true, date: true)
+        let appName = Bundle.main.appName()
+        let appVersion = Bundle.main.appVersion(build: true)
+        let appReleaseDate: String = {
+            guard let releaseDate = Bundle.main.appReleaseDate() else { return "" }
+            return releaseDate.localizedString(dateStyle: .medium, timeStyle: .none)
+        }()
         let deviceName = device.name
         let systemName = device.systemName
         let systemVersion = device.systemVersion
@@ -53,7 +58,8 @@ final class ReportCreator {
         Color scheme: \(colorScheme)
 
         ---- Technical Info ----
-        Application version: \(appVersion)
+        Application name: \(appName)
+        Application version: \(appVersion) (\(appReleaseDate))
         System version: \(systemName) \(systemVersion)
         Device name: \(deviceName)
         Locale: \(locale)

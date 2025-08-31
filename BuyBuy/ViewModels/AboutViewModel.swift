@@ -47,4 +47,12 @@ final class AboutViewModel: ObservableObject {
     func openTipJar() {
         coordinator?.openTipJar(onDismiss: { _ in })
     }
+    
+    func titleAndVersion() -> String {
+        var titleString: String = Bundle.main.appName() + " " + Bundle.main.appVersion()
+        if let releaseDate = Bundle.main.appReleaseDate() {
+            titleString += " (\(releaseDate.localizedString()))"
+        }
+        return titleString
+    }
 }

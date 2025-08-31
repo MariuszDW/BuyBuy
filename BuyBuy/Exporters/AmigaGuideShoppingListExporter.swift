@@ -18,7 +18,7 @@ struct AmigaGuideShoppingListExporter: ShoppingListExporterProtocol {
 
     func export(shoppingList: ShoppingList) -> Data? {
         let appName = Bundle.main.appName()
-        let appVersion = Bundle.main.appVersion(suffix: true)
+        let appVersion = Bundle.main.appVersion()
         
         var result = ""
 

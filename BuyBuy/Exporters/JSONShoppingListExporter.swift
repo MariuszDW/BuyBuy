@@ -90,7 +90,7 @@ struct JSONShoppingListExporter: ShoppingListExporterProtocol {
 
         let info: ShoppingListData.ExportInfo? = exportInfo ? .init(
             exporter: Bundle.main.appName(),
-            version: Bundle.main.appVersion(suffix: true),
+            version: Bundle.main.appVersion(),
             date: Date().iso8601UTCString()
         ) : nil
 
