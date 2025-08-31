@@ -23,8 +23,8 @@ extension Bundle {
         }
         #endif
         
-        if date {
-            let dateString = Date(timeIntervalSince1970: buildTimestamp).localizedString(dateStyle: .medium, timeStyle: .none)
+        if date, let releaseDate = releaseDate() {
+            let dateString = releaseDate.localizedString(dateStyle: .medium, timeStyle: .none)
             resultString += " (\(dateString))"
         }
         
@@ -33,5 +33,15 @@ extension Bundle {
     
     func appName() -> String {
         return object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
+    }
+    
+    func releaseDate() -> Date? {
+        guard let releaseDateString = Bundle.main.infoDictionary?["APP_RELEASE_DATE"] as? String else {
+            return nil
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.date(from: releaseDateString)
     }
 }
