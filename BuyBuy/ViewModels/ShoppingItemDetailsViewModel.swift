@@ -178,7 +178,8 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     func didFinishEditing() async {
         if changesConfirmed {
             finalizeInput()
-            if let listID = shoppingItem.listID,
+            if isNew == true,
+               let listID = shoppingItem.listID,
                let newOrder = try? await dataManager.fetchMaxOrderOfItems(inList: listID, status: shoppingItem.status) {
                 shoppingItem.order = newOrder + 1
             }
