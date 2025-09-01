@@ -397,8 +397,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             await observer.startObserving(timeout: AppConstants.remoteChangeTimeoutSeconds)
         }
         
-        try? await dataManager.cleanOrphanedItems()
-        try? await dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
+        try? await dataManager.cleanOrphanedShoppingItems()
+        try? await dataManager.deleteOldTrashedShoppingItems(olderThan: AppConstants.autoDeleteAfterDays)
         
         if !preferences.legacyCloudImages && !preferences.legacyDeviceImages {
             await dataManager.cleanTemporaryImages()

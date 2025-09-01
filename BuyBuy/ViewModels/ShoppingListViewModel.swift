@@ -56,19 +56,19 @@ final class ShoppingListViewModel: ObservableObject {
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
-        guard let newList = try? await dataManager.fetchList(with: listID) else { return }
+        guard let newList = try? await dataManager.fetchShoppingList(with: listID) else { return }
         if newList != list {
             list = newList
         }
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async {
-        try? await dataManager.addOrUpdateItem(item)
+        try? await dataManager.addOrUpdateShoppingItem(item)
         await loadList()
     }
     
     func moveItemToDeleted(with id: UUID) async {
-        try? await dataManager.moveItemToDeleted(with: id)
+        try? await dataManager.moveShoppingItemToDeleted(with: id)
         await loadList()
     }
     
@@ -81,7 +81,7 @@ final class ShoppingListViewModel: ObservableObject {
         let reorderedItems = reorderItems(items)
 
         for item in reorderedItems {
-            try? await dataManager.addOrUpdateItem(item)
+            try? await dataManager.addOrUpdateShoppingItem(item)
         }
 
         await loadList()
@@ -95,7 +95,7 @@ final class ShoppingListViewModel: ObservableObject {
         guard let items = list?.items(for: section.status) else { return }
         let idsToDelete = offsets.map { items[$0].id }
         list?.items.removeAll { idsToDelete.contains($0.id) }
-        try? await dataManager.deleteItems(with: idsToDelete)
+        try? await dataManager.deleteShoppingItems(with: idsToDelete)
         await loadList()
     }
     
@@ -135,7 +135,7 @@ final class ShoppingListViewModel: ObservableObject {
         let oldSectionItems = reorderItems(currentList.items(for: oldStatus))
 
         for item in newSectionItems + oldSectionItems {
-            try? await dataManager.addOrUpdateItem(item)
+            try? await dataManager.addOrUpdateShoppingItem(item)
         }
 
         await loadList()
@@ -180,7 +180,7 @@ final class ShoppingListViewModel: ObservableObject {
             .map { $0.id } ?? []
         
         if !purchasedItemIDs.isEmpty {
-            try? await dataManager.moveItemsToDeleted(with: purchasedItemIDs)
+            try? await dataManager.moveShoppingItemsToDeleted(with: purchasedItemIDs)
             await loadList()
         }
     }

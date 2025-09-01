@@ -85,14 +85,14 @@ class AppSettingsViewModel: ObservableObject {
         // TODO: Modify copying mock to database...
         
         for list in MockDataRepository.allLists {
-            try? await dataManager.addOrUpdateList(list)
+            try? await dataManager.addOrUpdateShoppingList(list)
         }
 
         for item in MockDataRepository.deletedItems {
-            try? await dataManager.addOrUpdateItem(item)
+            try? await dataManager.addOrUpdateShoppingItem(item)
         }
 
-        if let itemImageIDs = try? await dataManager.fetchAllItemImageIDs() {
+        if let itemImageIDs = try? await dataManager.fetchShoppingItemImageIDs() {
             for imageID in itemImageIDs {
                 if let image = UIImage(named: imageID) {
                     try? await dataManager.saveImageToTemporaryDir(image, baseFileName: imageID)
@@ -101,18 +101,18 @@ class AppSettingsViewModel: ObservableObject {
         }
         
         for item in MockDataRepository.deletedItems {
-            try? await dataManager.addOrUpdateItem(item)
+            try? await dataManager.addOrUpdateShoppingItem(item)
         }
         
         for list in MockDataRepository.allLists {
-            try? await dataManager.addOrUpdateList(list)
+            try? await dataManager.addOrUpdateShoppingList(list)
         }
         
         for card in MockDataRepository.allCards {
             try? await dataManager.addOrUpdateLoyaltyCard(card)
         }
 
-        if let cardImageIDs = try? await dataManager.fetchAllLoyaltyCardImageIDs() {
+        if let cardImageIDs = try? await dataManager.fetchLoyaltyCardImageIDs() {
             for imageID in cardImageIDs {
                 if let image = UIImage(named: imageID) {
                     try? await dataManager.saveImageToTemporaryDir(image, baseFileName: imageID)

@@ -50,106 +50,106 @@ class DataManager: DataManagerProtocol {
     
     // MARK: - Shopping lists
     
-    func fetchAllLists() async throws -> [ShoppingList] {
-        return try await repository.fetchAllLists()
+    func fetchShoppingLists() async throws -> [ShoppingList] {
+        return try await repository.fetchShoppingLists()
     }
     
-    func fetchList(with id: UUID) async throws -> ShoppingList? {
-        return try await repository.fetchList(with: id)
+    func fetchShoppingList(with id: UUID) async throws -> ShoppingList? {
+        return try await repository.fetchShoppingList(with: id)
     }
     
-    func addOrUpdateList(_ list: ShoppingList) async throws {
-        try await repository.addOrUpdateList(list)
+    func addOrUpdateShoppingList(_ list: ShoppingList) async throws {
+        try await repository.addOrUpdateShoppingList(list)
     }
     
-    func deleteList(with id: UUID, moveItemsToDeleted: Bool) async throws {
-        let items = try await repository.fetchItemsOfList(with: id)
+    func deleteShoppingList(with id: UUID, moveItemsToDeleted: Bool) async throws {
+        let items = try await repository.fetchShoppingItemsOfList(with: id)
         
         if moveItemsToDeleted {
             for var item in items {
                 item.moveToDeleted()
-                try await repository.addOrUpdateItem(item)
+                try await repository.addOrUpdateShoppingItem(item)
             }
         }
         
-        try await repository.deleteList(with: id)
+        try await repository.deleteShoppingList(with: id)
     }
 
-    func deleteLists(with ids: [UUID], moveItemsToDeleted: Bool) async throws {
+    func deleteShoppingLists(with ids: [UUID], moveItemsToDeleted: Bool) async throws {
         for id in ids {
-            let items = try await repository.fetchItemsOfList(with: id)
+            let items = try await repository.fetchShoppingItemsOfList(with: id)
 
             if moveItemsToDeleted {
                 for var item in items {
                     item.moveToDeleted()
-                    try await repository.addOrUpdateItem(item)
+                    try await repository.addOrUpdateShoppingItem(item)
                 }
             }
         }
         
-        try await repository.deleteLists(with: ids)
+        try await repository.deleteShoppingLists(with: ids)
     }
 
-    func deleteAllLists() async throws {
-        try await repository.deleteAllLists()
+    func deleteShoppingLists() async throws {
+        try await repository.deleteShoppingLists()
     }
 
     // MARK: - Shopping items
     
-    func fetchAllItems() async throws -> [ShoppingItem]  {
-        return try await repository.fetchAllItems()
+    func fetchShoppingItems() async throws -> [ShoppingItem]  {
+        return try await repository.fetchShoppingItems()
     }
     
-    func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
-        return try await repository.fetchItemsOfList(with: listID)
+    func fetchShoppingItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
+        return try await repository.fetchShoppingItemsOfList(with: listID)
     }
     
-    func fetchItem(with id: UUID) async throws -> ShoppingItem? {
-        return try await repository.fetchItem(with: id)
+    func fetchShoppingItem(with id: UUID) async throws -> ShoppingItem? {
+        return try await repository.fetchShoppingItem(with: id)
     }
     
-    func fetchDeletedItems() async throws -> [ShoppingItem] {
-        return try await repository.fetchDeletedItems()
+    func fetchDeletedShoppingItems() async throws -> [ShoppingItem] {
+        return try await repository.fetchDeletedShoppingItems()
     }
     
-    func addOrUpdateItem(_ item: ShoppingItem) async throws {
-        try await repository.addOrUpdateItem(item)
+    func addOrUpdateShoppingItem(_ item: ShoppingItem) async throws {
+        try await repository.addOrUpdateShoppingItem(item)
     }
     
-    func moveItemToDeleted(with id: UUID) async throws {
-        guard var item = try await repository.fetchItem(with: id) else {
+    func moveShoppingItemToDeleted(with id: UUID) async throws {
+        guard var item = try await repository.fetchShoppingItem(with: id) else {
             return
         }
         item.moveToDeleted()
-        try await repository.addOrUpdateItem(item)
+        try await repository.addOrUpdateShoppingItem(item)
     }
     
-    func moveItemsToDeleted(with ids: [UUID]) async throws {
-        var items = try await repository.fetchItems(with: ids)
+    func moveShoppingItemsToDeleted(with ids: [UUID]) async throws {
+        var items = try await repository.fetchShoppingItems(with: ids)
         guard !items.isEmpty else { return }
         for i in items.indices {
             items[i].moveToDeleted()
-            try await repository.addOrUpdateItem(items[i])
+            try await repository.addOrUpdateShoppingItem(items[i])
         }
     }
     
-    func restoreItem(with id: UUID, toList listID: UUID) async throws {
-        guard let _ = try await repository.fetchList(with: listID) else {
+    func restoreShoppingItem(with id: UUID, toList listID: UUID) async throws {
+        guard let _ = try await repository.fetchShoppingList(with: listID) else {
             throw NSError(domain: "Repository", code: 404, userInfo: [NSLocalizedDescriptionKey: "List not found"])
         }
-        guard var item = try await repository.fetchItem(with: id) else {
+        guard var item = try await repository.fetchShoppingItem(with: id) else {
             return
         }
-        let maxOrder = try await repository.fetchMaxOrderOfItems(inList: listID)
+        let maxOrder = try await repository.fetchMaxOrderOfShoppingItems(ofList: listID)
         item.moveToShoppingList(with: listID, order: maxOrder + 1)
-        try await repository.addOrUpdateItem(item)
+        try await repository.addOrUpdateShoppingItem(item)
     }
     
-    func deleteOldTrashedItems(olderThan days: Int) async throws {
+    func deleteOldTrashedShoppingItems(olderThan days: Int) async throws {
         print("DataManager.deleteOldTrashedItems(olderThan: \(days))")
         let cutoffDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
         
-        let trashedItems = try await repository.fetchDeletedItems()
+        let trashedItems = try await repository.fetchDeletedShoppingItems()
         let oldItems = trashedItems.filter { item in
             if let deletedAt = item.deletedAt {
                 return deletedAt < cutoffDate
@@ -158,40 +158,40 @@ class DataManager: DataManagerProtocol {
         }
         
         let idsToDelete = oldItems.map { $0.id }
-        try await deleteItems(with: idsToDelete)
+        try await deleteShoppingItems(with: idsToDelete)
     }
     
-    func deleteItem(with id: UUID) async throws {
-        try await repository.deleteItem(with: id)
+    func deleteShoppingItem(with id: UUID) async throws {
+        try await repository.deleteShoppingItem(with: id)
     }
     
-    func deleteItems(with ids: [UUID]) async throws {
-        try await repository.deleteItems(with: ids)
+    func deleteShoppingItems(with ids: [UUID]) async throws {
+        try await repository.deleteShoppingItems(with: ids)
     }
     
-    func deleteAllItems() async throws {
-        try await repository.deleteAllItems()
+    func deleteShoppingItems() async throws {
+        try await repository.deleteShoppingItems()
     }
     
-    func cleanOrphanedItems() async throws {
+    func cleanOrphanedShoppingItems() async throws {
         print("DataManager.cleanOrphanedItems()")
-        try await repository.cleanOrphanedItems()
+        try await repository.cleanOrphanedShoppingItems()
     }
     
-    func fetchAllItemImageIDs() async throws -> Set<String> {
-        return try await repository.fetchAllItemImageIDs()
+    func fetchShoppingItemImageIDs() async throws -> Set<String> {
+        return try await repository.fetchShoppingItemImageIDs()
     }
     
-    func fetchItemsWithMissingImages() async throws -> [ShoppingItem] {
-        return try await repository.fetchItemsWithMissingImages()
+    func fetchShoppingItemsWithMissingImages() async throws -> [ShoppingItem] {
+        return try await repository.fetchShoppingItemsWithMissingImages()
     }
     
-    func fetchMaxOrderOfItems(inList listID: UUID) async throws -> Int {
-        return try await repository.fetchMaxOrderOfItems(inList: listID)
+    func fetchMaxOrderOfShoppingItems(ofList listID: UUID) async throws -> Int {
+        return try await repository.fetchMaxOrderOfShoppingItems(ofList: listID)
     }
     
-    func fetchMaxOrderOfItems(inList listID: UUID, status: ShoppingItemStatus) async throws -> Int {
-        return try await repository.fetchMaxOrderOfItems(inList: listID, status: status)
+    func fetchMaxOrderOfShoppingItems(ofList listID: UUID, status: ShoppingItemStatus) async throws -> Int {
+        return try await repository.fetchMaxOrderOfShoppingItems(ofList: listID, status: status)
     }
     
     // MARK: - Loyalty Cards
@@ -212,12 +212,12 @@ class DataManager: DataManagerProtocol {
         try await repository.deleteLoyaltyCard(with: id)
     }
     
-    func deleteAllLoyaltyCards() async throws {
-        try await repository.deleteAllLoyaltyCards()
+    func deleteLoyaltyCards() async throws {
+        try await repository.deleteLoyaltyCards()
     }
     
-    func fetchAllLoyaltyCardImageIDs() async throws -> Set<String> {
-        return try await repository.fetchAllLoyaltyCardImageIDs()
+    func fetchLoyaltyCardImageIDs() async throws -> Set<String> {
+        return try await repository.fetchLoyaltyCardImageIDs()
     }
     
     func fetchLoyaltyCardsWithMissingImages() async throws -> [LoyaltyCard] {
@@ -297,7 +297,7 @@ class DataManager: DataManagerProtocol {
         storageManager.deleteFile(named: fileName, in: base, subfolders: subfolders)
     }
     
-    func listFiles(in base: StorageLocation, subfolders: [String]?) /*async throws*/ -> [String] {
+    func listFiles(in base: StorageLocation, subfolders: [String]?) -> [String] {
         let fileURLs = storageManager.listFiles(in: base, subfolders: subfolders)
         return fileURLs.map { $0.lastPathComponent }
     }

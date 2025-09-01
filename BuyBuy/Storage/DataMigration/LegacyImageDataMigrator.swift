@@ -59,7 +59,7 @@ final class LegacyImageDataMigrator {
     }
     
     private func migrateCloud() async {
-        let shoppingItems = try? await dataManager.fetchItemsWithMissingImages()
+        let shoppingItems = try? await dataManager.fetchShoppingItemsWithMissingImages()
         let loyaltyCards = try? await dataManager.fetchLoyaltyCardsWithMissingImages()
         
         guard (shoppingItems?.count ?? 0) + (loyaltyCards?.count ?? 0) > 0 else {
@@ -73,7 +73,7 @@ final class LegacyImageDataMigrator {
         let cloudSubfolders = [["card_images"], ["item_images"]]
         await migrateFilesAndItems(from: .cloudDocuments, subfoldersList: cloudSubfolders, timeout: timeout, shoppingItems: shoppingItems, loyaltyCards: loyaltyCards)
         
-        let newShoppingItemsCount = (try? await dataManager.fetchItemsWithMissingImages())?.count ?? 0
+        let newShoppingItemsCount = (try? await dataManager.fetchShoppingItemsWithMissingImages())?.count ?? 0
         let newLoyaltyCardsCount = (try? await dataManager.fetchLoyaltyCardsWithMissingImages())?.count ?? 0
         if newShoppingItemsCount + newLoyaltyCardsCount == 0 {
             preferences.legacyCloudImages = false
@@ -81,7 +81,7 @@ final class LegacyImageDataMigrator {
     }
     
     private func migrateDevice() async {
-        let shoppingItems = try? await dataManager.fetchItemsWithMissingImages()
+        let shoppingItems = try? await dataManager.fetchShoppingItemsWithMissingImages()
         let loyaltyCards = try? await dataManager.fetchLoyaltyCardsWithMissingImages()
         
         guard (shoppingItems?.count ?? 0) + (loyaltyCards?.count ?? 0) > 0 else {
@@ -122,7 +122,7 @@ final class LegacyImageDataMigrator {
         
         if let shoppingItems = shoppingItems {
             for item in shoppingItems {
-                try? await dataManager.addOrUpdateItem(item)
+                try? await dataManager.addOrUpdateShoppingItem(item)
             }
         }
         

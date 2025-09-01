@@ -44,19 +44,19 @@ final class DeletedItemsViewModel: ObservableObject {
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
-        guard let newItems = try? await dataManager.fetchDeletedItems() else { return }
+        guard let newItems = try? await dataManager.fetchDeletedShoppingItems() else { return }
         if newItems != items {
             items = newItems
         }
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async {
-        try? await dataManager.addOrUpdateItem(item)
+        try? await dataManager.addOrUpdateShoppingItem(item)
         await loadItems()
     }
     
     func deleteItem(with id: UUID) async {
-        try? await dataManager.deleteItem(with: id)
+        try? await dataManager.deleteShoppingItem(with: id)
         await loadItems()
     }
     
@@ -64,7 +64,7 @@ final class DeletedItemsViewModel: ObservableObject {
         let itemIDs = items?.map { $0.id } ?? []
         
         if !itemIDs.isEmpty {
-            try? await dataManager.deleteItems(with: itemIDs)
+            try? await dataManager.deleteShoppingItems(with: itemIDs)
             await loadItems()
         }
     }

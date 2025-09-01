@@ -48,7 +48,7 @@ class ShoppingListsViewModel: ObservableObject {
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
-        guard let newShoppingLists = try? await dataManager.fetchAllLists() else { return }
+        guard let newShoppingLists = try? await dataManager.fetchShoppingLists() else { return }
         if shoppingLists != newShoppingLists {
             shoppingLists = newShoppingLists
         }
@@ -57,13 +57,13 @@ class ShoppingListsViewModel: ObservableObject {
     func deleteLists(atOffsets offsets: IndexSet) async {
         let idsToDelete = offsets.map { shoppingLists[$0].id }
         shoppingLists.removeAll { idsToDelete.contains($0.id) }
-        try? await dataManager.deleteLists(with: idsToDelete, moveItemsToDeleted: true)
+        try? await dataManager.deleteShoppingLists(with: idsToDelete, moveItemsToDeleted: true)
         await loadLists()
     }
 
     func deleteList(id: UUID) async {
         shoppingLists.removeAll { $0.id == id }
-        try? await dataManager.deleteList(with: id, moveItemsToDeleted: true)
+        try? await dataManager.deleteShoppingList(with: id, moveItemsToDeleted: true)
         await loadLists()
     }
 
@@ -71,7 +71,7 @@ class ShoppingListsViewModel: ObservableObject {
         shoppingLists.move(fromOffsets: source, toOffset: destination)
         for index in shoppingLists.indices {
             shoppingLists[index].order = index
-            try? await dataManager.addOrUpdateList(shoppingLists[index])
+            try? await dataManager.addOrUpdateShoppingList(shoppingLists[index])
         }
     }
     

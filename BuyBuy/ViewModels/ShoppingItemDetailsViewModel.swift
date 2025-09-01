@@ -125,7 +125,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         do {
             try await self.dataManager.saveImageToTemporaryDir(image, baseFileName: baseName)
             shoppingItem.imageIDs.append(baseName)
-            try await dataManager.addOrUpdateItem(shoppingItem)
+            try await dataManager.addOrUpdateShoppingItem(shoppingItem)
             await loadThumbnails()
         } catch {
             print("Failed to save image: \(error)")
@@ -140,7 +140,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func loadShoppingItem() async {
         print("ShoppingItemDetailsViewModel.loadShoppingItem() called")
-        guard let newShoppingItem = try? await dataManager.fetchItem(with: shoppingItem.id) else { return }
+        guard let newShoppingItem = try? await dataManager.fetchShoppingItem(with: shoppingItem.id) else { return }
         if shoppingItem != newShoppingItem {
             let reloadImages = shoppingItem.imageIDs != newShoppingItem.imageIDs
             shoppingItem = newShoppingItem
@@ -165,7 +165,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func loadShoppingLists() async {
         print("ShoppingItemDetailsViewModel.loadShoppingLists() called")
-        guard let newShoppingLists = try? await dataManager.fetchAllLists() else { return }
+        guard let newShoppingLists = try? await dataManager.fetchShoppingLists() else { return }
         if shoppingLists != newShoppingLists {
             shoppingLists = newShoppingLists
         }
@@ -180,12 +180,12 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
             finalizeInput()
             if isNew == true,
                let listID = shoppingItem.listID,
-               let newOrder = try? await dataManager.fetchMaxOrderOfItems(inList: listID, status: shoppingItem.status) {
+               let newOrder = try? await dataManager.fetchMaxOrderOfShoppingItems(ofList: listID, status: shoppingItem.status) {
                 shoppingItem.order = newOrder + 1
             }
-            try? await dataManager.addOrUpdateItem(shoppingItem)
+            try? await dataManager.addOrUpdateShoppingItem(shoppingItem)
         } else if isNew == true {
-            try? await dataManager.deleteItem(with: shoppingItem.id)
+            try? await dataManager.deleteShoppingItem(with: shoppingItem.id)
         }
         coordinator?.sendEvent(.shoppingItemEdited)
     }

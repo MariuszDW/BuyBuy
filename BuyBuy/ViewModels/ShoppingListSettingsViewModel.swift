@@ -55,16 +55,16 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     func didFinishEditing() async {
         if changesConfirmed {
             finalizeInput()
-            try? await dataManager.addOrUpdateList(shoppingList)
+            try? await dataManager.addOrUpdateShoppingList(shoppingList)
         } else if isNew == true {
-            try? await dataManager.deleteList(with: shoppingList.id, moveItemsToDeleted: false)
+            try? await dataManager.deleteShoppingList(with: shoppingList.id, moveItemsToDeleted: false)
         }
         coordinator.sendEvent(.shoppingListEdited)
     }
     
     private func loadList() async {
         print("ShoppingListSettingsViewModel.loadCard() called")
-        guard let newShoppingList = try? await dataManager.fetchList(with: shoppingList.id) else { return }
+        guard let newShoppingList = try? await dataManager.fetchShoppingList(with: shoppingList.id) else { return }
         if shoppingList != newShoppingList {
             shoppingList = newShoppingList
         }

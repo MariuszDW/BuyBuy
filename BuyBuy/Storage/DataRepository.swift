@@ -21,7 +21,7 @@ actor DataRepository: DataRepositoryProtocol {
     
     // MARK: - Shopping lists
     
-    func fetchAllLists() async throws -> [ShoppingList] {
+    func fetchShoppingLists() async throws -> [ShoppingList] {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
@@ -34,7 +34,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchList(with id: UUID) async throws -> ShoppingList? {
+    func fetchShoppingList(with id: UUID) async throws -> ShoppingList? {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
@@ -43,7 +43,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func addOrUpdateList(_ list: ShoppingList) async throws {
+    func addOrUpdateShoppingList(_ list: ShoppingList) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", list.id as CVarArg)
@@ -57,7 +57,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func deleteList(with id: UUID) async throws {
+    func deleteShoppingList(with id: UUID) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
@@ -68,7 +68,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func deleteLists(with ids: [UUID]) async throws {
+    func deleteShoppingLists(with ids: [UUID]) async throws {
         guard !ids.isEmpty else { return }
         
         try await saveQueue.performSave { context in
@@ -82,7 +82,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func deleteAllLists() async throws {
+    func deleteShoppingLists() async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
             let entities = try context.fetch(request)
@@ -94,7 +94,7 @@ actor DataRepository: DataRepositoryProtocol {
     
     // MARK: - Shopping items
     
-    func fetchAllItems() async throws -> [ShoppingItem] {
+    func fetchShoppingItems() async throws -> [ShoppingItem] {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -107,7 +107,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
+    func fetchShoppingItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -121,7 +121,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchItem(with id: UUID) async throws -> ShoppingItem? {
+    func fetchShoppingItem(with id: UUID) async throws -> ShoppingItem? {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -132,7 +132,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchItems(with ids: [UUID]) async throws -> [ShoppingItem] {
+    func fetchShoppingItems(with ids: [UUID]) async throws -> [ShoppingItem] {
         guard !ids.isEmpty else { return [] }
         
         let context = coreDataStack.viewContext
@@ -144,7 +144,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchDeletedItems() async throws -> [ShoppingItem] {
+    func fetchDeletedShoppingItems() async throws -> [ShoppingItem] {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -161,7 +161,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchMaxOrderOfItems(inList listID: UUID) async throws -> Int {
+    func fetchMaxOrderOfShoppingItems(ofList listID: UUID) async throws -> Int {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -177,7 +177,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchMaxOrderOfItems(inList listID: UUID, status: ShoppingItemStatus) async throws -> Int {
+    func fetchMaxOrderOfShoppingItems(ofList listID: UUID, status: ShoppingItemStatus) async throws -> Int {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -197,7 +197,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func addOrUpdateItem(_ item: ShoppingItem) async throws {
+    func addOrUpdateShoppingItem(_ item: ShoppingItem) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", item.id as CVarArg)
@@ -234,7 +234,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func deleteItem(with id: UUID) async throws {
+    func deleteShoppingItem(with id: UUID) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
@@ -244,7 +244,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func deleteItems(with ids: [UUID]) async throws {
+    func deleteShoppingItems(with ids: [UUID]) async throws {
         guard !ids.isEmpty else { return }
         
         try await saveQueue.performSave { context in
@@ -257,7 +257,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func deleteAllItems() async throws {
+    func deleteShoppingItems() async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
             let entities = try context.fetch(request)
@@ -267,7 +267,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func cleanOrphanedItems() async throws {
+    func cleanOrphanedShoppingItems() async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
             request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
@@ -281,7 +281,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchItemsWithMissingImages() async throws -> [ShoppingItem] {
+    func fetchShoppingItemsWithMissingImages() async throws -> [ShoppingItem] {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -362,7 +362,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func deleteAllLoyaltyCards() async throws {
+    func deleteLoyaltyCards() async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
             let entities = try context.fetch(request)
@@ -427,7 +427,7 @@ actor DataRepository: DataRepositoryProtocol {
         return entity.data
     }
     
-    func fetchAllItemImageIDs() async throws -> Set<String> {
+    func fetchShoppingItemImageIDs() async throws -> Set<String> {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
@@ -442,7 +442,7 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchAllLoyaltyCardImageIDs() async throws -> Set<String> {
+    func fetchLoyaltyCardImageIDs() async throws -> Set<String> {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<LoyaltyCardEntity> = LoyaltyCardEntity.fetchRequest()
