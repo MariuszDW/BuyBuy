@@ -76,29 +76,16 @@ struct ShoppingListSettingsView: View {
                         }
                     }
                 }
-                
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("ok") {
-                        Task {
-                            viewModel.changesConfirmed = true
-                            dismiss()
-                        }
+            }
+            
+            ToolbarItem(placement: .confirmationAction) {
+                Button("ok") {
+                    Task {
+                        viewModel.changesConfirmed = true
+                        dismiss()
                     }
-                    .disabled(!viewModel.canConfirm)
                 }
-            } else {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        Task {
-                            viewModel.changesConfirmed = true
-                            dismiss()
-                        }
-                    } label: {
-                        CircleIconView(systemName: "xmark")
-                            // .accessibilityLabel("Close")
-                    }
-                    .disabled(!viewModel.canConfirm)
-                }
+                .disabled(!viewModel.canConfirm)
             }
         }
     }
