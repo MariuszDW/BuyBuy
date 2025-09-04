@@ -11,7 +11,5 @@ enum AppEvent {
     case shoppingListEdited
     case shoppingItemEdited
     case loyaltyCardEdited
-    case shoppingItemImageChanged
-    case loyaltyCardImageChanged
     case dataStorateChanged
 }

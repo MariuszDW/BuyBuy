@@ -83,7 +83,7 @@ struct ShoppingItemRow: View {
             item.status.checkBoxImage
                 .foregroundColor(state == true ? .bb.selection : .bb.text.quaternary)
                 .font(.regularDynamic(style: .headline))
-                .scaleEffect(1.5)
+                .scaleEffect(1.35)
                 .disabled(state == false)
         }
         .buttonStyle(.plain)

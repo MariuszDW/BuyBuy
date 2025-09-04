@@ -76,29 +76,16 @@ struct ShoppingListSettingsView: View {
                         }
                     }
                 }
-                
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("ok") {
-                        Task {
-                            viewModel.changesConfirmed = true
-                            dismiss()
-                        }
+            }
+            
+            ToolbarItem(placement: .confirmationAction) {
+                Button("ok") {
+                    Task {
+                        viewModel.changesConfirmed = true
+                        dismiss()
                     }
-                    .disabled(!viewModel.canConfirm)
                 }
-            } else {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        Task {
-                            viewModel.changesConfirmed = true
-                            dismiss()
-                        }
-                    } label: {
-                        CircleIconView(systemName: "xmark")
-                            // .accessibilityLabel("Close")
-                    }
-                    .disabled(!viewModel.canConfirm)
-                }
+                .disabled(!viewModel.canConfirm)
             }
         }
     }
@@ -227,8 +214,6 @@ struct ShoppingListSettingsView: View {
 #Preview("Light") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -244,8 +229,6 @@ struct ShoppingListSettingsView: View {
 #Preview("Dark") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

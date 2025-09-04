@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import CloudKit
 
 extension ShoppingItem {
     init(entity: ShoppingItemEntity) {
@@ -60,5 +61,53 @@ extension ShoppingItemEntity {
         self.unit = model.unit?.symbol
         self.imageIDs = model.imageIDs
         self.deletedAt = model.deletedAt
+        
+        lazy var storageManager = StorageManager()
+        
+        var updatedImages = Set<BBImageEntity>()
+        var updatedThumbnails = Set<BBThumbnailEntity>()
+        
+        for imageID in model.imageIDs {
+            guard let uuid = UUID(uuidString: imageID) else { continue }
+            
+            let imageEntity = imageEntity(for: uuid) ?? BBImageEntity(context: context)
+            if imageEntity.id == nil {
+                imageEntity.id = uuid
+            }
+            if imageEntity.data == nil,
+               let imageURL = storageManager.existingFileURL(for: .temporary, fileName: imageID + ".jpg"),
+               let imageData = try? Data(contentsOf: imageURL) {
+                imageEntity.data = imageData
+            }
+            imageEntity.shoppingItem = self
+            updatedImages.insert(imageEntity)
+            
+            let thumbnailEntity = thumbnailEntity(for: uuid) ?? BBThumbnailEntity(context: context)
+            if thumbnailEntity.id == nil {
+                thumbnailEntity.id = uuid
+            }
+            if thumbnailEntity.data == nil,
+               let thumbURL = storageManager.existingFileURL(for: .temporary, fileName: imageID + "_thumb.jpg"),
+               let thumbData = try? Data(contentsOf: thumbURL) {
+                thumbnailEntity.data = thumbData
+            }
+            thumbnailEntity.shoppingItem = self
+            updatedThumbnails.insert(thumbnailEntity)
+        }
+        
+        self.images = updatedImages.isEmpty ? nil : updatedImages as NSSet
+        self.thumbnails = updatedThumbnails.isEmpty ? nil : updatedThumbnails as NSSet
+    }
+    
+    // MARK: - Helpers
+    
+    private func imageEntity(for id: UUID) -> BBImageEntity? {
+        guard let images = images as? Set<BBImageEntity> else { return nil }
+        return images.first { $0.id == id }
+    }
+    
+    private func thumbnailEntity(for id: UUID) -> BBThumbnailEntity? {
+        guard let thumbnails = thumbnails as? Set<BBThumbnailEntity> else { return nil }
+        return thumbnails.first { $0.id == id }
     }
 }

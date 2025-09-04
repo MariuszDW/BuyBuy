@@ -69,7 +69,7 @@ struct AboutView: View {
     
     func infoContext(isPortrait: Bool) -> some View {
         VStack() {
-            Text(Bundle.main.appVersion(prefix: String(localized: "version") + " ", date: true))
+            Text(viewModel.titleAndVersion())
                 .font(.regularMonospaced(style: .subheadline))
                 .foregroundColor(.bb.text.primary)
                 .multilineTextAlignment(.center)

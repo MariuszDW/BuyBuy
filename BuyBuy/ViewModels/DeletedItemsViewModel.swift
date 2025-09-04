@@ -15,7 +15,7 @@ final class DeletedItemsViewModel: ObservableObject {
     private weak var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver { [weak self] in
+        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
             guard let self = self else { return }
             await self.loadItems()
         }
@@ -44,19 +44,19 @@ final class DeletedItemsViewModel: ObservableObject {
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
-        guard let newItems = try? await dataManager.fetchDeletedItems() else { return }
+        guard let newItems = try? await dataManager.fetchDeletedShoppingItems() else { return }
         if newItems != items {
             items = newItems
         }
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async {
-        try? await dataManager.addOrUpdateItem(item)
+        try? await dataManager.addOrUpdateShoppingItem(item)
         await loadItems()
     }
     
     func deleteItem(with id: UUID) async {
-        try? await dataManager.deleteItem(with: id)
+        try? await dataManager.deleteShoppingItem(with: id)
         await loadItems()
     }
     
@@ -64,7 +64,7 @@ final class DeletedItemsViewModel: ObservableObject {
         let itemIDs = items?.map { $0.id } ?? []
         
         if !itemIDs.isEmpty {
-            try? await dataManager.deleteItems(with: itemIDs)
+            try? await dataManager.deleteShoppingItems(with: itemIDs)
             await loadItems()
         }
     }
@@ -94,7 +94,7 @@ final class DeletedItemsViewModel: ObservableObject {
     private func loadThumbnail(for imageID: String) async {
         guard thumbnails[imageID] == nil else { return }
         do {
-            let image = try await dataManager.loadImage(baseFileName: imageID, type: .itemThumbnail)
+            let image = try await dataManager.loadThumbnail(with: imageID)
             thumbnails[imageID] = image
         } catch {
             print("Failed to load thumbnail for \(imageID): \(error)")

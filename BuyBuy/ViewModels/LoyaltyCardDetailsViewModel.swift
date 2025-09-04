@@ -22,7 +22,7 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     private var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver { [weak self] in
+        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
             guard let self = self else { return }
             await self.loadCard()
         }
@@ -57,7 +57,7 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
             let reloadImage = loyaltyCard.imageID != newLoyaltyCard.imageID
             loyaltyCard = newLoyaltyCard
             if reloadImage {
-                await loadCardImage()
+                try? await loadCardImage()
             }
         }
     }
@@ -89,9 +89,10 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
         let baseName = UUID().uuidString
         
         do {
-            try await self.dataManager.saveImage(image, baseFileName: baseName, types: [.cardImage, .cardThumbnail])
+            try await self.dataManager.saveImageToTemporaryDir(image, baseFileName: baseName)
             loyaltyCard.imageID = baseName
-            await loadCardImage()
+            try await dataManager.addOrUpdateLoyaltyCard(loyaltyCard)
+            try await loadCardImage()
         } catch {
             print("Failed to save image: \(error)")
         }
@@ -100,14 +101,19 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     func deleteCardImage() async {
         if loyaltyCard.imageID != nil {
             loyaltyCard.imageID = nil
-            await loadCardImage()
+            try? await dataManager.addOrUpdateLoyaltyCard(loyaltyCard)
+            try? await loadCardImage()
         }
     }
     
-    func loadCardImage() async {
+    func loadCardImage() async throws {
         if let imageID = loyaltyCard.imageID {
             loadingProgress = true
-            cardImage = try? await dataManager.loadImage(baseFileName: imageID, type: .cardImage)
+            do {
+                cardImage = try await dataManager.loadImage(with: imageID)
+            } catch {
+                cardImage = nil
+            }
         } else {
             cardImage = nil
         }

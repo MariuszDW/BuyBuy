@@ -14,6 +14,7 @@ protocol AppPreferencesProtocol {
     var lastCleanupDate: Date? { get set }
     var isCloudSyncEnabled: Bool { get set }
     var isHapticsEnabled: Bool { get set }
+    var lastAppVersion: String { get set }
     var unitSystems: [MeasureUnitSystem] { get }
     
     // User activity tracker
@@ -26,4 +27,7 @@ protocol AppPreferencesProtocol {
     
     var lastTipDate: Date? { get set }
     var lastTipJarShownDate: Date? { get set }
+    
+    var legacyCloudImages: Bool { get set }
+    var legacyDeviceImages: Bool { get set }
 }

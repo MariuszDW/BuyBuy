@@ -11,7 +11,6 @@ import Combine
 
 @MainActor
 final class ShoppingItemDetailsViewModel: ObservableObject {
-    /// The shopping item being edited.
     @Published var shoppingItem: ShoppingItem
     @Published var thumbnails: [UIImage?] = []
     @Published var selectedImageID: String?
@@ -38,7 +37,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     private var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver { [weak self] in
+        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
             guard let self = self else { return }
             await self.loadShoppingItem()
             await self.loadShoppingLists()
@@ -124,9 +123,9 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         let baseName = UUID().uuidString
         
         do {
-            try await self.dataManager.saveImage(image, baseFileName: baseName, types: [.itemImage, .itemThumbnail])
-            
+            try await self.dataManager.saveImageToTemporaryDir(image, baseFileName: baseName)
             shoppingItem.imageIDs.append(baseName)
+            try await dataManager.addOrUpdateShoppingItem(shoppingItem)
             await loadThumbnails()
         } catch {
             print("Failed to save image: \(error)")
@@ -141,7 +140,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func loadShoppingItem() async {
         print("ShoppingItemDetailsViewModel.loadShoppingItem() called")
-        guard let newShoppingItem = try? await dataManager.fetchItem(with: shoppingItem.id) else { return }
+        guard let newShoppingItem = try? await dataManager.fetchShoppingItem(with: shoppingItem.id) else { return }
         if shoppingItem != newShoppingItem {
             let reloadImages = shoppingItem.imageIDs != newShoppingItem.imageIDs
             shoppingItem = newShoppingItem
@@ -155,7 +154,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         print("ShoppingItemDetailsViewModel.loadThumbnails() called")
         var newThumbnails: [UIImage?] = []
         for id in shoppingItem.imageIDs {
-            if let image = try? await dataManager.loadImage(baseFileName: id, type: .itemThumbnail) {
+            if let image = try? await dataManager.loadThumbnail(with: id) {
                 newThumbnails.append(image)
             } else {
                 newThumbnails.append(nil)
@@ -166,7 +165,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     
     func loadShoppingLists() async {
         print("ShoppingItemDetailsViewModel.loadShoppingLists() called")
-        guard let newShoppingLists = try? await dataManager.fetchAllLists() else { return }
+        guard let newShoppingLists = try? await dataManager.fetchShoppingLists() else { return }
         if shoppingLists != newShoppingLists {
             shoppingLists = newShoppingLists
         }
@@ -179,9 +178,14 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     func didFinishEditing() async {
         if changesConfirmed {
             finalizeInput()
-            try? await dataManager.addOrUpdateItem(shoppingItem)
+            if isNew == true,
+               let listID = shoppingItem.listID,
+               let newOrder = try? await dataManager.fetchMaxOrderOfShoppingItems(ofList: listID, status: shoppingItem.status) {
+                shoppingItem.order = newOrder + 1
+            }
+            try? await dataManager.addOrUpdateShoppingItem(shoppingItem)
         } else if isNew == true {
-            try? await dataManager.deleteItem(with: shoppingItem.id)
+            try? await dataManager.deleteShoppingItem(with: shoppingItem.id)
         }
         coordinator?.sendEvent(.shoppingItemEdited)
     }

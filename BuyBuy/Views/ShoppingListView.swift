@@ -56,7 +56,7 @@ struct ShoppingListView: View {
         .navigationBarTitleDisplayMode(.large)
         .onReceive(viewModel.eventPublisher) { event in
             switch event {
-            case .shoppingItemImageChanged, .shoppingItemEdited:
+            case .shoppingItemEdited:
                 Task { await viewModel.loadList() }
             default: break
             }
@@ -88,8 +88,10 @@ struct ShoppingListView: View {
         List {
             ForEach(viewModel.sections, id: \.status) { section in
                 let items = list.items(for: section.status)
-                Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
-                    shoppingItems(items, of: section)
+                if !items.isEmpty {
+                    Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
+                        shoppingItems(items, of: section)
+                    }
                 }
             }
         }
@@ -192,7 +194,6 @@ struct ShoppingListView: View {
                     } label: {
                         CircleIconView(systemName: "creditcard.fill")
                     }
-                    // .accessibilityLabel("Loyalty cards")
                 }
                 
                 if isEditMode.isEditing {
@@ -201,7 +202,6 @@ struct ShoppingListView: View {
                             isEditMode = .inactive
                         }
                     }
-                    // .accessibilityLabel("Done Editing")
                 }
                 
                 if !isEditMode.isEditing {
@@ -232,7 +232,6 @@ struct ShoppingListView: View {
                         CircleIconView(systemName: "ellipsis")
                     }
                     .disabled(viewModel.list?.items.isEmpty ?? true)
-                    // .accessibilityLabel("More options")
                 }
             }
         }
@@ -349,6 +348,7 @@ struct ShoppingListView: View {
         }
         .padding(.trailing, 8)
         .fixedSize(horizontal: false, vertical: true)
+        .layoutPriority(1)
     }
     
     // MARK: - Private
@@ -372,8 +372,6 @@ struct ShoppingListView: View {
 #Preview("Light/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -391,8 +389,6 @@ struct ShoppingListView: View {
 #Preview("Dark/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -410,8 +406,6 @@ struct ShoppingListView: View {
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -429,8 +423,6 @@ struct ShoppingListView: View {
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

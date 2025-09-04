@@ -373,7 +373,7 @@ struct ShoppingListsView: View {
     private func startBasketAnimation() {
         animationTimer?.invalidate()
         animationTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { _ in
-            let now = Date().timeIntervalSinceReferenceDate
+            let now = Date.now.timeIntervalSinceReferenceDate
             let newAngle = sin(now * 3) * 16
             DispatchQueue.main.async {
                 basketAngle = newAngle
@@ -403,8 +403,6 @@ struct ShoppingListsView: View {
 #Preview("Light/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
@@ -425,8 +423,6 @@ struct ShoppingListsView: View {
 #Preview("Dark/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
@@ -447,8 +443,6 @@ struct ShoppingListsView: View {
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
@@ -469,8 +463,6 @@ struct ShoppingListsView: View {
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()

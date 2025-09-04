@@ -35,7 +35,7 @@ struct DocumentExporterView: UIViewControllerRepresentable {
         init(data: Data, fileName: String, fileExtension: String) {
             let sanitizedFileName = fileName.replacingOccurrences(of: "[^a-zA-Z0-9_-]", with: "_", options: .regularExpression)
             let fileURL = FileManager.default.temporaryDirectory
-                .appendingPathComponent(sanitizedFileName)
+                .appending(path: sanitizedFileName, directoryHint: .notDirectory)
                 .appendingPathExtension(fileExtension)
 
             do {

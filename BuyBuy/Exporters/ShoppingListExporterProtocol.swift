@@ -23,10 +23,10 @@ extension ShoppingListExporterProtocol {
     static func exportInfoText() -> String {
         let appName = Bundle.main.appName()
         let appVersion = Bundle.main.appVersion()
-        let dateString = Date().localizedString(dateStyle: .short,
-                                                timeStyle: .medium,
-                                                locale: .current,
-                                                timeZone: TimeZone(identifier: "UTC")!) + " UTC"
+        let dateString = Date.now.localizedString(dateStyle: .short,
+                                                  timeStyle: .medium,
+                                                  locale: .current,
+                                                  timeZone: TimeZone(identifier: "UTC")!) + " UTC"
         return String(format: String(localized: "generated_by"), appName, appVersion, dateString)
     }
 }

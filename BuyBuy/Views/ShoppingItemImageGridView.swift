@@ -149,21 +149,21 @@ struct ShoppingItemImageGridView: View {
 
 @MainActor
 final class ShoppingItemImageGridViewMocks {
-    static let mockImage1 = MockImageStorage.generateMockImage(
+    static let mockImage1 = UIImage.generateMockImage(
         text: "TEST IMAGE 1",
         size: CGSize(width: 100, height: 100),
         backgroundColor: UIColor.yellow,
         textColor: UIColor.gray
     )
     
-    static let mockImage2 = MockImageStorage.generateMockImage(
+    static let mockImage2 = UIImage.generateMockImage(
         text: "TEST IMAGE 2",
         size: CGSize(width: 100, height: 100),
         backgroundColor: UIColor.green,
         textColor: UIColor.black
     )
     
-    static let mockImage3 = MockImageStorage.generateMockImage(
+    static let mockImage3 = UIImage.generateMockImage(
         text: "TEST IMAGE 3",
         size: CGSize(width: 100, height: 100),
         backgroundColor: UIColor.red,

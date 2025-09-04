@@ -27,7 +27,7 @@ final class HomeViewModelTests: XCTestCase {
         let mockRepository = TestMockDataManager()
 
         let addItemExp = expectation(description: "addItemExp")
-        mockRepository.addOrUpdateItemHandler = { item in
+        mockRepository.addOrUpdateShoppingItemHandler = { item in
             XCTAssertEqual(item.id, testItemID)
             XCTAssertEqual(item.listID, testListID)
             XCTAssertEqual(item.name, "Milk")
@@ -38,7 +38,7 @@ final class HomeViewModelTests: XCTestCase {
         }
         
         let fetchListExp = expectation(description: "fetchListExp")
-        mockRepository.fetchListHandler = { listID in
+        mockRepository.fetchShoppingListHandler = { listID in
             XCTAssertEqual(listID, testListID)
             fetchListExp.fulfill()
         }

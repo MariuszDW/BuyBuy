@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-enum SlideDirection {
-    case left, right
-}
-
 struct FullScreenImageView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: FullScreenImageViewModel
@@ -32,16 +28,9 @@ struct FullScreenImageView: View {
                     .padding(.top, geometry.safeAreaInsets.top + 4)
                     .padding(.trailing, geometry.safeAreaInsets.trailing + 8)
             }
-            .gesture(dragGesture(width: geometry.size.width))
             .ignoresSafeArea()
             .background(Color.black.ignoresSafeArea())
-        }
-        .onReceive(viewModel.coordinator.eventPublisher) { event in
-            if case .loyaltyCardImageChanged = event, viewModel.imageType == .cardImage {
-                Task { await viewModel.reloadCurrentImageIfNeeded() }
-            } else if case .shoppingItemImageChanged = event, viewModel.imageType == .itemImage {
-                Task { await viewModel.reloadCurrentImageIfNeeded() }
-            }
+            .simultaneousGesture(dragGesture(width: geometry.size.width))
         }
     }
 
@@ -166,13 +155,10 @@ struct FullScreenImageView: View {
 #Preview("Light") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
-                                             imageType: .itemImage,
                                              dataManager: dataManager,
                                              coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
@@ -182,13 +168,10 @@ struct FullScreenImageView: View {
 #Preview("Dark") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [UUID().uuidString],
-                                             imageType: .itemImage,
                                              dataManager: dataManager,
                                              coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
@@ -198,13 +181,10 @@ struct FullScreenImageView: View {
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [],
-                                             imageType: .itemImage,
                                              dataManager: dataManager,
                                              coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)
@@ -214,13 +194,10 @@ struct FullScreenImageView: View {
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
     let viewModel = FullScreenImageViewModel(imageIDs: [],
-                                             imageType: .itemImage,
                                              dataManager: dataManager,
                                              coordinator: coordinator)
     FullScreenImageView(viewModel: viewModel)

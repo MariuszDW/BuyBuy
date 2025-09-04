@@ -15,7 +15,7 @@ final class ShoppingListViewModel: ObservableObject {
     private var coordinator: (any AppCoordinatorProtocol)?
     
     lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver { [weak self] in
+        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
             guard let self = self else { return }
             await self.loadList()
         }
@@ -56,19 +56,19 @@ final class ShoppingListViewModel: ObservableObject {
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
-        guard let newList = try? await dataManager.fetchList(with: listID) else { return }
+        guard let newList = try? await dataManager.fetchShoppingList(with: listID) else { return }
         if newList != list {
             list = newList
         }
     }
     
     func addOrUpdateItem(_ item: ShoppingItem) async {
-        try? await dataManager.addOrUpdateItem(item)
+        try? await dataManager.addOrUpdateShoppingItem(item)
         await loadList()
     }
     
     func moveItemToDeleted(with id: UUID) async {
-        try? await dataManager.moveItemToDeleted(with: id)
+        try? await dataManager.moveShoppingItemToDeleted(with: id)
         await loadList()
     }
     
@@ -77,15 +77,11 @@ final class ShoppingListViewModel: ObservableObject {
         
         var items = list.items(for: section)
         items.move(fromOffsets: source, toOffset: destination)
-
-        let reorderedItems = items.enumerated().map { index, item -> ShoppingItem in
-            var updatedItem = item
-            updatedItem.order = index
-            return updatedItem
-        }
+        
+        let reorderedItems = reorderItems(items)
 
         for item in reorderedItems {
-            try? await dataManager.addOrUpdateItem(item)
+            try? await dataManager.addOrUpdateShoppingItem(item)
         }
 
         await loadList()
@@ -99,7 +95,7 @@ final class ShoppingListViewModel: ObservableObject {
         guard let items = list?.items(for: section.status) else { return }
         let idsToDelete = offsets.map { items[$0].id }
         list?.items.removeAll { idsToDelete.contains($0.id) }
-        try? await dataManager.deleteItems(with: idsToDelete)
+        try? await dataManager.deleteShoppingItems(with: idsToDelete)
         await loadList()
     }
     
@@ -135,22 +131,11 @@ final class ShoppingListViewModel: ObservableObject {
             self.list = currentList
         }
 
-        var newSectionItems = currentList.items(for: status).sorted(by: { $0.order < $1.order })
-        newSectionItems = newSectionItems.enumerated().map { index, item in
-            var mutable = item
-            mutable.order = index
-            return mutable
-        }
-
-        var oldSectionItems = currentList.items(for: oldStatus).sorted(by: { $0.order < $1.order })
-        oldSectionItems = oldSectionItems.enumerated().map { index, item in
-            var mutable = item
-            mutable.order = index
-            return mutable
-        }
+        let newSectionItems = reorderItems(currentList.items(for: status))
+        let oldSectionItems = reorderItems(currentList.items(for: oldStatus))
 
         for item in newSectionItems + oldSectionItems {
-            try? await dataManager.addOrUpdateItem(item)
+            try? await dataManager.addOrUpdateShoppingItem(item)
         }
 
         await loadList()
@@ -159,7 +144,7 @@ final class ShoppingListViewModel: ObservableObject {
     func openNewItemDetails(listID: UUID) {
         let newItemStatus: ShoppingItemStatus = .pending
         let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
-        let maxOrder = list?.items(for: newItemStatus).map(\.order).max() ?? 0
+        let maxOrder = list?.items.map(\.order).max() ?? 0
         
         let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: newItemStatus)
         
@@ -195,7 +180,7 @@ final class ShoppingListViewModel: ObservableObject {
             .map { $0.id } ?? []
         
         if !purchasedItemIDs.isEmpty {
-            try? await dataManager.moveItemsToDeleted(with: purchasedItemIDs)
+            try? await dataManager.moveShoppingItemsToDeleted(with: purchasedItemIDs)
             await loadList()
         }
     }
@@ -213,10 +198,18 @@ final class ShoppingListViewModel: ObservableObject {
     private func loadThumbnail(for imageID: String) async {
         guard thumbnails[imageID] == nil else { return }
         do {
-            let image = try await dataManager.loadImage(baseFileName: imageID, type: .itemThumbnail)
+            let image = try await dataManager.loadThumbnail(with: imageID)
             thumbnails[imageID] = image
         } catch {
             print("Failed to load thumbnail for \(imageID): \(error)")
+        }
+    }
+    
+    private func reorderItems(_ items: [ShoppingItem]) -> [ShoppingItem] {
+        return items.enumerated().map { index, item -> ShoppingItem in
+            var updatedItem = item
+            updatedItem.order = index
+            return updatedItem
         }
     }
 }

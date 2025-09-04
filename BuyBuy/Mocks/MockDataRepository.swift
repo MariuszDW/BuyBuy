@@ -8,8 +8,6 @@
 import Foundation
 
 actor MockDataRepository: DataRepositoryProtocol {
-    nonisolated func fetchRemoteChangesFromCloudKit() {}
-    
     let shoppingLists: [ShoppingList]
     let loyaltyCards: [LoyaltyCard]
     let deletedItems: [ShoppingItem]
@@ -22,43 +20,35 @@ actor MockDataRepository: DataRepositoryProtocol {
         self.deletedItems = deletedItems
     }
 
-    // MARK: - Lists
+    // MARK: - Shopping lists
 
-    func fetchAllLists() async throws -> [ShoppingList] {
+    func fetchShoppingLists() async throws -> [ShoppingList] {
         return shoppingLists
     }
 
-    func fetchList(with id: UUID) async throws -> ShoppingList? {
+    func fetchShoppingList(with id: UUID) async throws -> ShoppingList? {
         return shoppingLists.first(where: { $0.id == id })
     }
     
-    func fetchMaxOrderOfItems(inList listID: UUID) async throws -> Int {
-        guard let list = shoppingLists.first(where: { $0.id == listID }) else {
-            return 0
-        }
-        let maxOrder = list.items.map { $0.order }.max() ?? 0
-        return maxOrder
-    }
-
-    func addOrUpdateList(_ list: ShoppingList) async throws {}
-
-    func deleteList(with id: UUID) async throws {}
-
-    func deleteLists(with ids: [UUID]) async throws {}
+    func addOrUpdateShoppingList(_ list: ShoppingList) async throws {}
     
-    func deleteAllLists() async throws {}
+    func deleteShoppingList(with id: UUID) async throws {}
 
-    // MARK: - Items
+    func deleteShoppingLists(with ids: [UUID]) async throws {}
+    
+    func deleteShoppingLists() async throws {}
+    
+    // MARK: - Shopping items
 
-    func fetchAllItems() async throws -> [ShoppingItem] {
+    func fetchShoppingItems() async throws -> [ShoppingItem] {
         return shoppingLists.flatMap { $0.items }
     }
 
-    func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
+    func fetchShoppingItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
         return shoppingLists.first(where: { $0.id == listID })?.items ?? []
     }
 
-    func fetchItem(with id: UUID) async throws -> ShoppingItem? {
+    func fetchShoppingItem(with id: UUID) async throws -> ShoppingItem? {
         for list in shoppingLists {
             if let item = list.items.first(where: { $0.id == id }) {
                 return item
@@ -67,33 +57,50 @@ actor MockDataRepository: DataRepositoryProtocol {
         return nil
     }
 
-    func fetchItems(with ids: [UUID]) async throws -> [ShoppingItem] {
+    func fetchShoppingItems(with ids: [UUID]) async throws -> [ShoppingItem] {
         return shoppingLists
             .flatMap { $0.items }
             .filter { ids.contains($0.id) }
     }
     
-    func fetchDeletedItems() async throws -> [ShoppingItem] {
+    func fetchDeletedShoppingItems() async throws -> [ShoppingItem] {
         return deletedItems
     }
-
-    func addOrUpdateItem(_ item: ShoppingItem) async throws {}
-
-    func deleteItem(with id: UUID) async throws {}
-
-    func deleteItems(with ids: [UUID]) async throws {}
     
-    func deleteAllItems() async throws {}
+    func fetchMaxOrderOfShoppingItems(ofList listID: UUID) async throws -> Int {
+        guard let list = shoppingLists.first(where: { $0.id == listID }) else {
+            return 0
+        }
+        let maxOrder = list.items.map { $0.order }.max() ?? 0
+        return maxOrder
+    }
     
-    func cleanOrphanedItems() async throws {}
-
-    // MARK: - Item images
-
-    func fetchAllItemImageIDs() async throws -> Set<String> {
-        return Set<String>()
+    func fetchMaxOrderOfShoppingItems(ofList listID: UUID, status: ShoppingItemStatus) async throws -> Int {
+        guard let list = shoppingLists.first(where: { $0.id == listID }) else {
+            return 0
+        }
+        let maxOrder = list.items
+            .filter { $0.status == status }
+            .map { $0.order }
+            .max() ?? 0
+        return maxOrder
     }
 
-    // MARK: - Loyalty Cards
+    func addOrUpdateShoppingItem(_ item: ShoppingItem) async throws {}
+
+    func deleteShoppingItem(with id: UUID) async throws {}
+
+    func deleteShoppingItems(with ids: [UUID]) async throws {}
+    
+    func deleteShoppingItems() async throws {}
+    
+    func cleanOrphanedShoppingItems() async throws {}
+    
+    func fetchShoppingItemsWithMissingImages() async throws -> [ShoppingItem] {
+        return []
+    }
+
+    // MARK: - Loyalty cards
 
     func fetchLoyaltyCards() async throws -> [LoyaltyCard] {
         return loyaltyCards
@@ -107,13 +114,33 @@ actor MockDataRepository: DataRepositoryProtocol {
 
     func deleteLoyaltyCard(with id: UUID) async throws {}
     
-    func deleteAllLoyaltyCards() async throws {}
+    func deleteLoyaltyCards() async throws {}
+    
+    func fetchLoyaltyCardsWithMissingImages() async throws -> [LoyaltyCard] {
+        return []
+    }
+    
+    // MARK: - Images
+    
+    func fetchImageData(id: String) async throws -> Data? {
+        return nil
+    }
+        
+    func fetchThumbnailData(id: String) async throws -> Data? {
+        return nil
+    }
 
-    // MARK: - Loyalty card images
-
-    func fetchAllLoyaltyCardImageIDs() async throws -> Set<String> {
+    func fetchShoppingItemImageIDs() async throws -> Set<String> {
         return Set<String>()
     }
+
+    func fetchLoyaltyCardImageIDs() async throws -> Set<String> {
+        return Set<String>()
+    }
+    
+    // MARK: - CloudKit
+    
+    nonisolated func fetchRemoteChangesFromCloudKit() {}
 }
 
 // MARK: Mock shopping lists

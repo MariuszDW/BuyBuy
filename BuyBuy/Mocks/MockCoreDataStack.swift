@@ -11,7 +11,11 @@ import CoreData
 final class MockCoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
     let viewContext: NSManagedObjectContext
     private let mockPersistentStoreCoordinator: NSPersistentStoreCoordinator
-
+    
+    private(set) lazy var saveQueue = SaveQueue(newContext: { [unowned self] in
+        self.newBackgroundContext()
+    })
+    
     init() {
         let managedObjectModel = NSManagedObjectModel()
         mockPersistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)

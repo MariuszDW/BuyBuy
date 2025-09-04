@@ -54,7 +54,7 @@ struct DeletedItemsView: View {
         .navigationBarTitleDisplayMode(.large)
         .onReceive(viewModel.eventPublisher) { event in
             switch event {
-            case .shoppingItemImageChanged, .shoppingItemEdited:
+            case .shoppingItemEdited:
                 Task { await viewModel.loadItems() }
             default: break
             }
@@ -141,7 +141,6 @@ struct DeletedItemsView: View {
                     CircleIconView(systemName: "ellipsis")
                 }
                 .disabled(viewModel.items == nil)
-                // .accessibilityLabel("More options")
             }
         }
     }
@@ -173,8 +172,6 @@ struct DeletedItemsView: View {
 #Preview("Light/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -191,8 +188,6 @@ struct DeletedItemsView: View {
 #Preview("Dark/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -209,8 +204,6 @@ struct DeletedItemsView: View {
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(deletedItems: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -227,8 +220,6 @@ struct DeletedItemsView: View {
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(deletedItems: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

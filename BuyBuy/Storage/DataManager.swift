@@ -8,27 +8,34 @@
 import Foundation
 import SwiftUI
 
+enum DataError: Error {
+    case jpegConversionFailed
+}
+
 @MainActor
 class DataManager: DataManagerProtocol {
-    private var cloud: Bool
-    private var coreDataStack: CoreDataStackProtocol
-    var imageStorage: ImageStorageProtocol
-    private var fileStorage: FileStorageProtocol
+    private(set) var cloud: Bool
+    private(set) var coreDataStack: CoreDataStackProtocol
+    private(set) var storageManager: StorageManagerProtocol
     private var repository: DataRepositoryProtocol
+    private var imageCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 100
+        cache.totalCostLimit = 50 * 1024 * 1024 // 50 MB
+        return cache
+    }()
 
     init(useCloud: Bool) {
         self.cloud = useCloud
         self.coreDataStack = CoreDataStack(useCloudSync: useCloud)
-        self.imageStorage = ImageStorage(useCloudSync: useCloud)
-        self.fileStorage = FileStorage()
+        self.storageManager = StorageManager()
         self.repository = DataRepository(coreDataStack: coreDataStack)
     }
     
-    init(useCloud: Bool, coreDataStack: CoreDataStackProtocol, imageStorage: ImageStorageProtocol, fileStorage: FileStorageProtocol, repository: DataRepositoryProtocol) {
+    init(useCloud: Bool, coreDataStack: CoreDataStackProtocol, repository: DataRepositoryProtocol) {
         self.cloud = useCloud
         self.coreDataStack = coreDataStack
-        self.imageStorage = imageStorage
-        self.fileStorage = fileStorage
+        self.storageManager = StorageManager()
         self.repository = repository
     }
     
@@ -36,117 +43,113 @@ class DataManager: DataManagerProtocol {
         guard self.cloud != useCloud else { return }
         cloud = useCloud
         coreDataStack = CoreDataStack(useCloudSync: useCloud)
-        imageStorage = ImageStorage(useCloudSync: useCloud)
-        fileStorage = FileStorage()
+        self.storageManager = StorageManager()
         repository = DataRepository(coreDataStack: coreDataStack)
-        if useCloud {
-            try? await imageStorage.forceDownloadImages(type: .itemImage, onlyHiddenFiles: true)
-            try? await imageStorage.forceDownloadImages(type: .cardImage, onlyHiddenFiles: true)
-        }
+        imageCache.removeAllObjects()
     }
     
     // MARK: - Shopping lists
     
-    func fetchAllLists() async throws -> [ShoppingList] {
-        return try await repository.fetchAllLists()
+    func fetchShoppingLists() async throws -> [ShoppingList] {
+        return try await repository.fetchShoppingLists()
     }
     
-    func fetchList(with id: UUID) async throws -> ShoppingList? {
-        return try await repository.fetchList(with: id)
+    func fetchShoppingList(with id: UUID) async throws -> ShoppingList? {
+        return try await repository.fetchShoppingList(with: id)
     }
     
-    func addOrUpdateList(_ list: ShoppingList) async throws {
-        try await repository.addOrUpdateList(list)
+    func addOrUpdateShoppingList(_ list: ShoppingList) async throws {
+        try await repository.addOrUpdateShoppingList(list)
     }
     
-    func deleteList(with id: UUID, moveItemsToDeleted: Bool) async throws {
-        let items = try await repository.fetchItemsOfList(with: id)
+    func deleteShoppingList(with id: UUID, moveItemsToDeleted: Bool) async throws {
+        let items = try await repository.fetchShoppingItemsOfList(with: id)
         
         if moveItemsToDeleted {
             for var item in items {
                 item.moveToDeleted()
-                try await repository.addOrUpdateItem(item)
+                try await repository.addOrUpdateShoppingItem(item)
             }
         }
         
-        try await repository.deleteList(with: id)
+        try await repository.deleteShoppingList(with: id)
     }
 
-    func deleteLists(with ids: [UUID], moveItemsToDeleted: Bool) async throws {
+    func deleteShoppingLists(with ids: [UUID], moveItemsToDeleted: Bool) async throws {
         for id in ids {
-            let items = try await repository.fetchItemsOfList(with: id)
+            let items = try await repository.fetchShoppingItemsOfList(with: id)
 
             if moveItemsToDeleted {
                 for var item in items {
                     item.moveToDeleted()
-                    try await repository.addOrUpdateItem(item)
+                    try await repository.addOrUpdateShoppingItem(item)
                 }
             }
         }
         
-        try await repository.deleteLists(with: ids)
+        try await repository.deleteShoppingLists(with: ids)
     }
 
-    func deleteAllLists() async throws {
-        try await repository.deleteAllLists()
+    func deleteShoppingLists() async throws {
+        try await repository.deleteShoppingLists()
     }
 
     // MARK: - Shopping items
     
-    func fetchAllItems() async throws -> [ShoppingItem]  {
-        return try await repository.fetchAllItems()
+    func fetchShoppingItems() async throws -> [ShoppingItem]  {
+        return try await repository.fetchShoppingItems()
     }
     
-    func fetchItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
-        return try await repository.fetchItemsOfList(with: listID)
+    func fetchShoppingItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
+        return try await repository.fetchShoppingItemsOfList(with: listID)
     }
     
-    func fetchItem(with id: UUID) async throws -> ShoppingItem? {
-        return try await repository.fetchItem(with: id)
+    func fetchShoppingItem(with id: UUID) async throws -> ShoppingItem? {
+        return try await repository.fetchShoppingItem(with: id)
     }
     
-    func fetchDeletedItems() async throws -> [ShoppingItem] {
-        return try await repository.fetchDeletedItems()
+    func fetchDeletedShoppingItems() async throws -> [ShoppingItem] {
+        return try await repository.fetchDeletedShoppingItems()
     }
     
-    func addOrUpdateItem(_ item: ShoppingItem) async throws {
-        try await repository.addOrUpdateItem(item)
+    func addOrUpdateShoppingItem(_ item: ShoppingItem) async throws {
+        try await repository.addOrUpdateShoppingItem(item)
     }
     
-    func moveItemToDeleted(with id: UUID) async throws {
-        guard var item = try await repository.fetchItem(with: id) else {
+    func moveShoppingItemToDeleted(with id: UUID) async throws {
+        guard var item = try await repository.fetchShoppingItem(with: id) else {
             return
         }
         item.moveToDeleted()
-        try await repository.addOrUpdateItem(item)
+        try await repository.addOrUpdateShoppingItem(item)
     }
     
-    func moveItemsToDeleted(with ids: [UUID]) async throws {
-        var items = try await repository.fetchItems(with: ids)
+    func moveShoppingItemsToDeleted(with ids: [UUID]) async throws {
+        var items = try await repository.fetchShoppingItems(with: ids)
         guard !items.isEmpty else { return }
         for i in items.indices {
             items[i].moveToDeleted()
-            try await repository.addOrUpdateItem(items[i])
+            try await repository.addOrUpdateShoppingItem(items[i])
         }
     }
     
-    func restoreItem(with id: UUID, toList listID: UUID) async throws {
-        guard let _ = try await repository.fetchList(with: listID) else {
+    func restoreShoppingItem(with id: UUID, toList listID: UUID) async throws {
+        guard let _ = try await repository.fetchShoppingList(with: listID) else {
             throw NSError(domain: "Repository", code: 404, userInfo: [NSLocalizedDescriptionKey: "List not found"])
         }
-        guard var item = try await repository.fetchItem(with: id) else {
+        guard var item = try await repository.fetchShoppingItem(with: id) else {
             return
         }
-        let maxOrder = try await repository.fetchMaxOrderOfItems(inList: listID)
+        let maxOrder = try await repository.fetchMaxOrderOfShoppingItems(ofList: listID)
         item.moveToShoppingList(with: listID, order: maxOrder + 1)
-        try await repository.addOrUpdateItem(item)
+        try await repository.addOrUpdateShoppingItem(item)
     }
     
-    func deleteOldTrashedItems(olderThan days: Int) async throws {
+    func deleteOldTrashedShoppingItems(olderThan days: Int) async throws {
         print("DataManager.deleteOldTrashedItems(olderThan: \(days))")
         let cutoffDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
         
-        let trashedItems = try await repository.fetchDeletedItems()
+        let trashedItems = try await repository.fetchDeletedShoppingItems()
         let oldItems = trashedItems.filter { item in
             if let deletedAt = item.deletedAt {
                 return deletedAt < cutoffDate
@@ -155,28 +158,40 @@ class DataManager: DataManagerProtocol {
         }
         
         let idsToDelete = oldItems.map { $0.id }
-        try await deleteItems(with: idsToDelete)
+        try await deleteShoppingItems(with: idsToDelete)
     }
     
-    func deleteItem(with id: UUID) async throws {
-        try await repository.deleteItem(with: id)
+    func deleteShoppingItem(with id: UUID) async throws {
+        try await repository.deleteShoppingItem(with: id)
     }
     
-    func deleteItems(with ids: [UUID]) async throws {
-        try await repository.deleteItems(with: ids)
+    func deleteShoppingItems(with ids: [UUID]) async throws {
+        try await repository.deleteShoppingItems(with: ids)
     }
     
-    func deleteAllItems() async throws {
-        try await repository.deleteAllItems()
+    func deleteShoppingItems() async throws {
+        try await repository.deleteShoppingItems()
     }
     
-    func cleanOrphanedItems() async throws {
+    func cleanOrphanedShoppingItems() async throws {
         print("DataManager.cleanOrphanedItems()")
-        try await repository.cleanOrphanedItems()
+        try await repository.cleanOrphanedShoppingItems()
     }
     
-    func fetchAllItemImageIDs() async throws -> Set<String> {
-        return try await repository.fetchAllItemImageIDs()
+    func fetchShoppingItemImageIDs() async throws -> Set<String> {
+        return try await repository.fetchShoppingItemImageIDs()
+    }
+    
+    func fetchShoppingItemsWithMissingImages() async throws -> [ShoppingItem] {
+        return try await repository.fetchShoppingItemsWithMissingImages()
+    }
+    
+    func fetchMaxOrderOfShoppingItems(ofList listID: UUID) async throws -> Int {
+        return try await repository.fetchMaxOrderOfShoppingItems(ofList: listID)
+    }
+    
+    func fetchMaxOrderOfShoppingItems(ofList listID: UUID, status: ShoppingItemStatus) async throws -> Int {
+        return try await repository.fetchMaxOrderOfShoppingItems(ofList: listID, status: status)
     }
     
     // MARK: - Loyalty Cards
@@ -197,90 +212,94 @@ class DataManager: DataManagerProtocol {
         try await repository.deleteLoyaltyCard(with: id)
     }
     
-    func deleteAllLoyaltyCards() async throws {
-        try await repository.deleteAllLoyaltyCards()
+    func deleteLoyaltyCards() async throws {
+        try await repository.deleteLoyaltyCards()
     }
     
-    func fetchAllLoyaltyCardImageIDs() async throws -> Set<String> {
-        return try await repository.fetchAllLoyaltyCardImageIDs()
+    func fetchLoyaltyCardImageIDs() async throws -> Set<String> {
+        return try await repository.fetchLoyaltyCardImageIDs()
+    }
+    
+    func fetchLoyaltyCardsWithMissingImages() async throws -> [LoyaltyCard] {
+        return try await repository.fetchLoyaltyCardsWithMissingImages()
     }
     
     // MARK: - Images
     
-    func saveImage(_ image: UIImage, baseFileName: String, type: ImageType) async throws {
-        try await imageStorage.saveImage(image, baseFileName: baseFileName, type: type)
-    }
-    
-    func saveImage(_ image: UIImage, baseFileName: String, types: [ImageType]) async throws {
-        for type in types {
-            try await imageStorage.saveImage(image, baseFileName: baseFileName, type: type)
+    func saveImageToTemporaryDir(_ image: UIImage, baseFileName: String) async throws {
+        let thumbnail: UIImage = await image.createThumbnail() ?? UIImage()
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            throw DataError.jpegConversionFailed
         }
-    }
-    
-    func loadImage(baseFileName: String, type: ImageType) async throws -> UIImage? {
-        return try await imageStorage.loadImage(baseFileName: baseFileName, type: type)
-    }
-    
-    func deleteImage(baseFileName: String, type: ImageType) async throws {
-        try await imageStorage.deleteImage(baseFileName: baseFileName, type: type)
-    }
-    
-    func deleteImage(baseFileName: String, types: [ImageType]) async throws {
-        for type in types {
-            try await imageStorage.deleteImage(baseFileName: baseFileName, type: type)
+        guard let thumbnailData = thumbnail.jpegData(compressionQuality: 0.7) else {
+            throw DataError.jpegConversionFailed
         }
+        
+        let storageManager = StorageManager()
+        
+        storageManager.saveData(imageData, named: baseFileName + ".jpg", to: .temporary)
+        storageManager.saveData(thumbnailData, named: baseFileName + "_thumb.jpg", to: .temporary)
     }
     
-    // MARK: - Image cache
+    func loadImage(with baseFileName: String) async throws -> UIImage? {
+        guard let imageData = try await repository.fetchImageData(id: baseFileName) else {
+            return nil
+        }
+        return UIImage(data: imageData)
+    }
+    
+    func loadThumbnail(with baseFileName: String) async throws -> UIImage? {
+        let cacheKey = baseFileName + "_thumb" as NSString
+        
+        if let cachedThumbnail = imageCache.object(forKey: cacheKey) {
+            return cachedThumbnail
+        }
+        
+        guard let imageData = try await repository.fetchThumbnailData(id: baseFileName) else {
+            return nil
+        }
+        
+        guard let image = UIImage(data: imageData) else {
+            return nil
+        }
+        
+        imageCache.setObject(image, forKey: cacheKey)
+        return image
+    }
     
     func cleanImageCache() async {
-        await imageStorage.cleanCache()
+        print("Clean image cache.")
+        imageCache.removeAllObjects()
     }
     
-    func cleanOrphanedItemImages() async throws {
-        print("DataManager.cleanOrphanedItemImages()")
-        let itemImageBaseNames = try await imageStorage.listImageBaseNames(type: .itemImage)
-        let itemThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .itemThumbnail)
-        let allBaseNames: Set<String> = itemImageBaseNames.union(itemThumbnailBaseNames)
+    func cleanTemporaryImages() async {
+        print("Clean temporary image files.")
+        let tempFiles = storageManager.listFiles(in: .temporary, subfolders: nil)
+            .filter { $0.pathExtension.lowercased() == "jpg" }
         
-        let usedItemImageIDs = try await repository.fetchAllItemImageIDs()
-        let orphanedItemIDs = allBaseNames.subtracting(usedItemImageIDs)
-        
-        for id in orphanedItemIDs {
-            try await imageStorage.deleteImage(baseFileName: id, types: [.itemImage, .itemThumbnail])
+        for fileURL in tempFiles {
+            storageManager.deleteFile(named: fileURL.lastPathComponent, in: .temporary, subfolders: nil)
         }
-    }
-    
-    func cleanOrphanedCardImages() async throws {
-        print("DataManager.cleanOrphanedCardImages()")
-        let cardImageBaseNames = try await imageStorage.listImageBaseNames(type: .cardImage)
-        let cardThumbnailBaseNames = try await imageStorage.listImageBaseNames(type: .cardThumbnail)
-        let allBaseNames: Set<String> = cardImageBaseNames.union(cardThumbnailBaseNames)
-        
-        let usedCardImageIDs = try await repository.fetchAllLoyaltyCardImageIDs()
-        let orphanedCardIDs = allBaseNames.subtracting(usedCardImageIDs)
-        
-        for id in orphanedCardIDs {
-            try await imageStorage.deleteImage(baseFileName: id, types: [.cardImage, .cardThumbnail])
-        }
+        print("Removed \(tempFiles.count) temporary image files.")
     }
     
     // MARK: - Files
     
-    func saveFile(data: Data, fileName: String) async throws {
-        try await fileStorage.saveFile(data: data, fileName: fileName)
+    func saveFile(fileName: String, from base: StorageLocation, subfolders: [String]? = nil, data: Data) {
+        storageManager.saveData(data, named: fileName, to: base, subfolders: subfolders)
     }
     
-    func readFile(fileName: String) async throws -> Data {
-        return try await fileStorage.readFile(fileName: fileName)
+    func readFile(named fileName: String, from base: StorageLocation, subfolders: [String]? = nil) -> Data? {
+        storageManager.readData(named: fileName, from: base, subfolders: subfolders)
     }
     
-    func deleteFile(fileName: String) async throws {
-        try await fileStorage.deleteFile(fileName: fileName)
+    func deleteFile(named fileName: String, in base: StorageLocation, subfolders: [String]? = nil) {
+        storageManager.deleteFile(named: fileName, in: base, subfolders: subfolders)
     }
     
-    func listFiles() async throws -> [String] {
-        return try await fileStorage.listFiles()
+    func listFiles(in base: StorageLocation, subfolders: [String]?) -> [String] {
+        let fileURLs = storageManager.listFiles(in: base, subfolders: subfolders)
+        return fileURLs.map { $0.lastPathComponent }
     }
     
     // MARK: - Refresh cloud data
@@ -288,55 +307,44 @@ class DataManager: DataManagerProtocol {
     func refreshAllCloudData() async {
         guard cloud == true else { return }
         repository.fetchRemoteChangesFromCloudKit()
-        try? await imageStorage.forceDownloadImages(type: .itemImage, onlyHiddenFiles: false)
-        try? await imageStorage.forceDownloadImages(type: .cardImage, onlyHiddenFiles: false)
     }
     
     // MARK: - Debug
     
 #if DEBUG
-    func printEnvironmentPaths() async {
-        let fileManager = FileManager.default
-        
-        if let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-            print("Documents: \(documents.path)")
-        }
-        
-        if let caches = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
-            print("Caches: \(caches.path)")
-        }
-        
-        if let preferences = fileManager
-            .urls(for: .libraryDirectory, in: .userDomainMask)
-            .first?
-            .appendingPathComponent("Preferences")
-        {
-            print("Preferences: \(preferences.path)")
-        }
-        
-        let tmp = NSTemporaryDirectory()
-        print("tmp: \(tmp)")
-        
-        if let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
-            print("iCloud container: \(ubiquityURL.path)")
-            print("iCloud Documents: \(ubiquityURL.appendingPathComponent("Documents").path)")
-        } else {
-            print("iCloud container is not available.")
-        }
-        
-        let itemImagesFolder = await imageStorage.directoryURL(for: .itemImage)
-        let cardImagesFolder = await imageStorage.directoryURL(for: .cardImage)
-        print("Item images folder: \(itemImagesFolder?.absoluteString ?? "error")")
-        print("Card images folder: \(cardImagesFolder?.absoluteString ?? "error")")
-    }
-    
-    func printListOfImages() async {
-        let itemImages = try? await imageStorage.listImageBaseNames(type: .itemImage)
-        let cardImages = try? await imageStorage.listImageBaseNames(type: .cardImage)
-        print("List of item images:")
-        itemImages?.forEach { print(" •", $0) }
-        print("List of card images:")
-        cardImages?.forEach { print(" •", $0) }
-    }
+//    func printEnvironmentPaths() async {
+//        let fileManager = FileManager.default
+//        
+//        if let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+//            print("Documents: \(documents.path)")
+//        }
+//        
+//        if let caches = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+//            print("Caches: \(caches.path)")
+//        }
+//        
+//        if let preferences = fileManager
+//            .urls(for: .libraryDirectory, in: .userDomainMask)
+//            .first?
+//            .appendingPathComponent("Preferences")
+//        {
+//            print("Preferences: \(preferences.path)")
+//        }
+//        
+//        let tmp = NSTemporaryDirectory()
+//        print("tmp: \(tmp)")
+//        
+//        if let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) {
+//            print("iCloud container: \(ubiquityURL.path)")
+//            print("iCloud Documents: \(ubiquityURL.appendingPathComponent("Documents").path)")
+//        } else {
+//            print("iCloud container is not available.")
+//        }
+//        
+//        let itemImagesFolder = ImageStorage.directoryURL(for: .itemImage, cloud: cloud)
+//        let cardImagesFolder = ImageStorage.directoryURL(for: .cardImage, cloud: cloud)
+//        print("Item images folder: \(itemImagesFolder?.absoluteString ?? "error")")
+//        print("Card images folder: \(cardImagesFolder?.absoluteString ?? "error")")
+//    }
 #endif
 }

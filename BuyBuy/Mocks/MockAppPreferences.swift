@@ -22,6 +22,10 @@ final class MockAppPreferences: AppPreferencesProtocol {
     var isStartupCleaningAllowed: Bool = true
     var isCloudSyncEnabled: Bool = false
     var isHapticsEnabled: Bool = true
+    var lastAppVersion: String = "1.0.0"
+    
+    var legacyCloudImages: Bool = false
+    var legacyDeviceImages: Bool = false
     
     var unitSystems: [MeasureUnitSystem] {
         MeasureUnitSystem.allCases.filter {

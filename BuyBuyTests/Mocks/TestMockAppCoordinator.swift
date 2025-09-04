@@ -7,9 +7,22 @@
 
 import Foundation
 import Combine
+import StoreKit
 @testable import BuyBuy
 
 final class TestMockAppCoordinator: AppCoordinatorProtocol {
+    func setupDataManager(useCloud: Bool, completion: @escaping () -> Void) async {
+    }
+    
+    func openDeletedItems() {
+    }
+    
+    func openTipJar(onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
+    }
+    
+    func showThankYou(for transaction: Transaction, onDismiss: ((BuyBuy.SheetRoute) -> Void)?) {
+    }
+    
     var openShoppingListBlock: ((UUID) -> Void)?
     var backBlock: (() -> Void)?
     

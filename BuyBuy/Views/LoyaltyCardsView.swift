@@ -68,8 +68,6 @@ struct LoyaltyCardsView: View {
         }
         .onReceive(viewModel.eventPublisher) { event in
             switch event {
-            case .loyaltyCardImageChanged:
-                Task { await viewModel.loadThumbnails() }
             case .loyaltyCardEdited:
                 Task { await viewModel.loadCards() }
             default: break
@@ -93,7 +91,6 @@ struct LoyaltyCardsView: View {
                             showingListView = false
                         }
                     }
-                    // .accessibilityLabel("Done Editing")
                 }
                 
                 if !isEditMode.isEditing && !viewModel.cards.isEmpty {
@@ -105,7 +102,6 @@ struct LoyaltyCardsView: View {
                     } label: {
                         Label("edit_list", systemImage: "pencil.circle")
                     }
-                    // .accessibilityLabel("Edit")
                 }
             }
         }
@@ -250,7 +246,7 @@ struct LoyaltyCardsView: View {
                     hapticEngine.playItemDeleted()
                     showActionsForCardAtIndex = nil
                     Task { @MainActor in
-                        try? await Task.sleep(for: .microseconds(500))
+                        try? await Task.sleep(for: .milliseconds(300))
                         cardPendingDeletion = viewModel.cards[index]
                     }
                 }
@@ -280,8 +276,6 @@ struct LoyaltyCardsView: View {
 #Preview("Light/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -300,8 +294,6 @@ struct LoyaltyCardsView: View {
 #Preview("Dark/items") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -320,8 +312,6 @@ struct LoyaltyCardsView: View {
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: [], cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -340,8 +330,6 @@ struct LoyaltyCardsView: View {
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
                                   coreDataStack: MockCoreDataStack(),
-                                  imageStorage: MockImageStorage(),
-                                  fileStorage: MockFileStorage(),
                                   repository: MockDataRepository(lists: [], cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

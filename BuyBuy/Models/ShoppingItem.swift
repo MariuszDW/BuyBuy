@@ -58,7 +58,7 @@ struct ShoppingItem: Identifiable, Hashable {
     
     mutating func moveToDeleted() {
         listID = nil
-        deletedAt = Date()
+        deletedAt = Date.now
         order = 0
     }
     

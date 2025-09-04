@@ -19,7 +19,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     private let dataManager: DataManager
     private let hapticEngine: HapticEngine
     private var appInitialized = false
-    private var folderPresenters: [DirectoryFilePresenter] = []
     
     private let eventSubject = PassthroughSubject<AppEvent, Never>()
     var eventPublisher: AnyPublisher<AppEvent, Never> {
@@ -28,7 +27,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         
     init(preferences: AppPreferencesProtocol) {
         self.preferences = preferences
-        self.dataManager = DataManager(useCloud: preferences.isCloudSyncEnabled)
+        self.dataManager = DataManager(useCloud: preferences.isCloudSyncEnabled) // TODO: tutaj wywoluje sie policy
         self.hapticEngine = HapticEngine(isEnabled: preferences.isHapticsEnabled)
         self.userActivityTracker = UserActivityTracker(preferences: preferences)
     }
@@ -39,33 +38,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     
     func setupDataManager(useCloud: Bool, completion: @escaping () -> Void = {}) async {
         await dataManager.setup(useCloud: useCloud)
-        
-        for presenter in folderPresenters {
-            NSFileCoordinator.removeFilePresenter(presenter)
-        }
-        folderPresenters.removeAll()
-        
-        if useCloud {
-            if let itemImagesURL = await dataManager.imageStorage.directoryURL(for: .itemImage) {
-                let presenter = DirectoryFilePresenter(directoryURL: itemImagesURL) {
-                    Task { @MainActor in
-                        self.sendEvent(.shoppingItemImageChanged)
-                    }
-                }
-                folderPresenters.append(presenter)
-                NSFileCoordinator.addFilePresenter(presenter)
-            }
-            
-            if let itemImagesURL = await dataManager.imageStorage.directoryURL(for: .cardImage) {
-                let presenter = DirectoryFilePresenter(directoryURL: itemImagesURL) {
-                    Task { @MainActor in
-                        self.sendEvent(.loyaltyCardImageChanged)
-                    }
-                }
-                folderPresenters.append(presenter)
-                NSFileCoordinator.addFilePresenter(presenter)
-            }
-        }
         
         if preferences.isCloudSyncEnabled != useCloud {
             preferences.isCloudSyncEnabled = useCloud
@@ -78,8 +50,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         
 #if DEBUG
         // TODO: temporary, think about better place
-        await dataManager.printEnvironmentPaths()
-        await dataManager.printListOfImages()
+//        await dataManager.printEnvironmentPaths()
 #endif
     }
     
@@ -272,7 +243,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: FullScreenImageViewModel(
                     imageIDs: imageIDs,
                     startIndex: index,
-                    imageType: .itemImage,
                     dataManager: self.dataManager,
                     coordinator: self
                 )
@@ -287,7 +257,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: FullScreenImageViewModel(
                     imageIDs: imageIDs,
                     startIndex: 0,
-                    imageType: .cardImage,
                     dataManager: self.dataManager,
                     coordinator: self
                 )
@@ -374,12 +343,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     // MARK: - App scene phases
     
     func onAppStart() async {
-        await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
         if preferences.installationDate == nil {
             openInitAppSetup()
         }
+        await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
         startTransactionListener()
         appInitialized = true
+        
+        LegacyImageDataMigrator.runIfNeeded(dataManager: dataManager, preferences: preferences)
     }
     
     func onAppForeground() async {
@@ -400,14 +371,13 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         
         userActivityTracker.updateTipReminder()
 
-        let now = Date()
+        let now = Date.now
 
         if let lastCleanupDate = preferences.lastCleanupDate {
             let secondsSince = now.timeIntervalSince(lastCleanupDate)
             let minutesSince = secondsSince / 60
             print("Last cleanup was: \(secondsSince.formattedDuration) ago (\(lastCleanupDate)).")
             if minutesSince > AppConstants.cleanupIntervalMinutes {
-                print("Performing cleanup tasks.")
                 Task(priority: .background) {
                     await cleanupNotNeededData()
                 }
@@ -421,23 +391,17 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     private func cleanupNotNeededData() async {
+        print("Performing cleanup tasks.")
         if preferences.isCloudSyncEnabled {
-            let success = await RemoteChangeObserver().waitForRemoteChange(timeout: AppConstants.remoteChangeTimeoutSeconds)
-            if success {
-                try? await Task.sleep(for: .seconds(4))
-            } else {
-                print("Timeout – no remote change received, skipping cleanup.")
-                return
-            }
+            let observer = PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack, onChange: {})
+            await observer.startObserving(timeout: AppConstants.remoteChangeTimeoutSeconds)
         }
-
-        do {
-            try await dataManager.cleanOrphanedItems()
-            try await dataManager.deleteOldTrashedItems(olderThan: AppConstants.autoDeleteAfterDays)
-            try await dataManager.cleanOrphanedItemImages()
-            try await dataManager.cleanOrphanedCardImages()
-        } catch {
-            print("Error during unnecessary data cleaning: \(error.localizedDescription)")
+        
+        try? await dataManager.cleanOrphanedShoppingItems()
+        try? await dataManager.deleteOldTrashedShoppingItems(olderThan: AppConstants.autoDeleteAfterDays)
+        
+        if !preferences.legacyCloudImages && !preferences.legacyDeviceImages {
+            await dataManager.cleanTemporaryImages()
         }
     }
     

@@ -21,12 +21,12 @@ final class ShoppingListSelectorViewModel: ObservableObject {
     }
     
     func loadLists() async {
-        let fetchedLists = try? await dataManager.fetchAllLists()
+        let fetchedLists = try? await dataManager.fetchShoppingLists()
         shoppingLists = fetchedLists ?? []
     }
     
     func moveDeletedItem(itemID: UUID, toListID: UUID) async {
-        try? await dataManager.restoreItem(with: itemID, toList: toListID)
+        try? await dataManager.restoreShoppingItem(with: itemID, toList: toListID)
         coordinator?.sendEvent(.shoppingItemEdited)
     }
 }

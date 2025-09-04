@@ -46,7 +46,7 @@ class AppInitialSetupViewModel: ObservableObject {
                     }
                 }
                 
-                preferences.installationDate = Date()
+                preferences.installationDate = Date.now
                 let strongSelf = self
                 await coordinator?.setupDataManager(useCloud: isCloudSelected) {
                     strongSelf.showProgressIndicator = false
@@ -54,7 +54,7 @@ class AppInitialSetupViewModel: ObservableObject {
                 }
             }
         } else {
-            preferences.installationDate = Date()
+            preferences.installationDate = Date.now
             canDismiss = true
         }
     }

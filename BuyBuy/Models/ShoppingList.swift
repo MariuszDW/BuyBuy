@@ -41,9 +41,19 @@ struct ShoppingList: Identifiable, Hashable {
     }
     
     func items(for status: ShoppingItemStatus) -> [ShoppingItem] {
-        items
+        let sortedItems = items
             .filter { $0.status == status }
-            .sorted { $0.order < $1.order }
+            .sorted {
+                if $0.order == $1.order {
+                    return $0.id.uuidString < $1.id.uuidString
+                }
+                return $0.order < $1.order
+            }
+        
+//        print("aaaa: ------")
+//        sortedItems.forEach { print("aaaa: \($0.name), \($0.status), \($0.order)") }
+        
+        return sortedItems
     }
     
     func item(with id: UUID) -> ShoppingItem? {
