@@ -309,9 +309,9 @@ class DataManager: DataManagerProtocol {
         repository.fetchRemoteChangesFromCloudKit()
     }
     
-    // MARK: - Debug
+    // MARK: - BUYBUY_DEV
     
-#if DEBUG
+#if BUYBUY_DEV
 //    func printEnvironmentPaths() async {
 //        let fileManager = FileManager.default
 //        

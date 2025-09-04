@@ -80,7 +80,7 @@ class AppSettingsViewModel: ObservableObject {
         coordinator?.openTipJar(onDismiss: {_ in })
     }
     
-#if DEBUG
+#if BUYBUY_DEV
     func copyMockToData() async {
         // TODO: Modify copying mock to database...
         

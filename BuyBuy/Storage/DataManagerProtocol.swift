@@ -68,8 +68,8 @@ protocol DataManagerProtocol {
     // Refresh cloud data
     func refreshAllCloudData() async
     
-    // Debug
-#if DEBUG
+    // BUYBUY_DEV
+#if BUYBUY_DEV
 //    func printEnvironmentPaths() async
 #endif
 }

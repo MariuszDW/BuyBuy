@@ -27,13 +27,24 @@
 		34742D0A2DD4B2DB00296094 /* BuyBuy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BuyBuy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		34742D1C2DD4B2E000296094 /* BuyBuyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BuyBuyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		34742D262DD4B2E000296094 /* BuyBuyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BuyBuyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		347F28442E69B8E100018068 /* BuyBuy Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BuyBuy Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		347F28452E69B8E100018068 /* Exceptions for "BuyBuy" folder in "BuyBuy Dev" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Info-Dev.plist",
+				Info.plist,
+			);
+			target = 347F283C2E69B8E100018068 /* BuyBuy Dev */;
+		};
 		34D130912E030A69006BABBB /* Exceptions for "BuyBuy" folder in "BuyBuy" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				"Info-Dev.plist",
 				Info.plist,
+				Resources/DebugAssets.xcassets,
 			);
 			target = 34742D092DD4B2DB00296094 /* BuyBuy */;
 		};
@@ -44,6 +55,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				34D130912E030A69006BABBB /* Exceptions for "BuyBuy" folder in "BuyBuy" target */,
+				347F28452E69B8E100018068 /* Exceptions for "BuyBuy" folder in "BuyBuy Dev" target */,
 			);
 			path = BuyBuy;
 			sourceTree = "<group>";
@@ -82,6 +94,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		347F283E2E69B8E100018068 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -101,6 +120,7 @@
 				34742D0A2DD4B2DB00296094 /* BuyBuy.app */,
 				34742D1C2DD4B2E000296094 /* BuyBuyTests.xctest */,
 				34742D262DD4B2E000296094 /* BuyBuyUITests.xctest */,
+				347F28442E69B8E100018068 /* BuyBuy Dev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -177,6 +197,29 @@
 			productReference = 34742D262DD4B2E000296094 /* BuyBuyUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		347F283C2E69B8E100018068 /* BuyBuy Dev */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 347F28412E69B8E100018068 /* Build configuration list for PBXNativeTarget "BuyBuy Dev" */;
+			buildPhases = (
+				347F283D2E69B8E100018068 /* Sources */,
+				347F283E2E69B8E100018068 /* Frameworks */,
+				347F283F2E69B8E100018068 /* ShellScript */,
+				347F28402E69B8E100018068 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				34742D0C2DD4B2DB00296094 /* BuyBuy */,
+			);
+			name = "BuyBuy Dev";
+			packageProductDependencies = (
+			);
+			productName = BuyBuy;
+			productReference = 347F28442E69B8E100018068 /* BuyBuy Dev.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -216,6 +259,7 @@
 			projectRoot = "";
 			targets = (
 				34742D092DD4B2DB00296094 /* BuyBuy */,
+				347F283C2E69B8E100018068 /* BuyBuy Dev */,
 				34742D1B2DD4B2E000296094 /* BuyBuyTests */,
 				34742D252DD4B2E000296094 /* BuyBuyUITests */,
 			);
@@ -244,9 +288,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		347F28402E69B8E100018068 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		347F283F2E69B8E100018068 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/DebugAssets.car",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" != \"Debug\" ]; then\n  # Remove debug-only assets from the build directory\n  rm -rf \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/DebugAssets.car\"\nfi\n";
+		};
 		34ADF8572E204A2400477681 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -283,6 +352,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		34742D222DD4B2E000296094 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		347F283D2E69B8E100018068 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -436,7 +512,7 @@
 				APP_DISPLAY_NAME = "BuyBuy DEV";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = Accent;
-				CODE_SIGN_ENTITLEMENTS = BuyBuy/BuyBuyDebug.entitlements;
+				CODE_SIGN_ENTITLEMENTS = BuyBuy/BuyBuy.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 76BNK3YG87;
@@ -444,7 +520,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BuyBuy/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
+				INFOPLIST_KEY_CFBundleDisplayName = BuyBuy;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This application uses the camera to take photos of products and loyalty cards added to your shopping list.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This application uses your photo library to attach photos of products and loyalty cards to your shopping list.";
@@ -458,8 +534,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.encore.BuyBuyDev;
+				MARKETING_VERSION = 1.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.encore.BuyBuy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
@@ -482,7 +558,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BuyBuy/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
+				INFOPLIST_KEY_CFBundleDisplayName = BuyBuy;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This application uses the camera to take photos of products and loyalty cards added to your shopping list.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This application uses your photo library to attach photos of products and loyalty cards to your shopping list.";
@@ -496,7 +572,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.encore.BuyBuy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -547,6 +623,7 @@
 		34742D372DD4B2E000296094 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = BuyBuy/BuyBuyDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 76BNK3YG87;
@@ -564,6 +641,7 @@
 		34742D382DD4B2E000296094 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = BuyBuy/BuyBuyDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 76BNK3YG87;
@@ -575,6 +653,88 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = BuyBuy;
+			};
+			name = Release;
+		};
+		347F28422E69B8E100018068 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APP_DISPLAY_NAME = "BuyBuy DEV";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = Accent;
+				CODE_SIGN_ENTITLEMENTS = BuyBuy/BuyBuyDev.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 76BNK3YG87;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "BuyBuy/Info-Dev.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "BuyBuy Dev";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This application uses the camera to take photos of products and loyalty cards added to your shopping list.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This application uses your photo library to attach photos of products and loyalty cards to your shopping list.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1.1;
+				OTHER_OSACOMPILEFLAGS = "";
+				OTHER_SWIFT_FLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.encore.BuyBuyDev;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) BUYBUY_DEV";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		347F28432E69B8E100018068 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APP_DISPLAY_NAME = BuyBuy;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = Accent;
+				CODE_SIGN_ENTITLEMENTS = BuyBuy/BuyBuyDev.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 76BNK3YG87;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "BuyBuy/Info-Dev.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "BuyBuy Dev";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This application uses the camera to take photos of products and loyalty cards added to your shopping list.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This application uses your photo library to attach photos of products and loyalty cards to your shopping list.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1.1;
+				OTHER_OSACOMPILEFLAGS = "";
+				OTHER_SWIFT_FLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.encore.BuyBuyDev;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = BUYBUY_DEV;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -613,6 +773,15 @@
 			buildConfigurations = (
 				34742D372DD4B2E000296094 /* Debug */,
 				34742D382DD4B2E000296094 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		347F28412E69B8E100018068 /* Build configuration list for PBXNativeTarget "BuyBuy Dev" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				347F28422E69B8E100018068 /* Debug */,
+				347F28432E69B8E100018068 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

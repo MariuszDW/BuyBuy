@@ -48,7 +48,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             completion()
         }
         
-#if DEBUG
+#if BUYBUY_DEV
         // TODO: temporary, think about better place
 //        await dataManager.printEnvironmentPaths()
 #endif
