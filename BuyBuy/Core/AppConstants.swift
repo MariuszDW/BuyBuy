@@ -18,7 +18,7 @@ struct AppConstants {
     static let blueSkyName: String = "Bluesky"
     
     static var bundleID: String? { Bundle.main.bundleIdentifier }
-#if DEBUG
+#if BUYBUY_DEV
     static let appGroupID = "group.com.encore.BuyBuyDev"
     static let iCloudContainerID = "iCloud.com.encore.BuyBuyDev"
 #else
@@ -30,7 +30,7 @@ struct AppConstants {
     static let localStoreFileName = "LocalStore.sqlite"
     static let cloudStoreFileName = "CloudStore.sqlite"
     
-#if DEBUG
+#if BUYBUY_DEV
     static let tipIDs = ["small_tip_dev", "medium_tip_dev", "large_tip_dev"]
 #else
     static let tipIDs = ["small_tip", "medium_tip", "large_tip"]

@@ -4,6 +4,13 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>BuyBuy Dev.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>isShown</key>
+			<true/>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 		<key>BuyBuy.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -23,6 +30,11 @@
 			<true/>
 		</dict>
 		<key>34742D252DD4B2E000296094</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>347F283C2E69B8E100018068</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -31,7 +31,7 @@ enum DataStorageOption: String, CaseIterable, Identifiable {
 struct AppSettingsView: View {
     @StateObject var viewModel: AppSettingsViewModel
     
-#if DEBUG
+#if BUYBUY_DEV
     @State private var showCopyMocksConfirmation = false
 #endif
     
@@ -80,7 +80,7 @@ struct AppSettingsView: View {
                     }
                 }
                 
-#if DEBUG
+#if BUYBUY_DEV
                 Section(header: Text("debug")) {
                     Button("copy_mocks_to_database") {
                         showCopyMocksConfirmation = true
@@ -117,7 +117,7 @@ struct AppSettingsView: View {
         } message: {
             Text(viewModel.iCloudErrorMessage ?? "")
         }
-#if DEBUG
+#if BUYBUY_DEV
         .alert("copy_mocks_to_database", isPresented: $showCopyMocksConfirmation) {
             Button("cancel", role: .cancel) {}
             Button("ok") {
