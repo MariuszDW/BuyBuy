@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>APP_RELEASE_DATE</key>
-	<string>2025-09-04</string>
+	<string>2025-09-07</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
