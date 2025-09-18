@@ -177,7 +177,7 @@ struct ShoppingListView: View {
                             await viewModel.setStatus(status, itemID: item.id)
                         }
                     } label: {
-                        Label(status.rawValue, systemImage: status.imageSystemName)
+                        Label(status.localizedName, systemImage: status.imageSystemName)
                     }
                     .tint(status.color)
                 }
