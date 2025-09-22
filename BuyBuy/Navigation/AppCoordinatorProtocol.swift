@@ -32,6 +32,7 @@ protocol AppCoordinatorProtocol: AnyObject, ObservableObject {
     func openShoppingListExport(_ list: ShoppingList, onDismiss: ((SheetRoute) -> Void)?)
     func openDocumentExporter(with exportData: ExportedData, onDismiss: ((SheetRoute) -> Void)?)
     func openTipJar(onDismiss: ((SheetRoute) -> Void)?)
+    func openShoppingListShareManagement(with listID: UUID, title: String, onDismiss: ((SheetRoute) -> Void)?) async
     func showThankYou(for transaction: StoreKit.Transaction, onDismiss: ((SheetRoute) -> Void)?)
     func closeTopSheet()
     func closeAllSheets()

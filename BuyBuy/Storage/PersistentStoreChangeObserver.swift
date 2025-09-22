@@ -6,104 +6,169 @@
 //
 
 import Foundation
-import Combine
 import CoreData
+import Combine
 
-final class PersistentStoreChangeObserver {
+final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol {
+    private static let historyTokenPrefix = "HistoryToken_"
     private var cancellable: AnyCancellable?
-    private var processedTokens: [NSPersistentHistoryToken] = []
-    private let maxTokenHistory: Int
-    private var lastAnonymousReloadDate: Date?
-    private let anonymousReloadThrottleInterval: TimeInterval
-    
     private let coreDataStack: CoreDataStackProtocol
-    private let onChange: @Sendable @MainActor () async -> Void
-    
-    init(coreDataStack: CoreDataStackProtocol,
-         maxTokenHistory: Int = 8,
-         throttle: TimeInterval = 1.0,
-         onChange: @escaping @Sendable @MainActor () async -> Void) {
+
+    private var handlerBlocks: [ObjectIdentifier: WeakHandler] = [:]
+
+    init(coreDataStack: CoreDataStackProtocol) {
         self.coreDataStack = coreDataStack
-        self.maxTokenHistory = maxTokenHistory
-        self.anonymousReloadThrottleInterval = throttle
-        self.onChange = onChange
     }
-    
+
     deinit {
         stopObserving()
     }
-    
+
+    // MARK: - Observer Management
+
+    func addObserver(_ observer: AnyObject, onChange: @escaping @MainActor () async -> Void) {
+        let id = ObjectIdentifier(observer)
+        handlerBlocks[id] = WeakHandler(observer: observer, block: onChange)
+    }
+
+    func removeObserver(_ observer: AnyObject) {
+        let id = ObjectIdentifier(observer)
+        handlerBlocks.removeValue(forKey: id)
+    }
+
+    func getObserversAndBlocks() -> [(AnyObject, @MainActor () async -> Void)] {
+        var result: [(AnyObject, @MainActor () async -> Void)] = []
+        for (id, weakHandler) in handlerBlocks {
+            if let observer = weakHandler.observer {
+                result.append((observer, weakHandler.block))
+            } else {
+                handlerBlocks.removeValue(forKey: id)
+            }
+        }
+        return result
+    }
+
     func startObserving() {
         guard cancellable == nil else { return }
         observeRemoteChanges()
     }
-    
+
     func startObserving(timeout: TimeInterval) async {
         startObserving()
         try? await Task.sleep(for: .seconds(timeout))
         stopObserving()
     }
-    
+
     func stopObserving() {
         cancellable?.cancel()
         cancellable = nil
-        processedTokens.removeAll()
     }
-    
+
+    // MARK: - Private
+
     private func observeRemoteChanges() {
-        print("PersistentStoreChangeObserver.observeRemoteChanges() called")
-        cancellable = NotificationCenter.default
-            .publisher(for: .NSPersistentStoreRemoteChange)
+        guard let stack = coreDataStack as? CoreDataStack else { return }
+        let coordinator = stack.container.persistentStoreCoordinator
+        let container = stack.container
+
+        var cancellables: [AnyCancellable] = []
+
+        // RemoteChange → aktualizujemy token i fetch historii
+        let remoteChange = NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange, object: coordinator)
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] notification in
-                guard let self else { return }
-                
-                let handleChange = { [coreDataStack = self.coreDataStack, onChange = self.onChange] in
-                    let bgContext = coreDataStack.newBackgroundContext()
-                    
-                    Task.detached { [bgContext] in
-                        await bgContext.perform {
-                            do {
-                                try Deduplicator.deduplicateAndMergeAllEntities(in: bgContext)
-                            } catch {
-                                print("Deduplication failed: \(error)")
-                            }
-                        }
-                        
-                        Task { @MainActor in
-                            await onChange()
-                        }
+                self?.handleRemoteChange(notification)
+            }
+        cancellables.append(remoteChange)
+
+        // CloudKit event → tylko UI/logi/cleanup, nie aktualizujemy tokenu
+        let cloudKitEvent = NotificationCenter.default.publisher(for: NSPersistentCloudKitContainer.eventChangedNotification, object: container)
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] notification in
+                self?.handleCloudKitEvent(notification)
+            }
+        cancellables.append(cloudKitEvent)
+
+        // łączymy w jeden cancellable
+        cancellable = AnyCancellable {
+            cancellables.forEach { $0.cancel() }
+        }
+    }
+
+    private func handleRemoteChange(_ notification: Notification) {
+        guard let stack = coreDataStack as? CoreDataStack else { return }
+
+        let storeUUIDs: [String] = {
+            if let storeUUID = notification.userInfo?[NSStoreUUIDKey] as? String {
+                return [storeUUID]
+            } else {
+                return stack.container.persistentStoreCoordinator.persistentStores.compactMap { $0.identifier }
+            }
+        }()
+
+        let observersAndBlocks = getObserversAndBlocks().map(\.1)
+
+        for storeUUID in storeUUIDs {
+            let bgContext = stack.newBackgroundContext()
+            bgContext.perform {
+                let lastToken = Self.historyToken(for: storeUUID)
+                let request = NSPersistentHistoryChangeRequest.fetchHistory(after: lastToken)
+
+                if let store = stack.container.persistentStoreCoordinator.persistentStores.first(where: { $0.identifier == storeUUID }) {
+                    request.affectedStores = [store]
+                }
+
+                let result = try? bgContext.execute(request) as? NSPersistentHistoryResult
+                guard let transactions = result?.result as? [NSPersistentHistoryTransaction], !transactions.isEmpty else { return }
+
+                try? Deduplicator.deduplicate(from: transactions, in: bgContext)
+
+                Task { @MainActor in
+                    for block in observersAndBlocks {
+                        await block()
                     }
                 }
-                
-                if let userInfo = notification.userInfo,
-                   let newToken = userInfo["historyToken"] as? NSPersistentHistoryToken {
-                    
-                    if self.processedTokens.contains(where: { $0.isEqual(newToken) }) {
-                        print("Ignoring duplicate historyToken")
-                        return
-                    }
-                    
-                    self.processedTokens.append(newToken)
-                    if self.processedTokens.count > self.maxTokenHistory {
-                        self.processedTokens.removeFirst()
-                    }
-                    
-                    print("New historyToken, running deduplication...")
-                    handleChange()
-                    
-                } else {
-                    let now = Date.now
-                    if let last = self.lastAnonymousReloadDate,
-                       now.timeIntervalSince(last) < self.anonymousReloadThrottleInterval {
-                        print("Skipping anonymous reload — throttled")
-                        return
-                    }
-                    
-                    self.lastAnonymousReloadDate = now
-                    print("Anonymous change detected, running deduplication...")
-                    handleChange()
+
+                if let newToken = transactions.last?.token {
+                    Self.updateHistoryToken(for: storeUUID, newToken: newToken)
                 }
             }
+        }
+    }
+
+    private func handleCloudKitEvent(_ notification: Notification) {
+        // przykładowo, możesz logować albo odświeżać UI
+        let observersAndBlocks = getObserversAndBlocks().map(\.1)
+        
+        Task { @MainActor in
+            for block in observersAndBlocks {
+                await block()
+            }
+        }
+    }
+
+    private static func historyToken(for storeUUID: String) -> NSPersistentHistoryToken? {
+        let key = Self.historyTokenPrefix + storeUUID
+        guard let data = UserDefaults.standard.data(forKey: key) else { return nil }
+        return try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSPersistentHistoryToken.self, from: data)
+    }
+
+    private static func updateHistoryToken(for storeUUID: String, newToken: NSPersistentHistoryToken) {
+        let key = Self.historyTokenPrefix + storeUUID
+        if let data = try? NSKeyedArchiver.archivedData(withRootObject: newToken, requiringSecureCoding: true) {
+            UserDefaults.standard.set(data, forKey: key)
+        }
+    }
+}
+
+// MARK: - WeakHandler
+
+private class WeakHandler {
+    weak var observer: AnyObject?
+    let block: @MainActor () async -> Void
+
+    init(observer: AnyObject, block: @escaping @MainActor () async -> Void) {
+        self.observer = observer
+        self.block = block
     }
 }

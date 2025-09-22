@@ -216,6 +216,12 @@ struct ShoppingListView: View {
                         // .accessibilityLabel("Edit")
                         
                         Button {
+                            viewModel.openShareManagement()
+                        } label: {
+                            Label("colaboration", systemImage: "person.2")
+                        }
+                        
+                        Button {
                             viewModel.openExportListOptions()
                         } label: {
                             Label("export_list", systemImage: "square.and.arrow.up")
@@ -371,7 +377,6 @@ struct ShoppingListView: View {
 
 #Preview("Light/items") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -388,7 +393,6 @@ struct ShoppingListView: View {
 
 #Preview("Dark/items") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -405,7 +409,6 @@ struct ShoppingListView: View {
 
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -422,7 +425,6 @@ struct ShoppingListView: View {
 
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import CloudKit
 
 enum DataError: Error {
     case jpegConversionFailed
@@ -15,7 +16,9 @@ enum DataError: Error {
 @MainActor
 class DataManager: DataManagerProtocol {
     private(set) var cloud: Bool
-    private(set) var coreDataStack: CoreDataStackProtocol
+    var coreDataStack: CoreDataStackProtocol {
+        repository.coreDataStack
+    }
     private(set) var storageManager: StorageManagerProtocol
     private var repository: DataRepositoryProtocol
     private var imageCache: NSCache<NSString, UIImage> = {
@@ -24,28 +27,45 @@ class DataManager: DataManagerProtocol {
         cache.totalCostLimit = 50 * 1024 * 1024 // 50 MB
         return cache
     }()
+    
+    var persistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
 
     init(useCloud: Bool) {
         self.cloud = useCloud
-        self.coreDataStack = CoreDataStack(useCloudSync: useCloud)
         self.storageManager = StorageManager()
-        self.repository = DataRepository(coreDataStack: coreDataStack)
+        self.repository = DataRepository(useCloud: useCloud)
+        self.persistentStoreChangeObserver = PersistentStoreChangeObserver(coreDataStack: repository.coreDataStack)
+        self.persistentStoreChangeObserver.startObserving()
     }
     
-    init(useCloud: Bool, coreDataStack: CoreDataStackProtocol, repository: DataRepositoryProtocol) {
+    // Init for previews with mocks.
+    init(useCloud: Bool, repository: DataRepositoryProtocol, storageManager: StorageManagerProtocol = StorageManager()) {
         self.cloud = useCloud
-        self.coreDataStack = coreDataStack
-        self.storageManager = StorageManager()
+        self.storageManager = storageManager
         self.repository = repository
+        self.persistentStoreChangeObserver = MockPersistentStoreChangeObserver()
+        self.persistentStoreChangeObserver.startObserving()
     }
     
-    func setup(useCloud: Bool) async {
-        guard self.cloud != useCloud else { return }
-        cloud = useCloud
-        coreDataStack = CoreDataStack(useCloudSync: useCloud)
+    func setup(useCloud: Bool) {
+        guard cloud != useCloud else { return }
+        
+        persistentStoreChangeObserver.stopObserving()
+        let oldObservers = persistentStoreChangeObserver.getObserversAndBlocks()
+        
+        self.cloud = useCloud
         self.storageManager = StorageManager()
-        repository = DataRepository(coreDataStack: coreDataStack)
-        imageCache.removeAllObjects()
+        self.repository = DataRepository(useCloud: useCloud)
+        
+        persistentStoreChangeObserver = PersistentStoreChangeObserver(coreDataStack: repository.coreDataStack)
+        
+        for (observer, block) in oldObservers {
+            persistentStoreChangeObserver.addObserver(observer, onChange: block)
+        }
+        
+        self.imageCache.removeAllObjects()
+        
+        persistentStoreChangeObserver.startObserving()
     }
     
     // MARK: - Shopping lists
@@ -93,6 +113,12 @@ class DataManager: DataManagerProtocol {
     func deleteShoppingLists() async throws {
         try await repository.deleteShoppingLists()
     }
+    
+    // MARK: - Shopping list sharing
+    
+    func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare? {
+        return try await repository.fetchShoppingListCKShare(for: id)
+    }
 
     // MARK: - Shopping items
     
@@ -100,8 +126,8 @@ class DataManager: DataManagerProtocol {
         return try await repository.fetchShoppingItems()
     }
     
-    func fetchShoppingItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
-        return try await repository.fetchShoppingItemsOfList(with: listID)
+    func fetchShoppingItemsOfList(with id: UUID) async throws -> [ShoppingItem] {
+        return try await repository.fetchShoppingItemsOfList(with: id)
     }
     
     func fetchShoppingItem(with id: UUID) async throws -> ShoppingItem? {
@@ -137,10 +163,13 @@ class DataManager: DataManagerProtocol {
         guard let _ = try await repository.fetchShoppingList(with: listID) else {
             throw NSError(domain: "Repository", code: 404, userInfo: [NSLocalizedDescriptionKey: "List not found"])
         }
+        
         guard var item = try await repository.fetchShoppingItem(with: id) else {
             return
         }
+        
         let maxOrder = try await repository.fetchMaxOrderOfShoppingItems(ofList: listID)
+        try await repository.deleteShoppingItem(with: id)
         item.moveToShoppingList(with: listID, order: maxOrder + 1)
         try await repository.addOrUpdateShoppingItem(item)
     }

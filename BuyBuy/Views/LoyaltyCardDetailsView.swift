@@ -235,7 +235,6 @@ struct LoyaltyCardDetailsView: View {
 
 #Preview("Light") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: [], cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -251,7 +250,6 @@ struct LoyaltyCardDetailsView: View {
 
 #Preview("Dark") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: [], cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

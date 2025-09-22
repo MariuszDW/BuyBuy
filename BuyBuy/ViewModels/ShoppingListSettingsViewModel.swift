@@ -15,17 +15,28 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     /// Indicates whether the edited shopping item is a newly created one.
     private(set) var isNew: Bool
     
+    var sharingAvailable: Bool {
+        !isNew && dataManager.cloud
+    }
+    
+    var isShared: Bool {
+        !isNew && dataManager.cloud && shoppingList.isShared
+    }
+    
+    var isOwner: Bool {
+        !isNew && dataManager.cloud && shoppingList.isOwner
+    }
+    
+    var sharingParticipants: [SharingParticipantInfo] {
+        shoppingList.sharingParticipants
+    }
+    
     var changesConfirmed: Bool = false
     
     private let dataManager: DataManagerProtocol
     let coordinator: any AppCoordinatorProtocol
     
-    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
-            guard let self = self else { return }
-            await self.loadList()
-        }
-    }()
+    private var observerRegistered = false
     
     init(list: ShoppingList, isNew: Bool = false, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.shoppingList = list
@@ -35,19 +46,26 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     }
     
     func startObserving() {
-        remoteChangeObserver.startObserving()
+        guard !observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.addObserver(self) { [weak self] in
+            guard let self else { return }
+            await self.loadList()
+        }
+        observerRegistered = true
         print("ShoppingListSettingsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
-        remoteChangeObserver.stopObserving()
+        guard observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.removeObserver(self)
+        observerRegistered = false
         print("ShoppingListSettingsViewModel - Stopped observing remote changes")
     }
     
     var canConfirm: Bool {
         !shoppingList.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
-
+    
     func finalizeInput() {
         shoppingList.prepareToSave()
     }
@@ -60,6 +78,11 @@ final class ShoppingListSettingsViewModel: ObservableObject {
             try? await dataManager.deleteShoppingList(with: shoppingList.id, moveItemsToDeleted: false)
         }
         coordinator.sendEvent(.shoppingListEdited)
+    }
+    
+    func openShareManagement() async {
+        finalizeInput()
+        await coordinator.openShoppingListShareManagement(with: shoppingList.id, title: shoppingList.name, onDismiss: {_ in })
     }
     
     private func loadList() async {

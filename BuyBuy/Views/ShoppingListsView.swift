@@ -303,7 +303,6 @@ struct ShoppingListsView: View {
 
 #Preview("Light/items") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
@@ -323,7 +322,6 @@ struct ShoppingListsView: View {
 
 #Preview("Dark/items") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
@@ -343,7 +341,6 @@ struct ShoppingListsView: View {
 
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()
@@ -363,7 +360,6 @@ struct ShoppingListsView: View {
 
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let tracker = MockUserActivityTracker()

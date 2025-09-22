@@ -8,10 +8,14 @@
 import Foundation
 import SwiftUI
 import Combine
+import CloudKit
 import StoreKit
+import CoreData
 
 @MainActor
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
+    static private(set) var currentInstance: AppCoordinator?
+    private(set) var pendingShares: [CKShare.Metadata] = []
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
     private var preferences: AppPreferencesProtocol
@@ -27,9 +31,59 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         
     init(preferences: AppPreferencesProtocol) {
         self.preferences = preferences
-        self.dataManager = DataManager(useCloud: preferences.isCloudSyncEnabled) // TODO: tutaj wywoluje sie policy
+        self.dataManager = DataManager(useCloud: preferences.isCloudSyncEnabled)
         self.hapticEngine = HapticEngine(isEnabled: preferences.isHapticsEnabled)
         self.userActivityTracker = UserActivityTracker(preferences: preferences)
+        Self.currentInstance = self
+    }
+    
+    func enqueuePendingShare(_ metadata: CKShare.Metadata) {
+        guard dataManager.cloud else {
+            return
+        }
+        
+        if appInitialized {
+            acceptShare(metadata)
+        } else {
+            pendingShares.append(metadata)
+        }
+    }
+    
+    func processPendingShares() {
+        guard dataManager.cloud else {
+            return
+        }
+        
+        for share in pendingShares {
+            acceptShare(share)
+        }
+        pendingShares.removeAll()
+    }
+    
+    private func acceptShare(_ metadata: CKShare.Metadata) {
+        guard dataManager.cloud else {
+            return
+        }
+        
+        guard metadata.participantRole != .owner else {
+            print("Invitation from owner – ignoring.")
+            return
+        }
+        
+        let container = dataManager.coreDataStack.container as! NSPersistentCloudKitContainer
+        
+        guard let sharedStore = dataManager.coreDataStack.sharedCloudPersistentStore else {
+            print("No shared store.")
+            return
+        }
+
+        container.acceptShareInvitations(from: [metadata], into: sharedStore) { acceptedMetadata, error in
+            if let error {
+                print("Error accepting share: \(error)")
+            } else {
+                print("Share accepted: \(acceptedMetadata?.first?.share.recordID.recordName ?? "unknown")")
+            }
+        }
     }
     
     func sendEvent(_ event: AppEvent) {
@@ -37,7 +91,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func setupDataManager(useCloud: Bool, completion: @escaping () -> Void = {}) async {
-        await dataManager.setup(useCloud: useCloud)
+        dataManager.setup(useCloud: useCloud)
         
         if preferences.isCloudSyncEnabled != useCloud {
             preferences.isCloudSyncEnabled = useCloud
@@ -129,6 +183,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     
     func openTipJar(onDismiss: ((SheetRoute) -> Void)? = nil) {
         sheetPresenter.present(.tipJar, displayStyle: .sheet, onDismiss: onDismiss)
+    }
+    
+    func openShoppingListShareManagement(with listID: UUID, title: String, onDismiss: ((SheetRoute) -> Void)? = nil) async {
+        guard let share = try? await dataManager.fetchShoppingListCKShare(for: listID) else {
+            print("Can not get CKShare for the list.")
+            return
+        }
+        sheetPresenter.present(.sharingController(share: share, title: title), displayStyle: .sheet, onDismiss: onDismiss)
     }
     
     func showThankYou(for transaction: StoreKit.Transaction, onDismiss: ((SheetRoute) -> Void)? = nil) {
@@ -313,6 +375,9 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                     coordinator: self
                 )
             )
+        
+        case .sharingController(let share, let title):
+            SharingControllerWrapper(share: share, shoppingListTitle: title)
             
         case .appInitialSetup:
             AppInitialSetupView(
@@ -346,9 +411,9 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         if preferences.installationDate == nil {
             openInitAppSetup()
         }
-        await setupDataManager(useCloud: preferences.isCloudSyncEnabled)
         startTransactionListener()
         appInitialized = true
+        processPendingShares()
         
         LegacyImageDataMigrator.runIfNeeded(dataManager: dataManager, preferences: preferences)
     }
@@ -392,18 +457,21 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     
     private func cleanupNotNeededData() async {
         print("Performing cleanup tasks.")
+
         if preferences.isCloudSyncEnabled {
-            let observer = PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack, onChange: {})
-            await observer.startObserving(timeout: AppConstants.remoteChangeTimeoutSeconds)
+            // This is a temporary observer, active for a limited time.
+            let tempObserver = PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack)
+            await tempObserver.startObserving(timeout: AppConstants.remoteChangeTimeoutSeconds)
         }
-        
+
         try? await dataManager.cleanOrphanedShoppingItems()
         try? await dataManager.deleteOldTrashedShoppingItems(olderThan: AppConstants.autoDeleteAfterDays)
-        
+
         if !preferences.legacyCloudImages && !preferences.legacyDeviceImages {
             await dataManager.cleanTemporaryImages()
         }
     }
+
     
     // MARK: - Handle memory warning
     

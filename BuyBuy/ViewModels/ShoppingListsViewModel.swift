@@ -15,13 +15,7 @@ class ShoppingListsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
     private var userActivityTracker: any UserActivityTrackerProtocol
     let coordinator: any AppCoordinatorProtocol
-    
-    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
-            guard let self = self else { return }
-            await self.loadLists()
-        }
-    }()
+    private var observerRegistered = false
 
     init(dataManager: DataManagerProtocol, userActivityTracker: any UserActivityTrackerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.coordinator = coordinator
@@ -30,12 +24,19 @@ class ShoppingListsViewModel: ObservableObject {
     }
     
     func startObserving() {
-        remoteChangeObserver.startObserving()
+        guard !observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.addObserver(self) { [weak self] in
+            guard let self else { return }
+            await self.loadLists()
+        }
+        observerRegistered = true
         print("ShoppingListsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
-        remoteChangeObserver.stopObserving()
+        guard observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.removeObserver(self)
+        observerRegistered = false
         print("ShoppingListsViewModel - Stopped observing remote changes")
     }
     

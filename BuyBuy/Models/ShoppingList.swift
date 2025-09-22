@@ -16,7 +16,11 @@ struct ShoppingList: Identifiable, Hashable {
     var color: ListColor
     var items: [ShoppingItem] = []
     
-    init(id: UUID = UUID(), name: String = "", note: String? = nil, items: [ShoppingItem] = [], order: Int, icon: ListIcon = .default, color: ListColor = .default) {
+    var isShared: Bool
+    var isOwner: Bool
+    var sharingParticipants: [SharingParticipantInfo] = []
+    
+    init(id: UUID = UUID(), name: String = "", note: String? = nil, items: [ShoppingItem] = [], order: Int, icon: ListIcon = .default, color: ListColor = .default, isShared: Bool = false, isOwner: Bool = true, participants: [SharingParticipantInfo] = []) {
         self.id = id
         self.name = name
         self.note = note
@@ -24,6 +28,11 @@ struct ShoppingList: Identifiable, Hashable {
         self.icon = icon
         self.color = color
         self.items = items
+        
+        self.isShared = isShared
+        self.isOwner = isOwner
+        
+        self.sharingParticipants = participants
     }
     
     mutating func prepareToSave() {
@@ -49,9 +58,6 @@ struct ShoppingList: Identifiable, Hashable {
                 }
                 return $0.order < $1.order
             }
-        
-//        print("aaaa: ------")
-//        sortedItems.forEach { print("aaaa: \($0.name), \($0.status), \($0.order)") }
         
         return sortedItems
     }

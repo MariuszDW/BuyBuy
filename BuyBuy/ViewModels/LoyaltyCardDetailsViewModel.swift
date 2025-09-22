@@ -17,16 +17,9 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     
     private(set) var isNew: Bool
     var changesConfirmed: Bool = false
-    
     private let dataManager: DataManagerProtocol
     private var coordinator: (any AppCoordinatorProtocol)?
-    
-    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
-            guard let self = self else { return }
-            await self.loadCard()
-        }
-    }()
+    private var observerRegistered = false
     
     init(card: LoyaltyCard, isNew: Bool = false, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.loyaltyCard = card
@@ -36,12 +29,19 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     }
     
     func startObserving() {
-        remoteChangeObserver.startObserving()
+        guard !observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.addObserver(self) { [weak self] in
+            guard let self else { return }
+            await self.loadCard()
+        }
+        observerRegistered = true
         print("LoyaltyCardDetailsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
-        remoteChangeObserver.stopObserving()
+        guard observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.removeObserver(self)
+        observerRegistered = false
         print("LoyaltyCardDetailsViewModel - Stopped observing remote changes")
     }
     

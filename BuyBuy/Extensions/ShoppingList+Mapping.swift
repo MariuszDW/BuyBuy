@@ -6,9 +6,10 @@
 //
 
 import CoreData
+import CloudKit
 
 extension ShoppingList {
-    init(entity: ShoppingListEntity) {
+    init(entity: ShoppingListEntity, share: CKShare? = nil) {
         self.id = entity.id ?? UUID()
         self.name = entity.name ?? ""
         self.note = entity.note
@@ -16,6 +17,16 @@ extension ShoppingList {
         self.icon = ListIcon(rawValue: entity.icon ?? "") ?? .default
         self.color = ListColor(rawValue: entity.color ?? "") ?? .default
         self.items = (entity.items as? Set<ShoppingItemEntity>)?.map(ShoppingItem.init) ?? []
+        
+        if let share = share {
+            self.isShared = true
+            self.isOwner = share.isOwnedByMe
+            self.sharingParticipants = share.participantInfos
+        } else {
+            self.isShared = false
+            self.isOwner = true
+            self.sharingParticipants = []
+        }
     }
 }
 

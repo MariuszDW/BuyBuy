@@ -20,7 +20,7 @@ public class LoyaltyCard1ToLoyaltyCard2Policy: NSEntityMigrationPolicy {
 
         guard let dInstance = manager.destinationInstances(forEntityMappingName: mapping.name,
                                                            sourceInstances: [sInstance]).first else {
-            NSLog("LoyaltyCardMigrationPolicy: must return destination instance")
+            print("LoyaltyCardMigrationPolicy: must return destination instance")
             return
         }
         

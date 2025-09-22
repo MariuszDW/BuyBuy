@@ -35,14 +35,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
     private var preferences: any AppPreferencesProtocol
     private var coordinator: (any AppCoordinatorProtocol)?
-    
-    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
-            guard let self = self else { return }
-            await self.loadShoppingItem()
-            await self.loadShoppingLists()
-        }
-    }()
+    private var observerRegistered = false
     
     var canConfirm: Bool {
         !shoppingItem.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -93,12 +86,20 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     func startObserving() {
-        remoteChangeObserver.startObserving()
+        guard !observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.addObserver(self) { [weak self] in
+            guard let self else { return }
+            await self.loadShoppingItem()
+            await self.loadShoppingLists()
+        }
+        observerRegistered = true
         print("ShoppingItemDetailsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
-        remoteChangeObserver.stopObserving()
+        guard observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.removeObserver(self)
+        observerRegistered = false
         print("ShoppingItemDetailsViewModel - Stopped observing remote changes")
     }
     
@@ -130,6 +131,15 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         } catch {
             print("Failed to save image: \(error)")
         }
+    }
+    
+    func moveToShoppingList(with listID: UUID) async {
+        guard listID != shoppingItem.listID, let maxOrder = try? await dataManager.fetchMaxOrderOfShoppingItems(ofList: listID) else {
+            return
+        }
+        try? await dataManager.deleteShoppingItem(with: shoppingItem.id)
+        shoppingItem.moveToShoppingList(with: listID, order: maxOrder + 1)
+        try? await dataManager.addOrUpdateShoppingItem(shoppingItem)
     }
     
     func deleteImage(at index: Int) async {
