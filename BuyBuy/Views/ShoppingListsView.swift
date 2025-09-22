@@ -15,8 +15,6 @@ struct ShoppingListsView: View {
     
     @State private var isEditMode: EditMode = .inactive
     @State private var listPendingDeletion: ShoppingList?
-    @State private var basketAngle: Double = 0
-    @State private var animationTimer: Timer? = nil
     @State private var forceRefreshDiabled = false
     
     init(viewModel: ShoppingListsViewModel, hapticEngine: HapticEngineProtocol) {
@@ -30,14 +28,7 @@ struct ShoppingListsView: View {
                 shoppingListsView
                     .environment(\.editMode, $isEditMode)
             } else {
-                noContentView(angle: basketAngle)
-                    .onAppear {
-                        isEditMode = .inactive
-                        startBasketAnimation()
-                    }
-                    .onDisappear {
-                        stopBasketAnimation()
-                    }
+                noContentView
                     .onTapGesture {
                         Task {
                             await forceRefresh()
@@ -218,7 +209,6 @@ struct ShoppingListsView: View {
                     } label: {
                         CircleIconView(systemName: "questionmark")
                     }
-                    // .accessibilityLabel("about")
                 }
             }
             
@@ -229,7 +219,6 @@ struct ShoppingListsView: View {
                             isEditMode = .inactive
                         }
                     }
-                    // .accessibilityLabel("Done Editing")
                 }
                 
                 if !isEditMode.isEditing {
@@ -246,7 +235,6 @@ struct ShoppingListsView: View {
                     } label: {
                         CircleIconView(systemName: "creditcard.fill")
                     }
-                    // .accessibilityLabel("Loyalty cards")
                     
                     Menu {
                         Button {
@@ -258,7 +246,6 @@ struct ShoppingListsView: View {
                                 .lineLimit(1)
                         }
                         .disabled(viewModel.shoppingLists.isEmpty)
-                        // .accessibilityLabel("Edit")
                         
                         Button {
                             viewModel.openDeletedItems()
@@ -275,89 +262,19 @@ struct ShoppingListsView: View {
                             Label("settings", systemImage: "gearshape")
                                 .lineLimit(1)
                         }
-                        // .accessibilityLabel("Settings")
                     } label: {
                         CircleIconView(systemName: "ellipsis")
                     }
-                    // .accessibilityLabel("More options")
                 }
             }
         }
     }
     
-    @ViewBuilder
-    private func noContentView(angle: Double) -> some View {
-        GeometryReader { geometry in
-            Group {
-                if geometry.size.isPortrait {
-                    VStack() {
-                        Spacer()
-                        Spacer()
-                        noContnetImageView(angle: angle, containerSize: geometry.size)
-                        Spacer(minLength: 64)
-                        VStack(spacing: 24) {
-                            noContnetTitleView()
-                            noContnetMessageView()
-                        }
-                        Spacer()
-                        Spacer()
-                    }
-                } else {
-                    HStack {
-                        Spacer(minLength: 32)
-                        noContnetImageView(angle: angle, containerSize: geometry.size)
-                        Spacer(minLength: 56)
-                        VStack(alignment: .leading, spacing: 24) {
-                            noContnetTitleView(landscape: true)
-                            noContnetMessageView(landscape: true)
-                        }
-                        Spacer(minLength: 32)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
-        }
-        .padding(.horizontal, 32)
-        .padding(.vertical, 40)
-    }
-    
-    func noContnetImageView(angle: Double, containerSize: CGSize) -> some View {
-        let listImageSize = min(containerSize.shorterSide * 0.6, containerSize.longerSide * 0.4)
-        let basketImageSize = listImageSize * 0.5
-        
-        return ZStack {
-            Image(systemName: "list.bullet.clipboard.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: listImageSize, height: listImageSize)
-                .foregroundColor(.bb.text.quaternary)
-            
-            Image(systemName: "basket.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: basketImageSize, height: basketImageSize)
-                .foregroundColor(.bb.text.quaternary)
-                .offset(x: -basketImageSize * 0.5, y: 0)
-                .rotationEffect(Angle(degrees: angle), anchor: .topLeading)
-                .offset(x: basketImageSize * 0.5, y: 0)
-                .offset(x: listImageSize * 0.2, y: listImageSize * 0.38)
-                .shadow(color: .black.opacity(0.4), radius: 5)
-        }
-    }
-    
-    func noContnetTitleView(landscape: Bool = false) -> some View {
-        Text("lists_empty_view_title")
-            .font(.boldDynamic(style: .title2))
-            .foregroundColor(.bb.text.tertiary)
-            .multilineTextAlignment(landscape ? .leading : .center)
-    }
-    
-    func noContnetMessageView(landscape: Bool = false) -> some View {
-        Text("lists_empty_view_message")
-            .font(.boldDynamic(style: .headline))
-            .foregroundColor(.bb.text.tertiary)
-            .multilineTextAlignment(landscape ? .leading : .center)
+    private var noContentView: some View {
+        NoContnetView(title: String(localized: "lists_empty_view_title"),
+                      message: String(localized: "lists_empty_view_message"),
+                      image: Image(systemName: "list.bullet.clipboard.fill"),
+                      color: .bb.text.tertiary)
     }
     
     // MARK: - Private
@@ -368,22 +285,6 @@ struct ShoppingListsView: View {
         await viewModel.loadLists(fullRefresh: true)
         try? await Task.sleep(for: .seconds(1))
         forceRefreshDiabled = false
-    }
-    
-    private func startBasketAnimation() {
-        animationTimer?.invalidate()
-        animationTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { _ in
-            let now = Date.now.timeIntervalSinceReferenceDate
-            let newAngle = sin(now * 3) * 16
-            DispatchQueue.main.async {
-                basketAngle = newAngle
-            }
-        }
-    }
-    
-    private func stopBasketAnimation() {
-        animationTimer?.invalidate()
-        animationTimer = nil
     }
     
     private func handleDeleteTapped(for list: ShoppingList) async {
