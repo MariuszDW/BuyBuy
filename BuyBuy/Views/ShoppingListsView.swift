@@ -78,7 +78,7 @@ struct ShoppingListsView: View {
         }
         .onReceive(viewModel.coordinator.eventPublisher) { event in
             switch event {
-            case .dataStorateChanged, .shoppingItemEdited, .shoppingListEdited:
+            case .dataStorageChanged, .shoppingItemEdited, .shoppingListEdited:
                 Task { await viewModel.loadLists() }
             default: break
             }
@@ -101,7 +101,7 @@ struct ShoppingListsView: View {
                                         Button {
                                             viewModel.openListSettings(for: list)
                                         } label: {
-                                            Label("list_settings", systemImage: "square.and.pencil")
+                                            Label("list_settings", systemImage: "list.clipboard.fill")
                                         }
                                         
                                         Button(role: .destructive) {
@@ -126,7 +126,7 @@ struct ShoppingListsView: View {
                                 Button {
                                     viewModel.openListSettings(for: list)
                                 } label: {
-                                    Label("list_settings", systemImage: "square.and.pencil")
+                                    Label("list_settings", systemImage: "list.clipboard.fill")
                                 }
                                 .tint(.blue)
                             }

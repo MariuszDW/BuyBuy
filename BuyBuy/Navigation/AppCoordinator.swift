@@ -11,11 +11,12 @@ import Combine
 import CloudKit
 import StoreKit
 import CoreData
+import os
 
 @MainActor
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     static private(set) var currentInstance: AppCoordinator?
-    private(set) var pendingShares: [CKShare.Metadata] = []
+    static private(set) var pendingShares: [CKShare.Metadata] = []
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
     private var preferences: AppPreferencesProtocol
@@ -35,32 +36,32 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         self.hapticEngine = HapticEngine(isEnabled: preferences.isHapticsEnabled)
         self.userActivityTracker = UserActivityTracker(preferences: preferences)
         Self.currentInstance = self
+        os_log(.default, log: .main, "Log message %d", 666)
     }
     
-    func enqueuePendingShare(_ metadata: CKShare.Metadata) {
-        guard dataManager.cloud else {
-            return
-        }
-        
-        if appInitialized {
-            acceptShare(metadata)
+    static func enqueuePendingShare(_ metadata: CKShare.Metadata) {
+        if let coordinator = Self.currentInstance, coordinator.appInitialized {
+            os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "1")
+            coordinator.acceptShare(metadata)
         } else {
-            pendingShares.append(metadata)
+            os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "2")
+            Self.pendingShares.append(metadata)
         }
     }
     
     func processPendingShares() {
-        guard dataManager.cloud else {
-            return
+        os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "3")
+        if dataManager.cloud {
+            for share in Self.pendingShares {
+                os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "4")
+                acceptShare(share)
+            }
         }
-        
-        for share in pendingShares {
-            acceptShare(share)
-        }
-        pendingShares.removeAll()
+        os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "5")
+        Self.pendingShares.removeAll()
     }
     
-    private func acceptShare(_ metadata: CKShare.Metadata) {
+    func acceptShare(_ metadata: CKShare.Metadata) {
         guard dataManager.cloud else {
             return
         }
@@ -95,7 +96,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         
         if preferences.isCloudSyncEnabled != useCloud {
             preferences.isCloudSyncEnabled = useCloud
-            sendEvent(.dataStorateChanged)
+            sendEvent(.dataStorageChanged)
         }
         
         await MainActor.run {
@@ -413,28 +414,30 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         }
         startTransactionListener()
         appInitialized = true
-        processPendingShares()
         
         LegacyImageDataMigrator.runIfNeeded(dataManager: dataManager, preferences: preferences)
     }
     
-    func onAppForeground() async {
-        print("AppCoordinator.onAppForeground()")
-        userActivityTracker.appDidEnterForeground()
-        await performOnForegroundTasks()
+    func onAppActive() {
+        print("AppCoordinator.onAppActive()")
+        Task { @MainActor in
+            userActivityTracker.appDidActive()
+            await performOnAppActiveTasks()
+        }
     }
 
-    func onAppBackground() {
-        print("AppCoordinator.onAppBackground()")
-        userActivityTracker.appDidEnterBackground()
+    func onAppInactive() {
+        print("AppCoordinator.onAppInactive()")
+        userActivityTracker.appDidInactive()
     }
     
-    private func performOnForegroundTasks() async {
+    private func performOnAppActiveTasks() async {
         while !appInitialized {
             await Task.yield()
         }
         
         userActivityTracker.updateTipReminder()
+        processPendingShares()
 
         let now = Date.now
 
@@ -471,7 +474,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             await dataManager.cleanTemporaryImages()
         }
     }
-
     
     // MARK: - Handle memory warning
     

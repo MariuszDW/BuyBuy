@@ -172,6 +172,11 @@ final class ShoppingListViewModel: ObservableObject {
         }
     }
     
+    func openListSettings() {
+        guard let list = list else { return }
+        coordinator?.openShoppingListSettings(list, isNew: false, onDismiss: {_ in })
+    }
+    
     func openExportListOptions() {
         guard let list = list else { return }
         coordinator?.openShoppingListExport(list, onDismiss: {_ in })

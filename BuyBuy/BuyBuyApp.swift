@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CloudKit
+import os
 
 @main
 struct BuyBuyApp: App {
@@ -36,10 +37,8 @@ struct BuyBuyApp: App {
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func windowScene(_ windowScene: UIWindowScene,
                      userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata) {
-        print("Received CKShare invitation: \(cloudKitShareMetadata)")
-        Task { @MainActor in
-            AppCoordinator.currentInstance?.enqueuePendingShare(cloudKitShareMetadata)
-        }
+        os_log("Enqueued pending share from warn start: %{public}@", log: .main, type: .default, "\(cloudKitShareMetadata)")
+        AppCoordinator.enqueuePendingShare(cloudKitShareMetadata)
     }
 }
 
@@ -49,6 +48,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
+        if let cloudKitMetadata = options.cloudKitShareMetadata {
+            os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "\(cloudKitMetadata)")
+            AppCoordinator.enqueuePendingShare(cloudKitMetadata)
+        }
+
         let config = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
         config.delegateClass = SceneDelegate.self
         return config

@@ -213,13 +213,18 @@ struct ShoppingListView: View {
                         } label: {
                             Label("edit_list", systemImage: "pencil")
                         }
-                        // .accessibilityLabel("Edit")
                         
                         Button {
-                            viewModel.openShareManagement()
+                            viewModel.openListSettings()
                         } label: {
-                            Label("colaboration", systemImage: "person.2")
+                            Label("list_settings", systemImage: "list.bullet.clipboard")
                         }
+                        
+//                        Button {
+//                            viewModel.openShareManagement()
+//                        } label: {
+//                            Label("colaboration", systemImage: "person.2")
+//                        }
                         
                         Button {
                             viewModel.openExportListOptions()
