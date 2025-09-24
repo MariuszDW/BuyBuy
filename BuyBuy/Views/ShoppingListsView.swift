@@ -98,37 +98,14 @@ struct ShoppingListsView: View {
                             NavigationLink(value: AppRoute.shoppingList(list.id)) {
                                 listRow(for: list)
                                     .contextMenu {
-                                        Button {
-                                            viewModel.openListSettings(for: list)
-                                        } label: {
-                                            Label("list_settings", systemImage: "list.clipboard.fill")
-                                        }
-                                        
-                                        Button(role: .destructive) {
-                                            Task {
-                                                await handleDeleteTapped(for: list)
-                                            }
-                                        } label: {
-                                            Label("delete", systemImage: "trash.fill")
-                                        }
+                                        contextMenu(for: list)
                                     }
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button(role: .destructive) {
-                                    Task {
-                                        await handleDeleteTapped(for: list)
-                                    }
-                                } label: {
-                                    Label("delete", systemImage: "trash.fill")
-                                }
+                                trailingSwipeActions(for: list)
                             }
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                Button {
-                                    viewModel.openListSettings(for: list)
-                                } label: {
-                                    Label("list_settings", systemImage: "list.clipboard.fill")
-                                }
-                                .tint(.blue)
+                                leadingSwipeActions(for: list)
                             }
                         }
                     }
@@ -150,6 +127,64 @@ struct ShoppingListsView: View {
         .listStyle(.plain)
         .refreshable {
             await forceRefresh()
+        }
+    }
+    
+    @ViewBuilder
+    private func contextMenu(for list: ShoppingList) -> some View {
+        Button {
+            viewModel.openListSettings(for: list)
+        } label: {
+            Label("list_settings", systemImage: "list.clipboard.fill")
+        }
+        
+        if viewModel.isCloud {
+            Button {
+                Task {
+                    await viewModel.openShareManagement(for: list)
+                }
+            } label: {
+                Label("colaboration", systemImage: "person.2.fill")
+            }
+        }
+        
+        Button(role: .destructive) {
+            Task {
+                await handleDeleteTapped(for: list)
+            }
+        } label: {
+            Label("delete", systemImage: "trash.fill")
+        }
+    }
+    
+    @ViewBuilder
+    private func trailingSwipeActions(for list: ShoppingList) -> some View {
+        Button(role: .destructive) {
+            Task {
+                await handleDeleteTapped(for: list)
+            }
+        } label: {
+            Label("delete", systemImage: "trash.fill")
+        }
+    }
+
+    @ViewBuilder
+    private func leadingSwipeActions(for list: ShoppingList) -> some View {
+        Button {
+            viewModel.openListSettings(for: list)
+        } label: {
+            Label("list_settings", systemImage: "list.clipboard.fill")
+        }
+        .tint(.blue)
+        
+        if viewModel.isCloud {
+            Button {
+                Task {
+                    await viewModel.openShareManagement(for: list)
+                }
+            } label: {
+                Label("colaboration", systemImage: "person.2.fill")
+            }
         }
     }
     

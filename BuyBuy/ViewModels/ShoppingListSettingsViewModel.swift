@@ -19,17 +19,17 @@ final class ShoppingListSettingsViewModel: ObservableObject {
         !isNew && dataManager.cloud
     }
     
-    var isShared: Bool {
-        !isNew && dataManager.cloud && shoppingList.isShared
-    }
+//    var isShared: Bool {
+//        !isNew && dataManager.cloud && shoppingList.isShared
+//    }
     
-    var isOwner: Bool {
-        !isNew && dataManager.cloud && shoppingList.isOwner
-    }
+//    var isOwner: Bool {
+//        !isNew && dataManager.cloud && shoppingList.isOwner
+//    }
     
-    var sharingParticipants: [SharingParticipantInfo] {
-        shoppingList.sharingParticipants
-    }
+//    var sharingParticipants: [SharingParticipantInfo] {
+//        shoppingList.sharingParticipants
+//    }
     
     var changesConfirmed: Bool = false
     
@@ -78,11 +78,6 @@ final class ShoppingListSettingsViewModel: ObservableObject {
             try? await dataManager.deleteShoppingList(with: shoppingList.id, moveItemsToDeleted: false)
         }
         coordinator.sendEvent(.shoppingListEdited)
-    }
-    
-    func openShareManagement() async {
-        finalizeInput()
-        await coordinator.openShoppingListShareManagement(with: shoppingList.id, title: shoppingList.name, onDismiss: {_ in })
     }
     
     private func loadList() async {

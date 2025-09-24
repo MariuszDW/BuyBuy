@@ -30,9 +30,9 @@ struct ShoppingListSettingsView: View {
                         nameField
                         iconAndColorSection(width: geometry.size.width)
                         iconsGridSection(width: geometry.size.width)
-                        if viewModel.sharingAvailable {
-                            sharingSection()
-                        }
+//                        if viewModel.sharingAvailable {
+//                            sharingSection()
+//                        }
                     }
                     .padding()
                 }
@@ -211,18 +211,18 @@ struct ShoppingListSettingsView: View {
         .cornerRadius(fieldCornerRadius)
     }
     
-    @ViewBuilder
-    private func sharingSection() -> some View {
-        Button {
-            Task {
-                await viewModel.openShareManagement()
-            }
-        } label: {
-            Label("colaboration", systemImage: "person.2.fill")
-                .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(BBPlainButtonStyle())
-    }
+//    @ViewBuilder
+//    private func sharingSection() -> some View {
+//        Button {
+//            Task {
+//                await viewModel.openShareManagement()
+//            }
+//        } label: {
+//            Label("colaboration", systemImage: "person.2.fill")
+//                .frame(maxWidth: .infinity)
+//        }
+//        .buttonStyle(BBPlainButtonStyle())
+//    }
 }
 
 // MARK: - Preview

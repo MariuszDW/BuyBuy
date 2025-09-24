@@ -40,6 +40,10 @@ class ShoppingListsViewModel: ObservableObject {
         print("ShoppingListsViewModel - Stopped observing remote changes")
     }
     
+    var isCloud: Bool {
+        dataManager.cloud
+    }
+    
     var shouldShowTipJarButton: Bool {
         userActivityTracker.shouldShowTipReminder
     }
@@ -85,6 +89,10 @@ class ShoppingListsViewModel: ObservableObject {
     
     func openListSettings(for list: ShoppingList) {
         coordinator.openShoppingListSettings(list, isNew: false, onDismiss: nil)
+    }
+    
+    func openShareManagement(for list: ShoppingList) async {
+        await coordinator.openShoppingListShareManagement(with: list.id, title: list.name, onDismiss: {_ in })
     }
 
     func openAbout() {
