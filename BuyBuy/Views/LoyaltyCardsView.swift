@@ -96,12 +96,14 @@ struct LoyaltyCardsView: View {
                 if !isEditMode.isEditing && !viewModel.cards.isEmpty {
                     Button {
                         withAnimation {
+                            showActionsForCardAtIndex = nil
                             isEditMode = .active
                             showingListView = true
                         }
                     } label: {
                         Label("edit_list", systemImage: "pencil.circle")
                     }
+                    .disabled(showActionsForCardAtIndex != nil)
                 }
             }
         }
