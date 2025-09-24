@@ -12,5 +12,6 @@ extension OSLog {
     // In Console.app use filter "subsystem" with "BuyBuy".
     // Example of a log in a code:
     // os_log(.default, log: .main, "Log message %d", 666)
+    // Add: import os
     static let main = OSLog(subsystem: "BuyBuy", category: "main")
 }

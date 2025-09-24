@@ -11,7 +11,6 @@ import Combine
 import CloudKit
 import StoreKit
 import CoreData
-import os
 
 @MainActor
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
@@ -36,28 +35,22 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         self.hapticEngine = HapticEngine(isEnabled: preferences.isHapticsEnabled)
         self.userActivityTracker = UserActivityTracker(preferences: preferences)
         Self.currentInstance = self
-        os_log(.default, log: .main, "Log message %d", 666)
     }
     
     static func enqueuePendingShare(_ metadata: CKShare.Metadata) {
         if let coordinator = Self.currentInstance, coordinator.appInitialized {
-            os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "1")
             coordinator.acceptShare(metadata)
         } else {
-            os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "2")
             Self.pendingShares.append(metadata)
         }
     }
     
     func processPendingShares() {
-        os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "3")
         if dataManager.cloud {
             for share in Self.pendingShares {
-                os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "4")
                 acceptShare(share)
             }
         }
-        os_log("Enqueued pending share from cold start: %{public}@", log: .main, type: .default, "5")
         Self.pendingShares.removeAll()
     }
     
