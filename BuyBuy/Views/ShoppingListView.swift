@@ -213,6 +213,7 @@ struct ShoppingListView: View {
                         } label: {
                             Label("edit_list", systemImage: "pencil")
                         }
+                        .disabled(viewModel.list?.items.isEmpty ?? true)
                         
                         Button {
                             viewModel.openListSettings()
@@ -236,7 +237,6 @@ struct ShoppingListView: View {
                     } label: {
                         CircleIconView(systemName: "ellipsis")
                     }
-                    .disabled(viewModel.list?.items.isEmpty ?? true)
                 }
             }
         }
