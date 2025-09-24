@@ -56,7 +56,12 @@ final class ShoppingListViewModel: ObservableObject {
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
-        guard let newList = try? await dataManager.fetchShoppingList(with: listID) else { return }
+        guard let newList = try? await dataManager.fetchShoppingList(with: listID) else {
+            await MainActor.run {
+                coordinator?.back()
+            }
+            return
+        }
         if newList != list {
             list = newList
         }

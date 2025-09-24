@@ -220,12 +220,6 @@ struct ShoppingListView: View {
                             Label("list_settings", systemImage: "list.bullet.clipboard")
                         }
                         
-//                        Button {
-//                            viewModel.openShareManagement()
-//                        } label: {
-//                            Label("colaboration", systemImage: "person.2")
-//                        }
-                        
                         Button {
                             viewModel.openExportListOptions()
                         } label: {

@@ -86,7 +86,7 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     }
     
     private func loadList() async {
-        print("ShoppingListSettingsViewModel.loadCard() called")
+        print("ShoppingListSettingsViewModel.loadList() called")
         guard let newShoppingList = try? await dataManager.fetchShoppingList(with: shoppingList.id) else { return }
         if shoppingList != newShoppingList {
             shoppingList = newShoppingList
