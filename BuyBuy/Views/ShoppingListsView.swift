@@ -345,7 +345,8 @@ struct ShoppingListsView: View {
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
         userActivityTracker: tracker,
-        coordinator: coordinator
+        coordinator: coordinator,
+        preferences: preferences
     )
     let mockHapticEngine = MockHapticEngine()
     
@@ -364,7 +365,8 @@ struct ShoppingListsView: View {
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
         userActivityTracker: tracker,
-        coordinator: coordinator
+        coordinator: coordinator,
+        preferences: preferences
     )
     let mockHapticEngine = MockHapticEngine()
     
@@ -383,7 +385,8 @@ struct ShoppingListsView: View {
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
         userActivityTracker: tracker,
-        coordinator: coordinator
+        coordinator: coordinator,
+        preferences: preferences
     )
     let mockHapticEngine = MockHapticEngine()
     
@@ -402,7 +405,8 @@ struct ShoppingListsView: View {
     let mockViewModel = ShoppingListsViewModel(
         dataManager: dataManager,
         userActivityTracker: tracker,
-        coordinator: coordinator
+        coordinator: coordinator,
+        preferences: preferences
     )
     let mockHapticEngine = MockHapticEngine()
     

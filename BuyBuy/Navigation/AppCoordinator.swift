@@ -219,7 +219,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 viewModel: ShoppingListsViewModel(
                     dataManager: self.dataManager,
                     userActivityTracker: self.userActivityTracker,
-                    coordinator: self
+                    coordinator: self,
+                    preferences: self.preferences
                 ),
                 hapticEngine: self.hapticEngine
             )

@@ -13,7 +13,7 @@ extension ShoppingList {
         self.id = entity.id ?? UUID()
         self.name = entity.name ?? ""
         self.note = entity.note
-        self.order = Int(entity.order)
+        // self.order = Int(entity.order) // TODO: Order attribute is not necessary any more. Remove it in next CoreData model.
         self.icon = ListIcon(rawValue: entity.icon ?? "") ?? .default
         self.color = ListColor(rawValue: entity.color ?? "") ?? .default
         self.items = (entity.items as? Set<ShoppingItemEntity>)?.map(ShoppingItem.init) ?? []
@@ -35,7 +35,7 @@ extension ShoppingListEntity {
         self.id = model.id
         self.name = model.name
         self.note = model.note
-        self.order = Int64(model.order)
+        // self.order = Int64(model.order) // TODO: Order attribute is not necessary any more. Remove it in next CoreData model.
         self.icon = model.icon.rawValue
         self.color = model.color.rawValue
         

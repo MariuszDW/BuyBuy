@@ -26,7 +26,6 @@ actor DataRepository: DataRepositoryProtocol {
 
         let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \ShoppingListEntity.order, ascending: true),
             NSSortDescriptor(keyPath: \ShoppingListEntity.id, ascending: true)
         ]
 

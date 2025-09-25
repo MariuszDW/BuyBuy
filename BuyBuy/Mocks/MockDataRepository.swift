@@ -219,7 +219,7 @@ extension MockDataRepository {
             name: "Desk Organizer", note: "Pen holder, tray, sticky note box.",
             status: .pending, price: 9.99, quantity: 1, unit: ShoppingItemUnit(.piece),
             imageIDs: ["00000000-0001-0012-0001-000000000000", "00000000-0001-0012-0002-000000000000"])
-    ], order: 0, icon: .paperclip, color: .indigo, isShared: false, isOwner: true, participants: [])
+    ], icon: .paperclip, color: .indigo, isShared: false, isOwner: true, participants: [])
     
     static let list2 = ShoppingList(id: list2ID, name: "Fruits & Vegetables", items: [
         ShoppingItem(
@@ -270,7 +270,7 @@ extension MockDataRepository {
             id: UUID(uuidString: "00000000-0002-0012-0000-000000000000")!, order: 11, listID: list2ID,
             name: "Parsley", note: "Fresh bunch, for garnish.",
             status: .inactive, price: 0.99, quantity: 1, unit: ShoppingItemUnit(.piece))
-    ], order: 1, icon: .flora, color: .green, isShared: false, isOwner: true, participants: [])
+    ], icon: .flora, color: .green, isShared: false, isOwner: true, participants: [])
     
     static let list3 = ShoppingList(id: list3ID, name: "Groceries", items: [
         ShoppingItem(
@@ -321,7 +321,7 @@ extension MockDataRepository {
             id: UUID(uuidString: "00000000-0003-0012-0000-000000000000")!, order: 11, listID: list3ID,
             name: "Canned Chickpeas", note: "400g, for hummus and salads.",
             status: .inactive, price: 0.89, quantity: 2, unit: ShoppingItemUnit(.piece))
-    ], order: 2, icon: .cart, color: .red, isShared: true, isOwner: false, participants: [
+    ], icon: .cart, color: .red, isShared: true, isOwner: false, participants: [
         SharingParticipantInfo(displayName: "Igor", role: .publicUser, acceptanceStatus: .accepted, permission: .readWrite, userRecordID: CKRecord.ID(recordName: "rec1")),
         SharingParticipantInfo(displayName: "Irena", role: .publicUser, acceptanceStatus: .accepted, permission: .readOnly, userRecordID: CKRecord.ID(recordName: "rec1")),
         SharingParticipantInfo(displayName: "Natalia", role: .publicUser, acceptanceStatus: .pending, permission: .readWrite, userRecordID: CKRecord.ID(recordName: "rec1"))
@@ -376,7 +376,7 @@ extension MockDataRepository {
             id: UUID(uuidString: "00000000-0004-0012-0000-000000000000")!, order: 11, listID: list4ID,
             name: "Sanding Paper P120", note: "230×280mm, medium grit, pack of 10.",
             status: .inactive, price: 3.49, quantity: 1, unit: ShoppingItemUnit(.piece))
-    ], order: 3, icon: .tool, color: .gray, isShared: true, isOwner: true, participants: [
+    ], icon: .tool, color: .gray, isShared: true, isOwner: true, participants: [
         SharingParticipantInfo(displayName: "Igor", role: .owner, acceptanceStatus: .accepted, permission: .readWrite, userRecordID: CKRecord.ID(recordName: "rec1")),
         SharingParticipantInfo(displayName: "Irena", role: .publicUser, acceptanceStatus: .accepted, permission: .readOnly, userRecordID: CKRecord.ID(recordName: "rec2")),
         SharingParticipantInfo(displayName: "Natalia", role: .publicUser, acceptanceStatus: .pending, permission: .readWrite, userRecordID: CKRecord.ID(recordName: "rec3"))
@@ -411,7 +411,7 @@ extension MockDataRepository {
             id: UUID(uuidString: "00000000-0005-0007-0000-000000000000")!, order: 6, listID: list5ID,
             name: "Leather Gloves", note: "Black, size M.",
             status: .pending, price: 25.00, quantity: 1, unit: ShoppingItemUnit(string: "pair"))
-    ], order: 4, icon: .person, color: .magenta, isShared: false, isOwner: true, participants: [])
+    ], icon: .person, color: .magenta, isShared: false, isOwner: true, participants: [])
     
     static let deletedItems: [ShoppingItem] = [
         ShoppingItem(

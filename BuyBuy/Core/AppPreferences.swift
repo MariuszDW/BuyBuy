@@ -23,6 +23,8 @@ final class AppPreferences: AppPreferencesProtocol {
         static let cloudSyncEnabled = "cloud_sync_enabled"
         static let hapticsEnabled = "haptics_enabled"
         static let appVersion = "app_version"
+        static let shoppingListsOrderDevice = "shopping_lists_order_device"
+        static let shoppingListsOrderCloud  = "shopping_lists_order_cloud"
         
         // tips
         static let tipCounts = "act_tip_counts"
@@ -98,6 +100,17 @@ final class AppPreferences: AppPreferencesProtocol {
             case .metric: return isMetricUnitsEnabled
             case .imperial: return isImperialUnitsEnabled
             }
+        }
+    }
+    
+    var shoppingListsOrder: [UUID] {
+        get {
+            let key = isCloudSyncEnabled ? Keys.shoppingListsOrderCloud : Keys.shoppingListsOrderDevice
+            return (defaults.array(forKey: key) as? [String])?.compactMap(UUID.init) ?? []
+        }
+        set {
+            let key = isCloudSyncEnabled ? Keys.shoppingListsOrderCloud : Keys.shoppingListsOrderDevice
+            defaults.set(newValue.map(\.uuidString), forKey: key)
         }
     }
     

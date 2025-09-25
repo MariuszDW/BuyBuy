@@ -11,7 +11,6 @@ struct ShoppingList: Identifiable, Hashable {
     let id: UUID
     var name: String
     var note: String?
-    var order: Int
     var icon: ListIcon
     var color: ListColor
     var items: [ShoppingItem] = []
@@ -20,11 +19,10 @@ struct ShoppingList: Identifiable, Hashable {
     var isOwner: Bool
     var sharingParticipants: [SharingParticipantInfo] = []
     
-    init(id: UUID = UUID(), name: String = "", note: String? = nil, items: [ShoppingItem] = [], order: Int, icon: ListIcon = .default, color: ListColor = .default, isShared: Bool = false, isOwner: Bool = true, participants: [SharingParticipantInfo] = []) {
+    init(id: UUID = UUID(), name: String = "", note: String? = nil, items: [ShoppingItem] = [], icon: ListIcon = .default, color: ListColor = .default, isShared: Bool = false, isOwner: Bool = true, participants: [SharingParticipantInfo] = []) {
         self.id = id
         self.name = name
         self.note = note
-        self.order = order
         self.icon = icon
         self.color = color
         self.items = items
