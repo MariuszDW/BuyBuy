@@ -3,12 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>APP_RELEASE_DATE</key>
-	<string>2025-09-07</string>
+	<string>2025-09-25</string>
+	<key>CKSharingSupported</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
 	</array>
-	<key>CKSharingSupported</key>
-	<true/>
 </dict>
 </plist>
