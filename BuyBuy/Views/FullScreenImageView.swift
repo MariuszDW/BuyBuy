@@ -154,7 +154,6 @@ struct FullScreenImageView: View {
 
 #Preview("Light") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -167,7 +166,6 @@ struct FullScreenImageView: View {
 
 #Preview("Dark") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -180,7 +178,6 @@ struct FullScreenImageView: View {
 
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -193,7 +190,6 @@ struct FullScreenImageView: View {
 
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import CloudKit
 
 protocol DataRepositoryProtocol: Sendable {
+    var coreDataStack: CoreDataStackProtocol { get }
+    
     // Shopping lists
     func fetchShoppingLists() async throws -> [ShoppingList]
     func fetchShoppingList(with id: UUID) async throws -> ShoppingList?
@@ -15,10 +18,13 @@ protocol DataRepositoryProtocol: Sendable {
     func deleteShoppingList(with id: UUID) async throws
     func deleteShoppingLists(with ids: [UUID]) async throws
     func deleteShoppingLists() async throws
+    
+    // Sharing shopping list
+    func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare?
 
     // Shopping items
     func fetchShoppingItems() async throws -> [ShoppingItem]
-    func fetchShoppingItemsOfList(with listID: UUID) async throws -> [ShoppingItem]
+    func fetchShoppingItemsOfList(with id: UUID) async throws -> [ShoppingItem]
     func fetchShoppingItem(with id: UUID) async throws -> ShoppingItem?
     func fetchShoppingItems(with ids: [UUID]) async throws -> [ShoppingItem]
     func fetchDeletedShoppingItems() async throws -> [ShoppingItem]

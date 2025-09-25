@@ -171,7 +171,6 @@ struct DeletedItemsView: View {
 
 #Preview("Light/items") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -187,7 +186,6 @@ struct DeletedItemsView: View {
 
 #Preview("Dark/items") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -203,7 +201,6 @@ struct DeletedItemsView: View {
 
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(deletedItems: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -219,7 +216,6 @@ struct DeletedItemsView: View {
 
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(deletedItems: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

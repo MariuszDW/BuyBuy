@@ -10,37 +10,55 @@ import CoreData
 import CloudKit
 
 actor DataRepository: DataRepositoryProtocol {
-    private let coreDataStack: CoreDataStackProtocol
+    let coreDataStack: CoreDataStackProtocol
     private var saveQueue: SaveQueue {
         coreDataStack.saveQueue
     }
     
-    init(coreDataStack: CoreDataStackProtocol) {
-        self.coreDataStack = coreDataStack
+    init(useCloud: Bool) {
+        self.coreDataStack = CoreDataStack(useCloudSync: useCloud)
     }
     
     // MARK: - Shopping lists
     
     func fetchShoppingLists() async throws -> [ShoppingList] {
         let context = coreDataStack.viewContext
-        return try await context.perform {
-            let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-            request.sortDescriptors = [
-                NSSortDescriptor(keyPath: \ShoppingListEntity.order, ascending: true),
-                NSSortDescriptor(keyPath: \ShoppingListEntity.id, ascending: true)
-            ]
-            let entities = try context.fetch(request)
-            return entities.map(ShoppingList.init)
+
+        let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \ShoppingListEntity.id, ascending: true)
+        ]
+
+        let entities = try context.fetch(request)
+        var shares: [NSManagedObjectID: CKShare] = [:]
+
+        if coreDataStack.isCloud,
+           let cloudContainer = coreDataStack.container as? NSPersistentCloudKitContainer {
+            shares = (try? cloudContainer.fetchShares(matching: entities.map(\.objectID))) ?? [:]
         }
+
+        let lists: [ShoppingList] = entities.map { entity in
+            let share = shares[entity.objectID]
+            return ShoppingList(entity: entity, share: share)
+        }
+
+        return lists
     }
     
     func fetchShoppingList(with id: UUID) async throws -> ShoppingList? {
         let context = coreDataStack.viewContext
-        return try await context.perform {
-            let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-            return try context.fetch(request).first.map(ShoppingList.init)
+
+        let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        guard let entity = try context.fetch(request).first else { return nil }
+        
+        var share: CKShare? = nil
+        if coreDataStack.isCloud, let cloudContainer = coreDataStack.container as? NSPersistentCloudKitContainer {
+            share = try? cloudContainer.fetchShares(matching: [entity.objectID])[entity.objectID]
         }
+
+        let list = ShoppingList(entity: entity, share: share)
+        return list
     }
     
     func addOrUpdateShoppingList(_ list: ShoppingList) async throws {
@@ -92,6 +110,40 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
+    // MARK: - Sharing shopping list
+    
+    func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare? {
+        guard let container = coreDataStack.container as? NSPersistentCloudKitContainer else {
+            return nil
+        }
+        let context = coreDataStack.viewContext
+
+        let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+
+        guard let entity = try context.fetch(request).first else { return nil }
+
+        let shares = try container.fetchShares(matching: [entity.objectID])
+        if let existingShare = shares[entity.objectID] {
+            return existingShare
+        }
+        
+        if context.hasChanges {
+            try context.save()
+        }
+
+        // Create share only if I am the owner.
+        do {
+            let (_, share, _) = try await container.share([entity], to: nil)
+            return share
+        } catch let error as CKError where error.code == .permissionFailure {
+            // A participant cannot create a share - return nil instead of throwing an error.
+            return nil
+        } catch {
+            throw error
+        }
+    }
+    
     // MARK: - Shopping items
     
     func fetchShoppingItems() async throws -> [ShoppingItem] {
@@ -107,11 +159,11 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
-    func fetchShoppingItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
+    func fetchShoppingItemsOfList(with id: UUID) async throws -> [ShoppingItem] {
         let context = coreDataStack.viewContext
         return try await context.perform {
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "list.id == %@", listID as CVarArg)
+            request.predicate = NSPredicate(format: "list.id == %@", id as CVarArg)
             request.sortDescriptors = [
                 NSSortDescriptor(keyPath: \ShoppingItemEntity.order, ascending: true),
                 NSSortDescriptor(keyPath: \ShoppingItemEntity.id, ascending: true)
@@ -456,7 +508,8 @@ actor DataRepository: DataRepositoryProtocol {
     // MARK: - CloudKit
     
     nonisolated func fetchRemoteChangesFromCloudKit() {
-        print("DataRepository.fetchRemoteChangesFromCloudKit()")
-        NotificationCenter.default.post(name: .NSPersistentStoreRemoteChange, object: nil)
+        Task { @MainActor in
+            await coreDataStack.fetchRemoteChanges()
+        }
     }
 }

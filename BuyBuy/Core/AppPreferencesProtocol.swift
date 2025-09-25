@@ -16,6 +16,7 @@ protocol AppPreferencesProtocol {
     var isHapticsEnabled: Bool { get set }
     var lastAppVersion: String { get set }
     var unitSystems: [MeasureUnitSystem] { get }
+    var shoppingListsOrder: [UUID] { get set }
     
     // User activity tracker
     var installationDate: Date? { get set }

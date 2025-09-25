@@ -158,7 +158,6 @@ struct AppSettingsView: View {
 
 #Preview("Light") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let mockHapticEngine = MockHapticEngine()
@@ -176,7 +175,6 @@ struct AppSettingsView: View {
 
 #Preview("Dark") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let mockHapticEngine = MockHapticEngine()

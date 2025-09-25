@@ -19,7 +19,7 @@ public class ShoppingItem1ToShoppingItem2Policy: NSEntityMigrationPolicy {
 
         guard let dInstance = manager.destinationInstances(forEntityMappingName: mapping.name,
                                                            sourceInstances: [sInstance]).first else {
-            NSLog("ShoppingItemMigrationPolicy: must return destination instance")
+            print("ShoppingItemMigrationPolicy: must return destination instance")
             return
         }
         

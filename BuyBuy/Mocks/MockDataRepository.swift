@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import CloudKit
 
-actor MockDataRepository: DataRepositoryProtocol {
+actor MockDataRepository: @preconcurrency DataRepositoryProtocol {
+    var coreDataStack: CoreDataStackProtocol
+    
     let shoppingLists: [ShoppingList]
     let loyaltyCards: [LoyaltyCard]
     let deletedItems: [ShoppingItem]
@@ -15,6 +18,7 @@ actor MockDataRepository: DataRepositoryProtocol {
     init(lists: [ShoppingList] = MockDataRepository.allLists,
          cards: [LoyaltyCard] = MockDataRepository.allCards,
          deletedItems: [ShoppingItem] = MockDataRepository.deletedItems) {
+        self.coreDataStack = MockCoreDataStack()
         self.shoppingLists = lists
         self.loyaltyCards = cards
         self.deletedItems = deletedItems
@@ -38,14 +42,24 @@ actor MockDataRepository: DataRepositoryProtocol {
     
     func deleteShoppingLists() async throws {}
     
+    // MARK: - Sharing shopping list
+    
+    func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare? {
+        return nil
+    }
+    
+    func deleteShoppingListShare(for id: UUID) async throws {}
+    
+    func removeParticipantFromShoppingListShare(for id: UUID, participantRecordID: CKRecord.ID) async throws {}
+    
     // MARK: - Shopping items
 
     func fetchShoppingItems() async throws -> [ShoppingItem] {
         return shoppingLists.flatMap { $0.items }
     }
 
-    func fetchShoppingItemsOfList(with listID: UUID) async throws -> [ShoppingItem] {
-        return shoppingLists.first(where: { $0.id == listID })?.items ?? []
+    func fetchShoppingItemsOfList(with id: UUID) async throws -> [ShoppingItem] {
+        return shoppingLists.first(where: { $0.id == id })?.items ?? []
     }
 
     func fetchShoppingItem(with id: UUID) async throws -> ShoppingItem? {
@@ -205,7 +219,7 @@ extension MockDataRepository {
             name: "Desk Organizer", note: "Pen holder, tray, sticky note box.",
             status: .pending, price: 9.99, quantity: 1, unit: ShoppingItemUnit(.piece),
             imageIDs: ["00000000-0001-0012-0001-000000000000", "00000000-0001-0012-0002-000000000000"])
-    ], order: 0, icon: .paperclip, color: .indigo)
+    ], icon: .paperclip, color: .indigo, isShared: false, isOwner: true, participants: [])
     
     static let list2 = ShoppingList(id: list2ID, name: "Fruits & Vegetables", items: [
         ShoppingItem(
@@ -256,7 +270,7 @@ extension MockDataRepository {
             id: UUID(uuidString: "00000000-0002-0012-0000-000000000000")!, order: 11, listID: list2ID,
             name: "Parsley", note: "Fresh bunch, for garnish.",
             status: .inactive, price: 0.99, quantity: 1, unit: ShoppingItemUnit(.piece))
-    ], order: 1, icon: .flora, color: .green)
+    ], icon: .flora, color: .green, isShared: false, isOwner: true, participants: [])
     
     static let list3 = ShoppingList(id: list3ID, name: "Groceries", items: [
         ShoppingItem(
@@ -307,7 +321,11 @@ extension MockDataRepository {
             id: UUID(uuidString: "00000000-0003-0012-0000-000000000000")!, order: 11, listID: list3ID,
             name: "Canned Chickpeas", note: "400g, for hummus and salads.",
             status: .inactive, price: 0.89, quantity: 2, unit: ShoppingItemUnit(.piece))
-    ], order: 2, icon: .cart, color: .red)
+    ], icon: .cart, color: .red, isShared: true, isOwner: false, participants: [
+        SharingParticipantInfo(displayName: "Igor", role: .publicUser, acceptanceStatus: .accepted, permission: .readWrite, userRecordID: CKRecord.ID(recordName: "rec1")),
+        SharingParticipantInfo(displayName: "Irena", role: .publicUser, acceptanceStatus: .accepted, permission: .readOnly, userRecordID: CKRecord.ID(recordName: "rec1")),
+        SharingParticipantInfo(displayName: "Natalia", role: .publicUser, acceptanceStatus: .pending, permission: .readWrite, userRecordID: CKRecord.ID(recordName: "rec1"))
+    ])
     
     static let list4 = ShoppingList(id: list4ID, name: "Tools & Hardware", items: [
         ShoppingItem(
@@ -358,7 +376,11 @@ extension MockDataRepository {
             id: UUID(uuidString: "00000000-0004-0012-0000-000000000000")!, order: 11, listID: list4ID,
             name: "Sanding Paper P120", note: "230×280mm, medium grit, pack of 10.",
             status: .inactive, price: 3.49, quantity: 1, unit: ShoppingItemUnit(.piece))
-    ], order: 3, icon: .tool, color: .gray)
+    ], icon: .tool, color: .gray, isShared: true, isOwner: true, participants: [
+        SharingParticipantInfo(displayName: "Igor", role: .owner, acceptanceStatus: .accepted, permission: .readWrite, userRecordID: CKRecord.ID(recordName: "rec1")),
+        SharingParticipantInfo(displayName: "Irena", role: .publicUser, acceptanceStatus: .accepted, permission: .readOnly, userRecordID: CKRecord.ID(recordName: "rec2")),
+        SharingParticipantInfo(displayName: "Natalia", role: .publicUser, acceptanceStatus: .pending, permission: .readWrite, userRecordID: CKRecord.ID(recordName: "rec3"))
+    ])
     
     static let list5 = ShoppingList(id: list5ID, name: "Clothing Store", items: [
         ShoppingItem(
@@ -389,7 +411,7 @@ extension MockDataRepository {
             id: UUID(uuidString: "00000000-0005-0007-0000-000000000000")!, order: 6, listID: list5ID,
             name: "Leather Gloves", note: "Black, size M.",
             status: .pending, price: 25.00, quantity: 1, unit: ShoppingItemUnit(string: "pair"))
-    ], order: 4, icon: .person, color: .magenta)
+    ], icon: .person, color: .magenta, isShared: false, isOwner: true, participants: [])
     
     static let deletedItems: [ShoppingItem] = [
         ShoppingItem(

@@ -7,14 +7,16 @@
 
 import Foundation
 import SwiftUI
+import CloudKit
 
 @MainActor
 protocol DataManagerProtocol {
     var cloud: Bool { get }
     var coreDataStack: CoreDataStackProtocol { get }
     var storageManager: StorageManagerProtocol { get }
+    var persistentStoreChangeObserver: PersistentStoreChangeObserverProtocol { get }
     
-    func setup(useCloud: Bool) async
+    func setup(useCloud: Bool)
     
     // Shopping lists
     func fetchShoppingLists() async throws -> [ShoppingList]
@@ -23,10 +25,13 @@ protocol DataManagerProtocol {
     func deleteShoppingList(with id: UUID, moveItemsToDeleted: Bool) async throws
     func deleteShoppingLists(with ids: [UUID], moveItemsToDeleted: Bool) async throws
     func deleteShoppingLists() async throws
+    
+    // Shopping list sharing
+    func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare?
 
     // Shopping items
     func fetchShoppingItems() async throws -> [ShoppingItem]
-    func fetchShoppingItemsOfList(with listID: UUID) async throws -> [ShoppingItem]
+    func fetchShoppingItemsOfList(with id: UUID) async throws -> [ShoppingItem]
     func fetchShoppingItem(with id: UUID) async throws -> ShoppingItem?
     func fetchDeletedShoppingItems() async throws -> [ShoppingItem]
     func addOrUpdateShoppingItem(_ item: ShoppingItem) async throws

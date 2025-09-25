@@ -13,18 +13,11 @@ import Combine
 final class ShoppingListViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
     private var coordinator: (any AppCoordinatorProtocol)?
-    
-    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
-            guard let self = self else { return }
-            await self.loadList()
-        }
-    }()
-    
+    private var observerRegistered = false
     private let listID: UUID
+    
     @Published var list: ShoppingList?
     @Published var thumbnails: [String: UIImage] = [:]
-    
     @Published var sections: [ShoppingListSection] = [
         ShoppingListSection(status: .pending),
         ShoppingListSection(status: .purchased),
@@ -38,12 +31,19 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func startObserving() {
-        remoteChangeObserver.startObserving()
+        guard !observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.addObserver(self) { [weak self] in
+            guard let self else { return }
+            await self.loadList()
+        }
+        observerRegistered = true
         print("ShoppingListViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
-        remoteChangeObserver.stopObserving()
+        guard observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.removeObserver(self)
+        observerRegistered = false
         print("ShoppingListViewModel - Stopped observing remote changes")
     }
     
@@ -56,7 +56,13 @@ final class ShoppingListViewModel: ObservableObject {
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
-        guard let newList = try? await dataManager.fetchShoppingList(with: listID) else { return }
+        guard let newList = try? await dataManager.fetchShoppingList(with: listID) else {
+            list = nil
+            await MainActor.run {
+                coordinator?.back()
+            }
+            return
+        }
         if newList != list {
             list = newList
         }
@@ -163,6 +169,18 @@ final class ShoppingListViewModel: ObservableObject {
     
     func openLoyaltyCards() {
         coordinator?.openLoyaltyCardList()
+    }
+    
+    func openShareManagement() {
+        guard let list = list else { return }
+        Task {
+            await coordinator?.openShoppingListShareManagement(with: list.id, title: list.name, onDismiss: {_ in })
+        }
+    }
+    
+    func openListSettings() {
+        guard let list = list else { return }
+        coordinator?.openShoppingListSettings(list, isNew: false, onDismiss: {_ in })
     }
     
     func openExportListOptions() {

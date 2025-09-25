@@ -150,8 +150,8 @@ struct ShoppingItemDetailsView: View {
                 ForEach(lists, id: \.id) { list in
                     Button {
                         focusedField = nil
-                        viewModel.shoppingItem.listID = list.id
                         Task {
+                            await viewModel.moveToShoppingList(with: list.id)
                             viewModel.finalizeInput()
                         }
                     } label: {
@@ -403,7 +403,6 @@ struct ShoppingItemDetailsView: View {
 
 #Preview("Light") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -419,7 +418,6 @@ struct ShoppingItemDetailsView: View {
 
 #Preview("Dark") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(cards: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

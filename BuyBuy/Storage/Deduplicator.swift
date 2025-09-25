@@ -8,21 +8,41 @@
 import CoreData
 
 final class Deduplicator {
-    static func deduplicateAndMergeAllEntities(in context: NSManagedObjectContext) throws {
-        let entityNames = [
-            "ShoppingListEntity",
-            "ShoppingItemEntity",
-            "LoyaltyCardEntity",
-            "BBImageEntity",
-            "BBThumbnailEntity"
-        ]
+    static func deduplicate(from transactions: [NSPersistentHistoryTransaction]? = nil, in context: NSManagedObjectContext) throws {
+        let changedEntityNames: Set<String>
         
-        for entityName in entityNames {
-            try deduplicateAndMerge(entityName: entityName, in: context)
+        if let transactions, !transactions.isEmpty {
+            var names = Set<String>()
+            for transaction in transactions {
+                for change in transaction.changes ?? [] {
+                    if let entityName = change.changedObjectID.entity.name {
+                        names.insert(entityName)
+                    }
+                }
+            }
+            changedEntityNames = names
+        } else {
+            changedEntityNames = [
+                "ShoppingListEntity", // TODO: Zmienic te nazwy na moze jakos pobierane z nazw klas.
+                "ShoppingItemEntity",
+                "LoyaltyCardEntity",
+                "BBImageEntity",
+                "BBThumbnailEntity"
+            ]
         }
-        
-        if context.hasChanges {
-            try context.save()
+
+        context.perform {
+            do {
+                for entityName in changedEntityNames {
+                    try deduplicateAndMerge(entityName: entityName, in: context)
+                }
+
+                if context.hasChanges {
+                    try context.save()
+                }
+            } catch {
+                print("Deduplication failed: \(error)")
+            }
         }
     }
     
@@ -60,26 +80,20 @@ final class Deduplicator {
             let sourceValue = source.value(forKey: attribute)
             let targetValue = target.value(forKey: attribute)
 
-            // case 1 - Source has value, target is nil → copy source to target
+            // Source has value, target is nil → copy
             if sourceValue != nil && targetValue == nil {
                 target.setValue(sourceValue, forKey: attribute)
                 continue
             }
 
-            // case 2 - Both have values and are different → use updatedAt to decide
+            // Both have values and are different → use updatedAt
             if let s = sourceValue, let t = targetValue, !isEqual(s, t, attributeType: attrDesc.attributeType) {
                 if sourceUpdatedAt > targetUpdatedAt {
                     target.setValue(s, forKey: attribute)
                 }
                 continue
             }
-
-            // case 3 - Target has value, source is nil → leave target as is
-            if sourceValue == nil && targetValue != nil {
-                continue
-            }
-
-            // case 4 - Both nil → do nothing
+            // Other cases (target has value, source nil) → do nothing
         }
     }
 

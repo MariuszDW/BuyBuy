@@ -84,11 +84,11 @@ final class UserActivityTracker: UserActivityTrackerProtocol {
         shouldShowTipReminder = daysSinceLastShown >= intervalDays
     }
     
-    func appDidEnterForeground() {
+    func appDidActive() {
         lastActiveStartDate = Date.now
     }
 
-    func appDidEnterBackground() {
+    func appDidInactive() {
         guard let start = lastActiveStartDate else { return }
         let duration = Date().timeIntervalSince(start)
         preferences.totalActiveTime += duration

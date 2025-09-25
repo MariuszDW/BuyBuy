@@ -13,14 +13,7 @@ import Combine
 final class DeletedItemsViewModel: ObservableObject {
     private let dataManager: DataManagerProtocol
     private weak var coordinator: (any AppCoordinatorProtocol)?
-    
-    lazy var remoteChangeObserver: PersistentStoreChangeObserver = {
-        PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack) { [weak self] in
-            guard let self = self else { return }
-            await self.loadItems()
-        }
-    }()
-    
+    private var observerRegistered = false
     @Published var items: [ShoppingItem]?
     @Published var thumbnails: [String: UIImage] = [:]
     
@@ -30,13 +23,20 @@ final class DeletedItemsViewModel: ObservableObject {
     }
     
     func startObserving() {
-        remoteChangeObserver.startObserving()
-        print("DeletedItemsViewModel - Started observing remote changes")
+        guard !observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.addObserver(self) { [weak self] in
+            guard let self else { return }
+            await self.loadItems()
+        }
+        observerRegistered = true
+        print("ShoppingListSettingsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
-        remoteChangeObserver.stopObserving()
-        print("DeletedItemsViewModel - Stopped observing remote changes")
+        guard observerRegistered else { return }
+        dataManager.persistentStoreChangeObserver.removeObserver(self)
+        observerRegistered = false
+        print("ShoppingListSettingsViewModel - Stopped observing remote changes")
     }
     
     func loadItems(fullRefresh: Bool = false) async {

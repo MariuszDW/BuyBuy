@@ -93,7 +93,7 @@ class DataModelMigrator {
     
     private func forceWALCheckpointingForStore(at: URL) {
         guard FileManager.default.fileExists(atPath: storeURL.path) else {
-            print("ℹ️ Store file not found, skipping checkpointing for \(storeURL.lastPathComponent)")
+            print("Store file not found, skipping checkpointing for \(storeURL.lastPathComponent)")
             return
         }
         

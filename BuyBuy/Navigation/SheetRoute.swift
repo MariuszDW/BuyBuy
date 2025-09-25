@@ -7,6 +7,7 @@
 
 import SwiftUI
 import StoreKit
+import CloudKit
 
 enum SheetRoute {
     case shoppingListSettings(ShoppingList, Bool)
@@ -19,6 +20,7 @@ enum SheetRoute {
     case documentExporter(ExportedData)
     case tipJar
     case thankYou(transaction: StoreKit.Transaction)
+    case sharingController(share: CKShare, title: String)
     case appInitialSetup
     
     func isSameKind(as other: SheetRoute) -> Bool {
@@ -33,6 +35,7 @@ enum SheetRoute {
             (.documentExporter, .documentExporter),
             (.tipJar, .tipJar),
             (.thankYou, .thankYou),
+            (.sharingController, .sharingController),
             (.appInitialSetup, .appInitialSetup):
             return true
         default:

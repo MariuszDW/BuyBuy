@@ -30,6 +30,9 @@ struct ShoppingListSettingsView: View {
                         nameField
                         iconAndColorSection(width: geometry.size.width)
                         iconsGridSection(width: geometry.size.width)
+//                        if viewModel.sharingAvailable {
+//                            sharingSection()
+//                        }
                     }
                     .padding()
                 }
@@ -207,13 +210,53 @@ struct ShoppingListSettingsView: View {
         .background(Color.bb.sheet.section.background)
         .cornerRadius(fieldCornerRadius)
     }
+    
+//    @ViewBuilder
+//    private func sharingSection() -> some View {
+//        Button {
+//            Task {
+//                await viewModel.openShareManagement()
+//            }
+//        } label: {
+//            Label("colaboration", systemImage: "person.2.fill")
+//                .frame(maxWidth: .infinity)
+//        }
+//        .buttonStyle(BBPlainButtonStyle())
+//    }
 }
 
 // MARK: - Preview
 
-#Preview("Light") {
+#Preview("Light/cloud/participant") {
+    let dataManager = DataManager(useCloud: true,
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
+    let viewModel = ShoppingListSettingsViewModel(
+        list: MockDataRepository.list3,
+        dataManager: dataManager,
+        coordinator: coordinator)
+    
+    ShoppingListSettingsView(viewModel: viewModel)
+        .preferredColorScheme(.light)
+}
+
+#Preview("Dark/cloud/owner") {
+    let dataManager = DataManager(useCloud: true,
+                                  repository: MockDataRepository(lists: []))
+    let preferences = MockAppPreferences()
+    let coordinator = AppCoordinator(preferences: preferences)
+    let viewModel = ShoppingListSettingsViewModel(
+        list: MockDataRepository.list4,
+        dataManager: dataManager,
+        coordinator: coordinator)
+    
+    ShoppingListSettingsView(viewModel: viewModel)
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Light/device") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository(lists: []))
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -224,19 +267,4 @@ struct ShoppingListSettingsView: View {
     
     ShoppingListSettingsView(viewModel: viewModel)
         .preferredColorScheme(.light)
-}
-
-#Preview("Dark") {
-    let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
-                                  repository: MockDataRepository(lists: []))
-    let preferences = MockAppPreferences()
-    let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = ShoppingListSettingsViewModel(
-        list: MockDataRepository.list1,
-        dataManager: dataManager,
-        coordinator: coordinator)
-    
-    ShoppingListSettingsView(viewModel: viewModel)
-        .preferredColorScheme(.dark)
 }

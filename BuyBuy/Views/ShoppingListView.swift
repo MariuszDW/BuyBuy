@@ -177,7 +177,7 @@ struct ShoppingListView: View {
                             await viewModel.setStatus(status, itemID: item.id)
                         }
                     } label: {
-                        Label(status.rawValue, systemImage: status.imageSystemName)
+                        Label(status.localizedName, systemImage: status.imageSystemName)
                     }
                     .tint(status.color)
                 }
@@ -213,7 +213,13 @@ struct ShoppingListView: View {
                         } label: {
                             Label("edit_list", systemImage: "pencil")
                         }
-                        // .accessibilityLabel("Edit")
+                        .disabled(viewModel.list?.items.isEmpty ?? true)
+                        
+                        Button {
+                            viewModel.openListSettings()
+                        } label: {
+                            Label("list_settings", systemImage: "list.bullet.clipboard")
+                        }
                         
                         Button {
                             viewModel.openExportListOptions()
@@ -231,7 +237,6 @@ struct ShoppingListView: View {
                     } label: {
                         CircleIconView(systemName: "ellipsis")
                     }
-                    .disabled(viewModel.list?.items.isEmpty ?? true)
                 }
             }
         }
@@ -371,7 +376,6 @@ struct ShoppingListView: View {
 
 #Preview("Light/items") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -388,7 +392,6 @@ struct ShoppingListView: View {
 
 #Preview("Dark/items") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -405,7 +408,6 @@ struct ShoppingListView: View {
 
 #Preview("Light/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
@@ -422,7 +424,6 @@ struct ShoppingListView: View {
 
 #Preview("Dark/empty") {
     let dataManager = DataManager(useCloud: false,
-                                  coreDataStack: MockCoreDataStack(),
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)

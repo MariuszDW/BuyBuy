@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CloudKit
 
 @main
 struct BuyBuyApp: App {
@@ -13,14 +14,13 @@ struct BuyBuyApp: App {
     @StateObject var coordinator: AppCoordinator
     var memoryWarningObserver: MemoryWarningObserver
 
+    @UIApplicationDelegateAdaptor var appDelegate: AppDelegate
+
     init() {
         preferences = AppPreferences()
-        
-        AppUpdateManager(preferences: preferences).handleApplicationUpdate()
-        
         let appCoordinator = AppCoordinator(preferences: preferences)
         _coordinator = StateObject(wrappedValue: appCoordinator)
-        
+
         memoryWarningObserver = MemoryWarningObserver {
             appCoordinator.handleMemoryWarning()
         }
@@ -30,5 +30,30 @@ struct BuyBuyApp: App {
         WindowGroup {
             AppRootView(coordinator: coordinator)
         }
+    }
+}
+
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    func windowScene(_ windowScene: UIWindowScene,
+                     userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata) {
+        print("Enqueued pending share from warn start.")
+        AppCoordinator.enqueuePendingShare(cloudKitShareMetadata)
+    }
+}
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        if let cloudKitMetadata = options.cloudKitShareMetadata {
+            print("Enqueued pending share from cold start.")
+            AppCoordinator.enqueuePendingShare(cloudKitMetadata)
+        }
+
+        let config = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+        config.delegateClass = SceneDelegate.self
+        return config
     }
 }

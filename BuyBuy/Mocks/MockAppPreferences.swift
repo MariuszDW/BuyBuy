@@ -23,6 +23,7 @@ final class MockAppPreferences: AppPreferencesProtocol {
     var isCloudSyncEnabled: Bool = false
     var isHapticsEnabled: Bool = true
     var lastAppVersion: String = "1.0.0"
+    var shoppingListsOrder: [UUID] = []
     
     var legacyCloudImages: Bool = false
     var legacyDeviceImages: Bool = false

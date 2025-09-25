@@ -44,11 +44,9 @@ struct AppRootView: View {
         .onChange(of: scenePhase) { newPhase in
             switch newPhase {
             case .active:
-                Task {
-                    await coordinator.onAppForeground()
-                }
-            case .background:
-                coordinator.onAppBackground()
+                coordinator.onAppActive()
+            case .inactive:
+                coordinator.onAppInactive()
             default:
                 break
             }

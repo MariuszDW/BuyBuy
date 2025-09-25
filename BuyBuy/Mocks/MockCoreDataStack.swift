@@ -8,24 +8,38 @@
 import Foundation
 import CoreData
 
-final class MockCoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
-    let viewContext: NSManagedObjectContext
-    private let mockPersistentStoreCoordinator: NSPersistentStoreCoordinator
-    
-    private(set) lazy var saveQueue = SaveQueue(newContext: { [unowned self] in
-        self.newBackgroundContext()
-    })
-    
-    init() {
-        let managedObjectModel = NSManagedObjectModel()
-        mockPersistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-        viewContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        viewContext.persistentStoreCoordinator = mockPersistentStoreCoordinator
+final class MockCoreDataStack: CoreDataStackProtocol, @unchecked Sendable {
+    func fetchRemoteChanges() async {
     }
     
+    var privateCloudPersistentStore: NSPersistentStore? {
+        return nil
+    }
+    
+    var sharedCloudPersistentStore: NSPersistentStore? {
+        return nil
+    }
+    
+    var devicePersistentStore: NSPersistentStore? {
+        return nil
+    }
+    
+    var isCloud: Bool
+    let container: NSPersistentContainer
+    let viewContext: NSManagedObjectContext
+    private(set) lazy var saveQueue = SaveQueue(newContext: { NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType) })
+
+    init() {
+        isCloud = false
+        container = NSPersistentContainer(name: "MockContainer", managedObjectModel: NSManagedObjectModel())
+        viewContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+    }
+
     func newBackgroundContext() -> NSManagedObjectContext {
-        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        context.persistentStoreCoordinator = mockPersistentStoreCoordinator
-        return context
+        NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+    }
+
+    func teardown() async {
+        // none
     }
 }

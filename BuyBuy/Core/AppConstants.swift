@@ -28,7 +28,8 @@ struct AppConstants {
     
     static let coreDataModelName = "Model"
     static let localStoreFileName = "LocalStore.sqlite"
-    static let cloudStoreFileName = "CloudStore.sqlite"
+    static let privateCloudStoreFileName = "CloudStore.sqlite"
+    static let sharedCloudStoreFileName = "SharedStore.sqlite"
     
 #if BUYBUY_DEV
     static let tipIDs = ["small_tip_dev", "medium_tip_dev", "large_tip_dev"]

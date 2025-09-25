@@ -115,6 +115,7 @@ struct AppInitialSetupView: View {
         }
         .padding(.horizontal)
         .frame(maxWidth: 800)
+        .frame(maxWidth: .infinity, alignment: .center)
         .fixedSize(horizontal: false, vertical: true)
     }
     

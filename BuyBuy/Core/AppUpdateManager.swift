@@ -44,7 +44,7 @@ final class AppUpdateManager {
             preferences.legacyDeviceImages = true
         }
         
-        let localMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: false))
+        let localMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(fileName: AppConstants.localStoreFileName))
         do {
             try localMigrator.migrateIfNeeded()
         } catch {
@@ -52,7 +52,7 @@ final class AppUpdateManager {
             // TODO: handle an error
         }
         
-        let cloudMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(useCloud: true))
+        let cloudMigrator = DataModelMigrator(storeURL: CoreDataStack.storeURL(fileName: AppConstants.privateCloudStoreFileName))
         do {
             try cloudMigrator.migrateIfNeeded()
         } catch {
