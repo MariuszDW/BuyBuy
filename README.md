@@ -3,7 +3,8 @@
 BuyBuy is a shopping list app designed for simplicity and clarity. No ads, no subscriptions - it just works.
 
 The app:
-* contains no ads,
+
+* contains no ads, 
 * requires no subscription,
 * supports both light and dark mode,
 * works in two modes: Device (lists are stored locally) and iCloud (lists are synced across all devices signed in to the same Apple ID),
@@ -17,6 +18,7 @@ The app:
 * offers all features completely free of charge.
 
 The shopping list menu allows you to:
+
 * create an unlimited number of shopping lists,
 * define the name, icon, and color of each list,
 * reorder lists via drag and drop,
@@ -24,6 +26,7 @@ The shopping list menu allows you to:
 * manage sharing and collaborate on selected shopping lists.
 
 The shopping list view allows you to:
+
 * browse items in three sections: To Buy, Bought, Inactive,
 * view item details including name, note, image, unit, unit price, and quantity,
 * add new items,
@@ -37,6 +40,7 @@ The shopping list view allows you to:
 * export the list in various formats (with custom character encoding): Plain Text, Markdown, JSON, HTML, AmigaGuide.
 
 The item view allows you to:
+
 * move the item to another list,
 * set the item status: To Buy, Bought, Inactive,
 * define the item name,
@@ -50,18 +54,21 @@ The item view allows you to:
 * view images in full-screen with zoom.
 
 The loyalty card menu allows you to:
+
 * create new cards,
 * delete existing cards,
 * reorder cards,
 * view a selected card’s image.
 
 The loyalty card details view allows you to:
+
 * set the card’s name,
 * add an image/photo (from photo library or camera),
 * view the image in full-screen with zoom,
 * delete the image.
 
 Technical info:
+
 * iOS 16+,
 * SwiftUI,
 * Swift,
@@ -74,12 +81,12 @@ Technical info:
 * Light and dark mode support,
 * Pure native iOS - the app uses no third-party libraries.
 
-
 ## POLSKI
 
 BuyBuy to aplikacja do tworzenia list zakupów, zaprojektowana z myślą o prostocie i przejrzystości. Bez reklam, bez subskrypcji - po prostu działa.
 
-Aplikacja: 
+Aplikacja:
+
 * nie zawiera reklam,
 * nie wymaga subskrypcji,
 * obsługuje tryb jasny i ciemny,
@@ -93,14 +100,16 @@ Aplikacja:
 * działa zarówno w trybie pionowym, jak i poziomym, na iPhonie i iPadzie,
 * oferuje wszystkie funkcje całkowicie za darmo.
 
-Menu z listami zakupów pozwala: 
+Menu z listami zakupów pozwala:
+
 * tworzyć dowolną liczbę list zakupów,
 * definiować nazwę ikonę i kolor każdej listy,
 * zmieniać kolejność list metodą "przeciągnij i upuść",
 * wyświetlić listę kart lojalnościowych,
 * zarządzać współdzieleniem wybranej listy.
 
-Widok listy zakupów pozwala: 
+Widok listy zakupów pozwala:
+
 * przeglądać przedmioty w trzech sekcjach: do kupienia, kupione, nieaktywne,
 * widzieć szczegóły przedmiotów: nazwę, opis, obrazek, jednostkę, cenę jednostkową, liczbę,
 * dodawać przedmioty,
@@ -114,6 +123,7 @@ Widok listy zakupów pozwala:
 * wyeksportować listę do formatów (z wybranym kodowaniem znaków): czysty tekst, Markdown, JSON, HTML, AmigaGuide.
 
 Widok przedmiotu pozwala:
+
 * przenieść przedmiot na inną listę zakupów,
 * ustawić status przedmiotu: do kupienia, kupiony, nieaktywny,
 * zdefiniować nazwę przedmiotu,
@@ -126,19 +136,22 @@ Widok przedmiotu pozwala:
 * usuwać obrazki/zdjęcia przedmiotu,
 * wyświetlać pełnoekranowy, skalowany podgląd obrazków.
 
-Menu kart lojalnościowych pozwala: 
+Menu kart lojalnościowych pozwala:
+
 * tworzyć nowe karty,
 * kasować istniejące karty,
 * określać kolejność kart na liście,
 * wyświetlać obrazek wybranej karty.
 
-Widok szczegółów karty lojalnościowej pozwala: 
+Widok szczegółów karty lojalnościowej pozwala:
+
 * zdefiniować nazwę karty,
 * dodać obrazek/zdjęcie karty (z biblioteki zdjęć albo aparatu fotograficznego),
 * wyświetlić pełnoekranowy skalowany podgląd obrazka,
 * skasować obrazek.
 
-Techniczne informacje: 
+Techniczne informacje:
+
 * iOS 16+,
 * SwiftUI,
 * Swift,
