@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import CloudKit
+import os
 
 actor DataRepository: DataRepositoryProtocol {
     let coreDataStack: CoreDataStackProtocol
@@ -114,6 +115,7 @@ actor DataRepository: DataRepositoryProtocol {
     
     func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare? {
         guard let container = coreDataStack.container as? NSPersistentCloudKitContainer else {
+            os_log(.default, log: .main, "DataRepository.fetchShoppingListCKShare() - No CloudKitContainer.")
             return nil
         }
         let context = coreDataStack.viewContext
@@ -121,10 +123,14 @@ actor DataRepository: DataRepositoryProtocol {
         let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
 
-        guard let entity = try context.fetch(request).first else { return nil }
+        guard let entity = try context.fetch(request).first else {
+            os_log(.default, log: .main, "DataRepository.fetchShoppingListCKShare() - No ShoppingListEntity.")
+            return nil
+        }
 
         let shares = try container.fetchShares(matching: [entity.objectID])
         if let existingShare = shares[entity.objectID] {
+            os_log(.default, log: .main, "DataRepository.fetchShoppingListCKShare() - Use existing CKShare.")
             return existingShare
         }
         
@@ -135,11 +141,14 @@ actor DataRepository: DataRepositoryProtocol {
         // Create share only if I am the owner.
         do {
             let (_, share, _) = try await container.share([entity], to: nil)
+            try context.save()
             return share
         } catch let error as CKError where error.code == .permissionFailure {
             // A participant cannot create a share - return nil instead of throwing an error.
+            os_log(.default, log: .main, "DataRepository.fetchShoppingListCKShare() - PermissionFailure error.")
             return nil
         } catch {
+            os_log(.default, log: .main, "DataRepository.fetchShoppingListCKShare() - Error: \(error.localizedDescription)")
             throw error
         }
     }
