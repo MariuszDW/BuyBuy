@@ -140,18 +140,14 @@ struct ShoppingListsView: View {
         
         if viewModel.isCloud {
             Button {
-                Task {
-                    await viewModel.openShareManagement(for: list)
-                }
+                viewModel.openShareManagement(for: list)
             } label: {
                 Label("colaboration", systemImage: "person.2.fill")
             }
         }
         
         Button(role: .destructive) {
-            Task {
-                await handleDeleteTapped(for: list)
-            }
+            handleDeleteTapped(for: list)
         } label: {
             Label("delete", systemImage: "trash.fill")
         }
@@ -160,9 +156,7 @@ struct ShoppingListsView: View {
     @ViewBuilder
     private func trailingSwipeActions(for list: ShoppingList) -> some View {
         Button(role: .destructive) {
-            Task {
-                await handleDeleteTapped(for: list)
-            }
+            handleDeleteTapped(for: list)
         } label: {
             Label("delete", systemImage: "trash.fill")
         }
@@ -179,9 +173,7 @@ struct ShoppingListsView: View {
         
         if viewModel.isCloud {
             Button {
-                Task {
-                    await viewModel.openShareManagement(for: list)
-                }
+                viewModel.openShareManagement(for: list)
             } label: {
                 Label("colaboration", systemImage: "person.2.fill")
             }
@@ -322,7 +314,7 @@ struct ShoppingListsView: View {
         forceRefreshDiabled = false
     }
     
-    private func handleDeleteTapped(for list: ShoppingList) async {
+    private func handleDeleteTapped(for list: ShoppingList) {
         Task {
             hapticEngine.playItemDeleted()
             if list.items.isEmpty {
