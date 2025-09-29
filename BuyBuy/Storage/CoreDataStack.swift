@@ -194,7 +194,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
 
             // Deduplicate after all stores are loaded.
             if loadedStoresCount == totalStores {
-                let context = container.viewContext
+                let context = container.newBackgroundContext()
                 Task {
                     do {
                         try Deduplicator.deduplicate(in: context)
