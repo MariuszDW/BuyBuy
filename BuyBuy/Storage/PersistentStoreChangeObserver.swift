@@ -73,7 +73,6 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
 
         var cancellables: [AnyCancellable] = []
 
-        // RemoteChange → aktualizujemy token i fetch historii
         let remoteChange = NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange, object: coordinator)
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] notification in
@@ -81,7 +80,6 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
             }
         cancellables.append(remoteChange)
 
-        // CloudKit event → tylko UI/logi/cleanup, nie aktualizujemy tokenu
         let cloudKitEvent = NotificationCenter.default.publisher(for: NSPersistentCloudKitContainer.eventChangedNotification, object: container)
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] notification in
@@ -89,7 +87,6 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
             }
         cancellables.append(cloudKitEvent)
 
-        // łączymy w jeden cancellable
         cancellable = AnyCancellable {
             cancellables.forEach { $0.cancel() }
         }
@@ -137,7 +134,6 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
     }
 
     private func handleCloudKitEvent(_ notification: Notification) {
-        // przykładowo, możesz logować albo odświeżać UI
         let observersAndBlocks = getObserversAndBlocks().map(\.1)
         
         Task { @MainActor in
