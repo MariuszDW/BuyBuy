@@ -31,7 +31,7 @@ final class Deduplicator {
             ]
         }
 
-        context.perform {
+        context.performAndWait {
             do {
                 for entityName in changedEntityNames {
                     try deduplicateAndMerge(entityName: entityName, in: context)
