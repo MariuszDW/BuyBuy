@@ -50,6 +50,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
 
     let container: NSPersistentContainer
     let isCloud: Bool
+    var isInitialized: Bool = false
 
     private(set) var privateCloudPersistentStore: NSPersistentStore?
     private(set) var sharedCloudPersistentStore: NSPersistentStore?
@@ -65,7 +66,11 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
 
         if useCloudSync {
             let cloudContainer = NSPersistentCloudKitContainer(name: AppConstants.coreDataModelName)
-            self.container = cloudContainer
+            container = cloudContainer
+            
+            container.viewContext.automaticallyMergesChangesFromParent = true
+            container.viewContext.mergePolicy = UUIDMergePolicy()
+            container.viewContext.userInfo[Self.isCloudKey] = true
 
             // Private store.
             let privateDesc = NSPersistentStoreDescription(url: CoreDataStack.storeURL(fileName: AppConstants.privateCloudStoreFileName))
@@ -81,7 +86,11 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
         } else {
             // Device store.
             let deviceContainer = NSPersistentContainer(name: AppConstants.coreDataModelName)
-            self.container = deviceContainer
+            container = deviceContainer
+            
+            container.viewContext.automaticallyMergesChangesFromParent = true
+            container.viewContext.mergePolicy = UUIDMergePolicy()
+            container.viewContext.userInfo[Self.isCloudKey] = false
             
             let deviceDesc = NSPersistentStoreDescription(url: CoreDataStack.storeURL(fileName: AppConstants.localStoreFileName))
             deviceDesc.shouldMigrateStoreAutomatically = true
@@ -92,11 +101,6 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
 
             loadStoresAndTrack(deviceContainer)
         }
-
-        // Common settings.
-        container.viewContext.automaticallyMergesChangesFromParent = true
-        container.viewContext.mergePolicy = UUIDMergePolicy()
-        container.viewContext.userInfo[Self.isCloudKey] = useCloudSync
     }
 
     func fetchRemoteChanges() async {
@@ -188,12 +192,14 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
                 print("Device store loaded")
             }
 
-            // --- Deduplicate after all stores are loaded ---
+            // Deduplicate after all stores are loaded.
             if loadedStoresCount == totalStores {
                 let context = container.viewContext
                 Task {
                     do {
                         try Deduplicator.deduplicate(in: context)
+                        // try await Task.sleep(for: .milliseconds(2000))
+                        self.isInitialized = true
                         print("Deduplication done")
                     } catch {
                         print("Deduplication failed: \(error)")
