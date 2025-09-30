@@ -149,6 +149,15 @@ actor DataRepository: DataRepositoryProtocol {
             return existingShare
         }
         
+        // Save changes of the entity in backgrounc context.
+        let objectID = entity.objectID
+        try await saveQueue.performSave { bgContext in
+            if let bgEntity = try bgContext.existingObject(with: objectID) as? ShoppingListEntity, bgEntity.hasChanges {
+                os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - Save entity.")
+                try bgContext.save()
+            }
+        }
+        
         // Create new share.
         do {
             os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - Creating new CKShare…")
