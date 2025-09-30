@@ -117,7 +117,7 @@ class DataManager: DataManagerProtocol {
     // MARK: - Shopping list sharing
     
     func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare? {
-        return try await repository.fetchShoppingListCKShare(for: id)
+        return try await repository.fetchOrCreateShoppingListShare(for: id)
     }
 
     // MARK: - Shopping items

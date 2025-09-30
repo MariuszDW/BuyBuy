@@ -95,8 +95,10 @@ class ShoppingListsViewModel: ObservableObject {
         coordinator.openShoppingListSettings(list, isNew: false, onDismiss: nil)
     }
     
-    func openShareManagement(for list: ShoppingList) async {
-        await coordinator.openShoppingListShareManagement(with: list.id, title: list.name, onDismiss: { _ in })
+    func openShareManagement(for list: ShoppingList) {
+        Task {
+            await coordinator.openShoppingListShareManagement(with: list.id, title: list.name, onDismiss: { _ in })
+        }
     }
 
     func openAbout() {

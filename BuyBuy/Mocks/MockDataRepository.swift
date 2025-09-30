@@ -44,7 +44,7 @@ actor MockDataRepository: @preconcurrency DataRepositoryProtocol {
     
     // MARK: - Sharing shopping list
     
-    func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare? {
+    func fetchOrCreateShoppingListShare(for id: UUID) async throws -> CKShare? {
         return nil
     }
     

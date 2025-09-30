@@ -20,7 +20,7 @@ protocol DataRepositoryProtocol: Sendable {
     func deleteShoppingLists() async throws
     
     // Sharing shopping list
-    func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare?
+    func fetchOrCreateShoppingListShare(for id: UUID) async throws -> CKShare?
 
     // Shopping items
     func fetchShoppingItems() async throws -> [ShoppingItem]

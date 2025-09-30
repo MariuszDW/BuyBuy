@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import CloudKit
+import os
 
 actor DataRepository: DataRepositoryProtocol {
     let coreDataStack: CoreDataStackProtocol
@@ -112,34 +113,69 @@ actor DataRepository: DataRepositoryProtocol {
     
     // MARK: - Sharing shopping list
     
-    func fetchShoppingListCKShare(for id: UUID) async throws -> CKShare? {
-        guard let container = coreDataStack.container as? NSPersistentCloudKitContainer else {
+    func fetchOrCreateShoppingListShare(for id: UUID) async throws -> CKShare? {
+        guard coreDataStack.isInitialized else {
+            os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - CoreData is not ready yet.")
             return nil
         }
+        
+        guard let container = coreDataStack.container as? NSPersistentCloudKitContainer else {
+            os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - No CloudKitContainer.")
+            return nil
+        }
+        
+        let ckContainer = CKContainer.default()
+        let status = try await ckContainer.accountStatus()
+        guard status == .available else {
+            os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - iCloud not available.")
+            return nil
+        }
+        
+        // Fetch entity on view context.
         let context = coreDataStack.viewContext
-
+        
         let request: NSFetchRequest<ShoppingListEntity> = ShoppingListEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
 
-        guard let entity = try context.fetch(request).first else { return nil }
-
+        guard let entity = try context.fetch(request).first else {
+            os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - No ShoppingListEntity.")
+            return nil
+        }
+        
+        // Check if share already exists.
         let shares = try container.fetchShares(matching: [entity.objectID])
         if let existingShare = shares[entity.objectID] {
+            os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - Use existing CKShare.")
             return existingShare
         }
         
-        if context.hasChanges {
-            try context.save()
+        // Save changes of the entity in backgrounc context.
+        let objectID = entity.objectID
+        try await saveQueue.performSave { bgContext in
+            if let bgEntity = try bgContext.existingObject(with: objectID) as? ShoppingListEntity, bgEntity.hasChanges {
+                os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - Save entity.")
+                try bgContext.save()
+            }
         }
-
-        // Create share only if I am the owner.
+        
+        // Create new share.
         do {
+            os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - Creating new CKShare…")
             let (_, share, _) = try await container.share([entity], to: nil)
+            os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - CKShare created.")
+            
+            // Persist changes on background context via SaveQueue.
+            try await saveQueue.performSave { _ in
+                os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - Persisting share changes.")
+            }
+            
             return share
         } catch let error as CKError where error.code == .permissionFailure {
             // A participant cannot create a share - return nil instead of throwing an error.
+            os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - PermissionFailure error.")
             return nil
         } catch {
+            os_log(.default, log: .main, "DataRepository.fetchOrCreateShoppingListShare() - Error: \(error.localizedDescription)")
             throw error
         }
     }

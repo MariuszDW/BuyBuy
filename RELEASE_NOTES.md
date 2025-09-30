@@ -2,6 +2,10 @@
 
 ## ENGLISH
 
+### Version 1.2.1 (Sep 28, 2025)
+
+* Improved list sharing initialization.
+
 ### Version 1.2 (Sep 25, 2025)
 
 * Added inviting other users to collaborate on shopping lists
@@ -42,6 +46,10 @@
 * The first version of the BuyBuy application.
 
 ## POLSKI
+
+### Wersja 1.2.1 (28 września 2025)
+
+* Ulepszono inicjalizację współdzielenia listy.
 
 ### Wersja 1.2 (25 września 2025)
 

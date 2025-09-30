@@ -11,6 +11,7 @@ import CoreData
 protocol CoreDataStackProtocol: Sendable {
     var saveQueue: SaveQueue { get }
     var isCloud: Bool { get }
+    var isInitialized: Bool { get }
     var privateCloudPersistentStore: NSPersistentStore? { get }
     var sharedCloudPersistentStore: NSPersistentStore? { get }
     var devicePersistentStore: NSPersistentStore? { get }

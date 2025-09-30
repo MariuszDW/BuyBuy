@@ -25,12 +25,14 @@ final class MockCoreDataStack: CoreDataStackProtocol, @unchecked Sendable {
     }
     
     var isCloud: Bool
+    var isInitialized: Bool
     let container: NSPersistentContainer
     let viewContext: NSManagedObjectContext
     private(set) lazy var saveQueue = SaveQueue(newContext: { NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType) })
 
     init() {
         isCloud = false
+        isInitialized = true
         container = NSPersistentContainer(name: "MockContainer", managedObjectModel: NSManagedObjectModel())
         viewContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
     }
