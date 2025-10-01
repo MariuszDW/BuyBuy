@@ -70,6 +70,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
             
             container.viewContext.automaticallyMergesChangesFromParent = true
             container.viewContext.mergePolicy = UUIDMergePolicy()
+            container.viewContext.transactionAuthor = Self.author
             container.viewContext.userInfo[Self.isCloudKey] = true
 
             // Private store.
@@ -90,6 +91,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
             
             container.viewContext.automaticallyMergesChangesFromParent = true
             container.viewContext.mergePolicy = UUIDMergePolicy()
+            container.viewContext.transactionAuthor = Self.author
             container.viewContext.userInfo[Self.isCloudKey] = false
             
             let deviceDesc = NSPersistentStoreDescription(url: CoreDataStack.storeURL(fileName: AppConstants.localStoreFileName))

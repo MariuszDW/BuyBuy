@@ -114,7 +114,11 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
                 if let store = stack.container.persistentStoreCoordinator.persistentStores.first(where: { $0.identifier == storeUUID }) {
                     request.affectedStores = [store]
                 }
-
+                
+                // let historyFetchRequest = NSPersistentHistoryTransaction.fetchRequest!
+                // historyFetchRequest.predicate = NSPredicate(format: "author != %@", CoreDataStack.author)
+                // request.fetchRequest = historyFetchRequest
+                
                 let result = try? bgContext.execute(request) as? NSPersistentHistoryResult
                 guard let transactions = result?.result as? [NSPersistentHistoryTransaction], !transactions.isEmpty else { return }
 
