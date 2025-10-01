@@ -60,22 +60,22 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         }
         
         guard metadata.participantRole != .owner else {
-            print("Invitation from owner – ignoring.")
+            AppLogger.general.notice("Invitation from owner – ignoring.")
             return
         }
         
         let container = dataManager.coreDataStack.container as! NSPersistentCloudKitContainer
         
         guard let sharedStore = dataManager.coreDataStack.sharedCloudPersistentStore else {
-            print("No shared store.")
+            AppLogger.general.info("No shared store.")
             return
         }
 
         container.acceptShareInvitations(from: [metadata], into: sharedStore) { acceptedMetadata, error in
             if let error {
-                print("Error accepting share: \(error)")
+                AppLogger.general.error("Error accepting share: \(error, privacy: .public)")
             } else {
-                print("Share accepted: \(acceptedMetadata?.first?.share.recordID.recordName ?? "unknown")")
+                AppLogger.general.info("Share accepted: \(acceptedMetadata?.first?.share.recordID.recordName ?? "unknown", privacy: .public)")
             }
         }
     }
@@ -181,7 +181,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     
     func openShoppingListShareManagement(with listID: UUID, title: String, onDismiss: ((SheetRoute) -> Void)? = nil) async {
         guard let share = try? await dataManager.fetchShoppingListCKShare(for: listID) else {
-            print("Can not get CKShare for the list.")
+            AppLogger.general.error("Can not get CKShare for the list.")
             return
         }
         sheetPresenter.present(.sharingController(share: share, title: title), displayStyle: .sheet, onDismiss: onDismiss)
@@ -391,10 +391,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             for await result in Transaction.updates {
                 switch result {
                 case .verified(let transaction):
-                    print("Verified transaction for: \(transaction.productID)")
+                    AppLogger.general.info("Verified transaction for: \(transaction.productID, privacy: .public)")
                     await self.showThankYou(for: transaction)
                 case .unverified(let transaction, let error):
-                    print("Unverified transaction for \(transaction.productID): \(error)")
+                    AppLogger.general.error("Unverified transaction for \(transaction.productID, privacy: .public): \(error, privacy: .public)")
                 }
             }
         }
@@ -413,7 +413,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func onAppActive() {
-        print("AppCoordinator.onAppActive()")
+        AppLogger.general.info("AppCoordinator.onAppActive()")
         Task { @MainActor in
             userActivityTracker.appDidActive()
             await performOnAppActiveTasks()
@@ -421,7 +421,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
 
     func onAppInactive() {
-        print("AppCoordinator.onAppInactive()")
+        AppLogger.general.info("AppCoordinator.onAppInactive()")
         userActivityTracker.appDidInactive()
     }
     
@@ -438,14 +438,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         if let lastCleanupDate = preferences.lastCleanupDate {
             let secondsSince = now.timeIntervalSince(lastCleanupDate)
             let minutesSince = secondsSince / 60
-            print("Last cleanup was: \(secondsSince.formattedDuration) ago (\(lastCleanupDate)).")
+            AppLogger.general.info("Last cleanup was: \(secondsSince.formattedDuration, privacy: .public) ago (\(lastCleanupDate, privacy: .public)).")
             if minutesSince > AppConstants.cleanupIntervalMinutes {
                 Task(priority: .background) {
                     await cleanupNotNeededData()
                 }
                 preferences.lastCleanupDate = now
             } else {
-                print("Cleanup tasks not needed yet.")
+                AppLogger.general.info("Cleanup tasks not needed yet.")
             }
         } else {
             preferences.lastCleanupDate = now
@@ -453,7 +453,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     private func cleanupNotNeededData() async {
-        print("Performing cleanup tasks.")
+        AppLogger.general.info("Performing cleanup tasks.")
 
         if preferences.isCloudSyncEnabled {
             // This is a temporary observer, active for a limited time.
@@ -472,7 +472,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     // MARK: - Handle memory warning
     
     func handleMemoryWarning() {
-        print("Received memory warning")
+        AppLogger.general.info("Received memory warning")
         let dataManager = dataManager
         Task { @MainActor in
             await dataManager.cleanImageCache()

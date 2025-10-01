@@ -8,7 +8,6 @@
 import Foundation
 import CoreData
 import Combine
-import os
 
 final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol {
     private static let historyTokenPrefix = "HistoryToken_"
@@ -149,7 +148,7 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
            error.domain == NSCocoaErrorDomain,
            error.code == NSPersistentHistoryTokenExpiredError {
             let storeID = event.storeIdentifier
-            os_log("History token expired – clearing token for store %{public}@", log: .main, type: .info, storeID)
+            AppLogger.general.warning("History token expired – clearing token for store \(storeID, privacy: .public)")
             clearHistoryToken(for: storeID)
         }
 
@@ -167,7 +166,7 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
     private func clearHistoryToken(for storeUUID: String) {
         let key = Self.historyTokenPrefix + storeUUID
         UserDefaults.standard.removeObject(forKey: key)
-        os_log("Removed history token for %{public}@", log: .main, type: .info, key)
+        AppLogger.general.info("Removed history token for \(key, privacy: .public)")
     }
 
     private static func historyToken(for storeUUID: String) -> NSPersistentHistoryToken? {

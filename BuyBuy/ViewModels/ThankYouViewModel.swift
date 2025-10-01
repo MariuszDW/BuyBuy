@@ -80,7 +80,7 @@ final class ThankYouViewModel: ObservableObject {
             }
         } catch {
             self.error = error.localizedDescription
-            print("Failed to load tip info: \(error)")
+            AppLogger.general.error("Failed to load tip info: \(error, privacy: .public)")
         }
     }
     

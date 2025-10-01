@@ -39,7 +39,7 @@ final class Deduplicator {
                     try context.save()
                 }
             } catch {
-                print("Deduplication failed: \(error)")
+                AppLogger.general.error("Deduplication failed: \(error, privacy: .public)")
             }
         }
     }
@@ -64,7 +64,7 @@ final class Deduplicator {
         for (duplicate, keeper) in duplicates {
             mergeFields(from: duplicate, into: keeper)
             context.delete(duplicate)
-            print("Deduplicated and merged \(entityName) with id \(String(describing: keeper.value(forKey: "id")))")
+            AppLogger.general.debug("Deduplicated and merged \(entityName, privacy: .public) with id \(String(describing: keeper.value(forKey: "id")), privacy: .public)")
         }
     }
     

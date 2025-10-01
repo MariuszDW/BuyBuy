@@ -76,11 +76,11 @@ struct LoyaltyCardsView: View {
         .onAppear {
             viewModel.startObserving()
             Task { await viewModel.loadCards() }
-            print("LoyaltyCardsView onAppear")
+            AppLogger.general.info("LoyaltyCardsView onAppear")
         }
         .onDisappear {
             viewModel.stopObserving()
-            print("LoyaltyCardsView onDisappear")
+            AppLogger.general.info("LoyaltyCardsView onDisappear")
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

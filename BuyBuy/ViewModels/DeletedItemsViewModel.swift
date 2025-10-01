@@ -29,18 +29,18 @@ final class DeletedItemsViewModel: ObservableObject {
             await self.loadItems()
         }
         observerRegistered = true
-        print("ShoppingListSettingsViewModel - Started observing remote changes")
+        AppLogger.general.debug("ShoppingListSettingsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         guard observerRegistered else { return }
         dataManager.persistentStoreChangeObserver.removeObserver(self)
         observerRegistered = false
-        print("ShoppingListSettingsViewModel - Stopped observing remote changes")
+        AppLogger.general.debug("ShoppingListSettingsViewModel - Stopped observing remote changes")
     }
     
     func loadItems(fullRefresh: Bool = false) async {
-        print("DeletedItemsViewModel.loadItems(fullRefresh: \(fullRefresh))")
+        AppLogger.general.debug("DeletedItemsViewModel.loadItems(fullRefresh: \(fullRefresh, privacy: .public))")
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
@@ -97,7 +97,7 @@ final class DeletedItemsViewModel: ObservableObject {
             let image = try await dataManager.loadThumbnail(with: imageID)
             thumbnails[imageID] = image
         } catch {
-            print("Failed to load thumbnail for \(imageID): \(error)")
+            AppLogger.general.error("Failed to load thumbnail for \(imageID, privacy: .public): \(error, privacy: .public)")
         }
     }
 }

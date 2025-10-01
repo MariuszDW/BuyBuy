@@ -29,13 +29,13 @@ extension ShoppingItemEntity {
         get {
             guard let object = imageIDsData else { return [] }
             guard let data = object as? Data else {
-                print("imageIDsData is not Data")
+                AppLogger.general.debug("imageIDsData is not Data")
                 return []
             }
             do {
                 return try JSONDecoder().decode([String].self, from: data)
             } catch {
-                print("Error decoding imageIDsData: \(error)")
+                AppLogger.general.error("Error decoding imageIDsData: \(error, privacy: .public)")
                 return []
             }
         }
@@ -44,7 +44,7 @@ extension ShoppingItemEntity {
                 let data = try JSONEncoder().encode(newValue)
                 imageIDsData = data as NSData
             } catch {
-                print("Error encoding imageIDsData: \(error)")
+                AppLogger.general.error("Error encoding imageIDsData: \(error, privacy: .public)")
                 imageIDsData = nil
             }
         }

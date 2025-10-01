@@ -75,11 +75,11 @@ struct ShoppingItemDetailsView: View {
             toolbarContent
         }
         .onAppear {
-            print("ShoppingItemDetailsView onAppear")
+            AppLogger.general.info("ShoppingItemDetailsView onAppear")
             viewModel.startObserving()
         }
         .onDisappear {
-            print("ShoppingItemDetailsView onDisappear")
+            AppLogger.general.info("ShoppingItemDetailsView onDisappear")
             viewModel.stopObserving()
             Task { await viewModel.didFinishEditing() }
         }

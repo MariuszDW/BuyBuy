@@ -37,14 +37,14 @@ final class ShoppingListViewModel: ObservableObject {
             await self.loadList()
         }
         observerRegistered = true
-        print("ShoppingListViewModel - Started observing remote changes")
+        AppLogger.general.debug("ShoppingListViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         guard observerRegistered else { return }
         dataManager.persistentStoreChangeObserver.removeObserver(self)
         observerRegistered = false
-        print("ShoppingListViewModel - Stopped observing remote changes")
+        AppLogger.general.debug("ShoppingListViewModel - Stopped observing remote changes")
     }
     
     var eventPublisher: AnyPublisher<AppEvent, Never> {
@@ -52,7 +52,7 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func loadList(fullRefresh: Bool = false) async {
-        print("ShoppingListViewModel.loadList(fullRefresh: \(fullRefresh))")
+        AppLogger.general.debug("ShoppingListViewModel.loadList(fullRefresh: \(fullRefresh, privacy: .public))")
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
@@ -219,7 +219,7 @@ final class ShoppingListViewModel: ObservableObject {
             let image = try await dataManager.loadThumbnail(with: imageID)
             thumbnails[imageID] = image
         } catch {
-            print("Failed to load thumbnail for \(imageID): \(error)")
+            AppLogger.general.error("Failed to load thumbnail for \(imageID, privacy: .public): \(error, privacy: .public)")
         }
     }
     

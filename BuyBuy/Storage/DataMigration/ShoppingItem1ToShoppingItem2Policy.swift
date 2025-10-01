@@ -12,14 +12,14 @@ public class ShoppingItem1ToShoppingItem2Policy: NSEntityMigrationPolicy {
     override public func createDestinationInstances(forSource sInstance: NSManagedObject,
                                                     in mapping: NSEntityMapping,
                                                     manager: NSMigrationManager) throws {
-        print("ShoppingItem1ToShoppingItem2Policy - start")
+        AppLogger.general.debug("ShoppingItem1ToShoppingItem2Policy - start")
         try super.createDestinationInstances(forSource: sInstance,
                                              in: mapping,
                                              manager: manager)
 
         guard let dInstance = manager.destinationInstances(forEntityMappingName: mapping.name,
                                                            sourceInstances: [sInstance]).first else {
-            print("ShoppingItemMigrationPolicy: must return destination instance")
+            AppLogger.general.debug("ShoppingItemMigrationPolicy: must return destination instance")
             return
         }
         
@@ -27,6 +27,6 @@ public class ShoppingItem1ToShoppingItem2Policy: NSEntityMigrationPolicy {
         dInstance.setValue(NSSet(), forKey: "thumbnails")
         dInstance.setValue(Date.now, forKey: "updatedAt")
         
-        print("ShoppingItem1ToShoppingItem2Policy - end")
+        AppLogger.general.debug("ShoppingItem1ToShoppingItem2Policy - end")
     }
 }

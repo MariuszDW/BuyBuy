@@ -88,7 +88,7 @@ class TipJarViewModel: ObservableObject {
             products = tipProducts
         } catch {
             self.error = error.localizedDescription
-            print("Failed to load tip products: \(error)")
+            AppLogger.general.error("Failed to load tip products: \(error, privacy: .public)")
         }
     }
 
@@ -98,16 +98,16 @@ class TipJarViewModel: ObservableObject {
             let result = try await product.storeKitProduct?.purchase()
             switch result {
             case .success(.verified(let transaction)):
-                print("Verified transaction for: \(transaction.productID)")
+                AppLogger.general.info("Verified transaction for: \(transaction.productID, privacy: .public)")
                 coordinator?.showThankYou(for: transaction, onDismiss: { _ in })
             case .userCancelled:
-                print("User cancelled transaction")
+                AppLogger.general.info("User cancelled transaction")
                 break
             case .pending:
-                print("Pending transaction")
+                AppLogger.general.debug("Pending transaction")
                 break
             case .success(.unverified(let transaction, let error)):
-                print("Unverified transaction for \(transaction.productID): \(error)")
+                AppLogger.general.error("Unverified transaction for \(transaction.productID, privacy: .public): \(error, privacy: .public)")
             case .none:
                 break
             @unknown default:
@@ -115,7 +115,7 @@ class TipJarViewModel: ObservableObject {
             }
             status = .ready
         } catch {
-            print("Purchase error: \(error)")
+            AppLogger.general.error("Purchase error: \(error, privacy: .public)")
             status = .ready
         }
     }

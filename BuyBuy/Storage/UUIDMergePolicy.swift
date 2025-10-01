@@ -30,7 +30,7 @@ final class UUIDMergePolicy: NSMergePolicy {
                     for duplicate in results.dropFirst() {
                         context.delete(duplicate)
                     }
-                    print("Deduplicated \(entityName) with id \(id)")
+                    AppLogger.general.debug("Deduplicated \(entityName, privacy: .public) with id \(id, privacy: .public)")
                 }
             }
         }

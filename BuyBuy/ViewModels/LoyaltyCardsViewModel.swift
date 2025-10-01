@@ -31,14 +31,14 @@ final class LoyaltyCardsViewModel: ObservableObject {
             await self.loadCards()
         }
         observerRegistered = true
-        print("LoyaltyCardsViewModel - Started observing remote changes")
+        AppLogger.general.debug("LoyaltyCardsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         guard observerRegistered else { return }
         dataManager.persistentStoreChangeObserver.removeObserver(self)
         observerRegistered = false
-        print("LoyaltyCardsViewModel - Stopped observing remote changes")
+        AppLogger.general.debug("LoyaltyCardsViewModel - Stopped observing remote changes")
     }
     
     var eventPublisher: AnyPublisher<AppEvent, Never> {
@@ -46,7 +46,7 @@ final class LoyaltyCardsViewModel: ObservableObject {
     }
     
     func loadCards(fullRefresh: Bool = false) async {
-        print("LoyaltyCardsViewModel.loadCards(fullRefresh: \(fullRefresh))")
+        AppLogger.general.debug("LoyaltyCardsViewModel.loadCards(fullRefresh: \(fullRefresh, privacy: .public))")
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }

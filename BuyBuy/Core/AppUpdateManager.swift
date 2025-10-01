@@ -37,7 +37,7 @@ final class AppUpdateManager {
     }
     
     private func performUpdate(from oldVersion: String, to newVersion: String) {
-        print("Updating from \(oldVersion) to \(newVersion)")
+        AppLogger.general.info("Updating from \(oldVersion, privacy: .public) to \(newVersion, privacy: .public)")
         
         if Version(oldVersion) <= Version("1.0.0") {
             preferences.legacyCloudImages = true
@@ -48,7 +48,7 @@ final class AppUpdateManager {
         do {
             try localMigrator.migrateIfNeeded()
         } catch {
-            print("Local data migration failed: \(error)")
+            AppLogger.general.info("Local data migration failed: \(error, privacy: .public)")
             // TODO: handle an error
         }
         
@@ -56,7 +56,7 @@ final class AppUpdateManager {
         do {
             try cloudMigrator.migrateIfNeeded()
         } catch {
-            print("Cloud data migration failed: \(error)")
+            AppLogger.general.error("Cloud data migration failed: \(error, privacy: .public)")
             // TODO: handle an error
         }
     }

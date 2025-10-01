@@ -13,14 +13,14 @@ public class LoyaltyCard1ToLoyaltyCard2Policy: NSEntityMigrationPolicy {
                                                     in mapping: NSEntityMapping,
                                                     manager: NSMigrationManager) throws {
         
-        print("LoyaltyCard1ToLoyaltyCard2Policy - start")
+        AppLogger.general.debug("LoyaltyCard1ToLoyaltyCard2Policy - start")
         try super.createDestinationInstances(forSource: sInstance,
                                              in: mapping,
                                              manager: manager)
 
         guard let dInstance = manager.destinationInstances(forEntityMappingName: mapping.name,
                                                            sourceInstances: [sInstance]).first else {
-            print("LoyaltyCardMigrationPolicy: must return destination instance")
+            AppLogger.general.debug("LoyaltyCardMigrationPolicy: must return destination instance")
             return
         }
         
@@ -28,6 +28,6 @@ public class LoyaltyCard1ToLoyaltyCard2Policy: NSEntityMigrationPolicy {
         dInstance.setValue(nil, forKey: "thumbnail")
         dInstance.setValue(Date.now, forKey: "updatedAt")
         
-        print("LoyaltyCard1ToLoyaltyCard2Policy - end")
+        AppLogger.general.debug("LoyaltyCard1ToLoyaltyCard2Policy - end")
     }
 }

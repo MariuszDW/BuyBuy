@@ -17,7 +17,7 @@ struct SharingControllerWrapper: UIViewControllerRepresentable {
     init(share: CKShare, shoppingListTitle: String) {
         self.share = share
         self.shoppingListTitle = shoppingListTitle
-        print(share.detailedDescription())
+        AppLogger.general.debug("SharingControllerWrapper(): \(share.detailedDescription(), privacy: .public)")
     }
 
     func makeUIViewController(context: Context) -> UICloudSharingController {
@@ -47,18 +47,18 @@ struct SharingControllerWrapper: UIViewControllerRepresentable {
 
         func cloudSharingController(_ csc: UICloudSharingController,
                                     failedToSaveShareWithError error: Error) {
-            print("UICloudSharingControllerDelegate - Cloud sharing failed: \(error)")
-            print(csc.share?.detailedDescription() ?? "CKShare = nil")
+            AppLogger.general.info("UICloudSharingControllerDelegate - Cloud sharing failed: \(error, privacy: .public)")
+            AppLogger.general.debug("\(csc.share?.detailedDescription() ?? "CKShare = nil", privacy: .public)")
         }
 
         func cloudSharingControllerDidSaveShare(_ csc: UICloudSharingController) {
-            print("UICloudSharingControllerDelegate - Share saved successfully")
-            print(csc.share?.detailedDescription() ?? "CKShare = nil")
+            AppLogger.general.info("UICloudSharingControllerDelegate - Share saved successfully")
+            AppLogger.general.debug("\(csc.share?.detailedDescription() ?? "CKShare = nil", privacy: .public)")
         }
 
         func cloudSharingControllerDidStopSharing(_ csc: UICloudSharingController) {
-            print("UICloudSharingControllerDelegate - Sharing stopped")
-            print(csc.share?.detailedDescription() ?? "CKShare = nil")
+            AppLogger.general.info("UICloudSharingControllerDelegate - Sharing stopped")
+            AppLogger.general.debug("\(csc.share?.detailedDescription() ?? "CKShare = nil", privacy: .public)")
         }
     }
 }

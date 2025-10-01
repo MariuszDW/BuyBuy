@@ -32,12 +32,12 @@ class DataModelMigrator {
         
         guard let destinationModel = loadModel(name: allVersions.last!),
               !destinationModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata) else {
-            print("Store already up-to-date")
+            AppLogger.general.info("Store already up-to-date")
             return
         }
         
         let sourceVersionName = detectSourceVersion(metadata: metadata)
-        print("Detected source version: \(sourceVersionName)")
+        AppLogger.general.info("Detected source version: \(sourceVersionName, privacy: .public)")
         
         guard let sourceIndex = allVersions.firstIndex(of: sourceVersionName),
               let destinationIndex = allVersions.firstIndex(of: allVersions.last!) else {
@@ -58,7 +58,7 @@ class DataModelMigrator {
                               userInfo: [NSLocalizedDescriptionKey: "Cannot load models for migration"])
             }
             
-            print("Migrating \(fromName) → \(toName)")
+            AppLogger.general.info("Migrating \(fromName, privacy: .public) -> \(toName, privacy: .public)")
             
             if heavyMigrationSourceModels.contains(fromName) {
                 guard let mappingModel = NSMappingModel(from: [Bundle.main],
@@ -86,14 +86,14 @@ class DataModelMigrator {
             }
         }
         
-        print("Migration completed for store: \(storeURL.lastPathComponent)")
+        AppLogger.general.info("Migration completed for store: \(self.storeURL.lastPathComponent, privacy: .public)")
     }
     
     // MARK: - WAL Checkpoint
     
     private func forceWALCheckpointingForStore(at: URL) {
         guard FileManager.default.fileExists(atPath: storeURL.path) else {
-            print("Store file not found, skipping checkpointing for \(storeURL.lastPathComponent)")
+            AppLogger.general.notice("Store file not found, skipping checkpointing for \(self.storeURL.lastPathComponent, privacy: .public)")
             return
         }
         
@@ -110,12 +110,12 @@ class DataModelMigrator {
                 options: options
             )
             try coordinator.remove(store)
-            print("WAL checkpointing completed for \(storeURL.lastPathComponent)")
+            AppLogger.general.info("WAL checkpointing completed for \(self.storeURL.lastPathComponent, privacy: .public)")
         } catch let error as NSError {
             if error.domain == NSCocoaErrorDomain && error.code == NSPersistentStoreIncompatibleVersionHashError {
-                print("WAL checkpointing skipped for \(storeURL.lastPathComponent) – model mismatch (expected if migration is needed).")
+                AppLogger.general.info("WAL checkpointing skipped for \(self.storeURL.lastPathComponent, privacy: .public) – model mismatch (expected if migration is needed).")
             } else {
-                print("WAL checkpointing failed for \(storeURL.lastPathComponent): \(error)")
+                AppLogger.general.error("WAL checkpointing failed for \(self.storeURL.lastPathComponent, privacy: .public): \(error, privacy: .public)")
             }
         }
     }

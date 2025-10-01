@@ -36,7 +36,7 @@ struct BuyBuyApp: App {
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func windowScene(_ windowScene: UIWindowScene,
                      userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata) {
-        print("Enqueued pending share from warn start.")
+        AppLogger.general.info("Enqueued pending share from warn start.")
         AppCoordinator.enqueuePendingShare(cloudKitShareMetadata)
     }
 }
@@ -48,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
         if let cloudKitMetadata = options.cloudKitShareMetadata {
-            print("Enqueued pending share from cold start.")
+            AppLogger.general.info("Enqueued pending share from cold start.")
             AppCoordinator.enqueuePendingShare(cloudKitMetadata)
         }
 
