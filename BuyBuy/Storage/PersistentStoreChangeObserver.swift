@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import Combine
+import os
 
 final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol {
     private static let historyTokenPrefix = "HistoryToken_"
@@ -121,6 +122,7 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
                 
                 let result = try? bgContext.execute(request) as? NSPersistentHistoryResult
                 guard let transactions = result?.result as? [NSPersistentHistoryTransaction], !transactions.isEmpty else { return }
+                // let transactions = result?.result as? [NSPersistentHistoryTransaction] ?? []
 
                 try? Deduplicator.deduplicate(from: transactions, in: bgContext)
 
@@ -138,6 +140,19 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
     }
 
     private func handleCloudKitEvent(_ notification: Notification) {
+        guard let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]
+                as? NSPersistentCloudKitContainer.Event else {
+            return
+        }
+
+        if let error = event.error as NSError?,
+           error.domain == NSCocoaErrorDomain,
+           error.code == NSPersistentHistoryTokenExpiredError {
+            let storeID = event.storeIdentifier
+            os_log("History token expired – clearing token for store %{public}@", log: .main, type: .info, storeID)
+            clearHistoryToken(for: storeID)
+        }
+
         let observersAndBlocks = getObserversAndBlocks().map(\.1)
         
         Task { @MainActor in
@@ -145,6 +160,14 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
                 await block()
             }
         }
+    }
+
+    // MARK: - History token helpers
+    
+    private func clearHistoryToken(for storeUUID: String) {
+        let key = Self.historyTokenPrefix + storeUUID
+        UserDefaults.standard.removeObject(forKey: key)
+        os_log("Removed history token for %{public}@", log: .main, type: .info, key)
     }
 
     private static func historyToken(for storeUUID: String) -> NSPersistentHistoryToken? {
