@@ -74,14 +74,14 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
         var cancellables: [AnyCancellable] = []
 
         let remoteChange = NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange, object: coordinator)
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            //.debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] notification in
                 self?.handleRemoteChange(notification)
             }
         cancellables.append(remoteChange)
 
         let cloudKitEvent = NotificationCenter.default.publisher(for: NSPersistentCloudKitContainer.eventChangedNotification, object: container)
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            //.debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] notification in
                 self?.handleCloudKitEvent(notification)
             }
