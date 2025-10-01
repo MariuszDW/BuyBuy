@@ -22,13 +22,11 @@ final class Deduplicator {
             }
             changedEntityNames = names
         } else {
-            changedEntityNames = [
-                "ShoppingListEntity", // TODO: Zmienic te nazwy na moze jakos pobierane z nazw klas.
-                "ShoppingItemEntity",
-                "LoyaltyCardEntity",
-                "BBImageEntity",
-                "BBThumbnailEntity"
-            ]
+            changedEntityNames = Set(
+                context.persistentStoreCoordinator?
+                    .managedObjectModel.entities
+                    .compactMap { $0.name } ?? []
+            )
         }
 
         context.performAndWait {
