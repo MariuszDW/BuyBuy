@@ -66,7 +66,7 @@ final class Deduplicator {
         for (duplicate, keeper) in duplicates {
             mergeFields(from: duplicate, into: keeper)
             context.delete(duplicate)
-            print("Deduplicated and merged \(entityName) with id \(keeper.value(forKey: "id")!)")
+            print("Deduplicated and merged \(entityName) with id \(String(describing: keeper.value(forKey: "id")))")
         }
     }
     
