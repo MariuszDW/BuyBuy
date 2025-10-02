@@ -51,12 +51,11 @@ struct DeletedItemsView: View {
 
     private var deletedItemsList: some View {
         List {
-            Section(header: Text("deleted_items_info")
+            Text("deleted_items_info")
                 .foregroundColor(.bb.text.tertiary)
                 .font(.regularDynamic(style: .callout))
-            ) {
-                EmptyView()
-            }
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
 
             ForEach(viewModel.sections) { section in
                 Section(header: Text(section.deletedDate.localizedString(dateStyle: .long))
