@@ -61,6 +61,7 @@ struct DeletedItemsView: View {
                 Section(header: Text(section.deletedDate.localizedString(dateStyle: .long))
                     .foregroundColor(.bb.text.tertiary)
                     .font(.regularDynamic(style: .footnote))
+                    .textCase(nil)
                 ) {
                     ForEach(section.items) { item in
                         itemView(item: item)
