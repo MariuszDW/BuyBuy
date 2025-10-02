@@ -2,7 +2,14 @@
 
 ## ENGLISH
 
-### Version 1.2.1 (Sep 28, 2025)
+### Version 1.3 (Oct 2, 2025)
+
+* Added buttons to increase and decrease quantity, and a button to clear the unit price in the item details.
+* Deleted items are now grouped by the date they were removed.
+* Improved data synchronization via iCloud.
+* Introduced a new logging system.
+
+### Version 1.2.1 (Sep 30, 2025)
 
 * Improved list sharing initialization.
 
@@ -47,7 +54,14 @@
 
 ## POLSKI
 
-### Wersja 1.2.1 (28 września 2025)
+### Wersja 1.3 (2 października 2025)
+
+* Do widoku szczegółów przedmiotu dodano przyciski do zwiększania i zmniejszania liczby oraz przycisk do kasowania ceny jednostkowej.
+* Na liście usuniętych przedmiotów dodano sekcje pokazujące daty usunięcia.
+* Usprawniono synchronizację danych przez iCloud.
+* Aplikacja ma nowy system logów.
+
+### Wersja 1.2.1 (30 września 2025)
 
 * Ulepszono inicjalizację współdzielenia listy.
 
