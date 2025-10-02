@@ -120,6 +120,22 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         coordinator?.openShoppingItemImage(with: shoppingItem.imageIDs, index: index, onDismiss: nil)
     }
     
+    func quantityPlus() {
+        guard let qty = shoppingItem.quantity else {
+            shoppingItem.quantity = 1
+            return
+        }
+        shoppingItem.quantity = qty == floor(qty) ? qty + 1 : ceil(qty)
+    }
+
+    func quantityMinus() {
+        guard let qty = shoppingItem.quantity else {
+            return
+        }
+        let newValue = qty == floor(qty) ? qty - 1 : floor(qty)
+        shoppingItem.quantity = newValue > 0 ? newValue : nil
+    }
+    
     func addImage(_ image: UIImage) async {
         let baseName = UUID().uuidString
         
