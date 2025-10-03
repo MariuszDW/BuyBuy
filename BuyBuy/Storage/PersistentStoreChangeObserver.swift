@@ -74,14 +74,14 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
         var cancellables: [AnyCancellable] = []
 
         let remoteChange = NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange, object: coordinator)
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            //.debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] notification in
                 self?.handleRemoteChange(notification)
             }
         cancellables.append(remoteChange)
 
         let cloudKitEvent = NotificationCenter.default.publisher(for: NSPersistentCloudKitContainer.eventChangedNotification, object: container)
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            //.debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] notification in
                 self?.handleCloudKitEvent(notification)
             }
@@ -114,9 +114,14 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
                 if let store = stack.container.persistentStoreCoordinator.persistentStores.first(where: { $0.identifier == storeUUID }) {
                     request.affectedStores = [store]
                 }
-
+                
+                // let historyFetchRequest = NSPersistentHistoryTransaction.fetchRequest!
+                // historyFetchRequest.predicate = NSPredicate(format: "author != %@", CoreDataStack.author)
+                // request.fetchRequest = historyFetchRequest
+                
                 let result = try? bgContext.execute(request) as? NSPersistentHistoryResult
                 guard let transactions = result?.result as? [NSPersistentHistoryTransaction], !transactions.isEmpty else { return }
+                // let transactions = result?.result as? [NSPersistentHistoryTransaction] ?? []
 
                 try? Deduplicator.deduplicate(from: transactions, in: bgContext)
 
@@ -134,6 +139,19 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
     }
 
     private func handleCloudKitEvent(_ notification: Notification) {
+        guard let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]
+                as? NSPersistentCloudKitContainer.Event else {
+            return
+        }
+
+        if let error = event.error as NSError?,
+           error.domain == NSCocoaErrorDomain,
+           error.code == NSPersistentHistoryTokenExpiredError {
+            let storeID = event.storeIdentifier
+            AppLogger.general.warning("History token expired – clearing token for store \(storeID, privacy: .public)")
+            clearHistoryToken(for: storeID)
+        }
+
         let observersAndBlocks = getObserversAndBlocks().map(\.1)
         
         Task { @MainActor in
@@ -141,6 +159,14 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
                 await block()
             }
         }
+    }
+
+    // MARK: - History token helpers
+    
+    private func clearHistoryToken(for storeUUID: String) {
+        let key = Self.historyTokenPrefix + storeUUID
+        UserDefaults.standard.removeObject(forKey: key)
+        AppLogger.general.info("Removed history token for \(key, privacy: .public)")
     }
 
     private static func historyToken(for storeUUID: String) -> NSPersistentHistoryToken? {

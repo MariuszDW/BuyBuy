@@ -75,11 +75,11 @@ struct ShoppingItemDetailsView: View {
             toolbarContent
         }
         .onAppear {
-            print("ShoppingItemDetailsView onAppear")
+            AppLogger.general.info("ShoppingItemDetailsView onAppear")
             viewModel.startObserving()
         }
         .onDisappear {
-            print("ShoppingItemDetailsView onDisappear")
+            AppLogger.general.info("ShoppingItemDetailsView onDisappear")
             viewModel.stopObserving()
             Task { await viewModel.didFinishEditing() }
         }
@@ -239,29 +239,52 @@ struct ShoppingItemDetailsView: View {
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
             
-            TextField(viewModel.quantityPlaceholder, text: $quantityFieldString)
-                .keyboardType(.decimalPad)
-                .padding(10)
-                .background(Color.bb.sheet.background)
-                .foregroundColor(.bb.sheet.section.primaryText)
-                .cornerRadius(8)
-                .focused($focusedField, equals: .quantity)
-                .onChange(of: quantityFieldString) { newValue in
-                    viewModel.quantityString = newValue
-                }
-                .onChange(of: viewModel.quantityString) { newValue in
-                    if focusedField != .quantity {
-                        quantityFieldString = newValue
+            HStack(spacing: 4) {
+                TextField(viewModel.quantityPlaceholder, text: $quantityFieldString)
+                    .keyboardType(.decimalPad)
+                    .padding(10)
+                    .background(Color.bb.sheet.background)
+                    .foregroundColor(.bb.sheet.section.primaryText)
+                    .cornerRadius(8)
+                    .focused($focusedField, equals: .quantity)
+                    .onChange(of: quantityFieldString) { newValue in
+                        viewModel.quantityString = newValue
                     }
-                }
-                .onChange(of: focusedField) { newValue in
-                    if newValue != .quantity {
-                        quantityFieldString = viewModel.quantityString
+                    .onChange(of: viewModel.quantityString) { newValue in
+                        if focusedField != .quantity {
+                            quantityFieldString = newValue
+                        }
                     }
-                }
-                .onSubmit {
+                    .onChange(of: focusedField) { newValue in
+                        if newValue != .quantity {
+                            quantityFieldString = viewModel.quantityString
+                        }
+                    }
+                    .onSubmit {
+                        focusedField = nil
+                    }
+                
+                Button(action: {
                     focusedField = nil
+                    viewModel.quantityMinus()
+                }) {
+                    Image(systemName: "minus.circle")
+                        .font(.title2)
+                        .foregroundColor(.bb.selection)
                 }
+                .buttonStyle(.plain)
+                .disabled(viewModel.quantityString.isEmpty)
+                
+                Button(action: {
+                    focusedField = nil
+                    viewModel.quantityPlus()
+                }) {
+                    Image(systemName: "plus.circle")
+                        .font(.title2)
+                        .foregroundColor(.bb.selection)
+                }
+                .buttonStyle(.plain)
+            }
         }
         .frame(maxWidth: .infinity)
     }
@@ -273,7 +296,7 @@ struct ShoppingItemDetailsView: View {
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
             
-            HStack(spacing: 8) {
+            HStack(spacing: 3) {
                 TextField(viewModel.unitPlaceholder, text: $viewModel.unit)
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
@@ -292,6 +315,7 @@ struct ShoppingItemDetailsView: View {
                     }
                 } label: {
                     Image(systemName: "chevron.up.chevron.down")
+                        .font(.title2)
                         .foregroundColor(.bb.selection)
                 }
             }
@@ -345,36 +369,49 @@ struct ShoppingItemDetailsView: View {
                 .foregroundColor(.bb.sheet.section.secondaryText)
                 .padding(.leading, 4)
             
-            TextField(viewModel.pricePerUnitPlaceholder, text: $priceFieldString)
-                .keyboardType(.decimalPad)
-                .padding(10)
-                .background(Color.bb.sheet.background)
-                .foregroundColor(.bb.sheet.section.primaryText)
-                .cornerRadius(8)
-                .focused($focusedField, equals: .pricePerUnit)
-                .onChange(of: priceFieldString) { newValue in
-                    viewModel.priceString = newValue
-                }
-                .onChange(of: viewModel.priceString) { newValue in
-                    if focusedField != .pricePerUnit {
-                        priceFieldString = newValue
+            HStack(spacing: 4) {
+                TextField(viewModel.pricePerUnitPlaceholder, text: $priceFieldString)
+                    .keyboardType(.decimalPad)
+                    .padding(10)
+                    .background(Color.bb.sheet.background)
+                    .foregroundColor(.bb.sheet.section.primaryText)
+                    .cornerRadius(8)
+                    .focused($focusedField, equals: .pricePerUnit)
+                    .onChange(of: priceFieldString) { newValue in
+                        viewModel.priceString = newValue
                     }
-                }
-                .onChange(of: focusedField) { newValue in
-                    if newValue != .pricePerUnit {
-                        priceFieldString = viewModel.priceString
-                    } else {
-                        if let price = viewModel.shoppingItem.price {
-                            let hasFraction = price.truncatingRemainder(dividingBy: 1) != 0
-                            priceFieldString = hasFraction ? viewModel.priceString : String(format: "%.0f", price)
-                        } else {
-                            priceFieldString = ""
+                    .onChange(of: viewModel.priceString) { newValue in
+                        if focusedField != .pricePerUnit {
+                            priceFieldString = newValue
                         }
                     }
-                }
-                .onSubmit {
+                    .onChange(of: focusedField) { newValue in
+                        if newValue != .pricePerUnit {
+                            priceFieldString = viewModel.priceString
+                        } else {
+                            if let price = viewModel.shoppingItem.price {
+                                let hasFraction = price.truncatingRemainder(dividingBy: 1) != 0
+                                priceFieldString = hasFraction ? viewModel.priceString : String(format: "%.0f", price)
+                            } else {
+                                priceFieldString = ""
+                            }
+                        }
+                    }
+                    .onSubmit {
+                        focusedField = nil
+                    }
+                
+                Button(action: {
                     focusedField = nil
+                    viewModel.priceString = ""
+                }) {
+                    Image(systemName: "xmark.circle")
+                        .font(.title2)
+                        .foregroundColor(.bb.selection)
                 }
+                .buttonStyle(.plain)
+                .disabled(viewModel.priceString.isEmpty)
+            }
         }
         .frame(maxWidth: .infinity)
     }

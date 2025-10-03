@@ -20,7 +20,7 @@ struct DocumentExporterView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
         let tempURL = context.coordinator.tempFileURL
-        print("Using temp file URL:", tempURL.path)
+        AppLogger.general.info("Using temp file URL: \(tempURL.path, privacy: .public)")
 
         let picker = UIDocumentPickerViewController(forExporting: [tempURL], asCopy: true)
         picker.delegate = context.coordinator
@@ -40,21 +40,21 @@ struct DocumentExporterView: UIViewControllerRepresentable {
 
             do {
                 try data.write(to: fileURL, options: .atomic)
-                print("File written at:", fileURL.path)
+                AppLogger.general.info("File written at: \(fileURL.path, privacy: .public)")
             } catch {
-                print("Failed to write file:", error)
+                AppLogger.general.error("Failed to write file: \(error, privacy: .public)")
             }
 
             self.tempFileURL = fileURL
         }
 
         func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-            print("Picker cancelled")
+            AppLogger.general.debug("Picker cancelled")
             try? FileManager.default.removeItem(at: tempFileURL)
         }
 
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            print("User picked document(s):", urls)
+            AppLogger.general.debug("User picked document(s): \(urls, privacy: .public)")
             try? FileManager.default.removeItem(at: tempFileURL)
         }
     }

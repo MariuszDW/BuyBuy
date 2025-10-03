@@ -93,14 +93,14 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
             await self.loadShoppingLists()
         }
         observerRegistered = true
-        print("ShoppingItemDetailsViewModel - Started observing remote changes")
+        AppLogger.general.debug("ShoppingItemDetailsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         guard observerRegistered else { return }
         dataManager.persistentStoreChangeObserver.removeObserver(self)
         observerRegistered = false
-        print("ShoppingItemDetailsViewModel - Stopped observing remote changes")
+        AppLogger.general.debug("ShoppingItemDetailsViewModel - Stopped observing remote changes")
     }
     
     var eventPublisher: AnyPublisher<AppEvent, Never> {
@@ -120,6 +120,22 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         coordinator?.openShoppingItemImage(with: shoppingItem.imageIDs, index: index, onDismiss: nil)
     }
     
+    func quantityPlus() {
+        guard let qty = shoppingItem.quantity else {
+            shoppingItem.quantity = 1
+            return
+        }
+        shoppingItem.quantity = qty == floor(qty) ? qty + 1 : ceil(qty)
+    }
+
+    func quantityMinus() {
+        guard let qty = shoppingItem.quantity else {
+            return
+        }
+        let newValue = qty == floor(qty) ? qty - 1 : floor(qty)
+        shoppingItem.quantity = newValue > 0 ? newValue : nil
+    }
+    
     func addImage(_ image: UIImage) async {
         let baseName = UUID().uuidString
         
@@ -129,7 +145,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
             try await dataManager.addOrUpdateShoppingItem(shoppingItem)
             await loadThumbnails()
         } catch {
-            print("Failed to save image: \(error)")
+            AppLogger.general.error("Failed to save image: \(error, privacy: .public)")
         }
     }
     
@@ -149,7 +165,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     func loadShoppingItem() async {
-        print("ShoppingItemDetailsViewModel.loadShoppingItem() called")
+        AppLogger.general.debug("ShoppingItemDetailsViewModel.loadShoppingItem() called")
         guard let newShoppingItem = try? await dataManager.fetchShoppingItem(with: shoppingItem.id) else { return }
         if shoppingItem != newShoppingItem {
             let reloadImages = shoppingItem.imageIDs != newShoppingItem.imageIDs
@@ -161,7 +177,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     func loadThumbnails() async {
-        print("ShoppingItemDetailsViewModel.loadThumbnails() called")
+        AppLogger.general.debug("ShoppingItemDetailsViewModel.loadThumbnails() called")
         var newThumbnails: [UIImage?] = []
         for id in shoppingItem.imageIDs {
             if let image = try? await dataManager.loadThumbnail(with: id) {
@@ -174,7 +190,7 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
     }
     
     func loadShoppingLists() async {
-        print("ShoppingItemDetailsViewModel.loadShoppingLists() called")
+        AppLogger.general.debug("ShoppingItemDetailsViewModel.loadShoppingLists() called")
         guard let newShoppingLists = try? await dataManager.fetchShoppingLists() else { return }
         if shoppingLists != newShoppingLists {
             shoppingLists = newShoppingLists

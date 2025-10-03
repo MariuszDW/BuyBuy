@@ -23,7 +23,7 @@ enum StorageLocation {
             return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         case .cloudDocuments:
             guard let containerURL = FileManager.default.url(forUbiquityContainerIdentifier: AppConstants.iCloudContainerID) else {
-                print("iCloud container \(AppConstants.iCloudContainerID) not available")
+                AppLogger.general.error("iCloud container \(AppConstants.iCloudContainerID, privacy: .public) not available.")
                 return nil
             }
             return containerURL.appending(path: "Documents", directoryHint: .isDirectory)

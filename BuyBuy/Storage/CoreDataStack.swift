@@ -70,6 +70,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
             
             container.viewContext.automaticallyMergesChangesFromParent = true
             container.viewContext.mergePolicy = UUIDMergePolicy()
+            container.viewContext.transactionAuthor = Self.author
             container.viewContext.userInfo[Self.isCloudKey] = true
 
             // Private store.
@@ -90,6 +91,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
             
             container.viewContext.automaticallyMergesChangesFromParent = true
             container.viewContext.mergePolicy = UUIDMergePolicy()
+            container.viewContext.transactionAuthor = Self.author
             container.viewContext.userInfo[Self.isCloudKey] = false
             
             let deviceDesc = NSPersistentStoreDescription(url: CoreDataStack.storeURL(fileName: AppConstants.localStoreFileName))
@@ -114,13 +116,13 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
         do {
             try await fetchChanges(for: privateStore, scope: .private)
         } catch {
-            print("Failed to fetch remote changes from CloudKit for private store: \(error)")
+            AppLogger.general.error("Failed to fetch remote changes from CloudKit for private store: \(error, privacy: .public)")
         }
         
         do {
             try await fetchChanges(for: sharedStore, scope: .shared)
         } catch {
-            print("Failed to fetch remote changes from CloudKit for shared store: \(error)")
+            AppLogger.general.error("Failed to fetch remote changes from CloudKit for shared store: \(error, privacy: .public)")
         }
         
         // Notify CoreData observers.
@@ -170,26 +172,26 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
             guard let self = self else { return }
 
             if let error = error {
-                print("Failed to load store: \(error)")
+                AppLogger.general.error("Failed to load store: \(error, privacy: .public)")
                 return
             }
 
             loadedStoresCount += 1
-            print("Store loaded: \(desc.url?.lastPathComponent ?? "unknown")")
+            AppLogger.general.debug("Store loaded: \(desc.url?.lastPathComponent ?? "unknown", privacy: .public)")
 
             if let scope = desc.cloudKitContainerOptions?.databaseScope {
                 switch scope {
                 case .private:
                     self.privateCloudPersistentStore = container.persistentStoreCoordinator.persistentStore(for: desc.url!)
-                    print("Private store loaded")
+                    AppLogger.general.debug("Private store loaded")
                 case .shared:
                     self.sharedCloudPersistentStore = container.persistentStoreCoordinator.persistentStore(for: desc.url!)
-                    print("Shared store loaded")
+                    AppLogger.general.debug("Shared store loaded")
                 default: break
                 }
             } else {
                 self.devicePersistentStore = container.persistentStoreCoordinator.persistentStore(for: desc.url!)
-                print("Device store loaded")
+                AppLogger.general.debug("Device store loaded")
             }
 
             // Deduplicate after all stores are loaded.
@@ -200,9 +202,9 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
                         try Deduplicator.deduplicate(in: context)
                         // try await Task.sleep(for: .milliseconds(2000))
                         self.isInitialized = true
-                        print("Deduplication done")
+                        AppLogger.general.debug("Deduplication done")
                     } catch {
-                        print("Deduplication failed: \(error)")
+                        AppLogger.general.error("Deduplication failed: \(error, privacy: .public)")
                     }
                 }
             }
@@ -253,7 +255,7 @@ final class CoreDataStack: @unchecked Sendable, CoreDataStackProtocol {
                             try coordinator.destroyPersistentStore(at: url, ofType: NSSQLiteStoreType, options: store.options)
                         }
                     } catch {
-                        print("Failed to teardown persistent store: \(error)")
+                        AppLogger.general.error("Failed to teardown persistent store: \(error, privacy: .public)")
                     }
                 }
                 continuation.resume()

@@ -32,14 +32,14 @@ class ShoppingListsViewModel: ObservableObject {
             await self.loadLists()
         }
         observerRegistered = true
-        print("ShoppingListsViewModel - Started observing remote changes")
+        AppLogger.general.debug("ShoppingListsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         guard observerRegistered else { return }
         dataManager.persistentStoreChangeObserver.removeObserver(self)
         observerRegistered = false
-        print("ShoppingListsViewModel - Stopped observing remote changes")
+        AppLogger.general.debug("ShoppingListsViewModel - Stopped observing remote changes")
     }
     
     var isCloud: Bool {
@@ -51,7 +51,7 @@ class ShoppingListsViewModel: ObservableObject {
     }
     
     func loadLists(fullRefresh: Bool = false) async {
-        print("ShoppingListsViewModel.loadLists(fullRefresh: \(fullRefresh))")
+        AppLogger.general.debug("ShoppingListsViewModel.loadLists(fullRefresh: \(fullRefresh, privacy: .public))")
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }

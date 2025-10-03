@@ -21,63 +21,73 @@ struct DeletedItemsView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            if let items = viewModel.items, items.count > 0 {
-                List {
-                    Section(header: Text("deleted_items_info")
-                        .foregroundColor(Color.bb.text.tertiary)
-                        .font(.regularDynamic(style: .subheadline))
-                        .padding(.bottom, 4)
-                    ) {
-                        ForEach(items) { item in
-                            itemView(item: item)
-                        }
-                    }
-                }
-                .listStyle(.plain)
-                .animation(.default, value: items)
-                .refreshable {
-                    await forceRefresh()
-                }
-            } else {
-                noContnetView
-                    .onTapGesture {
-                        Task {
-                            await forceRefresh()
-                        }
-                    }
-            }
+            contentView
         }
-        .toolbar {
-            toolbarContent
-        }
+        .toolbar { toolbarContent }
         .navigationTitle("recently_deleted")
         .navigationBarTitleDisplayMode(.large)
         .onReceive(viewModel.eventPublisher) { event in
-            switch event {
-            case .shoppingItemEdited:
-                Task { await viewModel.loadItems() }
-            default: break
-            }
+            handleEvent(event)
         }
-        .onAppear {
-            viewModel.startObserving()
-        }
-        .onDisappear {
-            viewModel.stopObserving()
-        }
-        .alert("delete_all_items_in_trash_title",
-               isPresented: $showDeleteAllItemsAlert) {
-            Button("delete", role: .destructive) {
-                Task {
-                    await viewModel.deleteAllItems()
-                }
-            }
-            Button("cancel", role: .cancel) { }
+        .onAppear { viewModel.startObserving() }
+        .onDisappear { viewModel.stopObserving() }
+        .alert("delete_all_items_in_trash_title", isPresented: $showDeleteAllItemsAlert) {
+            deleteAllAlertButtons
         } message: {
             Text("delete_all_items_in_trash_message")
         }
-        .task {
-            await viewModel.loadItems()
+        .task { await viewModel.loadItems() }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        if let _ = viewModel.items, !viewModel.items!.isEmpty {
+            deletedItemsList
+        } else {
+            noContnetView
+                .onTapGesture { Task { await forceRefresh() } }
+        }
+    }
+
+    private var deletedItemsList: some View {
+        List {
+            Text("deleted_items_info")
+                .foregroundColor(.bb.text.tertiary)
+                .font(.regularDynamic(style: .callout))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+
+            ForEach(viewModel.sections) { section in
+                Section(header: Text(section.deletedDate.localizedString(dateStyle: .long))
+                    .foregroundColor(.bb.text.tertiary)
+                    .font(.regularDynamic(style: .footnote))
+                    .textCase(nil)
+                ) {
+                    ForEach(section.items) { item in
+                        itemView(item: item)
+                    }
+                }
+            }
+        }
+        .listStyle(.grouped)
+        .animation(.default, value: viewModel.items)
+        .refreshable { await forceRefresh() }
+    }
+
+    private var deleteAllAlertButtons: some View {
+        Group {
+            Button("delete", role: .destructive) {
+                Task { await viewModel.deleteAllItems() }
+            }
+            Button("cancel", role: .cancel) { }
+        }
+    }
+
+    private func handleEvent(_ event: AppEvent) {
+        switch event {
+        case .shoppingItemEdited:
+            Task { await viewModel.loadItems() }
+        default: break
         }
     }
     

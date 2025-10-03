@@ -175,7 +175,7 @@ class DataManager: DataManagerProtocol {
     }
     
     func deleteOldTrashedShoppingItems(olderThan days: Int) async throws {
-        print("DataManager.deleteOldTrashedItems(olderThan: \(days))")
+        AppLogger.general.debug("DataManager.deleteOldTrashedItems(olderThan: \(days, privacy: .public))")
         let cutoffDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
         
         let trashedItems = try await repository.fetchDeletedShoppingItems()
@@ -203,7 +203,7 @@ class DataManager: DataManagerProtocol {
     }
     
     func cleanOrphanedShoppingItems() async throws {
-        print("DataManager.cleanOrphanedItems()")
+        AppLogger.general.debug("DataManager.cleanOrphanedItems()")
         try await repository.cleanOrphanedShoppingItems()
     }
     
@@ -297,19 +297,19 @@ class DataManager: DataManagerProtocol {
     }
     
     func cleanImageCache() async {
-        print("Clean image cache.")
+        AppLogger.general.debug("Clean image cache.")
         imageCache.removeAllObjects()
     }
     
     func cleanTemporaryImages() async {
-        print("Clean temporary image files.")
+        AppLogger.general.debug("Clean temporary image files.")
         let tempFiles = storageManager.listFiles(in: .temporary, subfolders: nil)
             .filter { $0.pathExtension.lowercased() == "jpg" }
         
         for fileURL in tempFiles {
             storageManager.deleteFile(named: fileURL.lastPathComponent, in: .temporary, subfolders: nil)
         }
-        print("Removed \(tempFiles.count) temporary image files.")
+        AppLogger.general.info("Removed \(tempFiles.count, privacy: .public) temporary image files.")
     }
     
     // MARK: - Files

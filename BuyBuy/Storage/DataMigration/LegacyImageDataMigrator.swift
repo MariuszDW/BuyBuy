@@ -167,7 +167,7 @@ extension FileManager {
                                 .ubiquitousItemDownloadingStatus ?? .current) != .current {
                         
                         if Date().timeIntervalSince(startTime) > timeout {
-                            print("Timeout przy pobieraniu \(fileURL)")
+                            AppLogger.general.warning("Timeout while fetching \(fileURL.path, privacy: .public)")
                             break
                         }
 
@@ -175,7 +175,7 @@ extension FileManager {
                     }
                 }
             } catch {
-                print("Błąd przy pobieraniu \(fileURL): \(error)")
+                AppLogger.general.error("Error fetching \(fileURL.path, privacy: .public): \(error, privacy: .public)")
             }
         }
     }

@@ -108,7 +108,7 @@ struct JSONShoppingListExporter: ShoppingListExporterProtocol {
         do {
             return try encoder.encode(jsonList)
         } catch {
-            print("JSON encoding error: \(error)")
+            AppLogger.general.error("JSON encoding error: \(error, privacy: .public)")
             return nil
         }
     }

@@ -78,7 +78,7 @@ final class ReportCreator {
                 return nil
             }
         } catch {
-            print("Error retrieving free disk space: \(error.localizedDescription)")
+            AppLogger.general.error("Error retrieving free disk space: \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }

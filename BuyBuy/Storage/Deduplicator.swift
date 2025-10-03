@@ -22,13 +22,11 @@ final class Deduplicator {
             }
             changedEntityNames = names
         } else {
-            changedEntityNames = [
-                "ShoppingListEntity", // TODO: Zmienic te nazwy na moze jakos pobierane z nazw klas.
-                "ShoppingItemEntity",
-                "LoyaltyCardEntity",
-                "BBImageEntity",
-                "BBThumbnailEntity"
-            ]
+            changedEntityNames = Set(
+                context.persistentStoreCoordinator?
+                    .managedObjectModel.entities
+                    .compactMap { $0.name } ?? []
+            )
         }
 
         context.performAndWait {
@@ -41,7 +39,7 @@ final class Deduplicator {
                     try context.save()
                 }
             } catch {
-                print("Deduplication failed: \(error)")
+                AppLogger.general.error("Deduplication failed: \(error, privacy: .public)")
             }
         }
     }
@@ -66,7 +64,7 @@ final class Deduplicator {
         for (duplicate, keeper) in duplicates {
             mergeFields(from: duplicate, into: keeper)
             context.delete(duplicate)
-            print("Deduplicated and merged \(entityName) with id \(keeper.value(forKey: "id")!)")
+            AppLogger.general.debug("Deduplicated and merged \(entityName, privacy: .public) with id \(String(describing: keeper.value(forKey: "id")), privacy: .public)")
         }
     }
     

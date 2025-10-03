@@ -35,14 +35,14 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
             await self.loadCard()
         }
         observerRegistered = true
-        print("LoyaltyCardDetailsViewModel - Started observing remote changes")
+        AppLogger.general.debug("LoyaltyCardDetailsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         guard observerRegistered else { return }
         dataManager.persistentStoreChangeObserver.removeObserver(self)
         observerRegistered = false
-        print("LoyaltyCardDetailsViewModel - Stopped observing remote changes")
+        AppLogger.general.debug("LoyaltyCardDetailsViewModel - Stopped observing remote changes")
     }
     
     var eventPublisher: AnyPublisher<AppEvent, Never> {
@@ -50,7 +50,7 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
     }
     
     func loadCard() async {
-        print("LoyaltyCardDetailsViewModel.loadCard() called")
+        AppLogger.general.debug("LoyaltyCardDetailsViewModel.loadCard() called")
         guard let newLoyaltyCard = try? await dataManager.fetchLoyaltyCard(with: loyaltyCard.id) else { return }
 
         if newLoyaltyCard != loyaltyCard {
@@ -94,7 +94,7 @@ final class LoyaltyCardDetailsViewModel: ObservableObject {
             try await dataManager.addOrUpdateLoyaltyCard(loyaltyCard)
             try await loadCardImage()
         } catch {
-            print("Failed to save image: \(error)")
+            AppLogger.general.error("Failed to save image: \(error, privacy: .public)")
         }
     }
     

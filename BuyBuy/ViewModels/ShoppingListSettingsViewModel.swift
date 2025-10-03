@@ -52,14 +52,14 @@ final class ShoppingListSettingsViewModel: ObservableObject {
             await self.loadList()
         }
         observerRegistered = true
-        print("ShoppingListSettingsViewModel - Started observing remote changes")
+        AppLogger.general.debug("ShoppingListSettingsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         guard observerRegistered else { return }
         dataManager.persistentStoreChangeObserver.removeObserver(self)
         observerRegistered = false
-        print("ShoppingListSettingsViewModel - Stopped observing remote changes")
+        AppLogger.general.debug("ShoppingListSettingsViewModel - Stopped observing remote changes")
     }
     
     var canConfirm: Bool {
@@ -81,7 +81,7 @@ final class ShoppingListSettingsViewModel: ObservableObject {
     }
     
     private func loadList() async {
-        print("ShoppingListSettingsViewModel.loadList() called")
+        AppLogger.general.debug("ShoppingListSettingsViewModel.loadList() called")
         guard let newShoppingList = try? await dataManager.fetchShoppingList(with: shoppingList.id) else { return }
         if shoppingList != newShoppingList {
             shoppingList = newShoppingList

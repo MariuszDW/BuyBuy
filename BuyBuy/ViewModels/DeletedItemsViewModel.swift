@@ -11,10 +11,20 @@ import Combine
 
 @MainActor
 final class DeletedItemsViewModel: ObservableObject {
+    struct ItemSection: Identifiable {
+        let id = UUID()
+        let deletedDate: Date
+        var items: [ShoppingItem]
+    }
+    
     private let dataManager: DataManagerProtocol
     private weak var coordinator: (any AppCoordinatorProtocol)?
     private var observerRegistered = false
-    @Published var items: [ShoppingItem]?
+
+    @Published var items: [ShoppingItem]? {
+        didSet { updateSections() }
+    }
+    @Published var sections: [ItemSection] = []
     @Published var thumbnails: [String: UIImage] = [:]
     
     init(dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
@@ -25,22 +35,21 @@ final class DeletedItemsViewModel: ObservableObject {
     func startObserving() {
         guard !observerRegistered else { return }
         dataManager.persistentStoreChangeObserver.addObserver(self) { [weak self] in
-            guard let self else { return }
-            await self.loadItems()
+            Task { await self?.loadItems() }
         }
         observerRegistered = true
-        print("ShoppingListSettingsViewModel - Started observing remote changes")
+        AppLogger.general.debug("DeletedItemsViewModel - Started observing remote changes")
     }
     
     func stopObserving() {
         guard observerRegistered else { return }
         dataManager.persistentStoreChangeObserver.removeObserver(self)
         observerRegistered = false
-        print("ShoppingListSettingsViewModel - Stopped observing remote changes")
+        AppLogger.general.debug("DeletedItemsViewModel - Stopped observing remote changes")
     }
     
     func loadItems(fullRefresh: Bool = false) async {
-        print("DeletedItemsViewModel.loadItems(fullRefresh: \(fullRefresh))")
+        AppLogger.general.debug("DeletedItemsViewModel.loadItems(fullRefresh: \(fullRefresh, privacy: .public))")
         if fullRefresh {
             await dataManager.refreshAllCloudData()
         }
@@ -62,11 +71,9 @@ final class DeletedItemsViewModel: ObservableObject {
     
     func deleteAllItems() async {
         let itemIDs = items?.map { $0.id } ?? []
-        
-        if !itemIDs.isEmpty {
-            try? await dataManager.deleteShoppingItems(with: itemIDs)
-            await loadItems()
-        }
+        guard !itemIDs.isEmpty else { return }
+        try? await dataManager.deleteShoppingItems(with: itemIDs)
+        await loadItems()
     }
     
     func openShoppingListSelector(for itemID: UUID) {
@@ -79,6 +86,25 @@ final class DeletedItemsViewModel: ObservableObject {
     
     var eventPublisher: AnyPublisher<AppEvent, Never> {
         coordinator?.eventPublisher ?? Empty().eraseToAnyPublisher()
+    }
+
+    private func updateSections() {
+        guard let items else {
+            sections = []
+            return
+        }
+        let calendar = Calendar.current
+        
+        var dict: [Date: [ShoppingItem]] = [:]
+        for item in items {
+            let deletedAt = item.deletedAt ?? Date()
+            let dayStart = calendar.startOfDay(for: deletedAt)
+            dict[dayStart, default: []].append(item)
+        }
+
+        sections = dict
+            .map { ItemSection(deletedDate: $0.key, items: $0.value) }
+            .sorted { $0.deletedDate > $1.deletedDate }
     }
     
     func thumbnail(for imageID: String?) -> UIImage? {
@@ -97,7 +123,7 @@ final class DeletedItemsViewModel: ObservableObject {
             let image = try await dataManager.loadThumbnail(with: imageID)
             thumbnails[imageID] = image
         } catch {
-            print("Failed to load thumbnail for \(imageID): \(error)")
+            AppLogger.general.error("Failed to load thumbnail for \(imageID, privacy: .public): \(error, privacy: .public)")
         }
     }
 }
