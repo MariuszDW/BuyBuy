@@ -114,37 +114,34 @@ final class ShoppingListViewModel: ObservableObject {
     
     func toggleStatus(for itemID: UUID) {
         guard let item = list?.item(with: itemID) else { return }
-        Task {
-            await setStatus(item.status.toggled(), itemID: item.id)
-        }
+        setStatus(item.status.toggled(), itemID: item.id)
     }
     
-    func setStatus(_ status: ShoppingItemStatus, itemID: UUID) async {
+    func setStatus(_ status: ShoppingItemStatus, itemID: UUID) {
         guard var currentList = self.list else { return }
         guard let oldItemIndex = currentList.items.firstIndex(where: { $0.id == itemID }) else { return }
-
+        
         var updatedItem = currentList.items[oldItemIndex]
         let oldStatus = updatedItem.status
-
         guard oldStatus != status else { return }
-
-        withAnimation {
+        
+        Task { @MainActor in
             currentList.items.remove(at: oldItemIndex)
+            self.list = currentList
+            
+            await Task.yield()
+            
             updatedItem.status = status
             let maxOrder = currentList.items(for: status).map(\.order).max() ?? -1
             updatedItem.order = maxOrder + 1
             currentList.items.append(updatedItem)
-            self.list = currentList
+            
+            withAnimation(.easeOut(duration: 0.2)) {
+                self.list = currentList
+            }
+            
+            try? await dataManager.addOrUpdateShoppingItem(updatedItem)
         }
-
-        let newSectionItems = reorderItems(currentList.items(for: status))
-        let oldSectionItems = reorderItems(currentList.items(for: oldStatus))
-
-        for item in newSectionItems + oldSectionItems {
-            try? await dataManager.addOrUpdateShoppingItem(item)
-        }
-
-        await loadList()
     }
     
     func openNewItemDetails(listID: UUID) {

@@ -95,7 +95,6 @@ struct ShoppingListView: View {
                 }
             }
         }
-        .animation(.default, value: list.items)
         .refreshable {
             await forceRefresh()
         }
@@ -104,7 +103,7 @@ struct ShoppingListView: View {
     @ViewBuilder
     private func shoppingItems(_ items: [ShoppingItem], of section: ShoppingListSection) -> some View {
         if !section.isCollapsed {
-            ForEach(items) { item in
+            ForEach(items, id: \.id) { item in
                 itemView(item: item, section: section)
             }
             .onDelete { offsets in
@@ -137,6 +136,7 @@ struct ShoppingListView: View {
                 viewModel.openItemImagePreviews(for: selectedItemID, imageIndex: imageIndex)
             }
         )
+        .id(item.id)
         .contextMenu {
             Button {
                 viewModel.openItemDetails(for: item.id)
@@ -174,7 +174,7 @@ struct ShoppingListView: View {
                     Button {
                         Task {
                             hapticEngine.playItemChecked()
-                            await viewModel.setStatus(status, itemID: item.id)
+                            viewModel.setStatus(status, itemID: item.id)
                         }
                     } label: {
                         Label(status.localizedName, systemImage: status.imageSystemName)
