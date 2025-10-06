@@ -70,7 +70,6 @@ class ShoppingListsViewModel: ObservableObject {
         preferences.shoppingListsOrder.removeAll { idsToDelete.contains($0) }
         
         try? await dataManager.deleteShoppingLists(with: idsToDelete, moveItemsToDeleted: true)
-        await loadLists()
     }
 
     func deleteList(id: UUID) async {
@@ -78,7 +77,6 @@ class ShoppingListsViewModel: ObservableObject {
         preferences.shoppingListsOrder.removeAll { $0 == id }
         
         try? await dataManager.deleteShoppingList(with: id, moveItemsToDeleted: true)
-        await loadLists()
     }
 
     func moveLists(fromOffsets source: IndexSet, toOffset destination: Int) async {

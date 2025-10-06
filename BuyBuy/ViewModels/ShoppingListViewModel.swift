@@ -18,11 +18,7 @@ final class ShoppingListViewModel: ObservableObject {
     
     @Published var list: ShoppingList?
     @Published var thumbnails: [String: UIImage] = [:]
-    @Published var sections: [ShoppingListSection] = [
-        ShoppingListSection(status: .pending),
-        ShoppingListSection(status: .purchased),
-        ShoppingListSection(status: .inactive)
-    ]
+    @Published private var temporaryStatuses: [UUID: ShoppingItemStatus] = [:]
     
     init(listID: UUID, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.listID = listID
@@ -78,10 +74,10 @@ final class ShoppingListViewModel: ObservableObject {
         await loadList()
     }
     
-    func moveItem(from source: IndexSet, to destination: Int, in section: ShoppingItemStatus) async {
+    func moveItem(from source: IndexSet, to destination: Int, in status: ShoppingItemStatus) async {
         guard let list = list else { return }
         
-        var items = list.items(for: section)
+        var items = list.items(for: status)
         items.move(fromOffsets: source, toOffset: destination)
         
         let reorderedItems = reorderItems(items)
@@ -97,59 +93,47 @@ final class ShoppingListViewModel: ObservableObject {
         coordinator?.back()
     }
     
-    func deleteItems(atOffsets offsets: IndexSet, section: ShoppingListSection) async {
-        guard let items = list?.items(for: section.status) else { return }
+    func deleteItems(atOffsets offsets: IndexSet, status: ShoppingItemStatus) async {
+        guard let items = list?.items(for: status) else { return }
         let idsToDelete = offsets.map { items[$0].id }
         list?.items.removeAll { idsToDelete.contains($0.id) }
         try? await dataManager.deleteShoppingItems(with: idsToDelete)
         await loadList()
     }
     
-    func toggleCollapse(ofSection section: ShoppingListSection) {
-        guard let index = sections.firstIndex(where: { $0.status == section.status }) else { return }
-        withAnimation {
-            sections[index].isCollapsed.toggle()
+    func visibleStatus(for item: ShoppingItem) -> ShoppingItemStatus {
+        temporaryStatuses[item.id] ?? item.status
+    }
+    
+    func setStatus(_ status: ShoppingItemStatus, itemID: UUID, delay: Double = 0) {
+        guard var updatedItem = list?.item(with: itemID), updatedItem.status != status else {
+            return
         }
-    }
-    
-    func toggleStatus(for itemID: UUID) {
-        guard let item = list?.item(with: itemID) else { return }
-        setStatus(item.status.toggled(), itemID: item.id)
-    }
-    
-    func setStatus(_ status: ShoppingItemStatus, itemID: UUID) {
-        guard var currentList = self.list else { return }
-        guard let oldItemIndex = currentList.items.firstIndex(where: { $0.id == itemID }) else { return }
         
-        var updatedItem = currentList.items[oldItemIndex]
-        let oldStatus = updatedItem.status
-        guard oldStatus != status else { return }
+        temporaryStatuses[updatedItem.id] = status
         
-        Task { @MainActor in
-            currentList.items.remove(at: oldItemIndex)
-            self.list = currentList
-            
-            await Task.yield()
-            
+        Task {
+            try? await Task.sleep(for: .seconds(delay))
+        
+            let maxOrder = list?.items(for: status).map(\.order).max() ?? -1
             updatedItem.status = status
-            let maxOrder = currentList.items(for: status).map(\.order).max() ?? -1
             updatedItem.order = maxOrder + 1
-            currentList.items.append(updatedItem)
-            
-            withAnimation(.easeOut(duration: 0.2)) {
-                self.list = currentList
-            }
             
             try? await dataManager.addOrUpdateShoppingItem(updatedItem)
+            
+            try? await Task.sleep(for: .seconds(0.3))
+            
+            await MainActor.run {
+                self.temporaryStatuses[itemID] = nil
+            }
         }
     }
     
-    func openNewItemDetails(listID: UUID) {
-        let newItemStatus: ShoppingItemStatus = .pending
+    func openNewItemDetails(listID: UUID, itemStatus: ShoppingItemStatus) {
         let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
         let maxOrder = list?.items.map(\.order).max() ?? 0
         
-        let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: newItemStatus)
+        let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: itemStatus)
         
         coordinator?.openShoppingItemDetails(newItem, isNew: true, onDismiss: nil)
     }

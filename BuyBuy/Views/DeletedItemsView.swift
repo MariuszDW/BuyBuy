@@ -94,6 +94,7 @@ struct DeletedItemsView: View {
     private func itemView(item: ShoppingItem) -> some View {
         return ShoppingItemRow(
             item: item,
+            status: item.status,
             thumbnail: viewModel.thumbnail(for: item.imageIDs.first),
             state: false,
             onToggleStatus: { _ in },

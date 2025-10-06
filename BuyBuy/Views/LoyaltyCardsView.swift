@@ -26,80 +26,58 @@ struct LoyaltyCardsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        Group {
             if showingListView {
                 listView
             } else if !viewModel.cards.isEmpty {
                 cardGrids
-                    .refreshable {
-                        await forceRefresh()
-                    }
+                    .refreshable { await forceRefresh() }
             } else {
                 noContentView
-                    .onTapGesture {
-                        Task {
-                            await forceRefresh()
-                        }
-                    }
+                    .onTapGesture { Task { await forceRefresh() } }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            
-            Spacer(minLength: 0)
-
-            BottomPanelView(title: String(localized: "add_card"),
+        }
+        .safeAreaInset(edge: .bottom) {
+            if !isEditMode.isEditing {
+                ButtonRow(
+                    leftButtons: [
+                        AdaptiveButton(
+                            label: String(localized: "add_card"),
                             systemImage: "plus.circle",
-                            isButtonDisabled: isEditMode.isEditing,
-                            trailingView: { EmptyView() },
-                            action: { viewModel.openNewCardDetails() })
+                            action: { viewModel.openNewCardDetails() }
+                        )
+                    ],
+                    rightButtons: []
+                )
+                .padding(.horizontal)
+                .padding(.bottom, 6)
+            } else {
+                EmptyView()
+            }
         }
         .alert(item: $cardPendingDeletion) { card in
-            return Alert(
+            Alert(
                 title: Text(String(format: String(localized: "delete_card_title"), card.name)),
                 message: Text("delete_card_message"),
                 primaryButton: .destructive(Text("delete")) {
-                    Task {
-                        await viewModel.deleteCard(with: card.id)
-                        cardPendingDeletion = nil
-                    }
+                    Task { await viewModel.deleteCard(with: card.id) }
                 },
-                secondaryButton: .cancel() {
-                    cardPendingDeletion = nil
-                }
+                secondaryButton: .cancel()
             )
-        }
-        .onReceive(viewModel.eventPublisher) { event in
-            switch event {
-            case .loyaltyCardEdited:
-                Task { await viewModel.loadCards() }
-            default: break
-            }
-        }
-        .onAppear {
-            viewModel.startObserving()
-            Task { await viewModel.loadCards() }
-            AppLogger.general.info("LoyaltyCardsView onAppear")
-        }
-        .onDisappear {
-            viewModel.stopObserving()
-            AppLogger.general.info("LoyaltyCardsView onDisappear")
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 if isEditMode.isEditing {
                     Button("ok") {
-                        withAnimation {
-                            isEditMode = .inactive
-                            showingListView = false
-                        }
+                        isEditMode = .inactive
+                        showingListView = false
                     }
-                }
-                
-                if !isEditMode.isEditing && !viewModel.cards.isEmpty {
+                } else if !viewModel.cards.isEmpty {
                     Button {
-                        withAnimation {
-                            showActionsForCardAtIndex = nil
-                            isEditMode = .active
-                            showingListView = true
-                        }
+                        showActionsForCardAtIndex = nil
+                        isEditMode = .active
+                        showingListView = true
                     } label: {
                         Label("edit_list", systemImage: "pencil.circle")
                     }
@@ -108,8 +86,18 @@ struct LoyaltyCardsView: View {
             }
         }
         .navigationTitle(viewModel.cards.isEmpty ? "" : "loyalty_cards")
-        .task {
-            await viewModel.loadCards()
+        .task { await viewModel.loadCards() }
+        .onAppear {
+            viewModel.startObserving()
+            Task { await viewModel.loadCards() }
+        }
+        .onDisappear {
+            viewModel.stopObserving()
+        }
+        .onReceive(viewModel.eventPublisher) { event in
+            if case .loyaltyCardEdited = event {
+                Task { await viewModel.loadCards() }
+            }
         }
     }
     
@@ -151,6 +139,7 @@ struct LoyaltyCardsView: View {
                 }
             }
         }
+        .listStyle(.plain)
         .environment(\.editMode, $isEditMode)
     }
     

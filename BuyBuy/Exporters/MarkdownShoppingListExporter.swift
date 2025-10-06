@@ -33,7 +33,8 @@ struct MarkdownShoppingListExporter: ShoppingListExporterProtocol {
             guard !items.isEmpty else { continue }
 
             // category of items
-            result += "## \(ShoppingListSection(status: status).localizedTitle.uppercased())\n\n"
+            let categoryTitle = status.localizedCategoryName.uppercased()
+            result += "## \(categoryTitle)\n\n"
 
             for item in items {
                 // item name

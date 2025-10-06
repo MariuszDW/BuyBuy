@@ -73,22 +73,38 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
 
         var cancellables: [AnyCancellable] = []
 
-        let remoteChange = NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange, object: coordinator)
-            //.debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-            .sink { [weak self] notification in
-                self?.handleRemoteChange(notification)
-            }
-        cancellables.append(remoteChange)
-
-        let cloudKitEvent = NotificationCenter.default.publisher(for: NSPersistentCloudKitContainer.eventChangedNotification, object: container)
-            //.debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-            .sink { [weak self] notification in
-                self?.handleCloudKitEvent(notification)
-            }
-        cancellables.append(cloudKitEvent)
-
+        if stack.isCloud {
+            let remoteChange = NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange, object: coordinator)
+                .sink { [weak self] notification in
+                    self?.handleRemoteChange(notification)
+                }
+            cancellables.append(remoteChange)
+            
+            let cloudKitEvent = NotificationCenter.default.publisher(for: NSPersistentCloudKitContainer.eventChangedNotification, object: container)
+                .sink { [weak self] notification in
+                    self?.handleCloudKitEvent(notification)
+                }
+            cancellables.append(cloudKitEvent)
+        } else {
+            let localChanges = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: nil)
+                .sink { [weak self] _ in
+                    self?.handleLocalChange()
+                }
+            cancellables.append(localChanges)
+        }
+        
         cancellable = AnyCancellable {
             cancellables.forEach { $0.cancel() }
+        }
+    }
+    
+    private func handleLocalChange() {
+        let observersAndBlocks = getObserversAndBlocks().map(\.1)
+        
+        Task { @MainActor in
+            for block in observersAndBlocks {
+                await block()
+            }
         }
     }
 

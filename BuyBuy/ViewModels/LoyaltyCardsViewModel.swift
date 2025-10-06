@@ -75,7 +75,6 @@ final class LoyaltyCardsViewModel: ObservableObject {
             try? await dataManager.addOrUpdateLoyaltyCard(card)
         }
 
-        await loadCards()
     }
 
     func openCardPreview(_ card: LoyaltyCard) {
@@ -90,7 +89,6 @@ final class LoyaltyCardsViewModel: ObservableObject {
     
     func deleteCard(with id: UUID) async {
         try? await dataManager.deleteLoyaltyCard(with: id)
-        await loadCards()
     }
     
     func deleteCards(at indexSet: IndexSet) async {
@@ -98,7 +96,6 @@ final class LoyaltyCardsViewModel: ObservableObject {
             let card = cards[index]
             try? await dataManager.deleteLoyaltyCard(with: card.id)
         }
-        await loadCards()
     }
     
     func openNewCardDetails() {

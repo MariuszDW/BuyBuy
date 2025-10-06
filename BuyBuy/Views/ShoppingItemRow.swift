@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShoppingItemRow: View {
     let item: ShoppingItem
+    let status: ShoppingItemStatus
     let thumbnail: UIImage?
     let state: Bool?
     let onToggleStatus: (UUID) -> Void
@@ -78,9 +79,11 @@ struct ShoppingItemRow: View {
     
     private func statusCheckBox(state: Bool) -> some View {
         Button {
-            onToggleStatus(item.id)
+            if status == item.status {
+                onToggleStatus(item.id)
+            }
         } label: {
-            item.status.checkBoxImage
+            status.checkBoxImage
                 .foregroundColor(state == true ? .bb.selection : .bb.text.quaternary)
                 .font(.regularDynamic(style: .headline))
                 .scaleEffect(1.35)
@@ -149,7 +152,7 @@ struct ShoppingItemRow: View {
                             imageIDs: ["image_thumbnail"])
     
     List {
-        ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
+        ShoppingItemRow(item: item, status: item.status, thumbnail: UIImage(systemName: "image"),
                         state: true, onToggleStatus: {_ in },
                         onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
@@ -166,7 +169,7 @@ struct ShoppingItemRow: View {
                             imageIDs: ["image_thumbnail"])
     
     List {
-        ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
+        ShoppingItemRow(item: item, status: item.status, thumbnail: UIImage(systemName: "image"),
                         state: true, onToggleStatus: {_ in },
                         onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
@@ -181,7 +184,7 @@ struct ShoppingItemRow: View {
                             note: "", status: .purchased)
     
     List {
-        ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
+        ShoppingItemRow(item: item, status: item.status, thumbnail: UIImage(systemName: "image"),
                         state: true, onToggleStatus: {_ in },
                         onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }
@@ -196,7 +199,7 @@ struct ShoppingItemRow: View {
                             note: "", status: .purchased)
     
     List {
-        ShoppingItemRow(item: item, thumbnail: UIImage(systemName: "image"),
+        ShoppingItemRow(item: item, status: item.status, thumbnail: UIImage(systemName: "image"),
                         state: true, onToggleStatus: {_ in },
                         onRowTap: {_ in }, onThumbnailTap: {_, _ in })
     }

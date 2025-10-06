@@ -45,7 +45,8 @@ struct HTMLShoppingListExporter: ShoppingListExporterProtocol {
 
             // category of items with color
             let statusColorHex = status.color.hexString ?? "#000000"
-            html += "<h3><font color=\"\(statusColorHex)\">\(ShoppingListSection(status: status).localizedTitle.uppercased())</font></h3>\n"
+            let categoryTitle = status.localizedCategoryName.uppercased()
+            html += "<h3><font color=\"\(statusColorHex)\">\(categoryTitle)</font></h3>\n"
             html += "<ul>\n"
 
             for item in items {

@@ -20,6 +20,14 @@ enum ShoppingItemStatus: String, CaseIterable, Hashable {
         }
     }
     
+    var localizedCategoryName: String {
+        switch self {
+        case .pending: return String(localized: "items_pending")
+        case .purchased: return String(localized: "items_purchased")
+        case .inactive: return String(localized: "items_inactive")
+        }
+    }
+    
     var checkBoxImage: Image {
         return Image(systemName: checkBoxImageName)
     }
