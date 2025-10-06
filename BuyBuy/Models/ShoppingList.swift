@@ -60,6 +60,10 @@ struct ShoppingList: Identifiable, Hashable {
         return sortedItems
     }
     
+    func itemCount(for status: ShoppingItemStatus) -> Int {
+        items.lazy.filter { $0.status == status }.count
+    }
+    
     func item(with id: UUID) -> ShoppingItem? {
         items.first(where: { $0.id == id})
     }
