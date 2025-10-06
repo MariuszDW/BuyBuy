@@ -47,6 +47,23 @@ final class ShoppingListViewModel: ObservableObject {
         coordinator?.eventPublisher ?? Empty().eraseToAnyPublisher()
     }
     
+    func itemCount(for itemStatus: ShoppingItemStatus? = nil) -> Int {
+        guard let list = list else {
+            return 0
+        }
+        return list.itemCount(for: itemStatus)
+    }
+    
+    func items(for itemStatus: ShoppingItemStatus? = nil) -> [ShoppingItem] {
+        guard let list = list else {
+            return []
+        }
+        guard let itemStatus = itemStatus else {
+            return list.items
+        }
+        return list.items(for: itemStatus)
+    }
+    
     func loadList(fullRefresh: Bool = false) async {
         AppLogger.general.debug("ShoppingListViewModel.loadList(fullRefresh: \(fullRefresh, privacy: .public))")
         if fullRefresh {

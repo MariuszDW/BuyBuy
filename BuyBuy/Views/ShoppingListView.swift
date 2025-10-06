@@ -22,8 +22,8 @@ struct ShoppingListView: View {
     
     var body: some View {
         Group {
-            if let list = viewModel.list, !list.items.isEmpty {
-                itemsListView(with: list.items(for: selectedItemStatus))
+            if viewModel.itemCount() > 0 {
+                itemsListView(with: viewModel.items(for: selectedItemStatus))
             } else {
                 noContentView
                     .onAppear { isEditMode = .inactive }
@@ -50,17 +50,17 @@ struct ShoppingListView: View {
                         rightButtons: [
                             AdaptiveButton(systemImage: ShoppingItemStatus.pending.imageSystemName,
                                            highlight: selectedItemStatus == .pending,
-                                           badge: viewModel.list?.itemCount(for: .pending)) {
+                                           badge: viewModel.itemCount(for: .pending)) {
                                                selectedItemStatus = .pending
                                            },
                             AdaptiveButton(systemImage: ShoppingItemStatus.purchased.imageSystemName,
                                            highlight: selectedItemStatus == .purchased,
-                                           badge: viewModel.list?.itemCount(for: .purchased)) {
+                                           badge: viewModel.itemCount(for: .purchased)) {
                                                selectedItemStatus = .purchased
                                            },
                             AdaptiveButton(systemImage: ShoppingItemStatus.inactive.imageSystemName,
                                            highlight: selectedItemStatus == .inactive,
-                                           badge: viewModel.list?.itemCount(for: .inactive)) {
+                                           badge: viewModel.itemCount(for: .inactive)) {
                                                selectedItemStatus = .inactive
                                            }
                         ]
@@ -229,7 +229,7 @@ struct ShoppingListView: View {
                         } label: {
                             Label("edit_list", systemImage: "pencil")
                         }
-                        .disabled(viewModel.list?.items.isEmpty ?? true)
+                        .disabled(viewModel.itemCount() == 0)
                         
                         Button {
                             viewModel.openListSettings()
