@@ -115,7 +115,7 @@ struct ShoppingListView: View {
                 }
             }
         }
-        .id(selectedItemStatus)
+        .animation(.default, value: selectedItemStatus)
         .animation(.default, value: viewModel.list?.items)
         .environment(\.editMode, $isEditMode)
         .listStyle(.plain)
