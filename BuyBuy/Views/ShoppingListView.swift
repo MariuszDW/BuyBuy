@@ -41,9 +41,7 @@ struct ShoppingListView: View {
                     
                     ButtonRow(
                         leftButtons: [
-                            AdaptiveButton(
-                                label: String(localized: "add_item"),
-                                systemImage: "plus.circle") {
+                            AdaptiveButton(systemImage: "plus") {
                                     if let listID = viewModel.list?.id {
                                         viewModel.openNewItemDetails(listID: listID, itemStatus: selectedItemStatus)
                                     }

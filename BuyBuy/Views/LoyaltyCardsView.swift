@@ -44,7 +44,7 @@ struct LoyaltyCardsView: View {
                     leftButtons: [
                         AdaptiveButton(
                             label: String(localized: "add_card"),
-                            systemImage: "plus.circle",
+                            systemImage: "plus",
                             action: { viewModel.openNewCardDetails() }
                         )
                     ],

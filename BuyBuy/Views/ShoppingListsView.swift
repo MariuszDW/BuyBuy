@@ -40,7 +40,7 @@ struct ShoppingListsView: View {
                     leftButtons: [
                         AdaptiveButton(
                             label: String(localized: "add_list"),
-                            systemImage: "plus.circle") {
+                            systemImage: "plus") {
                                 viewModel.openNewListSettings()
                             }
                     ]
