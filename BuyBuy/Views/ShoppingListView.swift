@@ -70,6 +70,7 @@ struct ShoppingListView: View {
                     )
                     .padding(.horizontal)
                     .padding(.bottom, 4)
+                    .animation(.easeInOut, value: selectedItemStatus)
                 }
             } else {
                 EmptyView()
