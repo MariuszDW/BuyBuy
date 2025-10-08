@@ -12,13 +12,15 @@ struct AdaptiveButton: View {
     let systemImage: String?
     let highlight: Bool
     let badge: Int?
+    let minWidth: CGFloat?
     let action: () -> Void
     
-    init(label: String? = nil, systemImage: String? = nil, highlight: Bool = false, badge: Int? = nil, action: @escaping () -> Void = {}) {
+    init(label: String? = nil, systemImage: String? = nil, highlight: Bool = false, badge: Int? = nil, minWidth: CGFloat? = nil, action: @escaping () -> Void = {}) {
         self.label = label
         self.systemImage = systemImage
         self.highlight = highlight
         self.badge = badge
+        self.minWidth = minWidth
         self.action = action
     }
     
@@ -28,6 +30,7 @@ struct AdaptiveButton: View {
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
         }
+        .frame(minWidth: minWidth)
         .background(backgroundView)
         .overlay(
             Group {
@@ -134,7 +137,7 @@ struct ButtonRow: View {
                 AdaptiveButton(label: "Add", systemImage: "plus.circle", highlight: true, badge: 3) { print("Plus tapped") }
             ],
             rightButtons: [
-                AdaptiveButton(label: nil, systemImage: "hourglass", badge: 24) { print("Settings tapped") }
+                AdaptiveButton(label: nil, systemImage: "hourglass", badge: 24, minWidth: 60) { print("Settings tapped") }
             ]
         )
         .padding(.horizontal)
@@ -154,7 +157,7 @@ struct ButtonRow: View {
                 AdaptiveButton(label: "Add", systemImage: "plus.circle", highlight: true, badge: 3) { print("Plus tapped") }
             ],
             rightButtons: [
-                AdaptiveButton(label: nil, systemImage: "hourglass", badge: 24) { print("Settings tapped") }
+                AdaptiveButton(label: nil, systemImage: "hourglass", badge: 24, minWidth: 80) { print("Settings tapped") }
             ]
         )
         .padding(.horizontal)

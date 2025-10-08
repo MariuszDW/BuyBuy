@@ -41,7 +41,7 @@ struct ShoppingListView: View {
                     
                     ButtonRow(
                         leftButtons: [
-                            AdaptiveButton(systemImage: "plus") {
+                            AdaptiveButton(systemImage: "plus", minWidth: 56) {
                                     if let listID = viewModel.list?.id {
                                         viewModel.openNewItemDetails(listID: listID, itemStatus: selectedItemStatus)
                                     }
@@ -50,17 +50,20 @@ struct ShoppingListView: View {
                         rightButtons: [
                             AdaptiveButton(systemImage: ShoppingItemStatus.pending.imageSystemName,
                                            highlight: selectedItemStatus == .pending,
-                                           badge: viewModel.itemCount(for: .pending)) {
+                                           badge: viewModel.itemCount(for: .pending),
+                                           minWidth: 56) {
                                                selectedItemStatus = .pending
                                            },
                             AdaptiveButton(systemImage: ShoppingItemStatus.purchased.imageSystemName,
                                            highlight: selectedItemStatus == .purchased,
-                                           badge: viewModel.itemCount(for: .purchased)) {
+                                           badge: viewModel.itemCount(for: .purchased),
+                                           minWidth: 56) {
                                                selectedItemStatus = .purchased
                                            },
                             AdaptiveButton(systemImage: ShoppingItemStatus.inactive.imageSystemName,
                                            highlight: selectedItemStatus == .inactive,
-                                           badge: viewModel.itemCount(for: .inactive)) {
+                                           badge: viewModel.itemCount(for: .inactive),
+                                           minWidth: 56) {
                                                selectedItemStatus = .inactive
                                            }
                         ]
