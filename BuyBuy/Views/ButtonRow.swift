@@ -87,7 +87,7 @@ struct AdaptiveButton: View {
                 .shadow(color: Color.black.opacity(0.2), radius: 6, x: 0, y: 1)
                 .overlay(
                     Capsule()
-                        .fill(highlight ? Color.bb.selection.opacity(0.2) : Color.background.opacity(0.2))
+                        .fill(highlight ? Color.bb.selection.opacity(0.2) : Color.bb.background.opacity(0.2))
                 )
                 .if(highlight) { view in
                     view.overlay(
