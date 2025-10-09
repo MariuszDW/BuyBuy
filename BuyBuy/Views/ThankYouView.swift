@@ -51,14 +51,14 @@ struct ThankYouView: View {
     private func mainIconView(iconSize: CGFloat) -> some View {
         viewModel.thankYouImage
             .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(maxWidth: iconSize)
+            .scaledToFit()
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .shadow(color: .black.opacity(0.7), radius: 6, y: 2)
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(Color.bb.text.secondary, lineWidth: 3)
             )
+            .frame(maxWidth: iconSize)
     }
     
     @ViewBuilder
