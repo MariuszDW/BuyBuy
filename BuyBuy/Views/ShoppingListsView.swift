@@ -23,65 +23,57 @@ struct ShoppingListsView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
+        Group {
             if !viewModel.shoppingLists.isEmpty {
                 shoppingListsView
-                    .environment(\.editMode, $isEditMode)
             } else {
                 noContentView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .onTapGesture {
-                        Task {
-                            await forceRefresh()
-                        }
+                        Task { await forceRefresh() }
                     }
             }
-            
-            Spacer(minLength: 0)
-            
-            BottomPanelView(title: String(localized: "add_list"),
-                            systemImage: "plus.circle",
-                            isButtonDisabled: isEditMode.isEditing,
-                            trailingView: { EmptyView() },
-                            action: { viewModel.openNewListSettings() })
+        }
+        .safeAreaInset(edge: .bottom) {
+            if !isEditMode.isEditing {
+                ButtonRow(
+                    leftButtons: [
+                        AdaptiveButton(
+                            label: String(localized: "add_list"),
+                            systemImage: "plus") {
+                                viewModel.openNewListSettings()
+                            }
+                    ]
+                )
+                .padding(.horizontal)
+                .padding(.bottom, 6)
+            } else {
+                EmptyView()
+            }
         }
         .navigationTitle(viewModel.shoppingLists.isEmpty ? "" : "shopping_lists")
         .navigationBarTitleDisplayMode(.large)
-        .onChange(of: viewModel.shoppingLists) { newValue in
-            if newValue.isEmpty {
-                isEditMode = .inactive
-            }
-        }
-        .toolbar {
-            toolbarContent
-        }
+        .toolbar { toolbarContent }
         .alert(item: $listPendingDeletion) { list in
             Alert(
                 title: Text(String(format: String(localized: "delete_list_title"), list.name)),
                 message: Text("delete_list_message"),
                 primaryButton: .destructive(Text("delete")) {
-                    Task {
-                        await viewModel.deleteList(id: list.id)
-                        listPendingDeletion = nil
-                    }
-                },
-                secondaryButton: .cancel() {
+                    Task { await viewModel.deleteList(id: list.id) }
                     listPendingDeletion = nil
-                }
+                },
+                secondaryButton: .cancel { listPendingDeletion = nil }
             )
         }
         .onAppear {
             viewModel.startObserving()
             Task { await viewModel.loadLists() }
         }
-        .onDisappear() {
+        .onDisappear {
             viewModel.stopObserving()
         }
-        .onReceive(viewModel.coordinator.eventPublisher) { event in
-            switch event {
-            case .dataStorageChanged, .shoppingItemEdited, .shoppingListEdited:
-                Task { await viewModel.loadLists() }
-            default: break
-            }
+        .onChange(of: viewModel.shoppingLists) { newValue in
+            if newValue.isEmpty { isEditMode = .inactive }
         }
     }
     
@@ -125,6 +117,7 @@ struct ShoppingListsView: View {
             }
         }
         .listStyle(.plain)
+        .environment(\.editMode, $isEditMode)
         .refreshable {
             await forceRefresh()
         }
@@ -242,9 +235,7 @@ struct ShoppingListsView: View {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if isEditMode.isEditing {
                     Button("ok") {
-                        withAnimation {
-                            isEditMode = .inactive
-                        }
+                        isEditMode = .inactive
                     }
                 }
                 
@@ -265,9 +256,7 @@ struct ShoppingListsView: View {
                     
                     Menu {
                         Button {
-                            withAnimation {
-                                isEditMode = .active
-                            }
+                            isEditMode = .active
                         } label: {
                             Label("edit_list", systemImage: "pencil")
                                 .lineLimit(1)

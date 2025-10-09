@@ -48,9 +48,9 @@ struct AmigaGuideShoppingListExporter: ShoppingListExporterProtocol {
             let items = shoppingList.items(for: status)
             guard !items.isEmpty else { continue }
 
-            // section title
-            let sectionTitle = ShoppingListSection(status: status).localizedTitle.uppercased()
-            result += "@{b}\(sectionTitle)@{ub}\n\n"
+            // category title
+            let categoryTitle = status.localizedCategoryName.uppercased()
+            result += "@{b}\(categoryTitle)@{ub}\n\n"
 
             for item in items {
                 // item link

@@ -482,13 +482,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to permanently delete all items in Recently Deleted? This action cannot be undone."
+            "value" : "Are you sure you want to permanently delete all items in ”Recently Deleted”? This action cannot be undone."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Czy na pewno chcesz trwale usunąć wszystkie itemy z sekcji Ostatnio Usunięte? Tej operacji nie można cofnąć."
+            "value" : "Czy na pewno chcesz trwale usunąć wszystkie przedmioty z listy „Ostatnio usunięte”? Tej operacji nie można cofnąć."
           }
         }
       }
@@ -596,13 +596,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to delete ALL purchased items?"
+            "value" : "Are you sure you want to delete all purchased items?"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Czy na pewno chcesz usunąć WSZYSTKIE zakupione przedmioty?"
+            "value" : "Czy na pewno chcesz usunąć wszystkie zakupione przedmioty?"
           }
         }
       }
@@ -1260,13 +1260,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use the \"Add item\" button to add your first shopping item."
+            "value" : "Use the ”+” button to add a shopping item."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Użyj przycisku „Dodaj przedmiot”, aby dodać pierwszy przedmiot do listy zakupów."
+            "value" : "Użyj przycisku „+”, aby dodać przedmiot do listy zakupów."
           }
         }
       }
@@ -1340,13 +1340,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tap the \"Add list\" button to create a new shopping list."
+            "value" : "Use the \"Add list\" button to create a shopping list."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Użyj przycisku „Dodaj listę”, aby stworzyć nową listę zakupów."
+            "value" : "Użyj przycisku „Dodaj listę”, aby stworzyć listę zakupów."
           }
         }
       }

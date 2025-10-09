@@ -13,6 +13,7 @@ struct ShoppingListView: View {
     @State private var isEditMode: EditMode = .inactive
     @State private var showDeletePurchasedAlert = false
     @State private var forceRefreshDiabled = false
+    @State private var selectedItemStatus: ShoppingItemStatus = .pending
     
     init(viewModel: ShoppingListViewModel, hapticEngine: HapticEngineProtocol) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -20,62 +21,47 @@ struct ShoppingListView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            if let list = viewModel.list, !list.items.isEmpty {
-                sections(list)
-                    .environment(\.editMode, $isEditMode)
-                    .listStyle(.grouped)
+        Group {
+            if viewModel.itemCount() > 0 {
+                itemsListView(with: viewModel.items(for: selectedItemStatus))
             } else {
                 noContentView
-                    .onAppear {
-                        isEditMode = .inactive
-                    }
-                    .onTapGesture {
-                        Task {
-                            await forceRefresh()
-                        }
-                    }
+                    .onAppear { isEditMode = .inactive }
+                    .onTapGesture { Task { await forceRefresh() } }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            
-            Spacer(minLength: 0)
-            
-            BottomPanelView(title: String(localized: "add_item"),
-                            systemImage: "plus.circle",
-                            isButtonDisabled: isEditMode.isEditing,
-                            trailingView: { summaryView() },
-                            action: {
-                if let listID = viewModel.list?.id {
-                    viewModel.openNewItemDetails(listID: listID)
+        }
+        .safeAreaInset(edge: .bottom) {
+            if !isEditMode.isEditing {
+                VStack(spacing: 14) {
+                    if viewModel.list?.containsItemsWithPrice() ?? false {
+                        costView()
+                            .padding(.horizontal)
+                    }
+                    
+                    buttonRow()
+                        .padding(.horizontal)
+                        .padding(.bottom, 4)
                 }
-            })
-        }
-        .toolbar {
-            toolbarContent
-        }
-        .navigationTitle(viewModel.list?.name ?? "")
-        .navigationBarTitleDisplayMode(.large)
-        .onReceive(viewModel.eventPublisher) { event in
-            switch event {
-            case .shoppingItemEdited:
-                Task { await viewModel.loadList() }
-            default: break
+            } else {
+                EmptyView()
             }
         }
-        .onAppear {
-            viewModel.startObserving()
+        .toolbar { toolbarContent }
+        .navigationTitle(viewModel.list?.name ?? "")
+        .navigationBarTitleDisplayMode(.inline)
+        .onReceive(viewModel.eventPublisher) { event in
+            if case .shoppingItemEdited = event {
+                Task { await viewModel.loadList() }
+            }
         }
-        .onDisappear {
-            viewModel.stopObserving()
-        }
-        .task {
-            await viewModel.loadList()
-        }
+        .onAppear { viewModel.startObserving() }
+        .onDisappear { viewModel.stopObserving() }
+        .task { await viewModel.loadList() }
         .alert("delete_purchased_items_title",
                isPresented: $showDeletePurchasedAlert) {
             Button("delete", role: .destructive) {
-                Task {
-                    await viewModel.deletePurchasedItems()
-                }
+                Task { await viewModel.deletePurchasedItems() }
             }
             Button("cancel", role: .cancel) { }
         } message: {
@@ -84,49 +70,61 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func sections(_ list: ShoppingList) -> some View {
+    private func itemsListView(with items: [ShoppingItem]) -> some View {
         List {
-            ForEach(viewModel.sections, id: \.status) { section in
-                let items = list.items(for: section.status)
-                if !items.isEmpty {
-                    Section(header: sectionHeader(section: section, sectionItemCount: items.count)) {
-                        shoppingItems(items, of: section)
-                    }
+            categoryTitleView()
+                .padding(.horizontal)
+                .listRowSeparator(.hidden)
+            
+            ForEach(items, id: \.id) { item in
+                itemView(with: item)
+            }
+            .onDelete { offsets in
+                Task {
+                    await viewModel.deleteItems(atOffsets: offsets, status: selectedItemStatus)
+                }
+            }
+            .onMove { indices, newOffset in
+                Task {
+                    await viewModel.moveItem(from: indices, to: newOffset, in: selectedItemStatus)
                 }
             }
         }
+        .animation(.default, value: selectedItemStatus)
+        .animation(.default, value: viewModel.list?.items)
+        .environment(\.editMode, $isEditMode)
+        .listStyle(.plain)
         .refreshable {
             await forceRefresh()
         }
     }
     
-    @ViewBuilder
-    private func shoppingItems(_ items: [ShoppingItem], of section: ShoppingListSection) -> some View {
-        if !section.isCollapsed {
-            ForEach(items, id: \.id) { item in
-                itemView(item: item, section: section)
-            }
-            .onDelete { offsets in
-                Task {
-                    await viewModel.deleteItems(atOffsets: offsets, section: section)
-                }
-            }
-            .onMove { indices, newOffset in
-                Task {
-                    await viewModel.moveItem(from: indices, to: newOffset, in: section.status)
-                }
-            }
+    private func categoryTitleView() -> some View {
+        return HStack(spacing: 8) {
+            selectedItemStatus.image
+                .font(.boldDynamic(style: .headline))
+                .foregroundColor(selectedItemStatus.color)
+            
+            Text(selectedItemStatus.localizedCategoryName)
+                .font(.boldDynamic(style: .headline))
+                .foregroundColor(selectedItemStatus.color)
         }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 4)
+        .background(
+            coloredCapsuleBackground(selectedItemStatus.color)
+        )
     }
     
-    private func itemView(item: ShoppingItem, section: ShoppingListSection) -> some View {
+    private func itemView(with item: ShoppingItem) -> some View {
         return ShoppingItemRow(
             item: item,
+            status: viewModel.visibleStatus(for: item),
             thumbnail: viewModel.thumbnail(for: item.imageIDs.first),
             state: isEditMode == .inactive,
             onToggleStatus: { toggledItemID in
                 hapticEngine.playItemChecked()
-                viewModel.toggleStatus(for: toggledItemID)
+                viewModel.setStatus(item.status.toggled(), itemID: toggledItemID, delay: 0.25)
             },
             onRowTap: { tappedItemID in
                 viewModel.openItemDetails(for: tappedItemID)
@@ -136,7 +134,6 @@ struct ShoppingListView: View {
                 viewModel.openItemImagePreviews(for: selectedItemID, imageIndex: imageIndex)
             }
         )
-        .id(item.id)
         .contextMenu {
             Button {
                 viewModel.openItemDetails(for: item.id)
@@ -146,7 +143,7 @@ struct ShoppingListView: View {
             
             Button(role: .destructive) {
                 Task {
-                    await handleDeleteTapped(for: item)
+                    await handleDeleteTapped(with: item.id)
                 }
             } label: {
                 Label("delete", systemImage: "trash.fill")
@@ -155,7 +152,7 @@ struct ShoppingListView: View {
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button(role: .destructive) {
                 Task {
-                    await handleDeleteTapped(for: item)
+                    await handleDeleteTapped(with: item.id)
                 }
             } label: {
                 Label("delete", systemImage: "trash.fill")
@@ -169,13 +166,11 @@ struct ShoppingListView: View {
             .tint(.blue)
         }
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
-            ForEach(ShoppingItemStatus.allCases, id: \.self) { (status: ShoppingItemStatus) in
-                if item.status != status {
+            ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
+                if status != selectedItemStatus {
                     Button {
-                        Task {
-                            hapticEngine.playItemChecked()
-                            viewModel.setStatus(status, itemID: item.id)
-                        }
+                        hapticEngine.playItemChecked()
+                        viewModel.setStatus(status, itemID: item.id, delay: 0.75)
                     } label: {
                         Label(status.localizedName, systemImage: status.imageSystemName)
                     }
@@ -198,22 +193,18 @@ struct ShoppingListView: View {
                 
                 if isEditMode.isEditing {
                     Button("ok") {
-                        withAnimation {
-                            isEditMode = .inactive
-                        }
+                        isEditMode = .inactive
                     }
                 }
                 
                 if !isEditMode.isEditing {
                     Menu {
                         Button {
-                            withAnimation {
-                                isEditMode = .active
-                            }
+                            isEditMode = .active
                         } label: {
                             Label("edit_list", systemImage: "pencil")
                         }
-                        .disabled(viewModel.list?.items.isEmpty ?? true)
+                        .disabled(viewModel.itemCount() == 0)
                         
                         Button {
                             viewModel.openListSettings()
@@ -256,41 +247,34 @@ struct ShoppingListView: View {
     }
     
     @ViewBuilder
-    private func sectionHeader(section: ShoppingListSection, sectionItemCount: Int) -> some View {
-        let title: String = section.isCollapsed ? section.localizedTitle + " (\(sectionItemCount))" : section.localizedTitle
-        
-        HStack(spacing: 8) {
-            section.image
-                .font(.boldDynamic(style: .headline))
-                .foregroundColor(section.color)
-            
-            Text(title)
-                .font(.boldDynamic(style: .headline))
-                .foregroundColor(section.color)
-            
-            Spacer()
-            
-            Button {
-                withAnimation {
-                    viewModel.toggleCollapse(ofSection: section)
+    private func buttonRow() -> some View {
+        ButtonRow(
+            leftButtons: [
+                AdaptiveButton(systemImage: "plus", minWidth: 56) {
+                    if let listID = viewModel.list?.id {
+                        viewModel.openNewItemDetails(listID: listID, itemStatus: selectedItemStatus)
+                    }
                 }
-            } label: {
-                Image(systemName: section.isCollapsed ? "chevron.down" : "chevron.up")
-                    .font(.boldDynamic(style: .body))
-                    .foregroundColor(.bb.text.primary)
+            ],
+            rightButtons: ShoppingItemStatus.allCases.map { status in
+                AdaptiveButton(
+                    systemImage: status.imageSystemName,
+                    highlight: selectedItemStatus == status,
+                    badge: viewModel.itemCount(for: status),
+                    minWidth: 56
+                ) {
+                    withAnimation {
+                        selectedItemStatus = status
+                    }
+                }
             }
-            .buttonStyle(PlainButtonStyle())
-        }
-        .padding(.bottom, 4)
+        )
     }
     
     @ViewBuilder
-    private func summaryView() -> some View {
-        let numPendingItems = viewModel.list?.items(for: .pending).count ?? 0
-        let numPurchasedItems = viewModel.list?.items(for: .purchased).count ?? 0
+    private func costView() -> some View {
         let totalPriceOfPendingItems = viewModel.list?.totalPrice(for: .pending) ?? 0
         let totalPriceOfPurchasedItems = viewModel.list?.totalPrice(for: .purchased) ?? 0
-        let showItemPrices = viewModel.list?.containsItemsWithPrice() ?? false
         
         let pendingItemsIcon = ShoppingItemStatus.pending.image
             .font(.boldDynamic(style: .body))
@@ -302,65 +286,59 @@ struct ShoppingListView: View {
             .lineLimit(1)
             .foregroundColor(ShoppingItemStatus.purchased.color)
         
-        let pendingItemsText = Text("\(numPendingItems)")
+        let pendingItemsText = Text(totalPriceOfPendingItems.priceFormat)
             .font(.boldMonospaced(style: .body))
-            .lineLimit(1)
             .foregroundColor(ShoppingItemStatus.pending.color)
         
-        let purchasedItemsText = Text("\(numPurchasedItems)")
+        let purchasedItemsText = Text(totalPriceOfPurchasedItems.priceFormat)
             .font(.boldMonospaced(style: .body))
-            .lineLimit(1)
             .foregroundColor(ShoppingItemStatus.purchased.color)
         
-        HStack(alignment: .center, spacing: 12) {
-            if showItemPrices {
-                VStack(alignment: .trailing, spacing: 2) {
-                    pendingItemsIcon
-                    purchasedItemsIcon
-                }
-                
-                VStack(alignment: .trailing, spacing: 2) {
-                    pendingItemsText
-                    purchasedItemsText
-                }
-                
-                Rectangle()
-                    .foregroundColor(.bb.text.quaternary)
-                    .frame(width: 2)
-                    .frame(maxHeight: .infinity)
-                
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(totalPriceOfPendingItems.priceFormat)
-                        .font(.boldMonospaced(style: .body))
-                        .foregroundColor(ShoppingItemStatus.pending.color)
-                    
-                    Text(totalPriceOfPurchasedItems.priceFormat)
-                        .font(.boldMonospaced(style: .body))
-                        .foregroundColor(ShoppingItemStatus.purchased.color)
-                }
-            } else {
-                HStack(spacing: 6) {
-                    pendingItemsIcon
-                    pendingItemsText
-                }
-                .padding(.trailing, 12)
-                
-                HStack(spacing: 6) {
-                    purchasedItemsIcon
-                    purchasedItemsText
-                }
+        HStack(spacing: 12) {
+            Spacer()
+            
+            HStack(spacing: 6) {
+                pendingItemsIcon
+                pendingItemsText
             }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(
+                coloredCapsuleBackground(ShoppingItemStatus.pending.color)
+            )
+            
+            HStack(spacing: 5) {
+                purchasedItemsIcon
+                purchasedItemsText
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(
+                coloredCapsuleBackground(ShoppingItemStatus.purchased.color)
+            )
         }
-        .padding(.trailing, 8)
-        .fixedSize(horizontal: false, vertical: true)
-        .layoutPriority(1)
+    }
+    
+    @ViewBuilder
+    private func coloredCapsuleBackground(_ color: Color) -> some View {
+        ZStack {
+            Capsule()
+                .fill(Color.bb.background.opacity(0.7))
+            
+            Capsule()
+                .fill(color.opacity(0.15))
+                .overlay(
+                    Capsule()
+                        .stroke(color, lineWidth: 2)
+                )
+        }
     }
     
     // MARK: - Private
     
-    private func handleDeleteTapped(for item: ShoppingItem) async {
+    private func handleDeleteTapped(with itemID: UUID) async {
         hapticEngine.playItemDeleted()
-        await viewModel.moveItemToDeleted(with: item.id)
+        await viewModel.moveItemToDeleted(with: itemID)
     }
     
     private func forceRefresh() async {
@@ -411,7 +389,7 @@ struct ShoppingListView: View {
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = ShoppingListViewModel(listID: MockDataRepository.list5ID,
+    let viewModel = ShoppingListViewModel(listID: MockDataRepository.list6ID,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
     let mockHapticEngine = MockHapticEngine()
@@ -427,7 +405,7 @@ struct ShoppingListView: View {
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = ShoppingListViewModel(listID: MockDataRepository.list5ID,
+    let viewModel = ShoppingListViewModel(listID: MockDataRepository.list6ID,
                                           dataManager: dataManager,
                                           coordinator: coordinator)
     let mockHapticEngine = MockHapticEngine()

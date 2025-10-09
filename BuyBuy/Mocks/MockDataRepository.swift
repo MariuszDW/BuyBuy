@@ -165,6 +165,7 @@ extension MockDataRepository {
     static let list3ID = UUID(uuidString: "00000000-0003-0000-0000-000000000000")!
     static let list4ID = UUID(uuidString: "00000000-0004-0000-0000-000000000000")!
     static let list5ID = UUID(uuidString: "00000000-0005-0000-0000-000000000000")!
+    static let list6ID = UUID(uuidString: "00000000-0006-0000-0000-000000000000")!
     
     static let list1 = ShoppingList(id: list1ID, name: "Office", items: [
         ShoppingItem(
@@ -413,6 +414,9 @@ extension MockDataRepository {
             status: .pending, price: 25.00, quantity: 1, unit: ShoppingItemUnit(string: "pair"))
     ], icon: .person, color: .magenta, isShared: false, isOwner: true, participants: [])
     
+    static let list6 = ShoppingList(id: list6ID, name: "Empty", items: [
+    ], icon: .questionmark, color: .yellow, isShared: false, isOwner: true, participants: [])
+    
     static let deletedItems: [ShoppingItem] = [
         ShoppingItem(
             id: UUID(uuidString: "00000000-0000-0001-0000-000000000000")!, order: 0, listID: nil,
@@ -466,7 +470,7 @@ extension MockDataRepository {
             deletedAt: Calendar.current.date(byAdding: .day, value: -29, to: Date()))
     ]
     
-    static let allLists: [ShoppingList] = [list1, list2, list3, list4, list5]
+    static let allLists: [ShoppingList] = [list1, list2, list3, list4, list5, list6]
 }
 
 // MARK: Mock loyalty cards

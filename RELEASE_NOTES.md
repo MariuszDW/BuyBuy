@@ -2,6 +2,14 @@
 
 ## ENGLISH
 
+### Version 1.4 (Oct 9, 2025)
+
+* Items are now grouped by status on separate lists, easily switchable with buttons.
+* The bottom panel has been redesigned with new buttons - featuring a Liquid Glass look on iOS 26 and a frosted glass style on iOS 16-18.
+* Added a new summary view showing total item prices for each list.
+* Minor text updates and UI improvements on the Support screen.
+* Improved database change handling for better reliability.
+
 ### Version 1.3 (Oct 2, 2025)
 
 * Added buttons to increase and decrease quantity, and a button to clear the unit price in the item details.
@@ -53,6 +61,15 @@
 * The first version of the BuyBuy application.
 
 ## POLSKI
+
+### Wersja 1.4 (9 października 2025)
+
+* Produkty o różnych statusach są teraz prezentowane na osobnych listach, pomiędzy którymi można przełączać się przyciskami.
+* Dolny panel na wszystkich ekranach został zastąpiony przyciskami (na iOS 26 w stylu Liquid Glass, na iOS 16-18 w stylu matowego szkła).
+* Dodano widok z podsumowaniem cen produktów na liście.
+* Wprowadzono drobne poprawki tekstowe.
+* Ulepszono interfejs użytkownika na ekranie wsparcia.
+* Zmodernizowano mechanizm obserwowania zmian w bazie danych.
 
 ### Wersja 1.3 (2 października 2025)
 

@@ -33,7 +33,8 @@ struct PlainTextShoppingListExporter: ShoppingListExporterProtocol {
             guard !items.isEmpty else { continue }
 
             // category of items
-            result += "\n==== \(ShoppingListSection(status: status).localizedTitle.uppercased()) ====\n\n"
+            let categoryTitle = status.localizedCategoryName.uppercased()
+            result += "\n==== \(categoryTitle) ====\n\n"
             
             for item in items {
                 // item name

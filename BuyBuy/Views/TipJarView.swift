@@ -17,9 +17,7 @@ struct TipJarView: View {
     
     var body: some View {
         Group {
-            if viewModel.status == .loading {
-                loadingView
-            } else if let error = viewModel.error {
+            if let error = viewModel.error {
                 errorView(error: error)
             } else {
                 mainView
@@ -66,21 +64,20 @@ struct TipJarView: View {
             }
         }
     }
-
     
     @ViewBuilder
     private func mainIconView(iconSize: CGFloat) -> some View {
         VStack(spacing: 16) {
             Image.bbTipJarImage
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: iconSize)
+                .scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .shadow(color: .black.opacity(0.7), radius: 6, y: 2)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color.bb.text.secondary, lineWidth: 3)
                 )
+                .frame(maxWidth: iconSize)
                 .layoutPriority(0)
 
             VStack(spacing: 8) {
@@ -104,35 +101,42 @@ struct TipJarView: View {
     @ViewBuilder
     private var mainContentView: some View {
         VStack {
-            ForEach(viewModel.products, id: \.id) { product in
-                Button {
-                    Task {
-                        await viewModel.purchase(product)
-                    }
-                } label: {
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Text(product.name)
-                                .font(.boldDynamic(style: .headline))
-                                .foregroundColor(.bb.button.text)
+            if viewModel.status == .loading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
+            } else {
+                ForEach(viewModel.products, id: \.id) { product in
+                    Button {
+                        Task {
+                            await viewModel.purchase(product)
+                        }
+                    } label: {
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text(product.name)
+                                    .font(.boldDynamic(style: .headline))
+                                    .foregroundColor(.bb.button.text)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .multilineTextAlignment(.leading)
+                                
+                                Spacer()
+                                
+                                Text(product.price)
+                                    .font(.boldDynamic(style: .headline))
+                                    .foregroundColor(.yellow)
+                            }
+                            
+                            Text(product.description)
+                                .font(.regularDynamic(style: .footnote))
+                                .foregroundColor(.bb.button.text.opacity(0.8))
                                 .fixedSize(horizontal: false, vertical: true)
                                 .multilineTextAlignment(.leading)
-                            
-                            Spacer()
-                            
-                            Text(product.price)
-                                .font(.boldDynamic(style: .headline))
-                                .foregroundColor(.yellow)
                         }
-                        
-                        Text(product.description)
-                            .font(.regularDynamic(style: .footnote))
-                            .foregroundColor(.bb.button.text.opacity(0.8))
-                            .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
                     }
+                    .buttonStyle(BBPlainButtonStyle())
                 }
-                .buttonStyle(BBPlainButtonStyle())
             }
         }
         .padding(4)
@@ -178,17 +182,6 @@ struct TipJarView: View {
                 }
             }
         }
-    }
-    
-    @ViewBuilder
-    private var loadingView: some View {
-        VStack {
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle())
-                .controlSize(.large)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .padding()
     }
 }
 
