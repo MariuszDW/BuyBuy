@@ -70,14 +70,14 @@ struct TipJarView: View {
         VStack(spacing: 16) {
             Image.bbTipJarImage
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: iconSize)
+                .scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .shadow(color: .black.opacity(0.7), radius: 6, y: 2)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color.bb.text.secondary, lineWidth: 3)
                 )
+                .frame(maxWidth: iconSize)
                 .layoutPriority(0)
 
             VStack(spacing: 8) {
