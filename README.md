@@ -4,8 +4,8 @@ BuyBuy is a shopping list app designed for simplicity and clarity. No ads, no su
 
 The app:
 
-* contains no ads, 
-* requires no subscription,
+* does not contain ads,
+* does not require a subscription,
 * supports both light and dark mode,
 * works in two modes: Device (lists are stored locally) and iCloud (lists are synced across all devices signed in to the same Apple ID),
 * lets you invite other users to collaborate on selected shopping lists,
@@ -27,7 +27,7 @@ The shopping list menu allows you to:
 
 The shopping list view allows you to:
 
-* browse items in three sections: To Buy, Bought, Inactive,
+* view items in the selected status: To Buy, Bought, or Inactive,
 * view item details including name, note, image, unit, unit price, and quantity,
 * add new items,
 * rearrange items,
@@ -110,7 +110,7 @@ Menu z listami zakupów pozwala:
 
 Widok listy zakupów pozwala:
 
-* przeglądać przedmioty w trzech sekcjach: do kupienia, kupione, nieaktywne,
+* przeglądać listę przedmiotów w wybranym statusie: do kupienia, kupione, nieaktywne,
 * widzieć szczegóły przedmiotów: nazwę, opis, obrazek, jednostkę, cenę jednostkową, liczbę,
 * dodawać przedmioty,
 * ustawiać kolejność przedmiotów,
