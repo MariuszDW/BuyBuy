@@ -41,7 +41,6 @@ struct AboutView: View {
                     }
                     .gesture(
                         DragGesture(minimumDistance: 4),
-                        including: .gesture
                     )
                 }
                 .frame(maxWidth: .infinity)
