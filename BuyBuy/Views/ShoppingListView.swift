@@ -38,10 +38,7 @@ struct ShoppingListView: View {
                         costView()
                             .padding(.horizontal)
                     }
-                    
                     buttonRow()
-                        .padding(.horizontal)
-                        .padding(.bottom, 4)
                 }
             } else {
                 EmptyView()
@@ -248,27 +245,30 @@ struct ShoppingListView: View {
     
     @ViewBuilder
     private func buttonRow() -> some View {
-        ButtonRow(
-            leftButtons: [
-                AdaptiveButton(systemImage: "plus", minWidth: 56) {
-                    if let listID = viewModel.list?.id {
-                        viewModel.openNewItemDetails(listID: listID, itemStatus: selectedItemStatus)
-                    }
+        HStack {
+            CapsuleButton(systemImage: "plus") {
+                if let listID = viewModel.list?.id {
+                    viewModel.openNewItemDetails(listID: listID, itemStatus: selectedItemStatus)
                 }
-            ],
-            rightButtons: ShoppingItemStatus.allCases.map { status in
-                AdaptiveButton(
+            }
+
+            Spacer()
+
+            ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
+                CapsuleButton(
                     systemImage: status.imageSystemName,
-                    highlight: selectedItemStatus == status,
                     badge: viewModel.itemCount(for: status),
-                    minWidth: 56
+                    minWidth: 38,
+                    highlighted: selectedItemStatus == status,
                 ) {
                     withAnimation {
                         selectedItemStatus = status
                     }
                 }
             }
-        )
+        }
+        .padding(.horizontal)
+        .padding(.bottom, 4)
     }
     
     @ViewBuilder

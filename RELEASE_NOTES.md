@@ -2,6 +2,12 @@
 
 ## ENGLISH
 
+### Version 1.5 (Nov 10, 2025)
+
+* Refreshed the design of buttons.
+* Added the ability to choose a status when restoring a product from the deleted items list.
+* Minor text changes.
+
 ### Version 1.4 (Oct 9, 2025)
 
 * Items are now grouped by status on separate lists, easily switchable with buttons.
@@ -61,6 +67,12 @@
 * The first version of the BuyBuy application.
 
 ## POLSKI
+
+### Wersja 1.5 (10 listopada 2025)
+
+* Odświeżono wygląd przycisków.
+* Dodano możliwość wyboru statusu podczas przywracania produktu z listy usuniętych.
+* Drobne zmiany w tekstach.
 
 ### Wersja 1.4 (9 października 2025)
 

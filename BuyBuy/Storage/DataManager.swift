@@ -159,13 +159,17 @@ class DataManager: DataManagerProtocol {
         }
     }
     
-    func restoreShoppingItem(with id: UUID, toList listID: UUID) async throws {
+    func restoreShoppingItem(with id: UUID, status: ShoppingItemStatus? = nil, toList listID: UUID) async throws {
         guard let _ = try await repository.fetchShoppingList(with: listID) else {
             throw NSError(domain: "Repository", code: 404, userInfo: [NSLocalizedDescriptionKey: "List not found"])
         }
         
         guard var item = try await repository.fetchShoppingItem(with: id) else {
             return
+        }
+        
+        if let status = status {
+            item.status = status
         }
         
         let maxOrder = try await repository.fetchMaxOrderOfShoppingItems(ofList: listID)
