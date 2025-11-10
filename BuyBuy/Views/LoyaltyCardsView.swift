@@ -40,18 +40,17 @@ struct LoyaltyCardsView: View {
         }
         .safeAreaInset(edge: .bottom) {
             if !isEditMode.isEditing {
-                ButtonRow(
-                    leftButtons: [
-                        AdaptiveButton(
-                            label: String(localized: "add_card"),
-                            systemImage: "plus",
-                            action: { viewModel.openNewCardDetails() }
-                        )
-                    ],
-                    rightButtons: []
-                )
+                HStack {
+                    CapsuleButton(
+                        String(localized: "add_card"),
+                        systemImage: "plus") {
+                            viewModel.openNewCardDetails()
+                        }
+                    
+                    Spacer()
+                }
                 .padding(.horizontal)
-                .padding(.bottom, 6)
+                .padding(.bottom, 4)
             } else {
                 EmptyView()
             }

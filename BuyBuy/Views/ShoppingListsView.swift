@@ -36,17 +36,17 @@ struct ShoppingListsView: View {
         }
         .safeAreaInset(edge: .bottom) {
             if !isEditMode.isEditing {
-                ButtonRow(
-                    leftButtons: [
-                        AdaptiveButton(
-                            label: String(localized: "add_list"),
-                            systemImage: "plus") {
-                                viewModel.openNewListSettings()
-                            }
-                    ]
-                )
+                HStack {
+                    CapsuleButton(
+                        String(localized: "add_list"),
+                        systemImage: "plus") {
+                            viewModel.openNewListSettings()
+                        }
+                    
+                    Spacer()
+                }
                 .padding(.horizontal)
-                .padding(.bottom, 6)
+                .padding(.bottom, 4)
             } else {
                 EmptyView()
             }
