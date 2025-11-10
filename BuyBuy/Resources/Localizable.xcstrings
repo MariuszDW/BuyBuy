@@ -1642,18 +1642,34 @@
         }
       }
     },
-    "restore_item_info" : {
+    "restore_item" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select the shopping list where you want to restore the deleted item."
+            "value" : "Restore item"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wybierz listę zakupów, do której chcesz przywrócić usunięty przedmiot."
+            "value" : "Przywróć przedmiot"
+          }
+        }
+      }
+    },
+    "restore_item_destination_header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the shopping list to restore the item to."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz listę zakupów, do której chcesz przywrócić przedmiot."
           }
         }
       }

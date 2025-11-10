@@ -18,11 +18,15 @@ struct ShoppingListSelectorView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section(header: restoreItemInfoHeader) {
+                Section {
+                    statusView
+                }
+
+                Section(header: sectionHeader(String(localized: "restore_item_destination_header"))) {
                     ForEach(viewModel.shoppingLists) { list in
                         Button {
                             Task {
-                                await viewModel.moveDeletedItem(itemID: viewModel.itemIDToRestore, toListID: list.id)
+                                await viewModel.moveDeletedItem(toListID: list.id)
                                 dismiss()
                             }
                         } label: {
@@ -42,8 +46,8 @@ struct ShoppingListSelectorView: View {
                     }
                 }
             }
-            .listStyle(.plain)
-            .navigationTitle("shopping_lists")
+            .listStyle(.insetGrouped)
+            .navigationTitle("restore_item")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -58,12 +62,41 @@ struct ShoppingListSelectorView: View {
         }
     }
     
-    var restoreItemInfoHeader: some View {
-        Text("restore_item_info")
+    @ViewBuilder
+    private func sectionHeader(_ text: String) -> some View {
+        Text(text)
             .foregroundColor(.bb.text.tertiary)
             .font(.regularDynamic(style: .subheadline))
             .padding(.bottom, 4)
             .textCase(nil)
+    }
+    
+    private var statusView: some View {
+        HStack {
+            Text("status")
+            Spacer()
+            Menu {
+                ForEach(ShoppingItemStatus.allCases, id: \.self) { status in
+                    Button {
+                        viewModel.selectedStatus = status
+                    } label: {
+                        Label(status.localizedName, systemImage: status.imageSystemName)
+                            .foregroundColor(status.color)
+                    }
+                }
+            } label: {
+                let status = viewModel.selectedStatus
+                HStack(spacing: 8) {
+                    status.image
+                        .foregroundColor(status.color)
+                    Text(status.localizedName)
+                        .foregroundColor(status.color)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .foregroundColor(.bb.selection)
+                        .padding(.leading, 4)
+                }
+            }
+        }
     }
 }
 
@@ -74,9 +107,11 @@ struct ShoppingListSelectorView: View {
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = ShoppingListSelectorViewModel(itemIDToRestore: MockDataRepository.deletedItems[0].id,
-                                                  dataManager: dataManager,
-                                                  coordinator: coordinator)
+    let viewModel = ShoppingListSelectorViewModel(
+        itemIDToRestore: MockDataRepository.deletedItems[0].id,
+        dataManager: dataManager,
+        coordinator: coordinator
+    )
     
     NavigationStack {
         ShoppingListSelectorView(viewModel: viewModel)
@@ -89,9 +124,11 @@ struct ShoppingListSelectorView: View {
                                   repository: MockDataRepository())
     let preferences = MockAppPreferences()
     let coordinator = AppCoordinator(preferences: preferences)
-    let viewModel = ShoppingListSelectorViewModel(itemIDToRestore: MockDataRepository.deletedItems[0].id,
-                                                  dataManager: dataManager,
-                                                  coordinator: coordinator)
+    let viewModel = ShoppingListSelectorViewModel(
+        itemIDToRestore: MockDataRepository.deletedItems[0].id,
+        dataManager: dataManager,
+        coordinator: coordinator
+    )
     
     NavigationStack {
         ShoppingListSelectorView(viewModel: viewModel)
