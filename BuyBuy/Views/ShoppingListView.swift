@@ -258,6 +258,7 @@ struct ShoppingListView: View {
                 CapsuleButton(
                     systemImage: status.imageSystemName,
                     badge: viewModel.itemCount(for: status),
+                    badgeColor: status.color,
                     minWidth: 38,
                     highlighted: selectedItemStatus == status,
                 ) {
