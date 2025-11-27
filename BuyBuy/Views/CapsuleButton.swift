@@ -74,8 +74,10 @@ struct CapsuleButton: View {
                 .font(.boldDynamic(style: .caption))
                 .foregroundColor(.white)
                 .padding(.horizontal, 5)
-                .padding(.vertical, 3)
+                .padding(.vertical, 2)
                 .background(Capsule().fill(badgeColor ?? .red))
+                .overlay(Capsule().stroke(.white, lineWidth: 1))
+                .shadow(color: .black.opacity(0.2), radius: 3, y: 2)
                 .offset(x: 5, y: -6)
         }
     }
@@ -129,7 +131,7 @@ extension View {
         CapsuleButton("Add", systemImage: "plus", badge: 3, badgeColor: .green) { }
         CapsuleButton("Edit") { }
         CapsuleButton(systemImage: "heart", badge: 12, badgeColor: .blue, minWidth: 56) { }
-        CapsuleButton("Settings", systemImage: "gearshape", badge: 12, highlighted: true) { }
+        CapsuleButton("Settings", systemImage: "gearshape", badge: 769, highlighted: true) { }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .preferredColorScheme(.light)
@@ -140,7 +142,7 @@ extension View {
         CapsuleButton("Add", systemImage: "plus", badge: 3, badgeColor: .green) { }
         CapsuleButton("Edit") { }
         CapsuleButton(systemImage: "heart", badge: 12, badgeColor: .blue, minWidth: 56) { }
-        CapsuleButton("Settings", systemImage: "gearshape", badge: 12, highlighted: true) { }
+        CapsuleButton("Settings", systemImage: "gearshape", badge: 769, highlighted: true) { }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .preferredColorScheme(.dark)
