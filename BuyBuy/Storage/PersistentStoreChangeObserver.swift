@@ -55,7 +55,11 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
 
     func startObserving(timeout: TimeInterval) async {
         startObserving()
-        try? await Task.sleep(for: .seconds(timeout))
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            try? await Task.sleep(for: .milliseconds(200))
+            if Task.isCancelled { break }
+        }
         stopObserving()
     }
 
