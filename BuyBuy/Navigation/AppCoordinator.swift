@@ -440,7 +440,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             let minutesSince = secondsSince / 60
             AppLogger.general.info("Last cleanup was: \(secondsSince.formattedDuration, privacy: .public) ago (\(lastCleanupDate, privacy: .public)).")
             if minutesSince > AppConstants.cleanupIntervalMinutes {
-                Task(priority: .background) {
+                Task(priority: .utility) {
                     await cleanupNotNeededData()
                 }
                 preferences.lastCleanupDate = now
