@@ -455,12 +455,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     private func cleanupNotNeededData() async {
         AppLogger.general.info("Performing cleanup tasks.")
 
-        if preferences.isCloudSyncEnabled {
-            // This is a temporary observer, active for a limited time.
-            let tempObserver = PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack)
-            await tempObserver.startObserving(timeout: AppConstants.remoteChangeTimeoutSeconds)
-        }
-
         try? await dataManager.cleanOrphanedShoppingItems()
         try? await dataManager.deleteOldTrashedShoppingItems(olderThan: AppConstants.autoDeleteAfterDays)
 
