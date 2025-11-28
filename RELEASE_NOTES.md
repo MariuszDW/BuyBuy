@@ -2,6 +2,12 @@
 
 ## ENGLISH
 
+### Version 1.6 (Nov 29, 2025)
+
+* Fixed automatic permanent deletion of items removed more than 30 days ago.
+* Improved the appearance and shape of the item counters (badges) on the shopping list buttons.
+* Added Home Screen Quick Action to instantly open Loyalty Cards.
+
 ### Version 1.5 (Nov 10, 2025)
 
 * Refreshed the design of buttons.
@@ -67,6 +73,12 @@
 * The first version of the BuyBuy application.
 
 ## POLSKI
+
+### Wersja 1.6 (29 listopada 2025)
+
+* Naprawiono automatyczne trwałe kasowanie przedmiotów usuniętych dawniej niż 30 dni temu.
+* Poprawiono wygląd i kształt liczników przedmiotów (badge) na przyciskach listy zakupów.
+* Dodano skrót z ikony aplikacji (Home Screen Quick Action) do natychmiastowego otwierania kart lojalnościowych.
 
 ### Wersja 1.5 (10 listopada 2025)
 
