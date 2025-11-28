@@ -56,7 +56,10 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
 
         switch action {
         case .openLoyaltyCards:
-            openLoyaltyCardList()
+            if !navigationPath.isLast(.loyaltyCards) {
+                navigationPath.reset()
+                openLoyaltyCardList()
+            }
         }
     }
     
@@ -124,17 +127,17 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openDeletedItems() {
-        guard !isLastRoute(.deletedItems) else { return }
+        guard !navigationPath.isLast(.deletedItems) else { return }
         navigationPath.append(AppRoute.deletedItems)
     }
     
     func openAppSettings() {
-        guard !isLastRoute(.appSettings) else { return }
+        guard !navigationPath.isLast(.appSettings) else { return }
         navigationPath.append(AppRoute.appSettings)
     }
     
     func openLoyaltyCardList() {
-        guard !isLastRoute(.loyaltyCards) else { return }
+        guard !navigationPath.isLast(.loyaltyCards) else { return }
         navigationPath.append(AppRoute.loyaltyCards)
     }
     
@@ -159,7 +162,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openAbout() {
-        guard !isLastRoute(.about) else { return }
+        guard !navigationPath.isLast(.about) else { return }
         navigationPath.append(AppRoute.about)
     }
     
@@ -471,14 +474,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         } else {
             preferences.lastCleanupDate = now
         }
-    }
-    
-    private func isLastRoute(_ route: AppRoute) -> Bool {
-        guard navigationPath.count > 0 else { return false }
-        var testPath = navigationPath
-        testPath.removeLast()
-        testPath.append(route)
-        return testPath == navigationPath
     }
     
     private func cleanupNotNeededData() async {
