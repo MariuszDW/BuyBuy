@@ -124,10 +124,12 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openDeletedItems() {
+        guard !isLastRoute(.deletedItems) else { return }
         navigationPath.append(AppRoute.deletedItems)
     }
     
     func openAppSettings() {
+        guard !isLastRoute(.appSettings) else { return }
         navigationPath.append(AppRoute.appSettings)
     }
     
@@ -157,6 +159,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openAbout() {
+        guard !isLastRoute(.about) else { return }
         navigationPath.append(AppRoute.about)
     }
     
