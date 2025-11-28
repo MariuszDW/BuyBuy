@@ -39,6 +39,41 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppLogger.general.info("Enqueued pending share from warn start.")
         AppCoordinator.enqueuePendingShare(cloudKitShareMetadata)
     }
+    
+    func scene(_ scene: UIScene,
+               willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions) {
+
+        // cold start shortcut
+        if let shortcut = connectionOptions.shortcutItem {
+            AppCoordinator.pendingShortcutItem = shortcut
+        }
+    }
+    
+    func windowScene(_ windowScene: UIWindowScene,
+                     performActionFor shortcutItem: UIApplicationShortcutItem,
+                     completionHandler: @escaping (Bool) -> Void) {
+
+        // warm start shortcut
+        AppCoordinator.pendingShortcutItem = shortcutItem
+        Task { @MainActor in
+            AppCoordinator.currentInstance?.consumePendingShortcutIfAny()
+        }
+
+        completionHandler(true)
+    }
+    
+    func sceneWillResignActive(_ scene: UIScene) {
+        let title = String(localized: "loyalty_cards")
+        UIApplication.shared.shortcutItems = [
+            UIApplicationShortcutItem(
+                type: "open-loyalty-cards",
+                localizedTitle: title,
+                localizedSubtitle: nil,
+                icon: UIApplicationShortcutIcon(systemImageName: "creditcard")
+            )
+        ]
+    }
 }
 
 class AppDelegate: UIResponder, UIApplicationDelegate {

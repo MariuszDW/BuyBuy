@@ -16,6 +16,7 @@ import CoreData
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     static private(set) var currentInstance: AppCoordinator?
     static private(set) var pendingShares: [CKShare.Metadata] = []
+    static var pendingShortcutItem: UIApplicationShortcutItem?
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
     private var preferences: AppPreferencesProtocol
@@ -42,6 +43,18 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             coordinator.acceptShare(metadata)
         } else {
             Self.pendingShares.append(metadata)
+        }
+    }
+    
+    func consumePendingShortcutIfAny() {
+        guard let item = AppCoordinator.pendingShortcutItem else { return }
+        AppCoordinator.pendingShortcutItem = nil
+
+        switch item.type {
+        case "open-loyalty-cards":
+            openLoyaltyCardList()
+        default:
+            break
         }
     }
     
@@ -408,6 +421,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         }
         startTransactionListener()
         appInitialized = true
+        
+        consumePendingShortcutIfAny()
         
         LegacyImageDataMigrator.runIfNeeded(dataManager: dataManager, preferences: preferences)
     }
