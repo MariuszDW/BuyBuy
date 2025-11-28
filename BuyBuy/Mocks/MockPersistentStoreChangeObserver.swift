@@ -10,8 +10,6 @@ import Foundation
 final class MockPersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol {
     func startObserving() {}
     
-    func startObserving(timeout: TimeInterval) async {}
-    
     func stopObserving() {}
     
     func addObserver(_ observer: AnyObject, onChange: @escaping @Sendable @MainActor () async -> Void) {}

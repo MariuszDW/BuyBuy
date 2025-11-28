@@ -11,6 +11,7 @@ struct CapsuleButton: View {
     let title: String?
     let systemImage: String?
     let badge: Int?
+    let badgeColor: Color?
     let minWidth: CGFloat?
     let highlighted: Bool
     let action: () -> Void
@@ -19,6 +20,7 @@ struct CapsuleButton: View {
         _ title: String? = nil,
         systemImage: String? = nil,
         badge: Int? = nil,
+        badgeColor: Color? = nil,
         minWidth: CGFloat? = nil,
         highlighted: Bool = false,
         action: @escaping () -> Void = {}
@@ -26,6 +28,7 @@ struct CapsuleButton: View {
         self.title = title
         self.systemImage = systemImage
         self.badge = badge
+        self.badgeColor = badgeColor
         self.minWidth = minWidth
         self.highlighted = highlighted
         self.action = action
@@ -70,10 +73,29 @@ struct CapsuleButton: View {
             Text("\(badge)")
                 .font(.boldDynamic(style: .caption))
                 .foregroundColor(.white)
-                .padding(.horizontal, 5)
+                .padding(.horizontal, 6)
                 .padding(.vertical, 3)
-                .background(Capsule().fill(Color.red))
+                .background(
+                    AdaptiveBadgeShape()
+                        .fill(badgeColor ?? .red)
+                )
+                .overlay(
+                    AdaptiveBadgeShape()
+                        .stroke(.white, lineWidth: 1)
+                )
+                .shadow(color: .black.opacity(0.15), radius: 2, y: 2)
+                .fixedSize()
                 .offset(x: 5, y: -6)
+        }
+    }
+}
+
+private struct AdaptiveBadgeShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        if rect.width <= rect.height {
+            return Circle().path(in: rect)
+        } else {
+            return Capsule().path(in: rect)
         }
     }
 }
@@ -123,10 +145,10 @@ extension View {
 
 #Preview("Light") {
     VStack(spacing: 32) {
-        CapsuleButton("Add", systemImage: "plus", badge: 3) { }
+        CapsuleButton("Add", systemImage: "plus", badge: 3, badgeColor: .green) { }
         CapsuleButton("Edit") { }
-        CapsuleButton(systemImage: "heart", badge: 12, minWidth: 56) { }
-        CapsuleButton("Settings", systemImage: "gearshape", badge: 12, highlighted: true) { }
+        CapsuleButton(systemImage: "heart", badge: 12, badgeColor: .blue, minWidth: 56) { }
+        CapsuleButton("Settings", systemImage: "gearshape", badge: 769, highlighted: true) { }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .preferredColorScheme(.light)
@@ -134,10 +156,10 @@ extension View {
 
 #Preview("Dark") {
     VStack(spacing: 32) {
-        CapsuleButton("Add", systemImage: "plus", badge: 3) { }
+        CapsuleButton("Add", systemImage: "plus", badge: 3, badgeColor: .green) { }
         CapsuleButton("Edit") { }
-        CapsuleButton(systemImage: "heart", badge: 12, minWidth: 56) { }
-        CapsuleButton("Settings", systemImage: "gearshape", badge: 12, highlighted: true) { }
+        CapsuleButton(systemImage: "heart", badge: 12, badgeColor: .blue, minWidth: 56) { }
+        CapsuleButton("Settings", systemImage: "gearshape", badge: 769, highlighted: true) { }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .preferredColorScheme(.dark)

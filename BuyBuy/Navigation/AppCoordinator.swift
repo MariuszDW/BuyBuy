@@ -16,6 +16,7 @@ import CoreData
 final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     static private(set) var currentInstance: AppCoordinator?
     static private(set) var pendingShares: [CKShare.Metadata] = []
+    static var pendingShortcutItem: UIApplicationShortcutItem?
     @Published var navigationPath = NavigationPath()
     let sheetPresenter = SheetPresenter()
     private var preferences: AppPreferencesProtocol
@@ -42,6 +43,23 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             coordinator.acceptShare(metadata)
         } else {
             Self.pendingShares.append(metadata)
+        }
+    }
+    
+    func consumePendingShortcutIfAny() {
+        guard let item = AppCoordinator.pendingShortcutItem else { return }
+        AppCoordinator.pendingShortcutItem = nil
+
+        guard let action = QuickActionType(rawValue: item.type) else {
+            return
+        }
+
+        switch action {
+        case .openLoyaltyCards:
+            if !navigationPath.isLast(.loyaltyCards) {
+                navigationPath.reset()
+                openLoyaltyCardList()
+            }
         }
     }
     
@@ -109,14 +127,17 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openDeletedItems() {
+        guard !navigationPath.isLast(.deletedItems) else { return }
         navigationPath.append(AppRoute.deletedItems)
     }
     
     func openAppSettings() {
+        guard !navigationPath.isLast(.appSettings) else { return }
         navigationPath.append(AppRoute.appSettings)
     }
     
     func openLoyaltyCardList() {
+        guard !navigationPath.isLast(.loyaltyCards) else { return }
         navigationPath.append(AppRoute.loyaltyCards)
     }
     
@@ -141,6 +162,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openAbout() {
+        guard !navigationPath.isLast(.about) else { return }
         navigationPath.append(AppRoute.about)
     }
     
@@ -409,6 +431,8 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         startTransactionListener()
         appInitialized = true
         
+        consumePendingShortcutIfAny()
+        
         LegacyImageDataMigrator.runIfNeeded(dataManager: dataManager, preferences: preferences)
     }
     
@@ -440,7 +464,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             let minutesSince = secondsSince / 60
             AppLogger.general.info("Last cleanup was: \(secondsSince.formattedDuration, privacy: .public) ago (\(lastCleanupDate, privacy: .public)).")
             if minutesSince > AppConstants.cleanupIntervalMinutes {
-                Task(priority: .background) {
+                Task(priority: .utility) {
                     await cleanupNotNeededData()
                 }
                 preferences.lastCleanupDate = now
@@ -454,12 +478,6 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     
     private func cleanupNotNeededData() async {
         AppLogger.general.info("Performing cleanup tasks.")
-
-        if preferences.isCloudSyncEnabled {
-            // This is a temporary observer, active for a limited time.
-            let tempObserver = PersistentStoreChangeObserver(coreDataStack: dataManager.coreDataStack)
-            await tempObserver.startObserving(timeout: AppConstants.remoteChangeTimeoutSeconds)
-        }
 
         try? await dataManager.cleanOrphanedShoppingItems()
         try? await dataManager.deleteOldTrashedShoppingItems(olderThan: AppConstants.autoDeleteAfterDays)

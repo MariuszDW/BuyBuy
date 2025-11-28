@@ -53,12 +53,6 @@ final class PersistentStoreChangeObserver: PersistentStoreChangeObserverProtocol
         observeRemoteChanges()
     }
 
-    func startObserving(timeout: TimeInterval) async {
-        startObserving()
-        try? await Task.sleep(for: .seconds(timeout))
-        stopObserving()
-    }
-
     func stopObserving() {
         cancellable?.cancel()
         cancellable = nil
