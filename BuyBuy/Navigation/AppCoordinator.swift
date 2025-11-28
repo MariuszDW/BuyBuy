@@ -132,6 +132,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
     }
     
     func openLoyaltyCardList() {
+        guard !isLastRoute(.loyaltyCards) else { return }
         navigationPath.append(AppRoute.loyaltyCards)
     }
     
@@ -467,6 +468,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         } else {
             preferences.lastCleanupDate = now
         }
+    }
+    
+    private func isLastRoute(_ route: AppRoute) -> Bool {
+        guard navigationPath.count > 0 else { return false }
+        var testPath = navigationPath
+        testPath.removeLast()
+        testPath.append(route)
+        return testPath == navigationPath
     }
     
     private func cleanupNotNeededData() async {
