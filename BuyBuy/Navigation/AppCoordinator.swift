@@ -50,11 +50,13 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         guard let item = AppCoordinator.pendingShortcutItem else { return }
         AppCoordinator.pendingShortcutItem = nil
 
-        switch item.type {
-        case "open-loyalty-cards":
+        guard let action = QuickActionType(rawValue: item.type) else {
+            return
+        }
+
+        switch action {
+        case .openLoyaltyCards:
             openLoyaltyCardList()
-        default:
-            break
         }
     }
     

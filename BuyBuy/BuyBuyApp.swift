@@ -67,7 +67,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let title = String(localized: "loyalty_cards")
         UIApplication.shared.shortcutItems = [
             UIApplicationShortcutItem(
-                type: "open-loyalty-cards",
+                type: QuickActionType.openLoyaltyCards.rawValue,
                 localizedTitle: title,
                 localizedSubtitle: nil,
                 icon: UIApplicationShortcutIcon(systemImageName: "creditcard")
