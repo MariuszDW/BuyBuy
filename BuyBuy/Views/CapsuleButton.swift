@@ -73,12 +73,29 @@ struct CapsuleButton: View {
             Text("\(badge)")
                 .font(.boldDynamic(style: .caption))
                 .foregroundColor(.white)
-                .padding(.horizontal, 5)
-                .padding(.vertical, 2)
-                .background(Capsule().fill(badgeColor ?? .red))
-                .overlay(Capsule().stroke(.white, lineWidth: 1))
+                .padding(.horizontal, 6)
+                .padding(.vertical, 3)
+                .background(
+                    AdaptiveBadgeShape()
+                        .fill(badgeColor ?? .red)
+                )
+                .overlay(
+                    AdaptiveBadgeShape()
+                        .stroke(.white, lineWidth: 1)
+                )
                 .shadow(color: .black.opacity(0.15), radius: 2, y: 2)
+                .fixedSize()
                 .offset(x: 5, y: -6)
+        }
+    }
+}
+
+private struct AdaptiveBadgeShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        if rect.width <= rect.height {
+            return Circle().path(in: rect)
+        } else {
+            return Capsule().path(in: rect)
         }
     }
 }
