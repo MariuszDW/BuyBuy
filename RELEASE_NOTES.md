@@ -4,6 +4,7 @@
 
 ### Version 1.6.1 (Dec 28, 2025)
 
+* Improved the visual style of buttons on the bottom list panel for iOS 16–18.
 * Internal refactor of the About screen.
 
 ### Version 1.6 (Nov 29, 2025)
@@ -80,6 +81,7 @@
 
 ### Version 1.6.1 (Dec 28, 2025)
 
+* Ulepszono wygląd przycisków w dolnym panelu listy na iOS 16–18.
 * Wewnętrzne usprawnienia ekranu Informacji.
 
 ### Wersja 1.6 (29 listopada 2025)
