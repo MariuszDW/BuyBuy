@@ -2,10 +2,9 @@
 
 ## ENGLISH
 
-### Version 1.6.1 (Dec 28, 2025
+### Version 1.6.1 (Dec 28, 2025)
 
-* Changed year on About screen.
-* Small modifications of UI for iOS 16-18.
+* Internal refactor of the About screen.
 
 ### Version 1.6 (Nov 29, 2025)
 
@@ -79,10 +78,9 @@
 
 ## POLSKI
 
-### Version 1.6.1 (Dec 28, 2025
+### Version 1.6.1 (Dec 28, 2025)
 
-* Zmieniono rok na ekranie informacji o aplikacji.
-* Drobne zmiany UI w wersji dla iOS 16-18.
+* Wewnętrzne usprawnienia ekranu Informacji.
 
 ### Wersja 1.6 (29 listopada 2025)
 
