@@ -110,12 +110,18 @@ struct LegacyCapsuleGlassStyle: ButtonStyle {
                 Capsule()
                     .fill(
                         highlighted
-                        ? AnyShapeStyle(Color.bb.accent.opacity(0.3))
+                        ? AnyShapeStyle(Color.bb.accent.opacity(0.4))
                         : AnyShapeStyle(.ultraThinMaterial)
                     )
+                    .overlay {
+                        if highlighted {
+                            Capsule()
+                                .stroke(Color.bb.text.primary, lineWidth: 1)
+                        }
+                    }
             )
             .shadow(color: .black.opacity(0.2), radius: 5, y: 2)
-            .scaleEffect(configuration.isPressed ? 1.1 : 1.0)
+            .scaleEffect(configuration.isPressed ? 1.12 : 1.0)
             .brightness(configuration.isPressed ? -0.02 : 0)
             .animation(
                 .spring(response: 0.3, dampingFraction: 0.3, blendDuration: 0.2),
