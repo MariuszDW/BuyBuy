@@ -2,6 +2,11 @@
 
 ## ENGLISH
 
+### Version 1.6.1 (Dec 28, 2025
+
+* Changed year on About screen.
+* Small modifications of UI for iOS 16-18.
+
 ### Version 1.6 (Nov 29, 2025)
 
 * Fixed automatic permanent deletion of items removed more than 30 days ago.
@@ -73,6 +78,11 @@
 * The first version of the BuyBuy application.
 
 ## POLSKI
+
+### Version 1.6.1 (Dec 28, 2025
+
+* Zmieniono rok na ekranie informacji o aplikacji.
+* Drobne zmiany UI w wersji dla iOS 16-18.
 
 ### Wersja 1.6 (29 listopada 2025)
 
