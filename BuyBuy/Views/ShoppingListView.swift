@@ -64,6 +64,20 @@ struct ShoppingListView: View {
         } message: {
             Text("delete_purchased_items_message")
         }
+        .alert(
+            "calendar_access_required",
+            isPresented: $viewModel.showCalendarPermissionAlert
+        ) {
+            Button("settings") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+
+            Button("cancel", role: .cancel) {}
+        } message: {
+            Text("calendar_access_required_message")
+        }
     }
     
     @ViewBuilder
@@ -209,8 +223,25 @@ struct ShoppingListView: View {
                             Label("list_settings", systemImage: "list.bullet.clipboard")
                         }
                         
-                        Button {
-                            viewModel.openExportListOptions()
+                        
+                        Menu {
+                            Button {
+                                viewModel.selectExport(.file)
+                            } label: {
+                                Label("file", systemImage: "doc")
+                            }
+
+                            Button {
+                                viewModel.selectExport(.message)
+                            } label: {
+                                Label("message", systemImage: "message")
+                            }
+
+                            Button {
+                                viewModel.selectExport(.calendar)
+                            } label: {
+                                Label("calendar_event", systemImage: "calendar")
+                            }
                         } label: {
                             Label("export_list", systemImage: "square.and.arrow.up")
                         }

@@ -8,6 +8,13 @@
 import Foundation
 import SwiftUI
 import Combine
+import EventKit
+
+enum ShoppingListExportKind {
+    case file
+    case message
+    case calendar
+}
 
 @MainActor
 final class ShoppingListViewModel: ObservableObject {
@@ -19,6 +26,7 @@ final class ShoppingListViewModel: ObservableObject {
     @Published var list: ShoppingList?
     @Published var thumbnails: [String: UIImage] = [:]
     @Published private var temporaryStatuses: [UUID: ShoppingItemStatus] = [:]
+    @Published var showCalendarPermissionAlert = false
     
     init(listID: UUID, dataManager: DataManagerProtocol, coordinator: any AppCoordinatorProtocol) {
         self.listID = listID
@@ -181,9 +189,31 @@ final class ShoppingListViewModel: ObservableObject {
         coordinator?.openShoppingListSettings(list, isNew: false, onDismiss: {_ in })
     }
     
-    func openExportListOptions() {
+    func selectExport(_ kind: ShoppingListExportKind) {
         guard let list = list else { return }
-        coordinator?.openShoppingListExport(list, onDismiss: {_ in })
+
+        switch kind {
+        case .file:
+            coordinator?.openShoppingListFileExporter(list, onDismiss: { _ in })
+            
+        case .calendar:
+            Task {
+                let granted = await requestCalendarAccessIfNeeded()
+                guard granted else {
+                    await MainActor.run {
+                        self.showCalendarPermissionAlert = true
+                    }
+                    return
+                }
+
+                await MainActor.run {
+                    coordinator?.openShoppingListCalendarEventExporter(list: list, onDismiss: { _ in })
+                }
+            }
+
+        case .message:
+            coordinator?.openShoppingListMessageExporter(list: list, onDismiss: { _ in })
+        }
     }
     
     var hasPurchasedItems: Bool {
@@ -226,6 +256,35 @@ final class ShoppingListViewModel: ObservableObject {
             var updatedItem = item
             updatedItem.order = index
             return updatedItem
+        }
+    }
+    
+    private func requestCalendarAccessIfNeeded() async -> Bool {
+        let store = EKEventStore()
+        let status = EKEventStore.authorizationStatus(for: .event)
+
+        if #available(iOS 17.0, *) {
+            switch status {
+            case .authorized, .writeOnly:
+                return true
+
+            case .notDetermined:
+                return (try? await store.requestAccess(to: .event)) ?? false
+
+            default:
+                return false
+            }
+        } else {
+            switch status {
+            case .authorized:
+                return true
+
+            case .notDetermined:
+                return (try? await store.requestAccess(to: .event)) ?? false
+
+            default:
+                return false
+            }
         }
     }
 }

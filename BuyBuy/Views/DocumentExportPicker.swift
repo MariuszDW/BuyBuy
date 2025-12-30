@@ -1,5 +1,5 @@
 //
-//  DocumentExporterView.swift
+//  DocumentExportPicker.swift
 //  BuyBuy
 //
 //  Created by MDW on 16/06/2025.
@@ -9,7 +9,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 import UIKit
 
-struct DocumentExporterView: UIViewControllerRepresentable {
+struct DocumentExportPicker: UIViewControllerRepresentable {
     let data: Data
     let fileName: String
     let fileExtension: String

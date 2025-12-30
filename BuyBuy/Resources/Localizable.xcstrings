@@ -123,6 +123,54 @@
         }
       }
     },
+    "calendar_access_required" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar Access Required"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wymagany dostęp do kalendarza"
+          }
+        }
+      }
+    },
+    "calendar_access_required_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To create calendar events, please allow BuyBuy to access your calendar in Settings."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aby tworzyć wydarzenia w kalendarzu, pozwól aplikacji BuyBuy na dostęp do kalendarza w Ustawieniach."
+          }
+        }
+      }
+    },
+    "calendar_event" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar Event"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wydarzenie w kalendarzu"
+          }
+        }
+      }
+    },
     "camera" : {
       "localizations" : {
         "en" : {
@@ -815,6 +863,22 @@
         }
       }
     },
+    "file" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plik"
+          }
+        }
+      }
+    },
     "file_format" : {
       "localizations" : {
         "en" : {
@@ -1415,6 +1479,22 @@
         }
       }
     },
+    "message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Message"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiadomość"
+          }
+        }
+      }
+    },
     "name" : {
       "localizations" : {
         "en" : {
@@ -1686,6 +1766,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ustawienia"
+          }
+        }
+      }
+    },
+    "shopping" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shopping"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zakupy"
           }
         }
       }

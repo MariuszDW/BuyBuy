@@ -16,8 +16,10 @@ enum SheetRoute {
     case loyaltyCardPreview(String?)
     case loyaltyCardDetails(LoyaltyCard, Bool)
     case shoppingListSelector(itemIDToRestore: UUID)
-    case shoppingListExport(ShoppingList)
-    case documentExporter(ExportedData)
+    case shoppingListFileExporter(ShoppingList)
+    case shoppingListCalendarEventExporter(ShoppingList)
+    case shoppingListMessageExporter(ShoppingList)
+    case documentExportPicker(ExportedData)
     case tipJar
     case thankYou(transaction: StoreKit.Transaction)
     case sharingController(share: CKShare, title: String)
@@ -31,8 +33,10 @@ enum SheetRoute {
             (.loyaltyCardPreview, .loyaltyCardPreview),
             (.loyaltyCardDetails, .loyaltyCardDetails),
             (.shoppingListSelector, .shoppingListSelector),
-            (.shoppingListExport, .shoppingListExport),
-            (.documentExporter, .documentExporter),
+            (.shoppingListCalendarEventExporter, .shoppingListCalendarEventExporter),
+            (.shoppingListMessageExporter, .shoppingListMessageExporter),
+            (.shoppingListFileExporter, .shoppingListFileExporter),
+            (.documentExportPicker, .documentExportPicker),
             (.tipJar, .tipJar),
             (.thankYou, .thankYou),
             (.sharingController, .sharingController),
