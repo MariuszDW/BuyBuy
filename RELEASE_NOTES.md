@@ -2,8 +2,9 @@
 
 ## ENGLISH
 
-### Version 1.6.1 (Dec 28, 2025)
+### Version 1.7 (Dec 30, 2025)
 
+* Added export of pending shopping list items to Calendar Event or Message.
 * Improved the visual style of buttons on the bottom list panel for iOS 16–18.
 * Internal refactor of the About screen.
 
@@ -79,8 +80,9 @@
 
 ## POLSKI
 
-### Version 1.6.1 (Dec 28, 2025)
+### Version 1.7 (Dec 30, 2025)
 
+* Dodano eksport oczekujących przedmiotów listy zakupów do wydarzenia w kalendarzu lub wiadomości.
 * Ulepszono wygląd przycisków w dolnym panelu listy na iOS 16–18.
 * Wewnętrzne usprawnienia ekranu Informacji.
 
