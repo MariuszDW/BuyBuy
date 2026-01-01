@@ -2,10 +2,11 @@
 
 ## ENGLISH
 
-### Version 1.7 (Dec 30, 2025)
+### Version 1.7 (Jan 1, 2026)
 
 * Added export of pending shopping list items to Calendar Event or Message.
 * Improved the visual style of buttons on the bottom list panel for iOS 16–18.
+* Fixed an issue causing the cursor position to change unexpectedly during text editing.
 * Internal improvements and refreshed logo colors on the About screen.
 
 ### Version 1.6 (Nov 29, 2025)
@@ -80,10 +81,11 @@
 
 ## POLSKI
 
-### Version 1.7 (Dec 30, 2025)
+### Version 1.7 (1 stycznia 2026)
 
 * Dodano eksport oczekujących przedmiotów listy zakupów do wydarzenia w kalendarzu lub wiadomości.
-* Ulepszono wygląd przycisków w dolnym panelu listy na iOS 16–18.
+* Ulepszono wygląd przycisków w dolnym panelu listy na iOS 16-18.
+* Naprawiono problem z nieoczekiwaną zmianą pozycji kursora podczas edycji tekstu.
 * Wewnętrzne usprawnienia oraz zmienione kolory logo na ekranie Informacji.
 
 ### Wersja 1.6 (29 listopada 2025)
