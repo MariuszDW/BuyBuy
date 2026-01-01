@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  BuyBuy
+
+  Created by MDW on 01-01-2026.
+*/
+
+"NSCalendarsUsageDescription" = "BuyBuy potrzebuje dostępu do kalendarza, aby tworzyć wydarzenia zawierające listy zakupów.";
+"NSCameraUsageDescription" = "BuyBuy potrzebuje dostępu do aparatu, aby robić zdjęcia kart lojalnościowych oraz przedmiotów na listach zakupów.";
+"NSContactsUsageDescription" = "BuyBuy potrzebuje ograniczonego dostępu do kontaktów, aby wybrać kalendarz podczas tworzenia wydarzeń.";
+"NSPhotoLibraryUsageDescription" = "BuyBuy potrzebuje dostępu do biblioteki zdjęć, aby dołączać zdjęcia kart lojalnościowych i przedmiotów na listach zakupów.";
