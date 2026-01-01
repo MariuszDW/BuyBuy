@@ -19,18 +19,6 @@ final class ShoppingListSettingsViewModel: ObservableObject {
         !isNew && dataManager.cloud
     }
     
-//    var isShared: Bool {
-//        !isNew && dataManager.cloud && shoppingList.isShared
-//    }
-    
-//    var isOwner: Bool {
-//        !isNew && dataManager.cloud && shoppingList.isOwner
-//    }
-    
-//    var sharingParticipants: [SharingParticipantInfo] {
-//        shoppingList.sharingParticipants
-//    }
-    
     var changesConfirmed: Bool = false
     
     private let dataManager: DataManagerProtocol
