@@ -8,6 +8,7 @@
 * Improved the visual style of buttons on the bottom list panel for iOS 16–18.
 * Fixed an issue causing the cursor position to change unexpectedly during text editing.
 * Internal improvements and refreshed logo colors on the About screen.
+* Localized system permission request descriptions.
 
 ### Version 1.6 (Nov 29, 2025)
 
@@ -87,6 +88,7 @@
 * Ulepszono wygląd przycisków w dolnym panelu listy na iOS 16-18.
 * Naprawiono problem z nieoczekiwaną zmianą pozycji kursora podczas edycji tekstu.
 * Wewnętrzne usprawnienia oraz zmienione kolory logo na ekranie Informacji.
+* Zlokalizowano opisy systemowych próśb o dostęp.
 
 ### Wersja 1.6 (29 listopada 2025)
 
