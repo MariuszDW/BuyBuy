@@ -20,21 +20,25 @@ struct AboutView: View {
     var body: some View {
         GeometryReader { geometry in
             if geometry.size.isPortrait {
-                let logoMaxWidth = min(geometry.size.width, geometry.size.height * 0.45)
+                let logoSize = min(geometry.size.width, geometry.size.height * 0.5)
                 ScrollView {
                     VStack(alignment: .center, spacing: 32) {
-                        AnimatedAppLogoView()
-                            .frame(maxWidth: logoMaxWidth)
+                        AnimatedAppLogoView(size: logoSize)
+                            .frame(width: logoSize, height: logoSize)
+                            .fixedSize()
+                        
                         infoContext(isPortrait: true)
                             .frame(maxWidth: .infinity)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                let logoMaxWidth = min(geometry.size.width * 0.45, geometry.size.height)
+                let logoSize = min(geometry.size.width * 0.5, geometry.size.height)
                 HStack(alignment: .center, spacing: 32) {
-                    AnimatedAppLogoView()
-                        .frame(maxWidth: logoMaxWidth)
+                    AnimatedAppLogoView(size: logoSize)
+                        .frame(width: logoSize, height: logoSize)
+                        .fixedSize()
+                    
                     ScrollView {
                         infoContext(isPortrait: true)
                             .frame(maxWidth: .infinity)

@@ -29,7 +29,7 @@ final class ShoppingListExportViewModel: ObservableObject {
     
     func export() {
         guard let data = makeExportData() else { return }
-        coordinator.openDocumentExporter(with: data, onDismiss: {_ in })
+        coordinator.openDocumentExportPicker(with: data, onDismiss: {_ in })
     }
     
     private func makeExportData() -> ExportedData? {

@@ -29,8 +29,10 @@ protocol AppCoordinatorProtocol: AnyObject, ObservableObject {
     func openShoppingListSelector(forDeletedItemID itemID: UUID, onDismiss: ((SheetRoute) -> Void)?)
     func openEmail(to: String, subject: String, body: String) -> Bool
     func openWebPage(address: String) -> Bool
-    func openShoppingListExport(_ list: ShoppingList, onDismiss: ((SheetRoute) -> Void)?)
-    func openDocumentExporter(with exportData: ExportedData, onDismiss: ((SheetRoute) -> Void)?)
+    func openShoppingListFileExporter(_ list: ShoppingList, onDismiss: ((SheetRoute) -> Void)?)
+    func openShoppingListCalendarEventExporter(list: ShoppingList, onDismiss: ((SheetRoute) -> Void)?)
+    func openShoppingListMessageExporter(list: ShoppingList, onDismiss: ((SheetRoute) -> Void)?)
+    func openDocumentExportPicker(with exportData: ExportedData, onDismiss: ((SheetRoute) -> Void)?)
     func openTipJar(onDismiss: ((SheetRoute) -> Void)?)
     func openShoppingListShareManagement(with listID: UUID, title: String, onDismiss: ((SheetRoute) -> Void)?) async
     func showThankYou(for transaction: StoreKit.Transaction, onDismiss: ((SheetRoute) -> Void)?)

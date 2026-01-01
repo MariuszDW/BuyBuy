@@ -30,9 +30,6 @@ struct ShoppingListSettingsView: View {
                         nameField
                         iconAndColorSection(width: geometry.size.width)
                         iconsGridSection(width: geometry.size.width)
-//                        if viewModel.sharingAvailable {
-//                            sharingSection()
-//                        }
                     }
                     .padding()
                 }
@@ -50,8 +47,10 @@ struct ShoppingListSettingsView: View {
                     focusedField = viewModel.isNew ? .name : nil
                 }
                 .onChange(of: focusedField) { newValue in
-                    Task {
-                        viewModel.finalizeInput()
+                    if newValue == nil {
+                        Task {
+                            viewModel.finalizeInput()
+                        }
                     }
                 }
                 .toolbar {
@@ -210,19 +209,6 @@ struct ShoppingListSettingsView: View {
         .background(Color.bb.sheet.section.background)
         .cornerRadius(fieldCornerRadius)
     }
-    
-//    @ViewBuilder
-//    private func sharingSection() -> some View {
-//        Button {
-//            Task {
-//                await viewModel.openShareManagement()
-//            }
-//        } label: {
-//            Label("colaboration", systemImage: "person.2.fill")
-//                .frame(maxWidth: .infinity)
-//        }
-//        .buttonStyle(BBPlainButtonStyle())
-//    }
 }
 
 // MARK: - Preview

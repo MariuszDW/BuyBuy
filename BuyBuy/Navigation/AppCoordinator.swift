@@ -189,12 +189,20 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
         return true
     }
     
-    func openShoppingListExport(_ list: ShoppingList, onDismiss: ((SheetRoute) -> Void)? = nil) {
-        sheetPresenter.present(.shoppingListExport(list), displayStyle: .sheet, onDismiss: onDismiss)
+    func openShoppingListFileExporter(_ list: ShoppingList, onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.shoppingListFileExporter(list), displayStyle: .sheet, onDismiss: onDismiss)
     }
     
-    func openDocumentExporter(with exportData: ExportedData, onDismiss: ((SheetRoute) -> Void)? = nil) {
-        sheetPresenter.present(.documentExporter(exportData), displayStyle: .sheet, onDismiss: onDismiss)
+    func openShoppingListCalendarEventExporter(list: ShoppingList, onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.shoppingListCalendarEventExporter(list), displayStyle: .sheet, onDismiss: onDismiss)
+    }
+    
+    func openShoppingListMessageExporter(list: ShoppingList, onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.shoppingListMessageExporter(list), displayStyle: .sheet, onDismiss: onDismiss)
+    }
+    
+    func openDocumentExportPicker(with exportData: ExportedData, onDismiss: ((SheetRoute) -> Void)? = nil) {
+        sheetPresenter.present(.documentExportPicker(exportData), displayStyle: .sheet, onDismiss: onDismiss)
     }
     
     func openTipJar(onDismiss: ((SheetRoute) -> Void)? = nil) {
@@ -287,8 +295,9 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
             
         case .about:
             AboutView(
-                viewModel: AboutViewModel(preferences: self.preferences,
-                                          coordinator: self)
+                viewModel: AboutViewModel(
+                    preferences: self.preferences,
+                    coordinator: self)
             )
         }
     }
@@ -361,7 +370,7 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 )
             )
             
-        case let .shoppingListExport(list):
+        case let .shoppingListFileExporter(list):
             ShoppingListExportView(
                 viewModel: ShoppingListExportViewModel(
                     list: list,
@@ -369,8 +378,14 @@ final class AppCoordinator: ObservableObject, AppCoordinatorProtocol {
                 )
             )
             
-        case let .documentExporter(exportData):
-            DocumentExporterView(
+        case let .shoppingListCalendarEventExporter(list):
+            CalendarEventEditorRepresentable(list: list)
+            
+        case let .shoppingListMessageExporter(list):
+            MessageEditorRepresentable(list: list)
+            
+        case let .documentExportPicker(exportData):
+            DocumentExportPicker(
                 data: exportData.data,
                 fileName: exportData.fileName,
                 fileExtension: exportData.fileExtension

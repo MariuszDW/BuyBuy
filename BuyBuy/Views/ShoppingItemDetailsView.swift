@@ -67,8 +67,10 @@ struct ShoppingItemDetailsView: View {
         .navigationTitle("shopping_item")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: focusedField) { newValue in
-            Task {
-                viewModel.finalizeInput()
+            if newValue == nil {
+                Task {
+                    viewModel.finalizeInput()
+                }
             }
         }
         .toolbar {

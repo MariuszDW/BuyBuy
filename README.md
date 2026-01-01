@@ -38,7 +38,8 @@ The shopping list view allows you to:
 * remove bought items from the list,
 * access loyalty cards,
 * manage sharing and collaborate on the list with other users,
-* export the list in various formats (with custom character encoding): Plain Text, Markdown, JSON, HTML, AmigaGuide.
+* export the list to file in various formats: Plain Text, Markdown, JSON, HTML, AmigaGuide,
+* export of pending shopping list items to Calendar Event or Message.
 
 The item view allows you to:
 
@@ -122,7 +123,8 @@ Widok listy zakupów pozwala:
 * usunąć z listy przedmioty kupione,
 * wyświetlić listę kart lojalnościowych,
 * zarzącać współdzieleniem listy z innymi użytkownikami,
-* wyeksportować listę do formatów (z wybranym kodowaniem znaków): czysty tekst, Markdown, JSON, HTML, AmigaGuide.
+* wyeksportować listę do pliów w formatach: czysty tekst, Markdown, JSON, HTML, AmigaGuide,
+* wyeksportować oczekujące przedmioty listy zakupów do wydarzenia w kalendarzu lub wiadomości.
 
 Widok przedmiotu pozwala:
 
