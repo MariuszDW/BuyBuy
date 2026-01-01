@@ -47,8 +47,10 @@ struct ShoppingListSettingsView: View {
                     focusedField = viewModel.isNew ? .name : nil
                 }
                 .onChange(of: focusedField) { newValue in
-                    Task {
-                        viewModel.finalizeInput()
+                    if newValue == nil {
+                        Task {
+                            viewModel.finalizeInput()
+                        }
                     }
                 }
                 .toolbar {
