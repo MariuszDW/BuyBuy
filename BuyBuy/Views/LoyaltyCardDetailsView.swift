@@ -27,70 +27,69 @@ struct LoyaltyCardDetailsView: View {
     }
     
     var body: some View {
-        GeometryReader { geo in
-            NavigationStack {
-                List {
-                    Section("card_name") {
-                        nameSectionContent
-                    }
-                    .listRowBackground(Color.bb.sheet.section.background)
-                    
-                    Section(
-                        header: Text("card_image"),
-                        footer: cardImageFooter
-                    ) {
-                        imageSectionContent(availableHeight: geo.size.height)
-                    }
-                    .listRowBackground(Color.bb.sheet.section.background)
+        NavigationStack {
+            List {
+                Section("card_name") {
+                    nameSectionContent
                 }
-                .scrollContentBackground(.hidden)
-                .background(Color.bb.sheet.background)
-                .safeAreaInset(edge: .bottom) {
-                    if focusedField != nil {
-                        KeyboardDismissButton {
-                            focusedField = nil
-                        }
-                    }
+                .listRowBackground(Color.bb.sheet.section.background)
+                
+                Section(
+                    header: Text("card_image"),
+                    footer: cardImageFooter
+                ) {
+                    imageSectionContent()
                 }
-                .task {
-                    focusedField = viewModel.isNew ? .name : nil
-                    try? await viewModel.loadCardImage()
-                }
-                .listStyle(.insetGrouped)
-                .navigationTitle("loyalty_card")
-                .navigationBarTitleDisplayMode(.inline)
-                .onChange(of: focusedField) { newValue in
-                    if newValue == nil {
-                        Task {
-                            viewModel.finalizeInput()
-                        }
-                    }
-                }
-                .toolbar {
-                    toolbarContent
-                }
-                .alert("card_remove_image_title", isPresented: $deleteImageConfirmation) {
-                    Button("cancel", role: .cancel) {}
-                    Button("delete", role: .destructive) {
-                        Task {
-                            await viewModel.deleteCardImage()
-                        }
-                    }
-                } message: {
-                    Text("card_remove_image_message")
-                }
-                .onDisappear {
-                    Task {
-                        await viewModel.onFinishEditing()
+                .listRowBackground(Color.bb.sheet.section.background)
+            }
+            .id("list_id")
+            .scrollContentBackground(.hidden)
+            .background(Color.bb.sheet.background)
+            .safeAreaInset(edge: .bottom) {
+                if focusedField != nil {
+                    KeyboardDismissButton {
+                        focusedField = nil
                     }
                 }
             }
+            .listStyle(.insetGrouped)
+            .navigationTitle("loyalty_card")
+            .navigationBarTitleDisplayMode(.inline)
+            .onChange(of: focusedField) { newValue in
+                if newValue == nil {
+                    Task {
+                        viewModel.finalizeInput()
+                    }
+                }
+            }
+            .toolbar {
+                toolbarContent
+            }
+            .alert("card_remove_image_title", isPresented: $deleteImageConfirmation) {
+                Button("cancel", role: .cancel) {}
+                Button("delete", role: .destructive) {
+                    Task {
+                        await viewModel.deleteCardImage()
+                    }
+                }
+            } message: {
+                Text("card_remove_image_message")
+            }
+        }
+        .task {
+            if viewModel.isNew && focusedField == nil {
+                focusedField = .name
+            }
+            try? await viewModel.loadCardImage()
         }
         .onAppear {
             viewModel.startObserving()
         }
         .onDisappear {
             viewModel.stopObserving()
+            Task {
+                await viewModel.onFinishEditing()
+            }
         }
     }
     
@@ -153,19 +152,21 @@ struct LoyaltyCardDetailsView: View {
     }
     
     private var nameSectionContent: some View {
-        TextField("card_name", text: $viewModel.loyaltyCard.name, axis: .vertical)
-            .lineLimit(8)
-            .multilineTextAlignment(.leading)
-            .font(.boldDynamic(style: .title3))
-            .focused($focusedField, equals: .name)
-            .onSubmit {
-                focusedField = nil
-            }
-        
+        VStack {
+            TextField("card_name", text: $viewModel.loyaltyCard.name, axis: .vertical)
+                .lineLimit(8)
+                .multilineTextAlignment(.leading)
+                .font(.boldDynamic(style: .title3))
+                .focused($focusedField, equals: .name)
+                .onSubmit {
+                    focusedField = nil
+                }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     @ViewBuilder
-    private func imageSectionContent(availableHeight: CGFloat) -> some View {
+    private func imageSectionContent() -> some View {
         Group {
             if viewModel.loadingProgress {
                 ProgressView()
@@ -176,7 +177,7 @@ struct LoyaltyCardDetailsView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(maxHeight: availableHeight * 0.4)
+                    .frame(maxHeight: 300)
                     .frame(maxWidth: .infinity)
                     .clipped()
                     .contentShape(Rectangle())
@@ -191,7 +192,8 @@ struct LoyaltyCardDetailsView: View {
                         showImageSourceSheet = false
                         showingImageActionMenu = true
                     }
-                    .popover(isPresented: $showingImageActionMenu) {
+                    .popover(isPresented: $showingImageActionMenu,
+                             attachmentAnchor: .point(.center)) {
                         imageActionMenu
                             .presentationCompactAdaptation(.popover)
                     }
