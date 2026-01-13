@@ -96,8 +96,10 @@ struct ShoppingListSettingsView: View {
         VStack(alignment: .leading, spacing: 8) {
             TextField(
                 "list_name",
-                text: $viewModel.shoppingList.name
+                text: $viewModel.shoppingList.name,
+                axis: .vertical
             )
+            .lineLimit(6)
             // .textInputAutocapitalization(.sentences) // TODO: To dodac jako opcje w ustawieniach aplikacji.
             .font(.boldDynamic(style: .title3))
             .focused($focusedField, equals: .name)
