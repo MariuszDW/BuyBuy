@@ -526,10 +526,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = BuyBuy;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
-				INFOPLIST_KEY_NSContactsUsageDescription = "";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "BuyBuy needs access to your calendar to create events containing your shopping lists.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "BuyBuy needs access to the camera to take photos of loyalty cards and items on your shopping lists.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "BuyBuy needs limited access to your contacts to select a calendar when creating events.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "BuyBuy needs access to your photo library to attach photos of loyalty cards and photos of items on your shopping lists.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -540,7 +540,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.7.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.encore.BuyBuy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -568,10 +568,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = BuyBuy;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
-				INFOPLIST_KEY_NSContactsUsageDescription = "";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "BuyBuy needs access to your calendar to create events containing your shopping lists.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "BuyBuy needs access to the camera to take photos of loyalty cards and items on your shopping lists.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "BuyBuy needs limited access to your contacts to select a calendar when creating events.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "BuyBuy needs access to your photo library to attach photos of loyalty cards and photos of items on your shopping lists.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -582,7 +582,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.7.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.encore.BuyBuy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -684,10 +684,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "BuyBuy Dev";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
-				INFOPLIST_KEY_NSContactsUsageDescription = "";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "BuyBuy needs access to your calendar to create events containing your shopping lists.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "BuyBuy needs access to the camera to take photos of loyalty cards and items on your shopping lists.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "BuyBuy needs limited access to your contacts to select a calendar when creating events.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "BuyBuy needs access to your photo library to attach photos of loyalty cards and photos of items on your shopping lists.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -698,7 +698,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.7.1;
 				OTHER_OSACOMPILEFLAGS = "";
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.encore.BuyBuyDev;
@@ -729,10 +729,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "BuyBuy Dev";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
-				INFOPLIST_KEY_NSContactsUsageDescription = "";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "BuyBuy needs access to your calendar to create events containing your shopping lists.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "BuyBuy needs access to the camera to take photos of loyalty cards and items on your shopping lists.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "BuyBuy needs limited access to your contacts to select a calendar when creating events.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "BuyBuy needs access to your photo library to attach photos of loyalty cards and photos of items on your shopping lists.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -743,7 +743,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.7.1;
 				OTHER_OSACOMPILEFLAGS = "";
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.encore.BuyBuyDev;

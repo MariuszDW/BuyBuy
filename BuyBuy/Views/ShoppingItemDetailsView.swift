@@ -213,25 +213,31 @@ struct ShoppingItemDetailsView: View {
     }
     
     private var nameField: some View {
-        TextField("name", text: $viewModel.shoppingItem.name, axis: .vertical)
-            .lineLimit(4)
-            .multilineTextAlignment(.leading)
-            .font(.boldDynamic(style: .title3))
-            .focused($focusedField, equals: .name)
-            .onSubmit {
-                focusedField = nil
-            }
+        VStack {
+            TextField("name", text: $viewModel.shoppingItem.name, axis: .vertical)
+                .lineLimit(4)
+                .multilineTextAlignment(.leading)
+                .font(.boldDynamic(style: .title3))
+                .focused($focusedField, equals: .name)
+                .onSubmit {
+                    focusedField = nil
+                }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private var noteField: some View {
-        TextField("note", text: $viewModel.shoppingItem.note, axis: .vertical)
-            .lineLimit(8)
-            .multilineTextAlignment(.leading)
-            .font(.regularDynamic(style: .body))
-            .focused($focusedField, equals: .note)
-            .onSubmit {
-                focusedField = nil
-            }
+        VStack {
+            TextField("note", text: $viewModel.shoppingItem.note, axis: .vertical)
+                .lineLimit(8)
+                .multilineTextAlignment(.leading)
+                .font(.regularDynamic(style: .body))
+                .focused($focusedField, equals: .note)
+                .onSubmit {
+                    focusedField = nil
+                }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private var quantityField: some View {
