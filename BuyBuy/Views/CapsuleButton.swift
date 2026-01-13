@@ -116,7 +116,7 @@ struct LegacyCapsuleGlassStyle: ButtonStyle {
                     .overlay {
                         if highlighted {
                             Capsule()
-                                .stroke(Color.bb.text.primary, lineWidth: 1)
+                                .stroke(Color.bb.text.primary, lineWidth: 2)
                         }
                     }
             )
