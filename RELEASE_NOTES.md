@@ -2,6 +2,10 @@
 
 ## ENGLISH
 
+### Version 1.7.1 (Jan 13, 2026)
+
+* Fixed an issue causing the cursor position to change unexpectedly during text editing.
+
 ### Version 1.7 (Jan 1, 2026)
 
 * Added export of pending shopping list items to Calendar Event or Message.
@@ -82,7 +86,11 @@
 
 ## POLSKI
 
-### Version 1.7 (1 stycznia 2026)
+### Wersja 1.7.1 (13 stycznia 2026)
+
+* Naprawiono problem z nieoczekiwaną zmianą pozycji kursora podczas edycji tekstu.
+
+### Wersja 1.7 (1 stycznia 2026)
 
 * Dodano eksport oczekujących przedmiotów listy zakupów do wydarzenia w kalendarzu lub wiadomości.
 * Ulepszono wygląd przycisków w dolnym panelu listy na iOS 16-18.
