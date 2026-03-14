@@ -182,10 +182,10 @@ final class AppPreferences: AppPreferencesProtocol {
     
     var legacyDeviceImages: Bool {
         get {
-            defaults.bool(forKey: Keys.legacyCloudImages)
+            defaults.bool(forKey: Keys.legacyDeviceImages)
         }
         set {
-            defaults.set(newValue, forKey: Keys.legacyCloudImages)
+            defaults.set(newValue, forKey: Keys.legacyDeviceImages)
         }
     }
 }
