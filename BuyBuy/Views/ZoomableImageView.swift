@@ -7,117 +7,83 @@
 
 import SwiftUI
 
-struct ZoomableImageView: View {
+struct ZoomableImageView: UIViewRepresentable {
     let image: UIImage
-    var backgroundColor: Color = .black
-
     @Binding var isZoomedOut: Bool
 
-    @State private var scale: CGFloat = 1.0
-    @State private var lastScale: CGFloat = 1.0
+    func makeUIView(context: Context) -> UIScrollView {
+        let scrollView = UIScrollView()
 
-    @State private var offset: CGSize = .zero
-    @State private var lastOffset: CGSize = .zero
+        scrollView.minimumZoomScale = 1
+        scrollView.maximumZoomScale = 6
+        scrollView.delegate = context.coordinator
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
 
-    @State private var screenSize: CGSize = .zero
+        let imageView = UIImageView(image: image)
+        imageView.contentMode = .scaleAspectFit
+        imageView.frame = scrollView.bounds
+        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
-    var body: some View {
-        GeometryReader { proxy in
-            backgroundColor
-                .onAppear {
-                    screenSize = proxy.size
-                }
-                .onChange(of: scale) { newValue in
-                    isZoomedOut = newValue <= 1.0
-                }
-                .overlay(
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .contentShape(Rectangle())
-                        .scaleEffect(scale)
-                        .offset(offset)
-                        .animation(.spring(response: 0.4, dampingFraction: 0.6), value: scale)
-                        .animation(.spring(response: 0.4, dampingFraction: 0.6), value: offset)
-                        .gesture(doubleTapGesture)
-                        .simultaneousGesture(combinedGesture(screenSize: screenSize))
-                )
-        }
-        .ignoresSafeArea()
-    }
+        scrollView.addSubview(imageView)
 
-    private func combinedGesture(screenSize: CGSize) -> some Gesture {
-        SimultaneousGesture(
-            MagnificationGesture()
-                .onChanged { value in
-                    scale = lastScale * value
-                }
-                .onEnded { value in
-                    scale = max(1, lastScale * value)
-                    lastScale = scale
-                    offset = clampedOffset(offset, scale: scale, imageSize: image.size, screenSize: screenSize)
-                    lastOffset = offset
-                },
-            DragGesture()
-                .onChanged { value in
-                    let proposedOffset = CGSize(
-                        width: lastOffset.width + value.translation.width,
-                        height: lastOffset.height + value.translation.height
-                    )
-                    offset = clampedOffset(proposedOffset, scale: scale, imageSize: image.size, screenSize: screenSize)
-                }
-                .onEnded { value in
-                    let proposedOffset = CGSize(
-                        width: lastOffset.width + value.translation.width,
-                        height: lastOffset.height + value.translation.height
-                    )
-                    offset = clampedOffset(proposedOffset, scale: scale, imageSize: image.size, screenSize: screenSize)
-                    lastOffset = offset
-                }
+        context.coordinator.imageView = imageView
+        context.coordinator.scrollView = scrollView
+
+        let doubleTap = UITapGestureRecognizer(
+            target: context.coordinator,
+            action: #selector(Coordinator.handleDoubleTap(_:))
         )
+        doubleTap.numberOfTapsRequired = 2
+        scrollView.addGestureRecognizer(doubleTap)
+
+        return scrollView
     }
 
-    private var doubleTapGesture: some Gesture {
-        TapGesture(count: 2)
-            .onEnded {
-                if scale > 1 {
-                    scale = 1
-                    lastScale = 1
-                    offset = .zero
-                    lastOffset = .zero
-                } else {
-                    scale = 2
-                    lastScale = 2
-                    offset = clampedOffset(offset, scale: scale, imageSize: image.size, screenSize: screenSize)
-                    lastOffset = offset
-                }
+    func updateUIView(_ scrollView: UIScrollView, context: Context) {
+        context.coordinator.imageView?.image = image
+        isZoomedOut = scrollView.zoomScale <= 1
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIScrollViewDelegate {
+        var parent: ZoomableImageView
+        weak var imageView: UIImageView?
+        weak var scrollView: UIScrollView?
+
+        init(_ parent: ZoomableImageView) {
+            self.parent = parent
+        }
+
+        func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+            imageView
+        }
+
+        func scrollViewDidZoom(_ scrollView: UIScrollView) {
+            parent.isZoomedOut = scrollView.zoomScale <= 1
+        }
+
+        @objc func handleDoubleTap(_ gesture: UITapGestureRecognizer) {
+            guard let scrollView = scrollView, let imageView = imageView else { return }
+
+            if scrollView.zoomScale > scrollView.minimumZoomScale {
+                scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
+                return
             }
-    }
 
-    private func clampedOffset(_ offset: CGSize, scale: CGFloat, imageSize: CGSize, screenSize: CGSize) -> CGSize {
-        let bounds = maxOffset(scale: scale, imageSize: imageSize, screenSize: screenSize)
-        return CGSize(
-            width: max(-bounds.width, min(bounds.width, offset.width)),
-            height: max(-bounds.height, min(bounds.height, offset.height))
-        )
-    }
+            let point = gesture.location(in: imageView)
 
-    private func maxOffset(scale: CGFloat, imageSize: CGSize, screenSize: CGSize) -> CGSize {
-        let aspectRatio = imageSize.width / imageSize.height
-        let fittedWidth: CGFloat
-        let fittedHeight: CGFloat
+            let newScale = min(scrollView.maximumZoomScale, scrollView.zoomScale * 2)
 
-        if screenSize.width / screenSize.height > aspectRatio {
-            fittedHeight = screenSize.height
-            fittedWidth = fittedHeight * aspectRatio
-        } else {
-            fittedWidth = screenSize.width
-            fittedHeight = fittedWidth / aspectRatio
+            let width = scrollView.bounds.size.width / newScale
+            let height = scrollView.bounds.size.height / newScale
+
+            let rect = CGRect(x: point.x - width / 2, y: point.y - height / 2, width: width, height: height)
+
+            scrollView.zoom(to: rect, animated: true)
         }
-
-        let maxX = max((fittedWidth * scale - screenSize.width) / 2, 0)
-        let maxY = max((fittedHeight * scale - screenSize.height) / 2, 0)
-
-        return CGSize(width: maxX, height: maxY)
     }
 }
