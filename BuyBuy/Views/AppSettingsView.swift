@@ -81,7 +81,7 @@ struct AppSettingsView: View {
                         .focused($focusedField, equals: .defaultUnit)
                         .multilineTextAlignment(.trailing)
                         .textFieldStyle(.roundedBorder)
-                        .frame(maxWidth: 120)
+                        .frame(maxWidth: 110)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         
