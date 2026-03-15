@@ -86,6 +86,15 @@ struct AppSettingsView: View {
                         .autocorrectionDisabled()
                         
                         Menu {
+                            Button {
+                                focusedField = nil
+                                viewModel.setDefaultUnit("")
+                            } label: {
+                                Label("none", systemImage: "xmark.circle")
+                            }
+
+                            Divider()
+
                             ForEach(viewModel.unitList, id: \.name) { section in
                                 Section(section.name) {
                                     ForEach(section.units, id: \.self) { unit in
