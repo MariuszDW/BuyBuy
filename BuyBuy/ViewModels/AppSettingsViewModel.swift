@@ -21,6 +21,7 @@ class AppSettingsViewModel: ObservableObject {
     @Published var isHapticsEnabled: Bool
     @Published var progressIndicator: Bool
     @Published var iCloudErrorMessage: String?
+    @Published var defaultUnit: String?
     
     init(dataManager: DataManagerProtocol, hapticEngine: HapticEngineProtocol, preferences: AppPreferencesProtocol, coordinator: any AppCoordinatorProtocol) {
         self.dataManager = dataManager
@@ -33,6 +34,7 @@ class AppSettingsViewModel: ObservableObject {
         self.progressIndicator = false
         self.isCloudSyncEnabled = preferences.isCloudSyncEnabled
         self.isHapticsEnabled = preferences.isHapticsEnabled
+        self.defaultUnit = preferences.defaultUnit
     }
     
     func setMetricUnitsEnabled(_ enabled: Bool) {
@@ -43,6 +45,23 @@ class AppSettingsViewModel: ObservableObject {
     func setImperialUnitsEnabled(_ enabled: Bool) {
         isImperialUnitsEnabled = enabled
         preferences.isImperialUnitsEnabled = enabled
+    }
+
+    var unitList: [(name: String, units: [MeasuredUnit])] {
+        MeasuredUnit.buildUnitList(for: preferences.unitSystems)
+    }
+    
+    func setDefaultUnit(_ unit: String) {
+        guard let normalizedUnit = ShoppingItemUnit(string: unit) else {
+            defaultUnit = nil
+            preferences.defaultUnit = nil
+            return
+        }
+        
+        let value = normalizedUnit.symbol
+        
+        defaultUnit = value
+        preferences.defaultUnit = value
     }
     
     func setCloudStorage(enabled: Bool) {

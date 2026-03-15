@@ -28,8 +28,14 @@ enum DataStorageOption: String, CaseIterable, Identifiable {
     }
 }
 
+enum AppSettingsField {
+    case defaultUnit
+}
+
 struct AppSettingsView: View {
     @StateObject var viewModel: AppSettingsViewModel
+    
+    @FocusState private var focusedField: AppSettingsField?
     
 #if BUYBUY_DEV
     @State private var showCopyMocksConfirmation = false
@@ -50,13 +56,53 @@ struct AppSettingsView: View {
                 Section(header: Text("unit_systems")) {
                     Toggle(MeasureUnitSystem.metric.name, isOn: $viewModel.isMetricUnitsEnabled)
                         .onChange(of: viewModel.isMetricUnitsEnabled) { newValue in
+                            focusedField = nil
                             viewModel.setMetricUnitsEnabled(newValue)
                         }
                     
                     Toggle(MeasureUnitSystem.imperial.name, isOn: $viewModel.isImperialUnitsEnabled)
                         .onChange(of: viewModel.isImperialUnitsEnabled) { newValue in
+                            focusedField = nil
                             viewModel.setImperialUnitsEnabled(newValue)
                         }
+                    
+                    HStack {
+                        Text("default_unit")
+                        
+                        Spacer()
+                        
+                        TextField(
+                            String(localized: .none),
+                            text: Binding(
+                                get: { viewModel.defaultUnit ?? "" },
+                                set: { viewModel.setDefaultUnit($0) }
+                            )
+                        )
+                        .focused($focusedField, equals: .defaultUnit)
+                        .multilineTextAlignment(.trailing)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 120)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        
+                        Menu {
+                            ForEach(viewModel.unitList, id: \.name) { section in
+                                Section(section.name) {
+                                    ForEach(section.units, id: \.self) { unit in
+                                        Button {
+                                            focusedField = nil
+                                            viewModel.setDefaultUnit(unit.symbol)
+                                        } label: {
+                                            Text(unit.symbol + " – " + unit.name)
+                                        }
+                                    }
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "chevron.up.chevron.down")
+                                .foregroundColor(.bb.selection)
+                        }
+                    }
                 }
                 
                 Section {
@@ -68,12 +114,14 @@ struct AppSettingsView: View {
                         }
                     }
                     .onChange(of: viewModel.isHapticsEnabled) { newValue in
+                        focusedField = nil
                         viewModel.setHapticsEnabled(newValue)
                     }
                 }
                 
                 Section() {
                     Button {
+                        focusedField = nil
                         viewModel.openTipJar()
                     } label: {
                         Label("support_developer", systemImage: "cup.and.saucer.fill")
@@ -83,6 +131,7 @@ struct AppSettingsView: View {
 #if BUYBUY_DEV
                 Section(header: Text("debug")) {
                     Button("copy_mocks_to_database") {
+                        focusedField = nil
                         showCopyMocksConfirmation = true
                     }
                 }
@@ -112,6 +161,7 @@ struct AppSettingsView: View {
             }
         )) {
             Button("ok", role: .cancel) {
+                focusedField = nil
                 viewModel.iCloudErrorMessage = nil
             }
         } message: {
@@ -122,6 +172,7 @@ struct AppSettingsView: View {
             Button("cancel", role: .cancel) {}
             Button("ok") {
                 Task {
+                    focusedField = nil
                     await viewModel.copyMockToData()
                 }
             }

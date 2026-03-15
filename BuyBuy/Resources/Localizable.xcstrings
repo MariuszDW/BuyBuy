@@ -493,6 +493,22 @@
         }
       }
     },
+    "default_unit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default unit"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Domyślna jednostka"
+          }
+        }
+      }
+    },
     "delete" : {
       "localizations" : {
         "en" : {

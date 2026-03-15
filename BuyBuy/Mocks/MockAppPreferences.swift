@@ -28,6 +28,8 @@ final class MockAppPreferences: AppPreferencesProtocol {
     var legacyCloudImages: Bool = false
     var legacyDeviceImages: Bool = false
     
+    var defaultUnit: String? = nil
+    
     var unitSystems: [MeasureUnitSystem] {
         MeasureUnitSystem.allCases.filter {
             switch $0 {
@@ -43,6 +45,7 @@ final class MockAppPreferences: AppPreferencesProtocol {
          startupCleaningAllowed: Bool = true,
          cloudSyncEnabled: Bool = false,
          hapticsEnabled: Bool = true,
+         defaultUnit: String? = nil,
          totalActiveTime: TimeInterval = 0,
          tipCounts: [String : Int] = MockAppPreferences.mockTipCounts) {
         self.lastCleanupDate = lastCleanupDate
@@ -51,6 +54,7 @@ final class MockAppPreferences: AppPreferencesProtocol {
         self.isStartupCleaningAllowed = startupCleaningAllowed
         self.isCloudSyncEnabled = cloudSyncEnabled
         self.isHapticsEnabled = hapticsEnabled
+        self.defaultUnit = defaultUnit
         
         self.installationDate = Date()
         self.totalActiveTime = totalActiveTime

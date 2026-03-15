@@ -83,6 +83,10 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         self.coordinator = coordinator
         self.dataManager = dataManager
         self.preferences = preferences
+        
+        if isNew, shoppingItem.unit == nil, let defaultUnit = preferences.defaultUnit {
+            shoppingItem.unit = ShoppingItemUnit(string: defaultUnit)
+        }
     }
     
     func startObserving() {

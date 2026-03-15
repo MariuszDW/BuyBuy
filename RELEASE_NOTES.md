@@ -2,6 +2,11 @@
 
 ## ENGLISH
 
+* ### Version 1.8 (Mar 15, 2026)
+
+* Fixed small issue in storing preferences.
+* Added option to set a default unit for new items.
+
 ### Version 1.7.1 (Jan 13, 2026)
 
 * Fixed an issue causing the cursor position to change unexpectedly during text editing.
@@ -85,6 +90,11 @@
 * The first version of the BuyBuy application.
 
 ## POLSKI
+
+### Wersja 1.8 (15 marca 2026)
+
+* Naprawiono drobny problem z zapisywaniem preferencji.
+* Dodano możliwość ustawienia domyślnej jednostki dla nowych przedmiotów.
 
 ### Wersja 1.7.1 (13 stycznia 2026)
 
