@@ -84,6 +84,12 @@ Technical info:
 * Light and dark mode support,
 * Pure native iOS - the app uses no third-party libraries.
 
+BuyBuy on the App Store:
+https://apps.apple.com/us/app/buybuy-now/id6747949067
+
+BuyBuy source code on GitHub:
+https://github.com/MariuszDW/BuyBuy
+
 ## POLSKI
 
 BuyBuy to aplikacja do tworzenia list zakupów, zaprojektowana z myślą o prostocie i przejrzystości. Bez reklam, bez subskrypcji - po prostu działa.
@@ -169,3 +175,9 @@ Techniczne informacje:
 * dynamiczne rozmiary fontów,
 * obsługa trybu jasnego i ciemnego,
 * czysty iOS - aplikacja nie używa zewnętrznych bibliotek.
+
+BuyBuy w App Store:
+https://apps.apple.com/us/app/buybuy-now/id6747949067
+
+Kod źródłowy BuyBuy na GitHub:
+https://github.com/MariuszDW/BuyBuy
