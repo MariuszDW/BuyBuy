@@ -10,6 +10,7 @@ import SwiftUI
 struct FullScreenImageView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: FullScreenImageViewModel
+    
     @State private var isZoomedOut = true
     @State private var dragOffset: CGFloat = 0
     
@@ -19,23 +20,25 @@ struct FullScreenImageView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            ZStack(alignment: .topTrailing) {
-                content(in: geometry.size.width)
+            let size = geometry.size
+
+            ZStack {
+                content(size: size)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black)
-                
-                closeButton
-                    .padding(.top, geometry.safeAreaInsets.top + 4)
-                    .padding(.trailing, geometry.safeAreaInsets.trailing + 8)
             }
-            .ignoresSafeArea()
+            .overlay(alignment: .topTrailing) {
+                closeButton
+                    .padding(.top, 8)
+                    .padding(.trailing, 8)
+            }
             .background(Color.black.ignoresSafeArea())
-            .simultaneousGesture(dragGesture(width: geometry.size.width))
+            .simultaneousGesture(dragGesture(width: size.width))
         }
     }
 
     @ViewBuilder
-    private func content(in width: CGFloat) -> some View {
+    private func content(size: CGSize) -> some View {
         switch viewModel.state {
         case .loading:
             ProgressView()
@@ -51,7 +54,7 @@ struct FullScreenImageView: View {
             .animation(.easeOut(duration: 0.25), value: dragOffset)
 
         case .failure:
-            noContnetView
+            noContentView(size: size)
         }
     }
 
@@ -65,27 +68,22 @@ struct FullScreenImageView: View {
         }
     }
 
-    private var noContnetView: some View {
-        GeometryReader { geometry in
-            let baseSize = min(geometry.size.width, geometry.size.height)
+    private func noContentView(size: CGSize) -> some View {
+        let baseSize = min(size.width, size.height)
 
-            VStack(spacing: 50) {
-                Image(systemName: "questionmark.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: baseSize * 0.5, height: baseSize * 0.5)
-                    .foregroundColor(.gray.opacity(0.5))
+        return VStack(spacing: 50) {
+            Image(systemName: "questionmark.circle")
+                .resizable()
+                .scaledToFit()
+                .frame(width: baseSize * 0.5, height: baseSize * 0.5)
+                .foregroundColor(.gray.opacity(0.5))
 
-                Text("no_image_found")
-                    .font(.boldDynamic(style: .title2))
-                    .foregroundColor(.gray.opacity(0.6))
-                    .multilineTextAlignment(.center)
-            }
-            .frame(maxWidth: .infinity)
-            .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+            Text("no_image_found")
+                .font(.boldDynamic(style: .title2))
+                .foregroundColor(.gray.opacity(0.6))
+                .multilineTextAlignment(.center)
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 40)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func dragGesture(width: CGFloat) -> some Gesture {

@@ -7,6 +7,7 @@
 
 import Foundation
 import CloudKit
+import UIKit
 
 actor MockDataRepository: @preconcurrency DataRepositoryProtocol {
     var coreDataStack: CoreDataStackProtocol
@@ -137,7 +138,11 @@ actor MockDataRepository: @preconcurrency DataRepositoryProtocol {
     // MARK: - Images
     
     func fetchImageData(id: String) async throws -> Data? {
-        return nil
+        let config = UIImage.SymbolConfiguration(pointSize: 200)
+        let image = UIImage(systemName: "photo", withConfiguration: config)!
+            .withTintColor(.white, renderingMode: .alwaysOriginal)
+
+        return image.pngData()
     }
         
     func fetchThumbnailData(id: String) async throws -> Data? {

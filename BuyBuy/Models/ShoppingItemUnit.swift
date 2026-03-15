@@ -12,14 +12,16 @@ struct ShoppingItemUnit: Codable, Hashable {
     let custom: String?
     
     init?(string: String?) {
-        guard let string = string?.trimmingCharacters(in: .whitespacesAndNewlines) else { return nil }
-        
-        if let unitBySymbol = MeasuredUnit.from(symbol: string) {
-            self.predefined = unitBySymbol
+        guard let trimmed = string?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty else {
+            return nil
+        }
+
+        if let predefined = MeasuredUnit.from(symbol: trimmed) {
+            self.predefined = predefined
             self.custom = nil
         } else {
             self.predefined = nil
-            self.custom = string
+            self.custom = trimmed
         }
     }
     
@@ -29,11 +31,7 @@ struct ShoppingItemUnit: Codable, Hashable {
     }
 
     var symbol: String {
-        if let unit = predefined {
-            return unit.symbol
-        } else {
-            return custom ?? ""
-        }
+        predefined?.symbol ?? custom ?? ""
     }
     
     @MainActor

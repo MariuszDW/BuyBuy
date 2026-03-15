@@ -13,6 +13,7 @@ The app:
 * supports a Home Screen Quick Action for instantly opening Loyalty Cards,
 * uses haptic feedback,
 * allows metric, imperial, or custom units,
+* allows setting a default unit for new items,
 * lets you restore items deleted within the last 30 days,
 * available in two languages: Polish and English,
 * supports both portrait and landscape orientation on iPhone and iPad,
@@ -83,6 +84,12 @@ Technical info:
 * Light and dark mode support,
 * Pure native iOS - the app uses no third-party libraries.
 
+BuyBuy on the App Store:
+https://apps.apple.com/us/app/buybuy-now/id6747949067
+
+BuyBuy source code on GitHub:
+https://github.com/MariuszDW/BuyBuy
+
 ## POLSKI
 
 BuyBuy to aplikacja do tworzenia list zakupów, zaprojektowana z myślą o prostocie i przejrzystości. Bez reklam, bez subskrypcji - po prostu działa.
@@ -98,6 +105,7 @@ Aplikacja:
 * obsługuje skrót z ikony aplikacji (Home Screen Quick Action) do natychmiastowego otwierania kart lojalnościowych,
 * obsługuje haptykę,
 * umożliwia korzystanie z jednostek metrycznych, imperialnych lub własnych,
+* umożliwia ustawienie domyślnej jednostki dla nowych przedmiotów,
 * pozwala przywracać przedmioty usunięte w ciągu ostatnich 30 dni,
 * dostępna w dwóch językach: polskim i angielskim,
 * działa zarówno w trybie pionowym, jak i poziomym, na iPhonie i iPadzie,
@@ -167,3 +175,9 @@ Techniczne informacje:
 * dynamiczne rozmiary fontów,
 * obsługa trybu jasnego i ciemnego,
 * czysty iOS - aplikacja nie używa zewnętrznych bibliotek.
+
+BuyBuy w App Store:
+https://apps.apple.com/us/app/buybuy-now/id6747949067
+
+Kod źródłowy BuyBuy na GitHub:
+https://github.com/MariuszDW/BuyBuy

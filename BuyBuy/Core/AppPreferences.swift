@@ -20,6 +20,7 @@ final class AppPreferences: AppPreferencesProtocol {
         static let lastCleanupDate = "last_cleanup_date"
         static let metricUnitsEnabled = "metric_units_enabled"
         static let imperialUnitsEnabled = "imperial_units_enabled"
+        static let defaultUnit = "default_unit"
         static let cloudSyncEnabled = "cloud_sync_enabled"
         static let hapticsEnabled = "haptics_enabled"
         static let appVersion = "app_version"
@@ -103,6 +104,15 @@ final class AppPreferences: AppPreferencesProtocol {
         }
     }
     
+    var defaultUnit: String? {
+        get {
+            defaults.string(forKey: Keys.defaultUnit)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.defaultUnit)
+        }
+    }
+    
     var shoppingListsOrder: [UUID] {
         get {
             let key = isCloudSyncEnabled ? Keys.shoppingListsOrderCloud : Keys.shoppingListsOrderDevice
@@ -182,10 +192,10 @@ final class AppPreferences: AppPreferencesProtocol {
     
     var legacyDeviceImages: Bool {
         get {
-            defaults.bool(forKey: Keys.legacyCloudImages)
+            defaults.bool(forKey: Keys.legacyDeviceImages)
         }
         set {
-            defaults.set(newValue, forKey: Keys.legacyCloudImages)
+            defaults.set(newValue, forKey: Keys.legacyDeviceImages)
         }
     }
 }

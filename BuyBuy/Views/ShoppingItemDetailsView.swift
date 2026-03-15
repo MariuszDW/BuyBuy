@@ -318,6 +318,18 @@ struct ShoppingItemDetailsView: View {
                     }
                 
                 Menu {
+                    Button {
+                        focusedField = nil
+                        viewModel.unit = ""
+                        Task {
+                            viewModel.finalizeInput()
+                        }
+                    } label: {
+                        Label("none", systemImage: "xmark.circle")
+                    }
+
+                    Divider()
+
                     ForEach(viewModel.unitList, id: \.name) { section in
                         unitMenuSection(name: section.name, units: section.units)
                     }
