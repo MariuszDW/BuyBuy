@@ -4,8 +4,9 @@
 
 * ### Version 1.8 (Mar 15, 2026)
 
-* Fixed small issue in storing preferences.
 * Added option to set a default unit for new items.
+* Improved zooming and panning of full-screen images.
+* Fixed small issue in storing preferences.
 
 ### Version 1.7.1 (Jan 13, 2026)
 
@@ -93,8 +94,9 @@
 
 ### Wersja 1.8 (15 marca 2026)
 
-* Naprawiono drobny problem z zapisywaniem preferencji.
 * Dodano możliwość ustawienia domyślnej jednostki dla nowych przedmiotów.
+* Ulepszono powiększanie i przesuwanie obrazów w trybie pełnoekranowym.
+* Naprawiono drobny problem z zapisywaniem preferencji.
 
 ### Wersja 1.7.1 (13 stycznia 2026)
 
