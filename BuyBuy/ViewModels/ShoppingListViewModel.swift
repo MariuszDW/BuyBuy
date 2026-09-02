@@ -155,11 +155,8 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func openNewItemDetails(listID: UUID, itemStatus: ShoppingItemStatus) {
-        let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
         let maxOrder = list?.items.map(\.order).max() ?? 0
-        
-        let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: itemStatus)
-        
+        let newItem = ShoppingItem(order: maxOrder + 1, listID: listID, name: "", status: itemStatus)
         coordinator?.openShoppingItemDetails(newItem, isNew: true, onDismiss: nil)
     }
     
