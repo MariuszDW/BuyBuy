@@ -157,7 +157,6 @@ final class ShoppingItemDetailsViewModel: ObservableObject {
         guard listID != shoppingItem.listID, let maxOrder = try? await dataManager.fetchMaxOrderOfShoppingItems(ofList: listID) else {
             return
         }
-        try? await dataManager.deleteShoppingItem(with: shoppingItem.id)
         shoppingItem.moveToShoppingList(with: listID, order: maxOrder + 1)
         try? await dataManager.addOrUpdateShoppingItem(shoppingItem)
     }

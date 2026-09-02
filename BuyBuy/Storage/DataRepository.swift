@@ -321,6 +321,61 @@ actor DataRepository: DataRepositoryProtocol {
         }
     }
     
+    func duplicateShoppingItem(with id: UUID, order: Int) async throws {
+        try await saveQueue.performSave { context in
+            let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            request.fetchLimit = 1
+
+            guard let sourceEntity = try context.fetch(request).first else {
+                return
+            }
+
+            let newEntity = ShoppingItemEntity(context: context)
+
+            newEntity.id = UUID()
+            newEntity.name = sourceEntity.name
+            newEntity.note = sourceEntity.note
+            newEntity.status = sourceEntity.status
+            newEntity.order = Int64(order)
+            newEntity.price = sourceEntity.price
+            newEntity.quantity = sourceEntity.quantity
+            newEntity.unit = sourceEntity.unit
+            newEntity.deletedAt = sourceEntity.deletedAt
+            newEntity.list = sourceEntity.list
+
+            let images = (sourceEntity.images as? Set<BBImageEntity>) ?? []
+            let thumbnails = (sourceEntity.thumbnails as? Set<BBThumbnailEntity>) ?? []
+
+            var newImageIDs: [String] = []
+
+            for imageID in sourceEntity.imageIDs {
+                guard let sourceImageID = UUID(uuidString: imageID),
+                      let sourceImage = images.first(where: { $0.id == sourceImageID }) else {
+                    continue
+                }
+
+                let newImageID = UUID()
+
+                let newImage = BBImageEntity(context: context)
+                newImage.id = newImageID
+                newImage.data = sourceImage.data
+                newImage.shoppingItem = newEntity
+
+                if let sourceThumbnail = thumbnails.first(where: { $0.id == sourceImageID }) {
+                    let newThumbnail = BBThumbnailEntity(context: context)
+                    newThumbnail.id = newImageID
+                    newThumbnail.data = sourceThumbnail.data
+                    newThumbnail.shoppingItem = newEntity
+                }
+
+                newImageIDs.append(newImageID.uuidString)
+            }
+
+            newEntity.imageIDs = newImageIDs
+        }
+    }
+    
     func deleteShoppingItem(with id: UUID) async throws {
         try await saveQueue.performSave { context in
             let request: NSFetchRequest<ShoppingItemEntity> = ShoppingItemEntity.fetchRequest()

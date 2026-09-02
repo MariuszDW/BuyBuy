@@ -32,6 +32,7 @@ The shopping list view allows you to:
 * view items in the selected status: To Buy, Bought, or Inactive,
 * view item details including name, note, image, unit, unit price, and quantity,
 * add new items,
+* duplicate items
 * rearrange items,
 * change item statuses,
 * collapse sections to headers only,
@@ -90,6 +91,14 @@ https://apps.apple.com/us/app/buybuy-now/id6747949067
 BuyBuy source code on GitHub:
 https://github.com/MariuszDW/BuyBuy
 
+Author:
+Mariusz Włodarczyk
+
+Contact:
+encore_contact@icloud.com
+
+---
+
 ## POLSKI
 
 BuyBuy to aplikacja do tworzenia list zakupów, zaprojektowana z myślą o prostocie i przejrzystości. Bez reklam, bez subskrypcji - po prostu działa.
@@ -124,6 +133,7 @@ Widok listy zakupów pozwala:
 * przeglądać listę przedmiotów w wybranym statusie: do kupienia, kupione, nieaktywne,
 * widzieć szczegóły przedmiotów: nazwę, opis, obrazek, jednostkę, cenę jednostkową, liczbę,
 * dodawać przedmioty,
+* duplikować przedmioty,
 * ustawiać kolejność przedmiotów,
 * zmieniać status przedmiotów,
 * zwijać sekcje do samych nagłówków,
@@ -181,3 +191,9 @@ https://apps.apple.com/us/app/buybuy-now/id6747949067
 
 Kod źródłowy BuyBuy na GitHub:
 https://github.com/MariuszDW/BuyBuy
+
+Autor:
+Mariusz Włodarczyk
+
+Kontakt:
+encore_contact@icloud.com

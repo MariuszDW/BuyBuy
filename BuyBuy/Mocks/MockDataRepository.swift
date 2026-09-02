@@ -37,6 +37,8 @@ actor MockDataRepository: @preconcurrency DataRepositoryProtocol {
     
     func addOrUpdateShoppingList(_ list: ShoppingList) async throws {}
     
+    func duplicateShoppingItem(with id: UUID, order: Int) async throws {}
+    
     func deleteShoppingList(with id: UUID) async throws {}
 
     func deleteShoppingLists(with ids: [UUID]) async throws {}

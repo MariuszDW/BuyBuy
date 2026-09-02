@@ -155,11 +155,8 @@ final class ShoppingListViewModel: ObservableObject {
     }
     
     func openNewItemDetails(listID: UUID, itemStatus: ShoppingItemStatus) {
-        let uniqueUUID = UUID.unique(in: list?.items.map { $0.id })
         let maxOrder = list?.items.map(\.order).max() ?? 0
-        
-        let newItem = ShoppingItem(id: uniqueUUID, order: maxOrder + 1, listID: listID, name: "", status: itemStatus)
-        
+        let newItem = ShoppingItem(order: maxOrder + 1, listID: listID, name: "", status: itemStatus)
         coordinator?.openShoppingItemDetails(newItem, isNew: true, onDismiss: nil)
     }
     
@@ -187,6 +184,18 @@ final class ShoppingListViewModel: ObservableObject {
     func openListSettings() {
         guard let list = list else { return }
         coordinator?.openShoppingListSettings(list, isNew: false, onDismiss: {_ in })
+    }
+    
+    func duplicateItem(with itemID: UUID) async {
+        guard let item = list?.item(with: itemID) else { return }
+
+        let maxOrder = list?.items(for: item.status).map(\.order).max() ?? -1
+        do {
+            try await dataManager.duplicateShoppingItem(with: itemID, order: maxOrder + 1)
+            await loadList()
+        } catch {
+            AppLogger.general.error("Failed to duplicate shopping item \(itemID, privacy: .public): \(error, privacy: .public)")
+        }
     }
     
     func selectExport(_ kind: ShoppingListExportKind) {
