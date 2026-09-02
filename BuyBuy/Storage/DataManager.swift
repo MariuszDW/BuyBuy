@@ -142,6 +142,10 @@ class DataManager: DataManagerProtocol {
         try await repository.addOrUpdateShoppingItem(item)
     }
     
+    func duplicateShoppingItem(with id: UUID, order: Int) async throws {
+        try await repository.duplicateShoppingItem(with: id, order: order)
+    }
+    
     func moveShoppingItemToDeleted(with id: UUID) async throws {
         guard var item = try await repository.fetchShoppingItem(with: id) else {
             return

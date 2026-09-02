@@ -189,6 +189,18 @@ final class ShoppingListViewModel: ObservableObject {
         coordinator?.openShoppingListSettings(list, isNew: false, onDismiss: {_ in })
     }
     
+    func duplicateItem(with itemID: UUID) async {
+        guard let item = list?.item(with: itemID) else { return }
+
+        let maxOrder = list?.items(for: item.status).map(\.order).max() ?? -1
+        do {
+            try await dataManager.duplicateShoppingItem(with: itemID, order: maxOrder + 1)
+            await loadList()
+        } catch {
+            AppLogger.general.error("Failed to duplicate shopping item \(itemID, privacy: .public): \(error, privacy: .public)")
+        }
+    }
+    
     func selectExport(_ kind: ShoppingListExportKind) {
         guard let list = list else { return }
 

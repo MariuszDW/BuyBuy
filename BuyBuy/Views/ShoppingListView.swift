@@ -152,6 +152,14 @@ struct ShoppingListView: View {
                 Label("edit", systemImage: "square.and.pencil")
             }
             
+            Button {
+                Task {
+                    await viewModel.duplicateItem(with: item.id)
+                }
+            } label: {
+                Label("duplicate", systemImage: "plus.square.on.square")
+            }
+            
             Button(role: .destructive) {
                 Task {
                     await handleDeleteTapped(with: item.id)

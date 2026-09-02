@@ -2,8 +2,9 @@
 
 ## ENGLISH
 
-### Version 1.8.1 (Sep 2, 2026)
+### Version 1.9 (Sep 2, 2026)
 
+* Added the ability to duplicate shopping list items.
 * Fixed an issue causing item images to disappear when restoring items from the deleted items list. 
 
 ### Version 1.8 (Mar 15, 2026)
@@ -98,8 +99,9 @@
 
 ## POLSKI
 
-### Wersja 1.8.1 (2 września 2026)
+### Wersja 1.9 (2 września 2026)
 
+* Dodano możliwość duplikowania przedmiotów na liście zakupów.
 * Naprawiono problem powodujący znikanie obrazków podczas przywracania przedmiotów z listy usuniętych.
 
 ### Wersja 1.8 (15 marca 2026)
