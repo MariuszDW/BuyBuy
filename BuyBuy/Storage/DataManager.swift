@@ -173,7 +173,6 @@ class DataManager: DataManagerProtocol {
         }
         
         let maxOrder = try await repository.fetchMaxOrderOfShoppingItems(ofList: listID)
-        try await repository.deleteShoppingItem(with: id)
         item.moveToShoppingList(with: listID, order: maxOrder + 1)
         try await repository.addOrUpdateShoppingItem(item)
     }

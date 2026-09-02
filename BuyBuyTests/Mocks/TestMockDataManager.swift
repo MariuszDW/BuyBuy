@@ -74,6 +74,9 @@ final class TestMockDataManager: DataManagerProtocol, @unchecked Sendable {
         addOrUpdateShoppingItemHandler?(item)
     }
     
+    func restoreShoppingItem(with id: UUID, status: BuyBuy.ShoppingItemStatus?, toList listID: UUID) async throws {
+    }
+    
     func moveShoppingItemToDeleted(with id: UUID) async throws {
     }
     

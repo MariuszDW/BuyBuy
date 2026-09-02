@@ -2,7 +2,11 @@
 
 ## ENGLISH
 
-* ### Version 1.8 (Mar 15, 2026)
+### Version 1.8.1 (Sep 2, 2026)
+
+* Fixed an issue causing item images to disappear when restoring items from the deleted items list. 
+
+### Version 1.8 (Mar 15, 2026)
 
 * Added option to set a default unit for new items.
 * Improved zooming and panning of full-screen images.
@@ -90,7 +94,13 @@
 
 * The first version of the BuyBuy application.
 
+---
+
 ## POLSKI
+
+### Wersja 1.8.1 (2 września 2026)
+
+* Naprawiono problem powodujący znikanie obrazków podczas przywracania przedmiotów z listy usuniętych.
 
 ### Wersja 1.8 (15 marca 2026)
 
