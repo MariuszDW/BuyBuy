@@ -5,6 +5,7 @@
 ### Version 1.9.1 (Nov 14, 2026)
 
 * Fixed a crash when exporting a shopping list to Messages on Mac (Apple Silicon, "Designed for iPad"). The Message export option is now hidden when the Messages service is unavailable.
+* Disabled reordering of items, lists, and loyalty cards on Mac (Apple Silicon, "Designed for iPad") due to a bug in Apple's library.
 
 ### Version 1.9 (Sep 2, 2026)
 
@@ -106,6 +107,7 @@
 ### Wersja 1.9.1 (14 listopada 2026)
 
 * Naprawiono crash przy eksporcie listy zakupów do Wiadomości na Macu (Apple Silicon, "Designed for iPad"). Opcja eksportu do Wiadomości jest teraz ukrywana, gdy usługa Wiadomości nie jest dostępna.
+* Wyłączono przestawianie pozycji przedmiotów, list i kart lojalnościowych na Macu (Apple Silicon, "Designed for iPad") ze względu na błąd w bibliotece Apple.
 
 ### Wersja 1.9 (2 września 2026)
 
