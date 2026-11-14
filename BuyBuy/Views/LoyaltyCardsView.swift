@@ -126,15 +126,15 @@ struct LoyaltyCardsView: View {
                         .lineLimit(5)
                 }
             }
-            .onMove { indices, newOffset in
-                Task {
-                    await viewModel.moveCard(from: indices, to: newOffset)
-                }
-            }
             .onDelete { indexSet in
                 Task {
                     hapticEngine.playItemDeleted()
                     await viewModel.deleteCards(at: indexSet)
+                }
+            }
+            .onMoveIfAvailable { indices, newOffset in
+                Task {
+                    await viewModel.moveCard(from: indices, to: newOffset)
                 }
             }
         }

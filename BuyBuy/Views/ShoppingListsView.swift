@@ -109,7 +109,7 @@ struct ShoppingListsView: View {
                         await viewModel.deleteLists(atOffsets: offsets)
                     }
                 }
-                .onMove { indices, newOffset in
+                .onMoveIfAvailable { indices, newOffset in
                     Task {
                         await viewModel.moveLists(fromOffsets: indices, toOffset: newOffset)
                     }

@@ -96,7 +96,7 @@ struct ShoppingListView: View {
                     await viewModel.deleteItems(atOffsets: offsets, status: selectedItemStatus)
                 }
             }
-            .onMove { indices, newOffset in
+            .onMoveIfAvailable { indices, newOffset in
                 Task {
                     await viewModel.moveItem(from: indices, to: newOffset, in: selectedItemStatus)
                 }
