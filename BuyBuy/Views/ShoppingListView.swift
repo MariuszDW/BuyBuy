@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MessageUI
 
 struct ShoppingListView: View {
     @StateObject var viewModel: ShoppingListViewModel
@@ -239,10 +240,12 @@ struct ShoppingListView: View {
                                 Label("file", systemImage: "doc")
                             }
 
-                            Button {
-                                viewModel.selectExport(.message)
-                            } label: {
-                                Label("message", systemImage: "message")
+                            if MFMessageComposeViewController.canSendText() {
+                                Button {
+                                    viewModel.selectExport(.message)
+                                } label: {
+                                    Label("message", systemImage: "message")
+                                }
                             }
 
                             Button {

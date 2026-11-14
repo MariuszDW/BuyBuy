@@ -2,6 +2,10 @@
 
 ## ENGLISH
 
+### Version 1.9.1 (Nov 14, 2026)
+
+* Fixed a crash when exporting a shopping list to Messages on Mac (Apple Silicon, "Designed for iPad"). The Message export option is now hidden when the Messages service is unavailable.
+
 ### Version 1.9 (Sep 2, 2026)
 
 * Added the ability to duplicate shopping list items.
@@ -98,6 +102,10 @@
 ---
 
 ## POLSKI
+
+### Wersja 1.9.1 (14 listopada 2026)
+
+* Naprawiono crash przy eksporcie listy zakupów do Wiadomości na Macu (Apple Silicon, "Designed for iPad"). Opcja eksportu do Wiadomości jest teraz ukrywana, gdy usługa Wiadomości nie jest dostępna.
 
 ### Wersja 1.9 (2 września 2026)
 
